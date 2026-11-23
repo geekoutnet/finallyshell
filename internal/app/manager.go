@@ -70,7 +70,9 @@ type managerState struct {
 
 	prompt   *managerPrompt
 	question *managerQuestion
-	saveErr  func() string
+	// info is the connection info dialog (conninfo.go).
+	info    *connInfoDialog
+	saveErr func() string
 	// notice says how the last import went, until the manager closes.
 	notice func() string
 	over   managerItem // the row a drag was over in the last frame
@@ -320,6 +322,7 @@ func (a *App) managerView(c *ui.Context) {
 	}
 	a.managerPromptView(c, m)
 	a.managerQuestionView(c, m)
+	a.connInfoView(c, m)
 }
 
 func (a *App) managerToolbar(c *ui.Context) {
@@ -753,6 +756,7 @@ func (a *App) managerItemMenu(c *ui.Context, m *managerState, menu *ui.Menu, it 
 	if menu.Item(locales.CopyHost()).Chosen() {
 		c.WriteClipboard(h.Addr)
 	}
+	a.connInfoMenuItems(c, menu, m, h, do)
 	menu.Separator()
 	if menu.Item(locales.Delete()).Shortcut(0, ui.KeyDelete).Chosen() {
 		do(func() { a.deleteItem(m, it) })

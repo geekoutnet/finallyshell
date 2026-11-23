@@ -1702,5 +1702,19 @@
         "example": "45.56.78.90"
       }
     }
-  }
+  },
+  "connInfo": "Connection info",
+  "copyConnInfo": "Copy connection info",
+  "viewConnInfo": "View connection info…",
+  "connInfoFolder": "Folder",
+  "connInfoProxyType": "Proxy type",
+  "connInfoProxyAddr": "Proxy address",
+  "connInfoProxyUser": "Proxy user",
+  "connInfoSSHCommand": "SSH command",
+  "connInfoURL": "SSH URL",
+  "connInfoNoPassword": "No password saved",
+  "connInfoNoPassphrase": "No passphrase saved",
+  "connInfoReading": "Reading…",
+  "showSecret": "Show",
+  "hideSecret": "Hide"
 }

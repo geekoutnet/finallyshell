@@ -10123,3 +10123,143 @@ func CopiedText(text string) string { return In(i18n.Locale()).CopiedText(text) 
 func (msgs Messages) CopiedText(text string) string {
 	return Catalog.Format(msgs.locale, "copiedText", map[string]any{"text": text})
 }
+
+// ConnInfo says "Connection info"
+// in the language the app shows.
+func ConnInfo() string { return In(i18n.Locale()).ConnInfo() }
+
+// ConnInfo says "Connection info"
+// in the language of msgs.
+func (msgs Messages) ConnInfo() string {
+	return Catalog.Format(msgs.locale, "connInfo", nil)
+}
+
+// CopyConnInfo says "Copy connection info"
+// in the language the app shows.
+func CopyConnInfo() string { return In(i18n.Locale()).CopyConnInfo() }
+
+// CopyConnInfo says "Copy connection info"
+// in the language of msgs.
+func (msgs Messages) CopyConnInfo() string {
+	return Catalog.Format(msgs.locale, "copyConnInfo", nil)
+}
+
+// ViewConnInfo says "View connection info…"
+// in the language the app shows.
+func ViewConnInfo() string { return In(i18n.Locale()).ViewConnInfo() }
+
+// ViewConnInfo says "View connection info…"
+// in the language of msgs.
+func (msgs Messages) ViewConnInfo() string {
+	return Catalog.Format(msgs.locale, "viewConnInfo", nil)
+}
+
+// ConnInfoFolder says "Folder"
+// in the language the app shows.
+func ConnInfoFolder() string { return In(i18n.Locale()).ConnInfoFolder() }
+
+// ConnInfoFolder says "Folder"
+// in the language of msgs.
+func (msgs Messages) ConnInfoFolder() string {
+	return Catalog.Format(msgs.locale, "connInfoFolder", nil)
+}
+
+// ConnInfoProxyType says "Proxy type"
+// in the language the app shows.
+func ConnInfoProxyType() string { return In(i18n.Locale()).ConnInfoProxyType() }
+
+// ConnInfoProxyType says "Proxy type"
+// in the language of msgs.
+func (msgs Messages) ConnInfoProxyType() string {
+	return Catalog.Format(msgs.locale, "connInfoProxyType", nil)
+}
+
+// ConnInfoProxyAddr says "Proxy address"
+// in the language the app shows.
+func ConnInfoProxyAddr() string { return In(i18n.Locale()).ConnInfoProxyAddr() }
+
+// ConnInfoProxyAddr says "Proxy address"
+// in the language of msgs.
+func (msgs Messages) ConnInfoProxyAddr() string {
+	return Catalog.Format(msgs.locale, "connInfoProxyAddr", nil)
+}
+
+// ConnInfoProxyUser says "Proxy user"
+// in the language the app shows.
+func ConnInfoProxyUser() string { return In(i18n.Locale()).ConnInfoProxyUser() }
+
+// ConnInfoProxyUser says "Proxy user"
+// in the language of msgs.
+func (msgs Messages) ConnInfoProxyUser() string {
+	return Catalog.Format(msgs.locale, "connInfoProxyUser", nil)
+}
+
+// ConnInfoSSHCommand says "SSH command"
+// in the language the app shows.
+func ConnInfoSSHCommand() string { return In(i18n.Locale()).ConnInfoSSHCommand() }
+
+// ConnInfoSSHCommand says "SSH command"
+// in the language of msgs.
+func (msgs Messages) ConnInfoSSHCommand() string {
+	return Catalog.Format(msgs.locale, "connInfoSSHCommand", nil)
+}
+
+// ConnInfoURL says "SSH URL"
+// in the language the app shows.
+func ConnInfoURL() string { return In(i18n.Locale()).ConnInfoURL() }
+
+// ConnInfoURL says "SSH URL"
+// in the language of msgs.
+func (msgs Messages) ConnInfoURL() string {
+	return Catalog.Format(msgs.locale, "connInfoURL", nil)
+}
+
+// ConnInfoNoPassword says "No password saved"
+// in the language the app shows.
+func ConnInfoNoPassword() string { return In(i18n.Locale()).ConnInfoNoPassword() }
+
+// ConnInfoNoPassword says "No password saved"
+// in the language of msgs.
+func (msgs Messages) ConnInfoNoPassword() string {
+	return Catalog.Format(msgs.locale, "connInfoNoPassword", nil)
+}
+
+// ConnInfoNoPassphrase says "No passphrase saved"
+// in the language the app shows.
+func ConnInfoNoPassphrase() string { return In(i18n.Locale()).ConnInfoNoPassphrase() }
+
+// ConnInfoNoPassphrase says "No passphrase saved"
+// in the language of msgs.
+func (msgs Messages) ConnInfoNoPassphrase() string {
+	return Catalog.Format(msgs.locale, "connInfoNoPassphrase", nil)
+}
+
+// ConnInfoReading says "Reading…"
+// in the language the app shows.
+func ConnInfoReading() string { return In(i18n.Locale()).ConnInfoReading() }
+
+// ConnInfoReading says "Reading…"
+// in the language of msgs.
+func (msgs Messages) ConnInfoReading() string {
+	return Catalog.Format(msgs.locale, "connInfoReading", nil)
+}
+
+// ShowSecret says "Show"
+// in the language the app shows.
+func ShowSecret() string { return In(i18n.Locale()).ShowSecret() }
+
+// ShowSecret says "Show"
+// in the language of msgs.
+func (msgs Messages) ShowSecret() string {
+	return Catalog.Format(msgs.locale, "showSecret", nil)
+}
+
+// HideSecret says "Hide"
+// in the language the app shows.
+func HideSecret() string { return In(i18n.Locale()).HideSecret() }
+
+// HideSecret says "Hide"
+// in the language of msgs.
+func (msgs Messages) HideSecret() string {
+	return Catalog.Format(msgs.locale, "hideSecret", nil)
+}

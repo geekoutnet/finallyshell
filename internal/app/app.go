@@ -152,6 +152,9 @@ type App struct {
 	// notices are toasts asked for between frames, as by a goroutine,
 	// which the next frame shows (paneview.go).
 	notices []string
+	// pendingCopy is text a goroutine's work left for the next frame to
+	// put on the clipboard (conninfo.go).
+	pendingCopy *clipboardCopy
 	// moving is the pane whose grip is pressed, to drag it, and the last
 	// line of its screen, which the copy following the pointer shows
 	// (paneview.go): nil while none is.
@@ -330,6 +333,7 @@ func (a *App) View(c *ui.Context) {
 	defer a.stopUnseenPolls()
 	useTheme(c)
 	a.showNotices(c)
+	a.writePendingCopy(c)
 	a.shortcuts(c)
 	a.saveLayoutAtRest(c)
 	a.saveCmdTextAtRest(c)

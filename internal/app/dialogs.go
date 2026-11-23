@@ -39,6 +39,8 @@ func (a *App) dialogs(c *ui.Context) {
 	// The Connections page's names and questions (conntree.go).
 	a.managerPromptView(c, &a.connTree)
 	a.managerQuestionView(c, &a.connTree)
+	// The connection info of a session's host, or of a host of that page.
+	a.connInfoView(c, &a.connTree)
 }
 
 func (a *App) passwordView(c *ui.Context) {

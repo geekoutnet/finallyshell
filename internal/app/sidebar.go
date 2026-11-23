@@ -293,6 +293,10 @@ func (a *App) sessionRow(c *ui.Context, s *Session, active bool) (closed bool) {
 			s.disconnect()
 			s.status, s.err = statusClosed, nil
 		}
+		if !s.isLocal() {
+			m.Separator()
+			a.connInfoMenuItems(c, m, &a.connTree, s.Host, func(fn func()) { fn() })
+		}
 		m.Separator()
 		a.paneMenu(m, s)
 		m.Separator()

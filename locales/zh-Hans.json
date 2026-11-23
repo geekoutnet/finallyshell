@@ -997,5 +997,19 @@
   "overviewShowAll": "显示全部（{count}）",
   "overviewShowLess": "收起",
   "copyAll": "复制全部",
-  "copiedText": "已复制：{text}"
+  "copiedText": "已复制：{text}",
+  "connInfo": "连接信息",
+  "copyConnInfo": "复制连接信息",
+  "viewConnInfo": "查看连接信息…",
+  "connInfoFolder": "文件夹",
+  "connInfoProxyType": "代理类型",
+  "connInfoProxyAddr": "代理地址",
+  "connInfoProxyUser": "代理用户",
+  "connInfoSSHCommand": "SSH 命令",
+  "connInfoURL": "SSH 链接",
+  "connInfoNoPassword": "未保存密码",
+  "connInfoNoPassphrase": "未保存私钥密码",
+  "connInfoReading": "正在读取…",
+  "showSecret": "显示",
+  "hideSecret": "隐藏"
 }

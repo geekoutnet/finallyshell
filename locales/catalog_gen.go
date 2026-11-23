@@ -5326,6 +5326,36 @@ func (msgs Messages) UpdatesAvailable(version string) string {
 	return Catalog.Format(msgs.locale, "updatesAvailable", map[string]any{"version": version})
 }
 
+// UpdatesChecking says "Checking…"
+// in the language the app shows.
+func UpdatesChecking() string { return In(i18n.Locale()).UpdatesChecking() }
+
+// UpdatesChecking says "Checking…"
+// in the language of msgs.
+func (msgs Messages) UpdatesChecking() string {
+	return Catalog.Format(msgs.locale, "updatesChecking", nil)
+}
+
+// UpdatesUpToDate says "You have the latest version."
+// in the language the app shows.
+func UpdatesUpToDate() string { return In(i18n.Locale()).UpdatesUpToDate() }
+
+// UpdatesUpToDate says "You have the latest version."
+// in the language of msgs.
+func (msgs Messages) UpdatesUpToDate() string {
+	return Catalog.Format(msgs.locale, "updatesUpToDate", nil)
+}
+
+// UpdatesCheckFailed says "Could not check for updates. Try again later."
+// in the language the app shows.
+func UpdatesCheckFailed() string { return In(i18n.Locale()).UpdatesCheckFailed() }
+
+// UpdatesCheckFailed says "Could not check for updates. Try again later."
+// in the language of msgs.
+func (msgs Messages) UpdatesCheckFailed() string {
+	return Catalog.Format(msgs.locale, "updatesCheckFailed", nil)
+}
+
 // OptionCheckUpdatesAutomatically says "Check for updates automatically"
 // in the language the app shows.
 func OptionCheckUpdatesAutomatically() string {

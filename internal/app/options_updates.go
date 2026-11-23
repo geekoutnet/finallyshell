@@ -7,9 +7,9 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// releasesURL is where the releases are published, for installs that do
-// not update themselves.
-const releasesURL = "https://github.com/TooonyChen/finallyshell/releases"
+// releasesURL is where the releases are published: a newer version a
+// check found links to its page there, to download it by hand.
+const releasesURL = "https://github.com/geekoutnet/finallyshell/releases"
 
 // UpdateStatus is what the app's updater knows, for the Updates row of
 // Options › General.
@@ -24,6 +24,9 @@ type UpdateStatus struct {
 	// Available is the newer version the last check found, "" for none
 	// (or one the user skipped).
 	Available string
+	// Checking is a check under way; UpToDate and Failed tell how the
+	// check the user asked for ended: no newer version, or none read.
+	Checking, UpToDate, Failed bool
 }
 
 // UpdateBlock is why a copy of the app cannot update itself.
@@ -64,8 +67,15 @@ func (a *App) updatesSection(c *ui.Context) {
 			if ui.Button(c, locales.CheckForUpdates()).Clicked() {
 				a.plat.CheckForUpdates()
 			}
-			if st.Available != "" {
-				ui.Text(c, locales.UpdatesAvailable(st.Available)).TextColor(c.Theme().Accent)
+			switch {
+			case st.Checking:
+				widgets.Muted(c, locales.UpdatesChecking())
+			case st.Available != "":
+				ui.Link(c, locales.UpdatesAvailable(st.Available), releasesURL+"/tag/v"+st.Available)
+			case st.Failed:
+				widgets.Muted(c, locales.UpdatesCheckFailed())
+			case st.UpToDate:
+				widgets.Muted(c, locales.UpdatesUpToDate())
 			}
 		})
 		auto := st.Automatic

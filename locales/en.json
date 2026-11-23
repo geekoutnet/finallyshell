@@ -727,6 +727,9 @@
   "updatesVersionDevelopment": "Current version: development build",
   "checkForUpdates": "Check for Updates…",
   "updatesAvailable": "Version {version} is available",
+  "updatesChecking": "Checking…",
+  "updatesUpToDate": "You have the latest version.",
+  "updatesCheckFailed": "Could not check for updates. Try again later.",
   "@updatesAvailable": {
     "placeholders": {
       "version": {

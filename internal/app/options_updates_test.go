@@ -133,3 +133,27 @@ func TestUpdatesRowDisabled(t *testing.T) {
 	}
 	saveShot(t, tt, "options-updates-managed-zh.png")
 }
+
+// A check under way, and how the check the user asked for ended, show
+// beside the button; a version found links to its release page.
+func TestUpdatesRowCheckResults(t *testing.T) {
+	a, p := testApp(t)
+	p.status = UpdateStatus{Version: "2.0.1", Automatic: true}
+	tt := generalPageUpdates(t, a, p)
+	for _, c := range []struct {
+		st   UpdateStatus
+		text string
+	}{
+		{UpdateStatus{Checking: true}, locales.UpdatesChecking()},
+		{UpdateStatus{UpToDate: true}, locales.UpdatesUpToDate()},
+		{UpdateStatus{Failed: true}, locales.UpdatesCheckFailed()},
+		{UpdateStatus{Available: "2.0.2"}, locales.UpdatesAvailable("2.0.2")},
+	} {
+		c.st.Version, c.st.Automatic = "2.0.1", true
+		p.status = c.st
+		tt.Frame()
+		if !tt.HasText(c.text) {
+			t.Errorf("%+v: no %q; texts %q", c.st, c.text, tt.Texts())
+		}
+	}
+}

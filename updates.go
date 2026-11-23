@@ -250,7 +250,8 @@ func mirrorRelease(ctx context.Context, mirror string) (*release, error) {
 			Download string `json:"download"`
 		} `json:"assets"`
 	}
-	if err := getJSON(ctx, mirror+"/latest", &r); err != nil {
+	// The time makes each ask a new URL, which no cache on the way holds.
+	if err := getJSON(ctx, mirror+"/latest?t="+strconv.FormatInt(time.Now().UnixNano(), 10), &r); err != nil {
 		return nil, err
 	}
 	rel := &release{Version: strings.TrimPrefix(r.Tag, "v"), Assets: map[string]string{}, Source: mirror}
@@ -287,8 +288,10 @@ func githubRelease(ctx context.Context) (*release, error) {
 	return rel, nil
 }
 
+// getJSON reads the JSON at url, asking the caches on the way for a
+// fresh copy: a release just published is the latest at once.
 func getJSON(ctx context.Context, url string, v any) error {
-	resp, err := get(ctx, url)
+	resp, err := get(ctx, url, "Cache-Control", "no-cache", "Pragma", "no-cache")
 	if err != nil {
 		return err
 	}
@@ -296,13 +299,18 @@ func getJSON(ctx context.Context, url string, v any) error {
 	return json.NewDecoder(io.LimitReader(resp.Body, 4<<20)).Decode(v)
 }
 
-func get(ctx context.Context, url string) (*http.Response, error) {
+// get GETs url with header, pairs of a name and a value, and returns an
+// answer that is 200 OK.
+func get(ctx context.Context, url string, header ...string) (*http.Response, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Set("Accept", "application/json, */*")
 	req.Header.Set("User-Agent", "finallyshell")
+	for i := 0; i+1 < len(header); i += 2 {
+		req.Header.Set(header[i], header[i+1])
+	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
 		return nil, err

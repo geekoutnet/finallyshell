@@ -96,6 +96,10 @@ func fakeReleases(t *testing.T, version string, setup []byte, github bool) *http
 	srv = httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch {
 		case r.URL.Path == "/latest" && !github:
+			if r.URL.Query().Get("t") == "" || r.Header.Get("Cache-Control") != "no-cache" {
+				http.Error(w, "asked without the time or no-cache", http.StatusBadRequest)
+				return
+			}
 			fmt.Fprintf(w, `{"tag":"v%s","assets":[{"name":%q,"download":%q},{"name":"SHA256SUMS","download":%q}]}`,
 				version, name, srv.URL+"/v"+version+"/"+name, srv.URL+"/v"+version+"/SHA256SUMS")
 		case r.URL.Path == "/repos/"+releaseRepo+"/releases/latest" && github:

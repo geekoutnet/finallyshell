@@ -140,13 +140,14 @@ type jumpChoice struct {
 }
 
 // jumpChoices are the hosts that can be the jump host of the host with
-// the ID: the others not deleted, in order, each labeled with its name
-// and user@host, told apart when two read the same.
+// the ID: the others not deleted, in order, but Remote Desktop hosts,
+// each labeled with its name and user@host, told apart when two read
+// the same.
 func jumpChoices(hosts *config.Store, id string) []jumpChoice {
 	var out []jumpChoice
 	seen := map[string]int{}
 	for _, h := range hosts.Live() {
-		if h.ID == id {
+		if h.ID == id || h.IsRDP() {
 			continue
 		}
 		label := h.Target()

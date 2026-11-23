@@ -66,6 +66,10 @@ func (f editorField) page() string {
 		return editorTerminal
 	case slices.Contains(proxyFieldOrder, f):
 		return editorProxy
+	case f == fieldRDPGateway:
+		return editorRDPConnection
+	case slices.Contains(rdpFieldOrder, f):
+		return editorRDPDisplay
 	}
 	return editorSSH
 }
@@ -75,6 +79,10 @@ func (f editorField) page() string {
 type connEditor struct {
 	id  string           // the host edited; "" for a new one
 	nav widgets.NavState // the page shown
+	// kind is the host's kind, whose pages show: those of SSH, or of
+	// Remote Desktop, rdp (editor_rdp.go).
+	kind config.HostKind
+	rdp  rdpFields
 
 	name, addr, port, notes string
 	auth                    config.AuthKind
@@ -149,7 +157,9 @@ func (a *App) openEditor(h *config.Host, from WindowKind) {
 		ed.remember = h.RemembersPassword()
 		ed.monitor = h.MonitorEnabled()
 		ed.termType, ed.backspace, ed.delete, ed.encoding = h.TermType, h.Backspace, h.Delete, h.Encoding
+		ed.kind = h.Kind
 	}
+	ed.rdp = a.rdpFieldsOf(h)
 	ed.proxy = a.proxyFieldsOf(h)
 	ed.tunnels = newTunnelEditor(h)
 	a.editor = ed
@@ -172,7 +182,8 @@ func validTermType(s string) bool {
 	})
 }
 
-// problems are what is wrong with the fields, said in the language shown.
+// problems are what is wrong with the fields, said in the language shown:
+// those of the pages of the editor's kind.
 func (ed *connEditor) problems() map[editorField]string {
 	errs := map[editorField]string{}
 	if strings.TrimSpace(ed.addr) == "" {
@@ -180,6 +191,10 @@ func (ed *connEditor) problems() map[editorField]string {
 	}
 	if port, err := strconv.Atoi(strings.TrimSpace(ed.port)); err != nil || port < 1 || port > 65535 {
 		errs[fieldPort] = locales.ErrPortInvalid()
+	}
+	if ed.kind == config.KindRDP { // no user is the client asking for one
+		ed.rdpProblems(errs)
+		return errs
 	}
 	if strings.TrimSpace(ed.user) == "" {
 		errs[fieldUser] = locales.ErrUserRequired()
@@ -202,7 +217,7 @@ func (a *App) saveEditor() {
 	ed.checked = true
 	if errs := ed.problems(); len(errs) > 0 {
 		first, here := "", false
-		for _, f := range append([]editorField{fieldAddr, fieldPort, fieldUser, fieldKeyPath, fieldTermType}, proxyFieldOrder...) {
+		for _, f := range slices.Concat([]editorField{fieldAddr, fieldPort, fieldUser, fieldKeyPath, fieldTermType}, proxyFieldOrder, rdpFieldOrder) {
 			if errs[f] != "" {
 				first = cmp.Or(first, f.page())
 				here = here || f.page() == ed.nav.Page
@@ -227,6 +242,35 @@ func (a *App) saveEditor() {
 	}
 	port, _ := strconv.Atoi(strings.TrimSpace(ed.port))
 	h.Name, h.Addr, h.Port, h.Notes = strings.TrimSpace(ed.name), strings.TrimSpace(ed.addr), port, ed.notes
+	wasRDP := h.IsRDP()
+	h.Kind = ed.kind
+	if ed.kind == config.KindRDP {
+		a.saveRDP(h, ed)
+	} else {
+		a.saveSSH(h, ed)
+		if wasRDP {
+			a.keepGatewaySecret(h, "", false, false) // it has no gateway now
+		}
+	}
+	tree := ed.tree
+	if tree == nil {
+		tree = &a.manager
+	}
+	tree.reveal(managerItem{host: h.ID})
+	a.redraw() // the manager, the Connections page and the sessions show the host
+
+	if err := a.saveHosts(a.hosts); err != nil {
+		ed.saveErr = func() string { return locales.ErrSaveFailed(err.Error()) }
+		return
+	}
+	ed.saveErr = nil
+	a.closeWindow(WindowEditor)
+}
+
+// saveSSH saves the SSH pages into h: how it logs in, its terminal, its
+// proxy and its tunnels. Its Remote Desktop options, if it had some, are
+// kept, for switching back.
+func (a *App) saveSSH(h *config.Host, ed *connEditor) {
 	h.User, h.Auth = strings.TrimSpace(ed.user), ed.auth
 	secret := ed.password
 	h.KeyPath = ""
@@ -245,19 +289,6 @@ func (a *App) saveEditor() {
 	a.saveProxy(h, &ed.proxy)
 	h.Tunnels = ed.tunnels.result()
 	a.keepProxySecret(h, ed.remember, ed.readingProxySecret)
-	tree := ed.tree
-	if tree == nil {
-		tree = &a.manager
-	}
-	tree.reveal(managerItem{host: h.ID})
-	a.redraw() // the manager, the Connections page and the sessions show the host
-
-	if err := a.saveHosts(a.hosts); err != nil {
-		ed.saveErr = func() string { return locales.ErrSaveFailed(err.Error()) }
-		return
-	}
-	ed.saveErr = nil
-	a.closeWindow(WindowEditor)
 }
 
 // browseKey asks for the private key file, starting where the one typed
@@ -314,6 +345,9 @@ func (a *App) editorView(c *ui.Context) {
 		{ID: editorProxy, Title: locales.EditorPageProxy, View: func(c *ui.Context) { a.proxyPage(c, ed, errs, input) }},
 		{ID: editorTunnels, Title: locales.EditorPageTunnels, View: func(c *ui.Context) { a.tunnelsPage(c, ed) }},
 	}
+	if ed.kind == config.KindRDP {
+		pages = a.rdpPages(ed, errs, input)
+	}
 	ui.Column(c).Fill().Children(func() {
 		widgets.NavPages(c, &ed.nav, pages).Grow(1).MinHeight(0)
 		ui.Row(c).Gap(8).Padding(10, 16).AlignItems(ui.Center).BorderWidth(1, 0, 0, 0).BorderColor(theme.Border).Children(func() {
@@ -341,6 +375,7 @@ func (a *App) editorView(c *ui.Context) {
 func (a *App) sshPage(c *ui.Context, ed *connEditor, errs map[editorField]string, input func(ui.Element) ui.Element) {
 	ui.Form(c, func() {
 		ui.Fieldset(c, locales.SectionGeneral(), func() {
+			kindField(c, ed)
 			ui.Field(c, locales.FieldName(), func() {
 				input(ui.TextInput(c, &ed.name).Placeholder(locales.FieldNamePlaceholder()))
 			})

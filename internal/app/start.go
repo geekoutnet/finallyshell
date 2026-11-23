@@ -286,11 +286,11 @@ func (a *App) quickConnect(c *ui.Context, tab *Session, st *startState) {
 			}
 			row.Children(func() {
 				ui.Row(c).Gap(8).Grow(3).Basis(0).MinWidth(0).AlignItems(ui.Center).Children(func() {
-					ui.Icon(c, icons.Get("server")).FontSize(14).TextColor(color.Alpha(0.7))
+					ui.Icon(c, icons.Get(hostIcon(h))).FontSize(14).TextColor(color.Alpha(0.7))
 					ui.Text(c, h.Title()).SingleLine().TextColor(color).Grow(1).MinWidth(0)
 				})
 				addr := h.Addr
-				if h.PortOr22() != 22 {
+				if h.PortOr22() != h.DefaultPort() {
 					addr += ":" + strconv.Itoa(h.PortOr22())
 				}
 				quickColumns(c, color, "", addr, h.User)

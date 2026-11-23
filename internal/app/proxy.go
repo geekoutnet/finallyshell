@@ -96,6 +96,10 @@ type secretNeed struct {
 	// the key's file.
 	passphrase bool
 	detail     string
+	// gateway is set for the password of a Remote Desktop host's
+	// gateway (rdp.go), which is not asked for either: the client asks
+	// for it, if it needs one.
+	gateway bool
 }
 
 // loginNeed is what x logs in with as connecting to h takes it: x's
@@ -131,6 +135,9 @@ func proxyNeed(x, h *config.Host) *secretNeed {
 // logs in with an SSH agent takes none of its own; a jump host that is
 // missing or loops takes none: connecting says so.
 func (a *App) chainSecrets(h *config.Host) []*secretNeed {
+	if h.IsRDP() {
+		return rdpSecrets(h)
+	}
 	hosts := []*config.Host{h}
 	if jumps, err := a.hosts.JumpHosts(h); err == nil {
 		hosts = append(hosts, jumps...)
@@ -149,10 +156,11 @@ func (a *App) chainSecrets(h *config.Host) []*secretNeed {
 
 // missingSecret is the first password that connecting to h takes and
 // the app does not know, in the order chainSecrets has them; nil for
-// none. A key's passphrase is never missing.
+// none. A key's passphrase is never missing, nor a Remote Desktop
+// gateway's password.
 func (a *App) missingSecret(h *config.Host) *secretNeed {
 	for _, n := range a.chainSecrets(h) {
-		if _, known := a.knownSecret(n); !known && !n.passphrase {
+		if _, known := a.knownSecret(n); !known && !n.passphrase && !n.gateway {
 			return n
 		}
 	}

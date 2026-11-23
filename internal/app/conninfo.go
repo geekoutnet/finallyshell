@@ -43,6 +43,9 @@ type connInfoDialog struct {
 // connSecretNeeds are the secrets of h's connection info: its password or
 // key's passphrase, and its proxy's password.
 func connSecretNeeds(h *config.Host) []*secretNeed {
+	if h.IsRDP() {
+		return rdpSecrets(h)
+	}
 	var needs []*secretNeed
 	if h.Auth != config.AuthAgent {
 		needs = append(needs, loginNeed(h, h))
@@ -90,6 +93,11 @@ func (a *App) connInfoFields(h *config.Host, reading bool) []connField {
 	}
 	add(locales.FieldName(), h.Name)
 	add(locales.ConnInfoFolder(), a.folderLabel(h.Folder))
+	if h.IsRDP() {
+		a.rdpConnInfoFields(h, add, secret)
+		add(locales.FieldNotes(), strings.TrimSpace(h.Notes))
+		return out
+	}
 	add(locales.FieldHost(), h.Addr)
 	add(locales.FieldPort(), strconv.Itoa(h.PortOr22()))
 	add(locales.FieldUser(), h.User)

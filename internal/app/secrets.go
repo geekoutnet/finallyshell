@@ -42,12 +42,15 @@ const (
 	// the password of the host's SOCKS5 or HTTP proxy, kept in memory
 	// under proxySecretKey (proxy.go)
 	secretProxyPassword = "proxy-password"
+	// the password of a Remote Desktop host's gateway, kept in memory
+	// under gatewaySecretKey (rdp.go)
+	secretGatewayPassword = "gateway-password"
 )
 
 // hostSecretNames are the names of every secret a host may have:
 // deleting the host deletes them all. A new kind of secret adds its name
 // here.
-var hostSecretNames = []string{secretPassword, secretPassphrase, secretProxyPassword}
+var hostSecretNames = []string{secretPassword, secretPassphrase, secretProxyPassword, secretGatewayPassword}
 
 // hostSecretKey is the key in the credential store of the secret called
 // name of the host id: "host/<id>/<name>", e.g. "host/h1/password".
@@ -236,7 +239,7 @@ func (a *App) readSecret(need *secretNeed, then func()) bool {
 		a.secrets.markRead(need.store)
 		// Not when the host changed the way it logs in meanwhile.
 		_, known := a.knownSecret(need)
-		if ok && !known && (need.proxy || loginSecretKey(need.host) == need.store) {
+		if ok && !known && (need.proxy || need.gateway || loginSecretKey(need.host) == need.store) {
 			a.keepSecret(need, v)
 		}
 		if then != nil {
@@ -310,6 +313,17 @@ func (a *App) readEditorSecret(ed *connEditor, h *config.Host) {
 				ed.password = v
 			}
 		})
+		if usesGatewayPassword(h) {
+			ed.rdp.readingGateway = a.readSecret(gatewayNeed(h), func() {
+				if a.editor != ed || !ed.rdp.readingGateway {
+					return
+				}
+				ed.rdp.readingGateway = false
+				if ed.rdp.gatewayPassword == "" {
+					ed.rdp.gatewayPassword = a.passwords[gatewaySecretKey(h.ID)]
+				}
+			})
+		}
 		if usesProxyPassword(h) {
 			ed.readingProxySecret = a.readSecret(proxyNeed(h, h), func() {
 				if a.editor != ed || !ed.readingProxySecret {

@@ -237,6 +237,11 @@ type App struct {
 	// Quitting: asking whether to, or told to go ahead.
 	askingQuit, quitApproved bool
 
+	// rdpStart starts the Remote Desktop client (rdp.go): rdp.Start when
+	// nil, which tests replace. rdpErr is the dialog saying it failed.
+	rdpStart rdpStarter
+	rdpErr   *rdpError
+
 	// The question before replacing files.
 	replace *replaceQuestion
 	// The file panel's dialog: a rename, a new folder or file, a delete.
@@ -482,11 +487,16 @@ func (a *App) setLanguage(tag string) {
 func (a *App) openSession(h *config.Host) { a.openSessionIn(a.selectedNewTab(), h) }
 
 // openSessionIn opens a session to h in tab, a new tab, or in a tab of
-// its own for nil. It reads the passwords connecting takes from the
+// its own for nil; a Remote Desktop host opens in the system's client
+// instead (openRDP). It reads the passwords connecting takes from the
 // system's credential store first, those the app does not know yet, and
 // asks for those the store does not have either: h's own, then its
 // proxy's and jump hosts', one at a time.
 func (a *App) openSessionIn(tab *Session, h *config.Host) {
+	if h.IsRDP() { // the system's client, no session
+		a.openRDP(h)
+		return
+	}
 	if a.readChainSecrets(h, func() { a.openSessionIn(tab, h) }) {
 		return
 	}

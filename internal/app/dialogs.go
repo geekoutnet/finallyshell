@@ -41,6 +41,8 @@ func (a *App) dialogs(c *ui.Context) {
 	a.managerQuestionView(c, &a.connTree)
 	// The connection info of a session's host, or of a host of that page.
 	a.connInfoView(c, &a.connTree)
+	// The Remote Desktop client failing (rdp.go).
+	a.rdpErrorView(c)
 }
 
 func (a *App) passwordView(c *ui.Context) {

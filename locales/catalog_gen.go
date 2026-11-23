@@ -10277,3 +10277,1085 @@ func WithShortcut(label string, key string) string { return In(i18n.Locale()).Wi
 func (msgs Messages) WithShortcut(label string, key string) string {
 	return Catalog.Format(msgs.locale, "withShortcut", map[string]any{"label": label, "key": key})
 }
+
+// Yes says "Yes"
+// in the language the app shows.
+func Yes() string { return In(i18n.Locale()).Yes() }
+
+// Yes says "Yes"
+// in the language of msgs.
+func (msgs Messages) Yes() string {
+	return Catalog.Format(msgs.locale, "yes", nil)
+}
+
+// FieldHostKind says "Type"
+// in the language the app shows.
+func FieldHostKind() string { return In(i18n.Locale()).FieldHostKind() }
+
+// FieldHostKind says "Type"
+// in the language of msgs.
+func (msgs Messages) FieldHostKind() string {
+	return Catalog.Format(msgs.locale, "fieldHostKind", nil)
+}
+
+// KindSSH says "SSH"
+// in the language the app shows.
+func KindSSH() string { return In(i18n.Locale()).KindSSH() }
+
+// KindSSH says "SSH"
+// in the language of msgs.
+func (msgs Messages) KindSSH() string {
+	return Catalog.Format(msgs.locale, "kindSSH", nil)
+}
+
+// KindRDP says "Remote Desktop (RDP)"
+// in the language the app shows.
+func KindRDP() string { return In(i18n.Locale()).KindRDP() }
+
+// KindRDP says "Remote Desktop (RDP)"
+// in the language of msgs.
+func (msgs Messages) KindRDP() string {
+	return Catalog.Format(msgs.locale, "kindRDP", nil)
+}
+
+// KindRDPHint says "Opens in {client}, the system's Remote Desktop client, with every option below."
+// in the language the app shows.
+func KindRDPHint(client string) string { return In(i18n.Locale()).KindRDPHint(client) }
+
+// KindRDPHint says "Opens in {client}, the system's Remote Desktop client, with every option below."
+// in the language of msgs.
+func (msgs Messages) KindRDPHint(client string) string {
+	return Catalog.Format(msgs.locale, "kindRDPHint", map[string]any{"client": client})
+}
+
+// EditorPageRDP says "Remote Desktop"
+// in the language the app shows.
+func EditorPageRDP() string { return In(i18n.Locale()).EditorPageRDP() }
+
+// EditorPageRDP says "Remote Desktop"
+// in the language of msgs.
+func (msgs Messages) EditorPageRDP() string {
+	return Catalog.Format(msgs.locale, "editorPageRDP", nil)
+}
+
+// EditorPageRDPDisplay says "Display"
+// in the language the app shows.
+func EditorPageRDPDisplay() string { return In(i18n.Locale()).EditorPageRDPDisplay() }
+
+// EditorPageRDPDisplay says "Display"
+// in the language of msgs.
+func (msgs Messages) EditorPageRDPDisplay() string {
+	return Catalog.Format(msgs.locale, "editorPageRDPDisplay", nil)
+}
+
+// EditorPageRDPResources says "Local resources"
+// in the language the app shows.
+func EditorPageRDPResources() string { return In(i18n.Locale()).EditorPageRDPResources() }
+
+// EditorPageRDPResources says "Local resources"
+// in the language of msgs.
+func (msgs Messages) EditorPageRDPResources() string {
+	return Catalog.Format(msgs.locale, "editorPageRDPResources", nil)
+}
+
+// EditorPageRDPConnection says "Connection"
+// in the language the app shows.
+func EditorPageRDPConnection() string { return In(i18n.Locale()).EditorPageRDPConnection() }
+
+// EditorPageRDPConnection says "Connection"
+// in the language of msgs.
+func (msgs Messages) EditorPageRDPConnection() string {
+	return Catalog.Format(msgs.locale, "editorPageRDPConnection", nil)
+}
+
+// FieldDomain says "Domain"
+// in the language the app shows.
+func FieldDomain() string { return In(i18n.Locale()).FieldDomain() }
+
+// FieldDomain says "Domain"
+// in the language of msgs.
+func (msgs Messages) FieldDomain() string {
+	return Catalog.Format(msgs.locale, "fieldDomain", nil)
+}
+
+// FieldDomainPlaceholder says "Optional, as CORP"
+// in the language the app shows.
+func FieldDomainPlaceholder() string { return In(i18n.Locale()).FieldDomainPlaceholder() }
+
+// FieldDomainPlaceholder says "Optional, as CORP"
+// in the language of msgs.
+func (msgs Messages) FieldDomainPlaceholder() string {
+	return Catalog.Format(msgs.locale, "fieldDomainPlaceholder", nil)
+}
+
+// RdpUserHint says "Leave empty for the client to ask."
+// in the language the app shows.
+func RdpUserHint() string { return In(i18n.Locale()).RdpUserHint() }
+
+// RdpUserHint says "Leave empty for the client to ask."
+// in the language of msgs.
+func (msgs Messages) RdpUserHint() string {
+	return Catalog.Format(msgs.locale, "rdpUserHint", nil)
+}
+
+// RdpPasswordNote says "Handed to the client when it opens, and removed after it closes."
+// in the language the app shows.
+func RdpPasswordNote() string { return In(i18n.Locale()).RdpPasswordNote() }
+
+// RdpPasswordNote says "Handed to the client when it opens, and removed after it closes."
+// in the language of msgs.
+func (msgs Messages) RdpPasswordNote() string {
+	return Catalog.Format(msgs.locale, "rdpPasswordNote", nil)
+}
+
+// RdpPasswordNoteMac says "Windows App cannot be given the password: it asks for it itself."
+// in the language the app shows.
+func RdpPasswordNoteMac() string { return In(i18n.Locale()).RdpPasswordNoteMac() }
+
+// RdpPasswordNoteMac says "Windows App cannot be given the password: it asks for it itself."
+// in the language of msgs.
+func (msgs Messages) RdpPasswordNoteMac() string {
+	return Catalog.Format(msgs.locale, "rdpPasswordNoteMac", nil)
+}
+
+// ErrRDPSize says "Enter a number from 200 to 8192"
+// in the language the app shows.
+func ErrRDPSize() string { return In(i18n.Locale()).ErrRDPSize() }
+
+// ErrRDPSize says "Enter a number from 200 to 8192"
+// in the language of msgs.
+func (msgs Messages) ErrRDPSize() string {
+	return Catalog.Format(msgs.locale, "errRDPSize", nil)
+}
+
+// SectionRDPDisplay says "Size and colors"
+// in the language the app shows.
+func SectionRDPDisplay() string { return In(i18n.Locale()).SectionRDPDisplay() }
+
+// SectionRDPDisplay says "Size and colors"
+// in the language of msgs.
+func (msgs Messages) SectionRDPDisplay() string {
+	return Catalog.Format(msgs.locale, "sectionRDPDisplay", nil)
+}
+
+// FieldRDPSize says "Size"
+// in the language the app shows.
+func FieldRDPSize() string { return In(i18n.Locale()).FieldRDPSize() }
+
+// FieldRDPSize says "Size"
+// in the language of msgs.
+func (msgs Messages) FieldRDPSize() string {
+	return Catalog.Format(msgs.locale, "fieldRDPSize", nil)
+}
+
+// RdpSizeFull says "Full screen"
+// in the language the app shows.
+func RdpSizeFull() string { return In(i18n.Locale()).RdpSizeFull() }
+
+// RdpSizeFull says "Full screen"
+// in the language of msgs.
+func (msgs Messages) RdpSizeFull() string {
+	return Catalog.Format(msgs.locale, "rdpSizeFull", nil)
+}
+
+// RdpSizeWindow says "Window"
+// in the language the app shows.
+func RdpSizeWindow() string { return In(i18n.Locale()).RdpSizeWindow() }
+
+// RdpSizeWindow says "Window"
+// in the language of msgs.
+func (msgs Messages) RdpSizeWindow() string {
+	return Catalog.Format(msgs.locale, "rdpSizeWindow", nil)
+}
+
+// RdpSizeCustom says "Window of a set size"
+// in the language the app shows.
+func RdpSizeCustom() string { return In(i18n.Locale()).RdpSizeCustom() }
+
+// RdpSizeCustom says "Window of a set size"
+// in the language of msgs.
+func (msgs Messages) RdpSizeCustom() string {
+	return Catalog.Format(msgs.locale, "rdpSizeCustom", nil)
+}
+
+// FieldRDPWidth says "Width"
+// in the language the app shows.
+func FieldRDPWidth() string { return In(i18n.Locale()).FieldRDPWidth() }
+
+// FieldRDPWidth says "Width"
+// in the language of msgs.
+func (msgs Messages) FieldRDPWidth() string {
+	return Catalog.Format(msgs.locale, "fieldRDPWidth", nil)
+}
+
+// FieldRDPHeight says "Height"
+// in the language the app shows.
+func FieldRDPHeight() string { return In(i18n.Locale()).FieldRDPHeight() }
+
+// FieldRDPHeight says "Height"
+// in the language of msgs.
+func (msgs Messages) FieldRDPHeight() string {
+	return Catalog.Format(msgs.locale, "fieldRDPHeight", nil)
+}
+
+// RdpAllMonitors says "Use all my monitors"
+// in the language the app shows.
+func RdpAllMonitors() string { return In(i18n.Locale()).RdpAllMonitors() }
+
+// RdpAllMonitors says "Use all my monitors"
+// in the language of msgs.
+func (msgs Messages) RdpAllMonitors() string {
+	return Catalog.Format(msgs.locale, "rdpAllMonitors", nil)
+}
+
+// FieldRDPMonitors says "Monitors"
+// in the language the app shows.
+func FieldRDPMonitors() string { return In(i18n.Locale()).FieldRDPMonitors() }
+
+// FieldRDPMonitors says "Monitors"
+// in the language of msgs.
+func (msgs Messages) FieldRDPMonitors() string {
+	return Catalog.Format(msgs.locale, "fieldRDPMonitors", nil)
+}
+
+// RdpMonitorsHint says "The system's monitor IDs, as 0,1 (mstsc /l lists them); empty for all."
+// in the language the app shows.
+func RdpMonitorsHint() string { return In(i18n.Locale()).RdpMonitorsHint() }
+
+// RdpMonitorsHint says "The system's monitor IDs, as 0,1 (mstsc /l lists them); empty for all."
+// in the language of msgs.
+func (msgs Messages) RdpMonitorsHint() string {
+	return Catalog.Format(msgs.locale, "rdpMonitorsHint", nil)
+}
+
+// FieldRDPColors says "Colors"
+// in the language the app shows.
+func FieldRDPColors() string { return In(i18n.Locale()).FieldRDPColors() }
+
+// FieldRDPColors says "Colors"
+// in the language of msgs.
+func (msgs Messages) FieldRDPColors() string {
+	return Catalog.Format(msgs.locale, "fieldRDPColors", nil)
+}
+
+// RdpColors32 says "Highest quality (32 bit)"
+// in the language the app shows.
+func RdpColors32() string { return In(i18n.Locale()).RdpColors32() }
+
+// RdpColors32 says "Highest quality (32 bit)"
+// in the language of msgs.
+func (msgs Messages) RdpColors32() string {
+	return Catalog.Format(msgs.locale, "rdpColors32", nil)
+}
+
+// RdpColors24 says "True color (24 bit)"
+// in the language the app shows.
+func RdpColors24() string { return In(i18n.Locale()).RdpColors24() }
+
+// RdpColors24 says "True color (24 bit)"
+// in the language of msgs.
+func (msgs Messages) RdpColors24() string {
+	return Catalog.Format(msgs.locale, "rdpColors24", nil)
+}
+
+// RdpColors16 says "High color (16 bit)"
+// in the language the app shows.
+func RdpColors16() string { return In(i18n.Locale()).RdpColors16() }
+
+// RdpColors16 says "High color (16 bit)"
+// in the language of msgs.
+func (msgs Messages) RdpColors16() string {
+	return Catalog.Format(msgs.locale, "rdpColors16", nil)
+}
+
+// RdpColors15 says "High color (15 bit)"
+// in the language the app shows.
+func RdpColors15() string { return In(i18n.Locale()).RdpColors15() }
+
+// RdpColors15 says "High color (15 bit)"
+// in the language of msgs.
+func (msgs Messages) RdpColors15() string {
+	return Catalog.Format(msgs.locale, "rdpColors15", nil)
+}
+
+// RdpSmartSizing says "Scale the desktop to fit the window"
+// in the language the app shows.
+func RdpSmartSizing() string { return In(i18n.Locale()).RdpSmartSizing() }
+
+// RdpSmartSizing says "Scale the desktop to fit the window"
+// in the language of msgs.
+func (msgs Messages) RdpSmartSizing() string {
+	return Catalog.Format(msgs.locale, "rdpSmartSizing", nil)
+}
+
+// RdpDynamicResolution says "Resize the desktop with the window"
+// in the language the app shows.
+func RdpDynamicResolution() string { return In(i18n.Locale()).RdpDynamicResolution() }
+
+// RdpDynamicResolution says "Resize the desktop with the window"
+// in the language of msgs.
+func (msgs Messages) RdpDynamicResolution() string {
+	return Catalog.Format(msgs.locale, "rdpDynamicResolution", nil)
+}
+
+// RdpConnectionBar says "Show the connection bar in full screen"
+// in the language the app shows.
+func RdpConnectionBar() string { return In(i18n.Locale()).RdpConnectionBar() }
+
+// RdpConnectionBar says "Show the connection bar in full screen"
+// in the language of msgs.
+func (msgs Messages) RdpConnectionBar() string {
+	return Catalog.Format(msgs.locale, "rdpConnectionBar", nil)
+}
+
+// SectionRDPExperience says "Experience"
+// in the language the app shows.
+func SectionRDPExperience() string { return In(i18n.Locale()).SectionRDPExperience() }
+
+// SectionRDPExperience says "Experience"
+// in the language of msgs.
+func (msgs Messages) SectionRDPExperience() string {
+	return Catalog.Format(msgs.locale, "sectionRDPExperience", nil)
+}
+
+// FieldRDPNetwork says "Connection speed"
+// in the language the app shows.
+func FieldRDPNetwork() string { return In(i18n.Locale()).FieldRDPNetwork() }
+
+// FieldRDPNetwork says "Connection speed"
+// in the language of msgs.
+func (msgs Messages) FieldRDPNetwork() string {
+	return Catalog.Format(msgs.locale, "fieldRDPNetwork", nil)
+}
+
+// RdpNetworkAuto says "Detect automatically"
+// in the language the app shows.
+func RdpNetworkAuto() string { return In(i18n.Locale()).RdpNetworkAuto() }
+
+// RdpNetworkAuto says "Detect automatically"
+// in the language of msgs.
+func (msgs Messages) RdpNetworkAuto() string {
+	return Catalog.Format(msgs.locale, "rdpNetworkAuto", nil)
+}
+
+// RdpNetworkLAN says "LAN (10 Mbps or more)"
+// in the language the app shows.
+func RdpNetworkLAN() string { return In(i18n.Locale()).RdpNetworkLAN() }
+
+// RdpNetworkLAN says "LAN (10 Mbps or more)"
+// in the language of msgs.
+func (msgs Messages) RdpNetworkLAN() string {
+	return Catalog.Format(msgs.locale, "rdpNetworkLAN", nil)
+}
+
+// RdpNetworkWAN says "WAN (10 Mbps or more, high latency)"
+// in the language the app shows.
+func RdpNetworkWAN() string { return In(i18n.Locale()).RdpNetworkWAN() }
+
+// RdpNetworkWAN says "WAN (10 Mbps or more, high latency)"
+// in the language of msgs.
+func (msgs Messages) RdpNetworkWAN() string {
+	return Catalog.Format(msgs.locale, "rdpNetworkWAN", nil)
+}
+
+// RdpNetworkHighBroadband says "High-speed broadband (2 to 10 Mbps)"
+// in the language the app shows.
+func RdpNetworkHighBroadband() string { return In(i18n.Locale()).RdpNetworkHighBroadband() }
+
+// RdpNetworkHighBroadband says "High-speed broadband (2 to 10 Mbps)"
+// in the language of msgs.
+func (msgs Messages) RdpNetworkHighBroadband() string {
+	return Catalog.Format(msgs.locale, "rdpNetworkHighBroadband", nil)
+}
+
+// RdpNetworkSatellite says "Satellite (2 to 16 Mbps, high latency)"
+// in the language the app shows.
+func RdpNetworkSatellite() string { return In(i18n.Locale()).RdpNetworkSatellite() }
+
+// RdpNetworkSatellite says "Satellite (2 to 16 Mbps, high latency)"
+// in the language of msgs.
+func (msgs Messages) RdpNetworkSatellite() string {
+	return Catalog.Format(msgs.locale, "rdpNetworkSatellite", nil)
+}
+
+// RdpNetworkLowBroadband says "Low-speed broadband (256 kbps to 2 Mbps)"
+// in the language the app shows.
+func RdpNetworkLowBroadband() string { return In(i18n.Locale()).RdpNetworkLowBroadband() }
+
+// RdpNetworkLowBroadband says "Low-speed broadband (256 kbps to 2 Mbps)"
+// in the language of msgs.
+func (msgs Messages) RdpNetworkLowBroadband() string {
+	return Catalog.Format(msgs.locale, "rdpNetworkLowBroadband", nil)
+}
+
+// RdpNetworkModem says "Modem (56 kbps)"
+// in the language the app shows.
+func RdpNetworkModem() string { return In(i18n.Locale()).RdpNetworkModem() }
+
+// RdpNetworkModem says "Modem (56 kbps)"
+// in the language of msgs.
+func (msgs Messages) RdpNetworkModem() string {
+	return Catalog.Format(msgs.locale, "rdpNetworkModem", nil)
+}
+
+// RdpBitmapCache says "Persistent bitmap caching"
+// in the language the app shows.
+func RdpBitmapCache() string { return In(i18n.Locale()).RdpBitmapCache() }
+
+// RdpBitmapCache says "Persistent bitmap caching"
+// in the language of msgs.
+func (msgs Messages) RdpBitmapCache() string {
+	return Catalog.Format(msgs.locale, "rdpBitmapCache", nil)
+}
+
+// RdpAutoReconnect says "Reconnect if the connection drops"
+// in the language the app shows.
+func RdpAutoReconnect() string { return In(i18n.Locale()).RdpAutoReconnect() }
+
+// RdpAutoReconnect says "Reconnect if the connection drops"
+// in the language of msgs.
+func (msgs Messages) RdpAutoReconnect() string {
+	return Catalog.Format(msgs.locale, "rdpAutoReconnect", nil)
+}
+
+// SectionRDPAudio says "Audio"
+// in the language the app shows.
+func SectionRDPAudio() string { return In(i18n.Locale()).SectionRDPAudio() }
+
+// SectionRDPAudio says "Audio"
+// in the language of msgs.
+func (msgs Messages) SectionRDPAudio() string {
+	return Catalog.Format(msgs.locale, "sectionRDPAudio", nil)
+}
+
+// FieldRDPAudio says "Remote audio"
+// in the language the app shows.
+func FieldRDPAudio() string { return In(i18n.Locale()).FieldRDPAudio() }
+
+// FieldRDPAudio says "Remote audio"
+// in the language of msgs.
+func (msgs Messages) FieldRDPAudio() string {
+	return Catalog.Format(msgs.locale, "fieldRDPAudio", nil)
+}
+
+// RdpAudioLocal says "Play on this computer"
+// in the language the app shows.
+func RdpAudioLocal() string { return In(i18n.Locale()).RdpAudioLocal() }
+
+// RdpAudioLocal says "Play on this computer"
+// in the language of msgs.
+func (msgs Messages) RdpAudioLocal() string {
+	return Catalog.Format(msgs.locale, "rdpAudioLocal", nil)
+}
+
+// RdpAudioRemote says "Play on the remote computer"
+// in the language the app shows.
+func RdpAudioRemote() string { return In(i18n.Locale()).RdpAudioRemote() }
+
+// RdpAudioRemote says "Play on the remote computer"
+// in the language of msgs.
+func (msgs Messages) RdpAudioRemote() string {
+	return Catalog.Format(msgs.locale, "rdpAudioRemote", nil)
+}
+
+// RdpAudioOff says "Do not play"
+// in the language the app shows.
+func RdpAudioOff() string { return In(i18n.Locale()).RdpAudioOff() }
+
+// RdpAudioOff says "Do not play"
+// in the language of msgs.
+func (msgs Messages) RdpAudioOff() string {
+	return Catalog.Format(msgs.locale, "rdpAudioOff", nil)
+}
+
+// RdpMicrophone says "Record from this computer (microphone)"
+// in the language the app shows.
+func RdpMicrophone() string { return In(i18n.Locale()).RdpMicrophone() }
+
+// RdpMicrophone says "Record from this computer (microphone)"
+// in the language of msgs.
+func (msgs Messages) RdpMicrophone() string {
+	return Catalog.Format(msgs.locale, "rdpMicrophone", nil)
+}
+
+// SectionRDPKeyboard says "Keyboard"
+// in the language the app shows.
+func SectionRDPKeyboard() string { return In(i18n.Locale()).SectionRDPKeyboard() }
+
+// SectionRDPKeyboard says "Keyboard"
+// in the language of msgs.
+func (msgs Messages) SectionRDPKeyboard() string {
+	return Catalog.Format(msgs.locale, "sectionRDPKeyboard", nil)
+}
+
+// FieldRDPKeyboard says "Windows key combinations"
+// in the language the app shows.
+func FieldRDPKeyboard() string { return In(i18n.Locale()).FieldRDPKeyboard() }
+
+// FieldRDPKeyboard says "Windows key combinations"
+// in the language of msgs.
+func (msgs Messages) FieldRDPKeyboard() string {
+	return Catalog.Format(msgs.locale, "fieldRDPKeyboard", nil)
+}
+
+// RdpKeyboardFullScreen says "On the remote computer in full screen"
+// in the language the app shows.
+func RdpKeyboardFullScreen() string { return In(i18n.Locale()).RdpKeyboardFullScreen() }
+
+// RdpKeyboardFullScreen says "On the remote computer in full screen"
+// in the language of msgs.
+func (msgs Messages) RdpKeyboardFullScreen() string {
+	return Catalog.Format(msgs.locale, "rdpKeyboardFullScreen", nil)
+}
+
+// RdpKeyboardLocal says "On this computer"
+// in the language the app shows.
+func RdpKeyboardLocal() string { return In(i18n.Locale()).RdpKeyboardLocal() }
+
+// RdpKeyboardLocal says "On this computer"
+// in the language of msgs.
+func (msgs Messages) RdpKeyboardLocal() string {
+	return Catalog.Format(msgs.locale, "rdpKeyboardLocal", nil)
+}
+
+// RdpKeyboardRemote says "On the remote computer"
+// in the language the app shows.
+func RdpKeyboardRemote() string { return In(i18n.Locale()).RdpKeyboardRemote() }
+
+// RdpKeyboardRemote says "On the remote computer"
+// in the language of msgs.
+func (msgs Messages) RdpKeyboardRemote() string {
+	return Catalog.Format(msgs.locale, "rdpKeyboardRemote", nil)
+}
+
+// SectionRDPDevices says "Devices and resources"
+// in the language the app shows.
+func SectionRDPDevices() string { return In(i18n.Locale()).SectionRDPDevices() }
+
+// SectionRDPDevices says "Devices and resources"
+// in the language of msgs.
+func (msgs Messages) SectionRDPDevices() string {
+	return Catalog.Format(msgs.locale, "sectionRDPDevices", nil)
+}
+
+// RdpClipboard says "Clipboard"
+// in the language the app shows.
+func RdpClipboard() string { return In(i18n.Locale()).RdpClipboard() }
+
+// RdpClipboard says "Clipboard"
+// in the language of msgs.
+func (msgs Messages) RdpClipboard() string {
+	return Catalog.Format(msgs.locale, "rdpClipboard", nil)
+}
+
+// RdpPrinters says "Printers"
+// in the language the app shows.
+func RdpPrinters() string { return In(i18n.Locale()).RdpPrinters() }
+
+// RdpPrinters says "Printers"
+// in the language of msgs.
+func (msgs Messages) RdpPrinters() string {
+	return Catalog.Format(msgs.locale, "rdpPrinters", nil)
+}
+
+// RdpSmartCards says "Smart cards"
+// in the language the app shows.
+func RdpSmartCards() string { return In(i18n.Locale()).RdpSmartCards() }
+
+// RdpSmartCards says "Smart cards"
+// in the language of msgs.
+func (msgs Messages) RdpSmartCards() string {
+	return Catalog.Format(msgs.locale, "rdpSmartCards", nil)
+}
+
+// RdpPorts says "Ports (COM)"
+// in the language the app shows.
+func RdpPorts() string { return In(i18n.Locale()).RdpPorts() }
+
+// RdpPorts says "Ports (COM)"
+// in the language of msgs.
+func (msgs Messages) RdpPorts() string {
+	return Catalog.Format(msgs.locale, "rdpPorts", nil)
+}
+
+// RdpWebAuthn says "WebAuthn (Windows Hello and security keys)"
+// in the language the app shows.
+func RdpWebAuthn() string { return In(i18n.Locale()).RdpWebAuthn() }
+
+// RdpWebAuthn says "WebAuthn (Windows Hello and security keys)"
+// in the language of msgs.
+func (msgs Messages) RdpWebAuthn() string {
+	return Catalog.Format(msgs.locale, "rdpWebAuthn", nil)
+}
+
+// RdpCameras says "Cameras"
+// in the language the app shows.
+func RdpCameras() string { return In(i18n.Locale()).RdpCameras() }
+
+// RdpCameras says "Cameras"
+// in the language of msgs.
+func (msgs Messages) RdpCameras() string {
+	return Catalog.Format(msgs.locale, "rdpCameras", nil)
+}
+
+// FieldRDPDrives says "Drives"
+// in the language the app shows.
+func FieldRDPDrives() string { return In(i18n.Locale()).FieldRDPDrives() }
+
+// FieldRDPDrives says "Drives"
+// in the language of msgs.
+func (msgs Messages) FieldRDPDrives() string {
+	return Catalog.Format(msgs.locale, "fieldRDPDrives", nil)
+}
+
+// RdpDrivesNone says "None"
+// in the language the app shows.
+func RdpDrivesNone() string { return In(i18n.Locale()).RdpDrivesNone() }
+
+// RdpDrivesNone says "None"
+// in the language of msgs.
+func (msgs Messages) RdpDrivesNone() string {
+	return Catalog.Format(msgs.locale, "rdpDrivesNone", nil)
+}
+
+// RdpDrivesAll says "All drives"
+// in the language the app shows.
+func RdpDrivesAll() string { return In(i18n.Locale()).RdpDrivesAll() }
+
+// RdpDrivesAll says "All drives"
+// in the language of msgs.
+func (msgs Messages) RdpDrivesAll() string {
+	return Catalog.Format(msgs.locale, "rdpDrivesAll", nil)
+}
+
+// RdpDrivesSome says "These drives"
+// in the language the app shows.
+func RdpDrivesSome() string { return In(i18n.Locale()).RdpDrivesSome() }
+
+// RdpDrivesSome says "These drives"
+// in the language of msgs.
+func (msgs Messages) RdpDrivesSome() string {
+	return Catalog.Format(msgs.locale, "rdpDrivesSome", nil)
+}
+
+// FieldRDPDriveLetters says "Drive letters"
+// in the language the app shows.
+func FieldRDPDriveLetters() string { return In(i18n.Locale()).FieldRDPDriveLetters() }
+
+// FieldRDPDriveLetters says "Drive letters"
+// in the language of msgs.
+func (msgs Messages) FieldRDPDriveLetters() string {
+	return Catalog.Format(msgs.locale, "fieldRDPDriveLetters", nil)
+}
+
+// RdpDriveLettersHint says "As C, D. On Linux, FreeRDP shares the home folder instead."
+// in the language the app shows.
+func RdpDriveLettersHint() string { return In(i18n.Locale()).RdpDriveLettersHint() }
+
+// RdpDriveLettersHint says "As C, D. On Linux, FreeRDP shares the home folder instead."
+// in the language of msgs.
+func (msgs Messages) RdpDriveLettersHint() string {
+	return Catalog.Format(msgs.locale, "rdpDriveLettersHint", nil)
+}
+
+// SectionRDPProgram says "Program"
+// in the language the app shows.
+func SectionRDPProgram() string { return In(i18n.Locale()).SectionRDPProgram() }
+
+// SectionRDPProgram says "Program"
+// in the language of msgs.
+func (msgs Messages) SectionRDPProgram() string {
+	return Catalog.Format(msgs.locale, "sectionRDPProgram", nil)
+}
+
+// FieldRDPProgram says "Start a program"
+// in the language the app shows.
+func FieldRDPProgram() string { return In(i18n.Locale()).FieldRDPProgram() }
+
+// FieldRDPProgram says "Start a program"
+// in the language of msgs.
+func (msgs Messages) FieldRDPProgram() string {
+	return Catalog.Format(msgs.locale, "fieldRDPProgram", nil)
+}
+
+// RdpProgramHint says "Runs instead of the desktop on connecting; empty for the desktop."
+// in the language the app shows.
+func RdpProgramHint() string { return In(i18n.Locale()).RdpProgramHint() }
+
+// RdpProgramHint says "Runs instead of the desktop on connecting; empty for the desktop."
+// in the language of msgs.
+func (msgs Messages) RdpProgramHint() string {
+	return Catalog.Format(msgs.locale, "rdpProgramHint", nil)
+}
+
+// FieldRDPProgramFolder says "Start in"
+// in the language the app shows.
+func FieldRDPProgramFolder() string { return In(i18n.Locale()).FieldRDPProgramFolder() }
+
+// FieldRDPProgramFolder says "Start in"
+// in the language of msgs.
+func (msgs Messages) FieldRDPProgramFolder() string {
+	return Catalog.Format(msgs.locale, "fieldRDPProgramFolder", nil)
+}
+
+// SectionRDPSecurity says "Session and security"
+// in the language the app shows.
+func SectionRDPSecurity() string { return In(i18n.Locale()).SectionRDPSecurity() }
+
+// SectionRDPSecurity says "Session and security"
+// in the language of msgs.
+func (msgs Messages) SectionRDPSecurity() string {
+	return Catalog.Format(msgs.locale, "sectionRDPSecurity", nil)
+}
+
+// RdpAdmin says "Connect to the console session (/admin)"
+// in the language the app shows.
+func RdpAdmin() string { return In(i18n.Locale()).RdpAdmin() }
+
+// RdpAdmin says "Connect to the console session (/admin)"
+// in the language of msgs.
+func (msgs Messages) RdpAdmin() string {
+	return Catalog.Format(msgs.locale, "rdpAdmin", nil)
+}
+
+// RdpAdminHint says "The administrative session, as mstsc /admin."
+// in the language the app shows.
+func RdpAdminHint() string { return In(i18n.Locale()).RdpAdminHint() }
+
+// RdpAdminHint says "The administrative session, as mstsc /admin."
+// in the language of msgs.
+func (msgs Messages) RdpAdminHint() string {
+	return Catalog.Format(msgs.locale, "rdpAdminHint", nil)
+}
+
+// FieldRDPServerAuth says "If server authentication fails"
+// in the language the app shows.
+func FieldRDPServerAuth() string { return In(i18n.Locale()).FieldRDPServerAuth() }
+
+// FieldRDPServerAuth says "If server authentication fails"
+// in the language of msgs.
+func (msgs Messages) FieldRDPServerAuth() string {
+	return Catalog.Format(msgs.locale, "fieldRDPServerAuth", nil)
+}
+
+// RdpServerAuthWarn says "Warn me"
+// in the language the app shows.
+func RdpServerAuthWarn() string { return In(i18n.Locale()).RdpServerAuthWarn() }
+
+// RdpServerAuthWarn says "Warn me"
+// in the language of msgs.
+func (msgs Messages) RdpServerAuthWarn() string {
+	return Catalog.Format(msgs.locale, "rdpServerAuthWarn", nil)
+}
+
+// RdpServerAuthConnect says "Connect and don't warn me"
+// in the language the app shows.
+func RdpServerAuthConnect() string { return In(i18n.Locale()).RdpServerAuthConnect() }
+
+// RdpServerAuthConnect says "Connect and don't warn me"
+// in the language of msgs.
+func (msgs Messages) RdpServerAuthConnect() string {
+	return Catalog.Format(msgs.locale, "rdpServerAuthConnect", nil)
+}
+
+// RdpServerAuthRefuse says "Do not connect"
+// in the language the app shows.
+func RdpServerAuthRefuse() string { return In(i18n.Locale()).RdpServerAuthRefuse() }
+
+// RdpServerAuthRefuse says "Do not connect"
+// in the language of msgs.
+func (msgs Messages) RdpServerAuthRefuse() string {
+	return Catalog.Format(msgs.locale, "rdpServerAuthRefuse", nil)
+}
+
+// RdpServerAuthNone says "No authentication requirement"
+// in the language the app shows.
+func RdpServerAuthNone() string { return In(i18n.Locale()).RdpServerAuthNone() }
+
+// RdpServerAuthNone says "No authentication requirement"
+// in the language of msgs.
+func (msgs Messages) RdpServerAuthNone() string {
+	return Catalog.Format(msgs.locale, "rdpServerAuthNone", nil)
+}
+
+// RdpNLA says "Network Level Authentication (CredSSP)"
+// in the language the app shows.
+func RdpNLA() string { return In(i18n.Locale()).RdpNLA() }
+
+// RdpNLA says "Network Level Authentication (CredSSP)"
+// in the language of msgs.
+func (msgs Messages) RdpNLA() string {
+	return Catalog.Format(msgs.locale, "rdpNLA", nil)
+}
+
+// RdpNLAHint says "Turn off only for servers that do not support it."
+// in the language the app shows.
+func RdpNLAHint() string { return In(i18n.Locale()).RdpNLAHint() }
+
+// RdpNLAHint says "Turn off only for servers that do not support it."
+// in the language of msgs.
+func (msgs Messages) RdpNLAHint() string {
+	return Catalog.Format(msgs.locale, "rdpNLAHint", nil)
+}
+
+// SectionRDPGateway says "Remote Desktop Gateway"
+// in the language the app shows.
+func SectionRDPGateway() string { return In(i18n.Locale()).SectionRDPGateway() }
+
+// SectionRDPGateway says "Remote Desktop Gateway"
+// in the language of msgs.
+func (msgs Messages) SectionRDPGateway() string {
+	return Catalog.Format(msgs.locale, "sectionRDPGateway", nil)
+}
+
+// FieldRDPGatewayUsage says "Use a gateway"
+// in the language the app shows.
+func FieldRDPGatewayUsage() string { return In(i18n.Locale()).FieldRDPGatewayUsage() }
+
+// FieldRDPGatewayUsage says "Use a gateway"
+// in the language of msgs.
+func (msgs Messages) FieldRDPGatewayUsage() string {
+	return Catalog.Format(msgs.locale, "fieldRDPGatewayUsage", nil)
+}
+
+// RdpGatewayOff says "Do not use a gateway"
+// in the language the app shows.
+func RdpGatewayOff() string { return In(i18n.Locale()).RdpGatewayOff() }
+
+// RdpGatewayOff says "Do not use a gateway"
+// in the language of msgs.
+func (msgs Messages) RdpGatewayOff() string {
+	return Catalog.Format(msgs.locale, "rdpGatewayOff", nil)
+}
+
+// RdpGatewayAlways says "Always"
+// in the language the app shows.
+func RdpGatewayAlways() string { return In(i18n.Locale()).RdpGatewayAlways() }
+
+// RdpGatewayAlways says "Always"
+// in the language of msgs.
+func (msgs Messages) RdpGatewayAlways() string {
+	return Catalog.Format(msgs.locale, "rdpGatewayAlways", nil)
+}
+
+// RdpGatewayFallback says "When a direct connection fails"
+// in the language the app shows.
+func RdpGatewayFallback() string { return In(i18n.Locale()).RdpGatewayFallback() }
+
+// RdpGatewayFallback says "When a direct connection fails"
+// in the language of msgs.
+func (msgs Messages) RdpGatewayFallback() string {
+	return Catalog.Format(msgs.locale, "rdpGatewayFallback", nil)
+}
+
+// RdpGatewayDetect says "Detect automatically"
+// in the language the app shows.
+func RdpGatewayDetect() string { return In(i18n.Locale()).RdpGatewayDetect() }
+
+// RdpGatewayDetect says "Detect automatically"
+// in the language of msgs.
+func (msgs Messages) RdpGatewayDetect() string {
+	return Catalog.Format(msgs.locale, "rdpGatewayDetect", nil)
+}
+
+// RdpGatewayHost says "Gateway server"
+// in the language the app shows.
+func RdpGatewayHost() string { return In(i18n.Locale()).RdpGatewayHost() }
+
+// RdpGatewayHost says "Gateway server"
+// in the language of msgs.
+func (msgs Messages) RdpGatewayHost() string {
+	return Catalog.Format(msgs.locale, "rdpGatewayHost", nil)
+}
+
+// FieldRDPGatewayAuth says "Log on with"
+// in the language the app shows.
+func FieldRDPGatewayAuth() string { return In(i18n.Locale()).FieldRDPGatewayAuth() }
+
+// FieldRDPGatewayAuth says "Log on with"
+// in the language of msgs.
+func (msgs Messages) FieldRDPGatewayAuth() string {
+	return Catalog.Format(msgs.locale, "fieldRDPGatewayAuth", nil)
+}
+
+// RdpGatewayAuthAny says "Allow me to select later"
+// in the language the app shows.
+func RdpGatewayAuthAny() string { return In(i18n.Locale()).RdpGatewayAuthAny() }
+
+// RdpGatewayAuthAny says "Allow me to select later"
+// in the language of msgs.
+func (msgs Messages) RdpGatewayAuthAny() string {
+	return Catalog.Format(msgs.locale, "rdpGatewayAuthAny", nil)
+}
+
+// RdpGatewayAuthPassword says "Password (NTLM)"
+// in the language the app shows.
+func RdpGatewayAuthPassword() string { return In(i18n.Locale()).RdpGatewayAuthPassword() }
+
+// RdpGatewayAuthPassword says "Password (NTLM)"
+// in the language of msgs.
+func (msgs Messages) RdpGatewayAuthPassword() string {
+	return Catalog.Format(msgs.locale, "rdpGatewayAuthPassword", nil)
+}
+
+// RdpGatewayAuthSmartCard says "Smart card"
+// in the language the app shows.
+func RdpGatewayAuthSmartCard() string { return In(i18n.Locale()).RdpGatewayAuthSmartCard() }
+
+// RdpGatewayAuthSmartCard says "Smart card"
+// in the language of msgs.
+func (msgs Messages) RdpGatewayAuthSmartCard() string {
+	return Catalog.Format(msgs.locale, "rdpGatewayAuthSmartCard", nil)
+}
+
+// RdpGatewaySameLogin says "Use my gateway credentials for the remote computer"
+// in the language the app shows.
+func RdpGatewaySameLogin() string { return In(i18n.Locale()).RdpGatewaySameLogin() }
+
+// RdpGatewaySameLogin says "Use my gateway credentials for the remote computer"
+// in the language of msgs.
+func (msgs Messages) RdpGatewaySameLogin() string {
+	return Catalog.Format(msgs.locale, "rdpGatewaySameLogin", nil)
+}
+
+// RdpGatewayUser says "Gateway user"
+// in the language the app shows.
+func RdpGatewayUser() string { return In(i18n.Locale()).RdpGatewayUser() }
+
+// RdpGatewayUser says "Gateway user"
+// in the language of msgs.
+func (msgs Messages) RdpGatewayUser() string {
+	return Catalog.Format(msgs.locale, "rdpGatewayUser", nil)
+}
+
+// RdpGatewayPasswordTitle says "Gateway password"
+// in the language the app shows.
+func RdpGatewayPasswordTitle() string { return In(i18n.Locale()).RdpGatewayPasswordTitle() }
+
+// RdpGatewayPasswordTitle says "Gateway password"
+// in the language of msgs.
+func (msgs Messages) RdpGatewayPasswordTitle() string {
+	return Catalog.Format(msgs.locale, "rdpGatewayPasswordTitle", nil)
+}
+
+// FieldRDPCustom says ".rdp file lines"
+// in the language the app shows.
+func FieldRDPCustom() string { return In(i18n.Locale()).FieldRDPCustom() }
+
+// FieldRDPCustom says ".rdp file lines"
+// in the language of msgs.
+func (msgs Messages) FieldRDPCustom() string {
+	return Catalog.Format(msgs.locale, "fieldRDPCustom", nil)
+}
+
+// RdpCustomHint says "One setting per line, as name:type:value, added at the end of the .rdp file: they win over the options above. mstsc a…"
+// in the language the app shows.
+func RdpCustomHint() string { return In(i18n.Locale()).RdpCustomHint() }
+
+// RdpCustomHint says "One setting per line, as name:type:value, added at the end of the .rdp file: they win over the options above. mstsc a…"
+// in the language of msgs.
+func (msgs Messages) RdpCustomHint() string {
+	return Catalog.Format(msgs.locale, "rdpCustomHint", nil)
+}
+
+// RdpOpening says "Opening Remote Desktop…"
+// in the language the app shows.
+func RdpOpening() string { return In(i18n.Locale()).RdpOpening() }
+
+// RdpOpening says "Opening Remote Desktop…"
+// in the language of msgs.
+func (msgs Messages) RdpOpening() string {
+	return Catalog.Format(msgs.locale, "rdpOpening", nil)
+}
+
+// RdpOpeningNoPassword says "Opening Remote Desktop… Windows App asks for the password."
+// in the language the app shows.
+func RdpOpeningNoPassword() string { return In(i18n.Locale()).RdpOpeningNoPassword() }
+
+// RdpOpeningNoPassword says "Opening Remote Desktop… Windows App asks for the password."
+// in the language of msgs.
+func (msgs Messages) RdpOpeningNoPassword() string {
+	return Catalog.Format(msgs.locale, "rdpOpeningNoPassword", nil)
+}
+
+// RdpCannotOpen says "Cannot open Remote Desktop"
+// in the language the app shows.
+func RdpCannotOpen() string { return In(i18n.Locale()).RdpCannotOpen() }
+
+// RdpCannotOpen says "Cannot open Remote Desktop"
+// in the language of msgs.
+func (msgs Messages) RdpCannotOpen() string {
+	return Catalog.Format(msgs.locale, "rdpCannotOpen", nil)
+}
+
+// RdpNoMstsc says "mstsc.exe, Windows' Remote Desktop client, was not found."
+// in the language the app shows.
+func RdpNoMstsc() string { return In(i18n.Locale()).RdpNoMstsc() }
+
+// RdpNoMstsc says "mstsc.exe, Windows' Remote Desktop client, was not found."
+// in the language of msgs.
+func (msgs Messages) RdpNoMstsc() string {
+	return Catalog.Format(msgs.locale, "rdpNoMstsc", nil)
+}
+
+// RdpNoMacClient says "No app opens .rdp files. Install Windows App (formerly Microsoft Remote Desktop) from the App Store."
+// in the language the app shows.
+func RdpNoMacClient() string { return In(i18n.Locale()).RdpNoMacClient() }
+
+// RdpNoMacClient says "No app opens .rdp files. Install Windows App (formerly Microsoft Remote Desktop) from the App Store."
+// in the language of msgs.
+func (msgs Messages) RdpNoMacClient() string {
+	return Catalog.Format(msgs.locale, "rdpNoMacClient", nil)
+}
+
+// RdpNoFreeRDP says "FreeRDP was not found. Install it, as the freerdp3-x11 or freerdp2-x11 package (Debian, Ubuntu) or freerdp (Fedora, A…"
+// in the language the app shows.
+func RdpNoFreeRDP() string { return In(i18n.Locale()).RdpNoFreeRDP() }
+
+// RdpNoFreeRDP says "FreeRDP was not found. Install it, as the freerdp3-x11 or freerdp2-x11 package (Debian, Ubuntu) or freerdp (Fedora, A…"
+// in the language of msgs.
+func (msgs Messages) RdpNoFreeRDP() string {
+	return Catalog.Format(msgs.locale, "rdpNoFreeRDP", nil)
+}
+
+// RdpClientFailed says "The Remote Desktop client exited with code {code}."
+// in the language the app shows.
+//
+// The exit code of the Remote Desktop client, which failed.
+func RdpClientFailed(code int) string { return In(i18n.Locale()).RdpClientFailed(code) }
+
+// RdpClientFailed says "The Remote Desktop client exited with code {code}."
+// in the language of msgs.
+//
+// The exit code of the Remote Desktop client, which failed.
+func (msgs Messages) RdpClientFailed(code int) string {
+	return Catalog.Format(msgs.locale, "rdpClientFailed", map[string]any{"code": code})
+}
+
+// RdpClientFailedOutput says "The Remote Desktop client exited with code {code}:\n{output}"
+// in the language the app shows.
+//
+// The exit code of the Remote Desktop client, which failed, and the end of
+// what it wrote.
+func RdpClientFailedOutput(code int, output string) string {
+	return In(i18n.Locale()).RdpClientFailedOutput(code, output)
+}
+
+// RdpClientFailedOutput says "The Remote Desktop client exited with code {code}:\n{output}"
+// in the language of msgs.
+//
+// The exit code of the Remote Desktop client, which failed, and the end of
+// what it wrote.
+func (msgs Messages) RdpClientFailedOutput(code int, output string) string {
+	return Catalog.Format(msgs.locale, "rdpClientFailedOutput", map[string]any{"code": code, "output": output})
+}
+
+// ConnInfoRDPAddress says "Address"
+// in the language the app shows.
+func ConnInfoRDPAddress() string { return In(i18n.Locale()).ConnInfoRDPAddress() }
+
+// ConnInfoRDPAddress says "Address"
+// in the language of msgs.
+func (msgs Messages) ConnInfoRDPAddress() string {
+	return Catalog.Format(msgs.locale, "connInfoRDPAddress", nil)
+}

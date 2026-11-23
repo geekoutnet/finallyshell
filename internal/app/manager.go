@@ -634,7 +634,7 @@ func (a *App) managerTable(c *ui.Context, later *[]func()) {
 			}
 			switch col {
 			case 0:
-				icon := "server"
+				icon := hostIcon(h)
 				if h.Deleted() {
 					icon = "trash-2"
 				}

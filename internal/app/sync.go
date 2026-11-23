@@ -513,6 +513,8 @@ func (a *App) rememberSynced(key, from string, hadFrom bool, v string, keep bool
 	switch {
 	case name == secretProxyPassword:
 		mem = proxySecretKey(id)
+	case name == secretGatewayPassword:
+		mem = gatewaySecretKey(id)
 	case loginSecretKey(h) == key:
 		mem = id
 	default:

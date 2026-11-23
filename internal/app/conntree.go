@@ -141,6 +141,9 @@ func (a *App) leftPanelHeader(c *ui.Context) {
 			a.setLeftPage(page)
 		}
 		ui.Spacer(c)
+		if a.managerButton(c).Clicked() {
+			a.openManager()
+		}
 		if headerButton(c, "settings", locales.Options()).Clicked() {
 			a.openOptions()
 		}
@@ -158,6 +161,18 @@ func (a *App) leftPanelHeader(c *ui.Context) {
 			a.NewTab()
 		}
 	})
+}
+
+// managerButton is the header's button that opens the connection
+// manager: its tooltip names the shortcut that does too, when there is
+// one.
+func (a *App) managerButton(c *ui.Context) ui.Element {
+	label := locales.ConnectionManager()
+	b := headerButton(c, "server", label)
+	if k := a.shortcut(scManager); !k.none() {
+		b.Tooltip(locales.WithShortcut(label, a.shortcutLabel(scManager)))
+	}
+	return b
 }
 
 // headerButton is a button of the left panel's header: an icon button a

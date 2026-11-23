@@ -1716,5 +1716,19 @@
   "connInfoNoPassphrase": "No passphrase saved",
   "connInfoReading": "Reading…",
   "showSecret": "Show",
-  "hideSecret": "Hide"
+  "hideSecret": "Hide",
+  "withShortcut": "{label} ({key})",
+  "@withShortcut": {
+    "description": "A tooltip: what a button does, and the shortcut that does it too.",
+    "placeholders": {
+      "label": {
+        "type": "String",
+        "example": "Connection manager"
+      },
+      "key": {
+        "type": "String",
+        "example": "Ctrl+Shift+M"
+      }
+    }
+  }
 }

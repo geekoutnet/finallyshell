@@ -1011,5 +1011,6 @@
   "connInfoNoPassphrase": "未保存私钥密码",
   "connInfoReading": "正在读取…",
   "showSecret": "显示",
-  "hideSecret": "隐藏"
+  "hideSecret": "隐藏",
+  "withShortcut": "{label} ({key})"
 }

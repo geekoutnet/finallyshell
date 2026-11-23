@@ -10263,3 +10263,17 @@ func HideSecret() string { return In(i18n.Locale()).HideSecret() }
 func (msgs Messages) HideSecret() string {
 	return Catalog.Format(msgs.locale, "hideSecret", nil)
 }
+
+// WithShortcut says "{label} ({key})"
+// in the language the app shows.
+//
+// A tooltip: what a button does, and the shortcut that does it too.
+func WithShortcut(label string, key string) string { return In(i18n.Locale()).WithShortcut(label, key) }
+
+// WithShortcut says "{label} ({key})"
+// in the language of msgs.
+//
+// A tooltip: what a button does, and the shortcut that does it too.
+func (msgs Messages) WithShortcut(label string, key string) string {
+	return Catalog.Format(msgs.locale, "withShortcut", map[string]any{"label": label, "key": key})
+}

@@ -142,7 +142,7 @@ func (a *App) leftPanelHeader(c *ui.Context) {
 		}
 		ui.Spacer(c)
 		if a.managerButton(c).Clicked() {
-			a.openManager()
+			a.showManager(false) // the manager alone: its Import stays in front
 		}
 		if headerButton(c, "settings", locales.Options()).Clicked() {
 			a.openOptions()

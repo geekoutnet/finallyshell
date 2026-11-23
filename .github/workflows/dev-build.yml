@@ -70,14 +70,14 @@ jobs:
       sign: false
 
   # Publishes when only some platforms failed (GitHub's macOS runners are
-  # often out of capacity: a job no runner picks up ends cancelled, and so
-  # does build), as long as Linux and Windows are built; the next step
-  # checks those. Never after a failed gate, which skips build.
+  # often out of capacity: a job no runner picks up ends cancelled, and
+  # then !cancelled() is false too, hence always()), as long as the gate
+  # passed and Linux and Windows are built; the next step checks those.
   publish:
-    needs: [version, build]
+    needs: [version, gate, build]
     if: >-
-      !cancelled() && needs.version.outputs.version != '' &&
-      contains(fromJSON('["success", "failure", "cancelled"]'), needs.build.result)
+      always() && needs.gate.result == 'success' &&
+      needs.version.outputs.version != ''
     runs-on: ubuntu-latest
     permissions:
       contents: write

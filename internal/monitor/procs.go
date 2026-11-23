@@ -46,12 +46,14 @@ const procMark = "---FINALLYSHELL:"
 // readlink for each: those of other users' processes fail without root,
 // and their errors are dropped. The script's own processes (the shell,
 // ps, cat and ls) are those whose parent is $$, left out of the list.
+// Each column has its own -o: procps-ng 3.3.10 (CentOS 7) reads
+// "-o pid=,ppid=,…" as one pid column headed ",ppid=,…".
 const procsScript = `export LC_ALL=C
 m() { echo "` + procMark + `$1---"; }
 m self; echo $$
 m uname; uname -s
 m cpu; grep '^cpu' /proc/stat 2>/dev/null
-m ps; ps -eo pid=,ppid=,user:32=,rss=,pcpu=,args= 2>/dev/null || ps -o pid=,ppid=,user=,rss=,args= 2>/dev/null
+m ps; ps -e -o pid= -o ppid= -o user:32= -o rss= -o pcpu= -o args= 2>/dev/null || ps -o pid=,ppid=,user=,rss=,args= 2>/dev/null
 m stat; cat /proc/[0-9]*/stat 2>/dev/null
 m exe; ls -l /proc/[0-9]*/exe 2>/dev/null
 m end

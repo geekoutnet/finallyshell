@@ -634,3 +634,50 @@ func TestSSHResize(t *testing.T) {
 	t.Logf("stty size: %dx%d, %dx%d with a wider sidebar, %dx%d with a taller terminal", cols0, rows0, cols1, rows1, cols2, rows2)
 	saveShot(t, tt, "split-ssh.png")
 }
+
+// TestDragSplitDividersBesideLine drags the layout's dividers a few DIPs
+// beside their line, outside MyGo's own handle (Space(1.5)): the wider
+// grips over them (splitGrip) take the press there.
+func TestDragSplitDividersBesideLine(t *testing.T) {
+	for i, name := range []string{"sidebar", "monitor", "terminal"} {
+		for _, off := range []float32{-4, 4} {
+			t.Run(fmt.Sprintf("%s%+.0f", name, off), func(t *testing.T) {
+				a, _, tt := splitApp(t)
+				d := dividers(a, tt)[i]
+				at := d.at
+				d.at = func() (float32, float32) {
+					x, y := at()
+					if d.vertical {
+						return x, y + off
+					}
+					return x + off, y
+				}
+				x, y := d.at()
+				tt.Move(x, y)
+				want := ui.CursorResizeEW
+				if d.vertical {
+					want = ui.CursorResizeNS
+				}
+				if got := tt.Cursor(); got != want {
+					t.Fatalf("cursor %.0f DIPs beside the divider is %v, want %v", off, got, want)
+				}
+				before := d.dips()
+				d.drag(tt, 60)
+				if got := d.dips(); !near(got, before+60) {
+					t.Errorf("dragged 60 DIPs: from %.1f to %.1f", before, got)
+				}
+				d.drag(tt, -4000)
+				if got := d.dips(); !near(got, d.limits.first) {
+					t.Errorf("dragged to the start: %.1f, want %.0f", got, d.limits.first)
+				}
+				x, y = d.at()
+				tt.ClickAt(x, y)
+				tt.ClickAt(x, y)
+				def := map[string]float32{"sidebar": defaultSideWidth, "monitor": defaultMonitorPct, "terminal": defaultTerminalPct}[name]
+				if !near(*d.size, def) {
+					t.Errorf("double click: size %.2f, want %v", *d.size, def)
+				}
+			})
+		}
+	}
+}

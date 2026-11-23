@@ -75,8 +75,9 @@ func (a *App) rightColumn(c *ui.Context, top, bottom func()) {
 	ui.Column(c).Fill().Background(theme.Background).Children(func() {
 		switch {
 		case top != nil && bottom != nil:
-			split := ui.SplitVerticalPercent(c, &a.rightMonitorPct, top, bottom).SplitReset(defaultRightMonitorPct).Fill()
-			a.splitMoved(c, split, &a.rightMonitorPct, rightMonitorLimits)
+			a.gripSplit(c, &a.rightMonitorPct, defaultRightMonitorPct, rightMonitorLimits, func() ui.Element {
+				return ui.SplitVerticalPercent(c, &a.rightMonitorPct, top, bottom)
+			})
 		case top != nil:
 			top()
 		default:

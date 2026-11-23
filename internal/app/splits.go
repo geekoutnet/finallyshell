@@ -111,27 +111,134 @@ func clampSplit(split ui.Element, size *float32, l splitLimits) bool {
 	if !split.Changed() {
 		return false
 	}
-	b := split.Bounds()
-	room := b.W - 1 // less the divider's line
-	if l.vertical {
-		room = b.H - 1
-	}
-	if room > 0 {
-		v := *size
-		if l.percent {
-			v = v / 100 * room
-		}
-		// With no room for both, the first pane keeps its size.
-		// A size within the limits stays as it is, not converted back
-		// and forth: a double click saves the default itself.
-		if clamped := max(min(v, room-l.second), l.first); clamped != v {
-			if l.percent {
-				clamped = clamped * 100 / room
-			}
-			*size = clamped
-		}
-	}
+	clampSize(size, splitRoom(split, l), l)
 	return true
+}
+
+// splitRoom is the room split's panes share, in DIPs, as the last frame
+// laid it out: its width or height, less the divider's line.
+func splitRoom(split ui.Element, l splitLimits) float32 {
+	b := split.Bounds()
+	if l.vertical {
+		return b.H - 1
+	}
+	return b.W - 1
+}
+
+// clampSize keeps *size, the first pane's, to leave both panes at least
+// l's sizes in room.
+func clampSize(size *float32, room float32, l splitLimits) {
+	if room <= 0 {
+		return
+	}
+	v := *size
+	if l.percent {
+		v = v / 100 * room
+	}
+	// With no room for both, the first pane keeps its size.
+	// A size within the limits stays as it is, not converted back
+	// and forth: a double click saves the default itself.
+	if clamped := max(min(v, room-l.second), l.first); clamped != v {
+		if l.percent {
+			clamped = clamped * 100 / room
+		}
+		*size = clamped
+	}
+}
+
+// splitGripW is how wide the strip is, in DIPs, that a press drags a
+// layout divider by: MyGo's own handle is Space(1.5) wide, 4.5 DIPs with
+// this app's theme, which a pointer a little off the line misses.
+const splitGripW = 12
+
+// gripSplit lays out the split that build makes, filling the room, with
+// wider grips over its divider (splitGrip), and sizes kept to l.
+func (a *App) gripSplit(c *ui.Context, size *float32, reset float32, l splitLimits, build func() ui.Element) {
+	ui.Column(c).Fill().Children(func() {
+		split := build().SplitReset(reset).Fill()
+		a.splitMoved(c, split, size, l)
+		a.splitGrip(c, split, size, reset, l)
+	})
+}
+
+// splitGrip widens the handle of split's divider to splitGripW, and marks
+// the line's middle with a bar that shows it drags. MyGo's handle, in the
+// middle of the strip, keeps its presses, which focus the divider for the
+// arrow keys; the strips on either side drag it as that handle does,
+// kept to l, and a double click puts it back at reset. split must fill
+// the element the grips are put in, which they are laid out in.
+func (a *App) splitGrip(c *ui.Context, split ui.Element, size *float32, reset float32, l splitLimits) {
+	room := splitRoom(split, l)
+	minPane := theme.Space(10) // MyGo's least pane
+	if room < 2*minPane+1 {
+		return // not laid out yet, or too small to share
+	}
+	line := *size
+	if l.percent {
+		line = line / 100 * room
+	}
+	// Where MyGo lays the line, also when the room is too small for size.
+	line = max(min(line, room-minPane), minPane)
+	moved := func() {
+		a.layoutDirty, a.layoutAt = true, c.Now()
+		c.After(layoutSaveDelay)
+		c.Invalidate()
+	}
+	inner := theme.Space(1.5) / 2 // half MyGo's handle
+	w := splitGripW/2 - inner
+	active := false
+	for i, from := range [2]float32{line + 0.5 - splitGripW/2, line + 0.5 + inner} {
+		g := ui.Box(c.Key(i)).Absolute()
+		if l.vertical {
+			g.Left(0).Right(0).Top(from).Height(w).Cursor(ui.CursorResizeNS)
+		} else {
+			g.Top(0).Bottom(0).Start(from).Width(w).Cursor(ui.CursorResizeEW)
+		}
+		if g.DoubleClicked() {
+			*size = reset
+			moved()
+			continue
+		}
+		dx, dy, held := g.Dragged()
+		active = active || held || g.Hovered()
+		d := dy
+		if !l.vertical {
+			d = dx
+			if c.Direction() == ui.RightToLeft {
+				d = -dx
+			}
+		}
+		if !held || d == 0 {
+			continue
+		}
+		if l.percent {
+			d = d * 100 / room
+		}
+		*size += d
+		clampSize(size, room, l)
+		moved()
+	}
+	// The bar, which takes no input: MyGo's handle under it keeps the
+	// press. Accent while the strips are hovered or held.
+	bar := theme.Border
+	if active {
+		bar = theme.Accent
+	}
+	const barLen, barW = 32, 4
+	m := ui.Box(c).Absolute().PassThrough()
+	if l.vertical {
+		m.Top(line + 0.5 - barW/2).Height(barW).Left(0).Right(0)
+	} else {
+		m.Start(line + 0.5 - barW/2).Width(barW).Top(0).Bottom(0)
+	}
+	m.Draw(func(p *ui.Painter, r ui.Rect) {
+		if l.vertical {
+			r = ui.Rect{X: r.X + (r.W-barLen)/2, Y: r.Y, W: barLen, H: r.H}
+		} else {
+			r = ui.Rect{X: r.X, Y: r.Y + (r.H-barLen)/2, W: r.W, H: barLen}
+		}
+		p.Fill(r, bar, barW/2)
+	})
 }
 
 // endSplit lays out start and end side by side, end at the end, with a
@@ -154,6 +261,7 @@ func (a *App) endSplit(c *ui.Context, size *float32, reset float32, l splitLimit
 	return ui.Row(c).Direction(flipped).Children(func() {
 		split := ui.Split(c, size, pane(end), pane(start)).SplitReset(reset).Fill()
 		a.splitMoved(c, split, size, l)
+		a.splitGrip(c, split, size, reset, l)
 	})
 }
 

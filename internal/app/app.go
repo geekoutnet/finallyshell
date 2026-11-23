@@ -339,8 +339,9 @@ func (a *App) View(c *ui.Context) {
 		a.dialogs(c)
 		return
 	}
-	split := ui.Split(c, &a.sideWidth, func() { a.sidebar(c) }, func() { a.mainArea(c) }).SplitReset(defaultSideWidth).Fill()
-	a.splitMoved(c, split, &a.sideWidth, sidebarLimits)
+	a.gripSplit(c, &a.sideWidth, defaultSideWidth, sidebarLimits, func() ui.Element {
+		return ui.Split(c, &a.sideWidth, func() { a.sidebar(c) }, func() { a.mainArea(c) })
+	})
 	a.dialogs(c)
 }
 
@@ -359,8 +360,9 @@ func (a *App) sidebar(c *ui.Context) {
 			a.sessionPanel(c)
 			return
 		}
-		split := ui.SplitVerticalPercent(c, &a.monitorPct, func() { a.monitorPanel(c) }, func() { a.sessionPanel(c) }).SplitReset(defaultMonitorPct).Fill()
-		a.splitMoved(c, split, &a.monitorPct, monitorLimits)
+		a.gripSplit(c, &a.monitorPct, defaultMonitorPct, monitorLimits, func() ui.Element {
+			return ui.SplitVerticalPercent(c, &a.monitorPct, func() { a.monitorPanel(c) }, func() { a.sessionPanel(c) })
+		})
 	})
 }
 
@@ -401,8 +403,9 @@ func (a *App) terminalOverPanel(c *ui.Context) {
 		a.collapsedMainArea(c)
 		return
 	}
-	split := ui.SplitVerticalPercent(c, &a.terminalPct, func() { a.terminalArea(c) }, func() { a.bottomPanel(c, &a.bottomTab) }).SplitReset(defaultTerminalPct).Fill()
-	a.splitMoved(c, split, &a.terminalPct, terminalLimits)
+	a.gripSplit(c, &a.terminalPct, defaultTerminalPct, terminalLimits, func() ui.Element {
+		return ui.SplitVerticalPercent(c, &a.terminalPct, func() { a.terminalArea(c) }, func() { a.bottomPanel(c, &a.bottomTab) })
+	})
 }
 
 // The bottom panel's tabs, in order: their index in a.bottomTab, a panel

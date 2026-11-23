@@ -5,6 +5,7 @@ package rdp
 import (
 	"bytes"
 	"os"
+	"os/exec"
 	"testing"
 )
 
@@ -35,6 +36,10 @@ func TestHoldCredential(t *testing.T) {
 	c := read()
 	if c == nil || c.user != `CORP\tester` || !bytes.Equal(c.blob, utf16Bytes("pässword")) || c.persist != credPersistSession {
 		t.Fatalf("held %+v", c)
+	}
+	// cmdkey, which writes what mstsc reads, lists it.
+	if out, err := exec.Command("cmdkey", "/list:"+target).CombinedOutput(); err != nil || !bytes.Contains(out, []byte(target)) || !bytes.Contains(out, []byte(`CORP\tester`)) {
+		t.Errorf("cmdkey /list: %s (%v)", out, err)
 	}
 	r2, err := holdCredential(credTypeGeneric, target, `CORP\tester`, "second")
 	if err != nil {

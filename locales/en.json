@@ -730,6 +730,10 @@
   "updatesChecking": "Checking…",
   "updatesUpToDate": "You have the latest version.",
   "updatesCheckFailed": "Could not check for updates. Try again later.",
+  "updatesInstall": "Update now",
+  "updatesDownloading": "Downloading… {percent}%",
+  "updatesRestarting": "Restarting to install the update…",
+  "updatesInstallFailed": "Could not download the update. Try again later.",
   "@updatesAvailable": {
     "placeholders": {
       "version": {

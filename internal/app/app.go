@@ -129,6 +129,10 @@ type Platform interface {
 	// SetAutomaticUpdateChecks turns checking in the background on or off,
 	// and keeps the choice.
 	SetAutomaticUpdateChecks(on bool)
+	// InstallUpdate downloads the newer version found (UpdateStatus.
+	// CanInstall), installs it once the app quits, and quits. It returns
+	// without waiting.
+	InstallUpdate()
 }
 
 // App is the state of the window.

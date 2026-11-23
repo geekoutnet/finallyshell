@@ -13,11 +13,13 @@ import (
 type fakeUpdates struct {
 	status    UpdateStatus
 	checks    int    // CheckForUpdates calls
+	installs  int    // InstallUpdate calls
 	automatic []bool // what SetAutomaticUpdateChecks was given
 }
 
 func (p *fakeUpdates) Updates() UpdateStatus { return p.status }
 func (p *fakeUpdates) CheckForUpdates()      { p.checks++ }
+func (p *fakeUpdates) InstallUpdate()        { p.installs++ }
 func (p *fakeUpdates) SetAutomaticUpdateChecks(on bool) {
 	p.automatic = append(p.automatic, on)
 	p.status.Automatic = on
@@ -154,6 +156,43 @@ func TestUpdatesRowCheckResults(t *testing.T) {
 		tt.Frame()
 		if !tt.HasText(c.text) {
 			t.Errorf("%+v: no %q; texts %q", c.st, c.text, tt.Texts())
+		}
+	}
+}
+
+// A version this copy installs itself shows with Update now, which
+// installs it; the download's progress, the restart and a failure show in
+// its place.
+func TestUpdatesRowInstall(t *testing.T) {
+	a, p := testApp(t)
+	p.status = UpdateStatus{Version: "2.0.1", Automatic: true, Available: "2.0.2", CanInstall: true}
+	tt := generalPageUpdates(t, a, p)
+	if !tt.HasText(locales.UpdatesAvailable("2.0.2")) {
+		t.Errorf("no available version; texts %q", tt.Texts())
+	}
+	if err := tt.Click(locales.UpdatesInstall()); err != nil {
+		t.Fatal(err)
+	}
+	if p.installs != 1 {
+		t.Errorf("%d installs", p.installs)
+	}
+	for _, c := range []struct {
+		st   func(*UpdateStatus)
+		text string
+	}{
+		{func(s *UpdateStatus) { s.Downloading, s.Progress = true, 0.42 }, locales.UpdatesDownloading("42")},
+		{func(s *UpdateStatus) { s.Installing = true }, locales.UpdatesRestarting()},
+		{func(s *UpdateStatus) { s.InstallErr = true }, locales.UpdatesInstallFailed()},
+	} {
+		st := UpdateStatus{Version: "2.0.1", Automatic: true, Available: "2.0.2", CanInstall: true}
+		c.st(&st)
+		p.status = st
+		tt.Frame()
+		if !tt.HasText(c.text) {
+			t.Errorf("no %q; texts %q", c.text, tt.Texts())
+		}
+		if (st.Downloading || st.Installing) && tt.HasText(locales.UpdatesInstall()) {
+			t.Errorf("%q shows %q", c.text, locales.UpdatesInstall())
 		}
 	}
 }

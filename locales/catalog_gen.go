@@ -5356,6 +5356,46 @@ func (msgs Messages) UpdatesCheckFailed() string {
 	return Catalog.Format(msgs.locale, "updatesCheckFailed", nil)
 }
 
+// UpdatesInstall says "Update now"
+// in the language the app shows.
+func UpdatesInstall() string { return In(i18n.Locale()).UpdatesInstall() }
+
+// UpdatesInstall says "Update now"
+// in the language of msgs.
+func (msgs Messages) UpdatesInstall() string {
+	return Catalog.Format(msgs.locale, "updatesInstall", nil)
+}
+
+// UpdatesDownloading says "Downloading… {percent}%"
+// in the language the app shows.
+func UpdatesDownloading(percent string) string { return In(i18n.Locale()).UpdatesDownloading(percent) }
+
+// UpdatesDownloading says "Downloading… {percent}%"
+// in the language of msgs.
+func (msgs Messages) UpdatesDownloading(percent string) string {
+	return Catalog.Format(msgs.locale, "updatesDownloading", map[string]any{"percent": percent})
+}
+
+// UpdatesRestarting says "Restarting to install the update…"
+// in the language the app shows.
+func UpdatesRestarting() string { return In(i18n.Locale()).UpdatesRestarting() }
+
+// UpdatesRestarting says "Restarting to install the update…"
+// in the language of msgs.
+func (msgs Messages) UpdatesRestarting() string {
+	return Catalog.Format(msgs.locale, "updatesRestarting", nil)
+}
+
+// UpdatesInstallFailed says "Could not download the update. Try again later."
+// in the language the app shows.
+func UpdatesInstallFailed() string { return In(i18n.Locale()).UpdatesInstallFailed() }
+
+// UpdatesInstallFailed says "Could not download the update. Try again later."
+// in the language of msgs.
+func (msgs Messages) UpdatesInstallFailed() string {
+	return Catalog.Format(msgs.locale, "updatesInstallFailed", nil)
+}
+
 // OptionCheckUpdatesAutomatically says "Check for updates automatically"
 // in the language the app shows.
 func OptionCheckUpdatesAutomatically() string {

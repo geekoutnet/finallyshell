@@ -1,6 +1,8 @@
 package app
 
 import (
+	"strconv"
+
 	"finallyshell/internal/widgets"
 	"finallyshell/locales"
 
@@ -27,6 +29,14 @@ type UpdateStatus struct {
 	// Checking is a check under way; UpToDate and Failed tell how the
 	// check the user asked for ended: no newer version, or none read.
 	Checking, UpToDate, Failed bool
+	// CanInstall is whether this copy installs Available itself
+	// (InstallUpdate); else its release page is linked.
+	CanInstall bool
+	// Downloading is the download of Available, Progress of it from 0 to
+	// 1; InstallErr is a download or install that failed, Installing one
+	// that waits for the app to quit.
+	Downloading, InstallErr, Installing bool
+	Progress                            float32
 }
 
 // UpdateBlock is why a copy of the app cannot update itself.
@@ -70,6 +80,8 @@ func (a *App) updatesSection(c *ui.Context) {
 			switch {
 			case st.Checking:
 				widgets.Muted(c, locales.UpdatesChecking())
+			case st.Available != "" && st.CanInstall:
+				a.updateInstallRow(c, st)
 			case st.Available != "":
 				ui.Link(c, locales.UpdatesAvailable(st.Available), releasesURL+"/tag/v"+st.Available)
 			case st.Failed:
@@ -84,4 +96,23 @@ func (a *App) updatesSection(c *ui.Context) {
 			a.redraw()
 		}
 	})
+}
+
+// updateInstallRow is the newer version found, with the button that
+// downloads and installs it, or how that goes.
+func (a *App) updateInstallRow(c *ui.Context, st UpdateStatus) {
+	ui.Text(c, locales.UpdatesAvailable(st.Available)).TextColor(c.Theme().Accent)
+	switch {
+	case st.Installing:
+		widgets.Muted(c, locales.UpdatesRestarting())
+	case st.Downloading:
+		widgets.Muted(c, locales.UpdatesDownloading(strconv.Itoa(int(st.Progress*100))))
+	default:
+		if ui.Button(c, locales.UpdatesInstall()).Clicked() {
+			a.plat.InstallUpdate()
+		}
+		if st.InstallErr {
+			widgets.Muted(c, locales.UpdatesInstallFailed())
+		}
+	}
 }

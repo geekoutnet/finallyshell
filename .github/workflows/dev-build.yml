@@ -1,0 +1,122 @@
+name: dev-build
+
+# Every push to dev builds the five platforms and publishes a GitHub
+# release tagged v2.0.<N>: the first is v2.0.0, each later one the newest
+# v2.0.* tag's patch plus one. A failed run makes no tag, so the next run
+# reuses its number and versions have no gaps.
+#
+# Unsigned (sign: false): no update manifests, so installed copies never
+# update to these builds; they are downloaded by hand.
+#
+# main stays a mirror of upstream; merge main into dev to take upstream's
+# changes. This file only exists on dev, so the merge never conflicts on it.
+on:
+  push:
+    branches: [dev]
+    # Changes that don't change the app.
+    paths-ignore:
+      - "**.md"
+      - "docs/**"
+      - "site/**"
+      - ".claude/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One at a time, never cancelled, so two pushes can't race for a tag.
+concurrency:
+  group: dev-build
+  cancel-in-progress: false
+
+jobs:
+  version:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.next.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: next
+        # Nothing when this commit already has its build (a re-run).
+        run: |
+          if [ -n "$(git tag --points-at HEAD --list 'v2.0.*')" ]; then
+            echo "::notice::$(git tag --points-at HEAD --list 'v2.0.*') is already published for this commit"
+            echo "version=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          last=$(git tag --list 'v2.0.*' --sort=-v:refname | grep -E '^v2\.0\.[0-9]+$' | head -n 1 || true)
+          if [ -z "$last" ]; then
+            version=2.0.0
+          else
+            version="2.0.$(( ${last##*.} + 1 ))"
+          fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          echo "::notice::Building v$version"
+
+  # The same checks as pull requests: no build of a commit that fails them.
+  gate:
+    needs: version
+    if: needs.version.outputs.version != ''
+    uses: ./.github/workflows/ci.yml
+
+  build:
+    needs: [version, gate]
+    uses: ./.github/workflows/build.yml
+    with:
+      version: ${{ needs.version.outputs.version }}
+      sign: false
+
+  publish:
+    needs: [version, build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v7
+        with:
+          go-version-file: go.mod
+      - uses: actions/download-artifact@v8
+        with:
+          path: upload
+          merge-multiple: true
+      - name: Licenses and checksums
+        run: |
+          cp LICENSE upload/LICENSE.txt
+          go run ./tools/release licenses > upload/THIRD_PARTY_LICENSES.txt
+          (cd upload && sha256sum * > SHA256SUMS)
+          cat upload/SHA256SUMS
+      - name: Release notes
+        # The commits since the previous dev build, then how to install.
+        run: |
+          sha=${GITHUB_SHA:0:7}
+          link="[$sha]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/commit/$GITHUB_SHA)"
+          last=$(git tag --list 'v2.0.*' --sort=-v:refname | grep -E '^v2\.0\.[0-9]+$' | head -n 1 || true)
+          {
+            echo "Build of dev at $link. / dev 分支在 $link 的构建。"
+            echo
+            echo "## Changes"
+            echo
+            if [ -n "$last" ]; then
+              git log --no-merges --format='- %s (%h)' "$last..HEAD" | head -n 200
+            else
+              git log --no-merges --format='- %s (%h)' -n 30 HEAD
+            fi
+            echo
+            cat .github/release-install.md
+          } > notes.md
+      - name: Publish
+        run: |
+          gh release create "v$VERSION" upload/* \
+            --target "$GITHUB_SHA" \
+            --title "v$VERSION" \
+            --notes-file notes.md \
+            --latest

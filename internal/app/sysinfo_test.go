@@ -123,10 +123,20 @@ func TestSysInfoPopover(t *testing.T) {
 	p.until(t, "the system info", func() bool { return !a.sysInfo.loading })
 	for _, want := range []string{"Hostname", "Debian GNU/Linux 12 (bookworm)", "6.1.0-18-amd64", "x86_64",
 		"Intel(R) Xeon(R) CPU E5-2680 v4 @ 2.40GHz", "2 cores, 4 threads", "3.8 GB", "410 days, 0:17",
-		"ens3  45.56.78.90/24", "docker0  172.17.0.1/16", "vda  25.0 GB"} {
+		"ens3  45.56.78.90/24", "vda  25.0 GB"} {
 		if !tt.HasText(want) {
 			t.Errorf("English: missing %q; texts %q", want, tt.Texts())
 		}
+	}
+	// Docker's bridge shows once asked.
+	if tt.HasText("docker0  172.17.0.1/16") {
+		t.Error("docker0 shows before Show all")
+	}
+	if err := tt.Click(locales.OverviewShowAll(3)); err != nil {
+		t.Fatal(err)
+	}
+	if !tt.HasText("docker0  172.17.0.1/16") {
+		t.Errorf("Show all: texts %q", tt.Texts())
 	}
 	saveShot(t, tt, "popover-en.png")
 

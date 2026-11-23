@@ -986,5 +986,16 @@
   "errAgentNoAddress": "找不到 SSH Agent：没有设置 SSH_AUTH_SOCK，请在 选项 › 常规 里填写 agent 的地址",
   "errAgentNoKeys": "SSH Agent 里没有私钥（地址：{addr}）",
   "errAgentRefused": "服务器拒绝了 agent 里的所有私钥",
-  "errAgentSign": "SSH Agent 没有签名（被拒绝或出错）：{error}"
+  "errAgentSign": "SSH Agent 没有签名（被拒绝或出错）：{error}",
+  "tabOverview": "概览",
+  "overviewOpenTip": "在概览页查看这台服务器",
+  "overviewLoad": "负载",
+  "overviewDisk": "磁盘",
+  "overviewDisks": "磁盘",
+  "overviewTopProcs": "内存占用最多的进程",
+  "overviewDiskUsage": "已用 {used}，可用 {avail}，共 {total}",
+  "overviewShowAll": "显示全部（{count}）",
+  "overviewShowLess": "收起",
+  "copyAll": "复制全部",
+  "copiedText": "已复制：{text}"
 }

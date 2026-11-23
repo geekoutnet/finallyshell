@@ -1658,5 +1658,49 @@
   "errAgentNoAddress": "No SSH agent: SSH_AUTH_SOCK is not set. Enter the agent's address in Options › General.",
   "errAgentNoKeys": "The SSH agent at {addr} has no keys",
   "errAgentRefused": "The server refused every key in the SSH agent",
-  "errAgentSign": "The SSH agent did not sign the login (denied, or it failed): {error}"
+  "errAgentSign": "The SSH agent did not sign the login (denied, or it failed): {error}",
+  "tabOverview": "Overview",
+  "overviewOpenTip": "Show this server in the Overview tab",
+  "overviewLoad": "Load",
+  "overviewDisk": "Disk",
+  "overviewDisks": "Disks",
+  "overviewTopProcs": "Top processes by memory",
+  "overviewDiskUsage": "{used} used, {avail} free of {total}",
+  "@overviewDiskUsage": {
+    "description": "A mount's space in the Overview tab's Disks card.",
+    "placeholders": {
+      "used": {
+        "type": "String",
+        "example": "20.3 GB"
+      },
+      "avail": {
+        "type": "String",
+        "example": "4.7 GB"
+      },
+      "total": {
+        "type": "String",
+        "example": "25.0 GB"
+      }
+    }
+  },
+  "overviewShowAll": "Show all ({count})",
+  "@overviewShowAll": {
+    "description": "Shows the addresses of virtual interfaces (Docker, bridges…) too; count is every address.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewShowLess": "Show less",
+  "copyAll": "Copy all",
+  "copiedText": "Copied: {text}",
+  "@copiedText": {
+    "placeholders": {
+      "text": {
+        "type": "String",
+        "example": "45.56.78.90"
+      }
+    }
+  }
 }

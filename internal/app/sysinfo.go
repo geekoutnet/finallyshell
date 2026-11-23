@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"finallyshell/internal/config"
-	"finallyshell/internal/icons"
 	"finallyshell/internal/monitor"
 	"finallyshell/internal/widgets"
 	"finallyshell/locales"
@@ -31,6 +30,9 @@ type sysInfoPopover struct {
 	err     error
 	off     bool // the host allows no exec channel
 	cancel  context.CancelFunc
+	// allAddrs shows the addresses of virtual interfaces too, which the
+	// list leaves out at first (virtualIface).
+	allAddrs bool
 }
 
 // execAllowed tells whether the app may open exec channels to h's server
@@ -59,7 +61,7 @@ func (a *App) openSysInfo(s *Session) {
 	a.closeSysInfo()
 	p := &a.sysInfo
 	p.open, p.s = true, s
-	p.info, p.err, p.loading, p.off = monitor.SysInfo{}, nil, false, false
+	p.info, p.err, p.loading, p.off, p.allAddrs = monitor.SysInfo{}, nil, false, false, false
 	if !execAllowed(s.Host) {
 		p.off = true
 		return
@@ -67,27 +69,37 @@ func (a *App) openSysInfo(s *Session) {
 	if s.status != statusConnected {
 		return
 	}
+	gen := p.gen
+	p.loading = true
+	p.cancel = a.startSysInfoRead(s, func(info monitor.SysInfo, err error) {
+		// Closed, opened again, or showing another session since.
+		if p.gen != gen || p.s != s {
+			return
+		}
+		p.loading, p.info, p.err, p.cancel = false, info, err, nil
+	})
+}
+
+// startSysInfoRead reads s's system info on a goroutine, giving up after
+// sysInfoTimeout, and calls done with the result on the UI thread. The
+// popover and the Overview tab (overview.go) read with it. It returns
+// what stops the read.
+func (a *App) startSysInfoRead(s *Session, done func(monitor.SysInfo, error)) context.CancelFunc {
 	read := a.readSysInfo
 	if read == nil {
 		read = readSysInfo
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), sysInfoTimeout)
-	p.loading, p.cancel = true, cancel
-	gen, client := p.gen, s.client
+	client := s.client
 	go func() {
 		info, err := read(ctx, client)
 		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
 			err = context.DeadlineExceeded
 		}
 		cancel()
-		a.post(func() {
-			// Closed, opened again, or showing another session since.
-			if p.gen != gen || p.s != s {
-				return
-			}
-			p.loading, p.info, p.err, p.cancel = false, info, err, nil
-		})
+		a.post(func() { done(info, err) })
 	}()
+	return cancel
 }
 
 // closeSysInfo closes the popover, dropping the read under way.
@@ -129,14 +141,12 @@ func (a *App) sysInfoBody(c *ui.Context) {
 	ui.Column(c).Width(400).Padding(8, 10, 10, 10).Gap(4).Children(func() {
 		ui.Row(c).Gap(6).Margin(0, 0, 4, 0).Children(func() {
 			ui.Text(c, locales.SystemInfo()).Bold().Grow(1)
+			if p.s != nil && iconTextButton(c, "gauge", locales.TabOverview()).Tooltip(locales.OverviewOpenTip()).Clicked() {
+				a.closeSysInfo()
+				a.openBottomTab(tabOverview)
+			}
 			ready := !p.off && !p.loading && p.err == nil && p.s != nil && p.s.status == statusConnected
-			cp := ui.Button(c, "").FontSize(12).Padding(2, 8).Disabled(!ready).Children(func() {
-				ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
-					ui.Icon(c, icons.Get("copy")).FontSize(12)
-					ui.Text(c, locales.Copy()).FontSize(12)
-				})
-			}).Label(locales.Copy())
-			if cp.Clicked() && ready {
+			if iconTextButton(c, "copy", locales.Copy()).Disabled(!ready).Clicked() && ready {
 				c.WriteClipboard(sysInfoSummary(p.info))
 			}
 		})
@@ -163,6 +173,17 @@ func (a *App) sysInfoBody(c *ui.Context) {
 						for j, v := range r.values {
 							ui.Text(c.Key(j), v).Selectable()
 						}
+						if len(r.more) == 0 {
+							return
+						}
+						if p.allAddrs {
+							for j, v := range r.more {
+								ui.Text(c.Key(len(r.values)+j), v).Selectable()
+							}
+						}
+						if showAllLink(c, p.allAddrs, len(r.values)+len(r.more)).Clicked() {
+							p.allAddrs = !p.allAddrs
+						}
 					})
 				})
 			}
@@ -182,10 +203,13 @@ func describeSysInfoError(err error) string {
 	return describeError(err)
 }
 
-// sysInfoRow is a line of the popover: a label and one or more values.
+// sysInfoRow is a line of the popover: a label and one or more values,
+// and more values that show only when asked: the addresses of virtual
+// interfaces (splitAddrs).
 type sysInfoRow struct {
 	label  string
 	values []string
+	more   []string
 }
 
 func sysInfoRows(info monitor.SysInfo) []sysInfoRow {
@@ -196,11 +220,8 @@ func sysInfoRows(info monitor.SysInfo) []sysInfoRow {
 		return s
 	}
 	cpu := []string{or(info.CPUModel)}
-	switch {
-	case info.Cores > 0 && info.Cores != info.CPUs && info.CPUs > 0:
-		cpu = append(cpu, locales.SysCoresThreads(info.Cores, info.CPUs))
-	case info.CPUs > 0:
-		cpu = append(cpu, locales.SysCores(info.CPUs))
+	if cores := coresText(info); cores != "" {
+		cpu = append(cpu, cores)
 	}
 	mem := "-"
 	if info.MemTotal > 0 {
@@ -210,15 +231,14 @@ func sysInfoRows(info monitor.SysInfo) []sysInfoRow {
 	if info.SwapTotal > 0 {
 		swap = formatSize(int64(info.SwapTotal))
 	}
-	uptime := "-"
-	if info.Uptime > 0 {
-		days := int(info.Uptime / (24 * time.Hour))
-		rest := info.Uptime % (24 * time.Hour)
-		uptime = locales.SysUptimeValue(days, fmt.Sprintf("%d:%02d", int(rest/time.Hour), int(rest%time.Hour/time.Minute)))
-	}
-	var addrs []string
-	for _, ad := range info.Addrs {
+	uptime := uptimeText(info.Uptime)
+	real, virtual := splitAddrs(info.Addrs)
+	var addrs, more []string
+	for _, ad := range real {
 		addrs = append(addrs, ad.Iface+"  "+ad.Addr)
+	}
+	for _, ad := range virtual {
+		more = append(more, ad.Iface+"  "+ad.Addr)
 	}
 	var disks []string
 	for _, d := range info.Disks {
@@ -235,17 +255,41 @@ func sysInfoRows(info monitor.SysInfo) []sysInfoRow {
 		return l
 	}
 	return []sysInfoRow{
-		{locales.SysHostname(), []string{or(info.Hostname)}},
-		{locales.SysOS(), []string{or(info.OS)}},
-		{locales.SysKernel(), []string{or(info.Kernel)}},
-		{locales.SysArch(), []string{or(info.Arch)}},
-		{locales.SysCPU(), cpu},
-		{locales.SysMemory(), []string{mem}},
-		{locales.Swap(), []string{swap}},
-		{locales.SysUptime(), []string{uptime}},
-		{locales.SysAddresses(), list(addrs)},
-		{locales.SysDisks(), list(disks)},
+		{label: locales.SysHostname(), values: []string{or(info.Hostname)}},
+		{label: locales.SysOS(), values: []string{or(info.OS)}},
+		{label: locales.SysKernel(), values: []string{or(info.Kernel)}},
+		{label: locales.SysArch(), values: []string{or(info.Arch)}},
+		{label: locales.SysCPU(), values: cpu},
+		{label: locales.SysMemory(), values: []string{mem}},
+		{label: locales.Swap(), values: []string{swap}},
+		{label: locales.SysUptime(), values: []string{uptime}},
+		{label: locales.SysAddresses(), values: list(addrs), more: more},
+		{label: locales.SysDisks(), values: list(disks)},
 	}
+}
+
+// coresText is the server's physical cores and logical processors, as
+// "2 cores, 4 threads", or its processors alone when they are the same
+// or the cores are unknown: "" when neither is known.
+func coresText(info monitor.SysInfo) string {
+	switch {
+	case info.Cores > 0 && info.Cores != info.CPUs && info.CPUs > 0:
+		return locales.SysCoresThreads(info.Cores, info.CPUs)
+	case info.CPUs > 0:
+		return locales.SysCores(info.CPUs)
+	}
+	return ""
+}
+
+// uptimeText is how long a server has been up, as "410 days, 0:17":
+// "-" for 0, unknown.
+func uptimeText(d time.Duration) string {
+	if d <= 0 {
+		return "-"
+	}
+	days := int(d / (24 * time.Hour))
+	rest := d % (24 * time.Hour)
+	return locales.SysUptimeValue(days, fmt.Sprintf("%d:%02d", int(rest/time.Hour), int(rest%time.Hour/time.Minute)))
 }
 
 // sysInfoSummary is what Copy puts on the clipboard: the popover's rows
@@ -253,12 +297,12 @@ func sysInfoRows(info monitor.SysInfo) []sysInfoRow {
 func sysInfoSummary(info monitor.SysInfo) string {
 	var b strings.Builder
 	for _, r := range sysInfoRows(info) {
-		if len(r.values) == 1 {
+		if len(r.values)+len(r.more) == 1 {
 			fmt.Fprintf(&b, "%s: %s\n", r.label, r.values[0])
 			continue
 		}
 		fmt.Fprintf(&b, "%s:\n", r.label)
-		for _, v := range r.values {
+		for _, v := range append(r.values, r.more...) {
 			fmt.Fprintf(&b, "  %s\n", v)
 		}
 	}

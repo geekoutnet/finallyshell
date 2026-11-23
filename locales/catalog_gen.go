@@ -10001,3 +10001,125 @@ func ErrAgentSign(error string) string { return In(i18n.Locale()).ErrAgentSign(e
 func (msgs Messages) ErrAgentSign(error string) string {
 	return Catalog.Format(msgs.locale, "errAgentSign", map[string]any{"error": error})
 }
+
+// TabOverview says "Overview"
+// in the language the app shows.
+func TabOverview() string { return In(i18n.Locale()).TabOverview() }
+
+// TabOverview says "Overview"
+// in the language of msgs.
+func (msgs Messages) TabOverview() string {
+	return Catalog.Format(msgs.locale, "tabOverview", nil)
+}
+
+// OverviewOpenTip says "Show this server in the Overview tab"
+// in the language the app shows.
+func OverviewOpenTip() string { return In(i18n.Locale()).OverviewOpenTip() }
+
+// OverviewOpenTip says "Show this server in the Overview tab"
+// in the language of msgs.
+func (msgs Messages) OverviewOpenTip() string {
+	return Catalog.Format(msgs.locale, "overviewOpenTip", nil)
+}
+
+// OverviewLoad says "Load"
+// in the language the app shows.
+func OverviewLoad() string { return In(i18n.Locale()).OverviewLoad() }
+
+// OverviewLoad says "Load"
+// in the language of msgs.
+func (msgs Messages) OverviewLoad() string {
+	return Catalog.Format(msgs.locale, "overviewLoad", nil)
+}
+
+// OverviewDisk says "Disk"
+// in the language the app shows.
+func OverviewDisk() string { return In(i18n.Locale()).OverviewDisk() }
+
+// OverviewDisk says "Disk"
+// in the language of msgs.
+func (msgs Messages) OverviewDisk() string {
+	return Catalog.Format(msgs.locale, "overviewDisk", nil)
+}
+
+// OverviewDisks says "Disks"
+// in the language the app shows.
+func OverviewDisks() string { return In(i18n.Locale()).OverviewDisks() }
+
+// OverviewDisks says "Disks"
+// in the language of msgs.
+func (msgs Messages) OverviewDisks() string {
+	return Catalog.Format(msgs.locale, "overviewDisks", nil)
+}
+
+// OverviewTopProcs says "Top processes by memory"
+// in the language the app shows.
+func OverviewTopProcs() string { return In(i18n.Locale()).OverviewTopProcs() }
+
+// OverviewTopProcs says "Top processes by memory"
+// in the language of msgs.
+func (msgs Messages) OverviewTopProcs() string {
+	return Catalog.Format(msgs.locale, "overviewTopProcs", nil)
+}
+
+// OverviewDiskUsage says "{used} used, {avail} free of {total}"
+// in the language the app shows.
+//
+// A mount's space in the Overview tab's Disks card.
+func OverviewDiskUsage(used string, avail string, total string) string {
+	return In(i18n.Locale()).OverviewDiskUsage(used, avail, total)
+}
+
+// OverviewDiskUsage says "{used} used, {avail} free of {total}"
+// in the language of msgs.
+//
+// A mount's space in the Overview tab's Disks card.
+func (msgs Messages) OverviewDiskUsage(used string, avail string, total string) string {
+	return Catalog.Format(msgs.locale, "overviewDiskUsage", map[string]any{"used": used, "avail": avail, "total": total})
+}
+
+// OverviewShowAll says "Show all ({count})"
+// in the language the app shows.
+//
+// Shows the addresses of virtual interfaces (Docker, bridges…) too; count
+// is every address.
+func OverviewShowAll(count int) string { return In(i18n.Locale()).OverviewShowAll(count) }
+
+// OverviewShowAll says "Show all ({count})"
+// in the language of msgs.
+//
+// Shows the addresses of virtual interfaces (Docker, bridges…) too; count
+// is every address.
+func (msgs Messages) OverviewShowAll(count int) string {
+	return Catalog.Format(msgs.locale, "overviewShowAll", map[string]any{"count": count})
+}
+
+// OverviewShowLess says "Show less"
+// in the language the app shows.
+func OverviewShowLess() string { return In(i18n.Locale()).OverviewShowLess() }
+
+// OverviewShowLess says "Show less"
+// in the language of msgs.
+func (msgs Messages) OverviewShowLess() string {
+	return Catalog.Format(msgs.locale, "overviewShowLess", nil)
+}
+
+// CopyAll says "Copy all"
+// in the language the app shows.
+func CopyAll() string { return In(i18n.Locale()).CopyAll() }
+
+// CopyAll says "Copy all"
+// in the language of msgs.
+func (msgs Messages) CopyAll() string {
+	return Catalog.Format(msgs.locale, "copyAll", nil)
+}
+
+// CopiedText says "Copied: {text}"
+// in the language the app shows.
+func CopiedText(text string) string { return In(i18n.Locale()).CopiedText(text) }
+
+// CopiedText says "Copied: {text}"
+// in the language of msgs.
+func (msgs Messages) CopiedText(text string) string {
+	return Catalog.Format(msgs.locale, "copiedText", map[string]any{"text": text})
+}

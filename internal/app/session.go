@@ -50,9 +50,10 @@ type Session struct {
 	sftp   *sftp.Client
 	files  fileState
 
-	tunnels tunnelState // see tunnels.go
-	procs   procState   // the Processes tab, see processes.go
-	net     netState    // the Network tab, see network.go
+	tunnels  tunnelState   // see tunnels.go
+	procs    procState     // the Processes tab, see processes.go
+	net      netState      // the Network tab, see network.go
+	overview overviewState // the Overview tab, see overview.go
 
 	hostKeyQ *sshx.HostKeyQuestion
 	cancel   context.CancelFunc

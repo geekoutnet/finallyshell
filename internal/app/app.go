@@ -421,6 +421,7 @@ const (
 	tabProcesses
 	tabNetwork
 	tabCommands
+	tabOverview
 )
 
 // bottomTab is a tab of the bottom panel: its label, and its page.
@@ -446,6 +447,7 @@ func (a *App) bottomTabs() []bottomTab {
 		tabProcesses: {locales.TabProcesses(), a.processPanel},
 		tabNetwork:   {locales.TabNetwork(), a.networkPanel},
 		tabCommands:  {locales.TabCommands(), a.quickPanel},
+		tabOverview:  {locales.TabOverview(), a.overviewPanel},
 	}
 }
 

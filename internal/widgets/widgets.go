@@ -95,6 +95,11 @@ func UsageBar(c *ui.Context, label string, frac float64, text string, fill ui.Co
 // Sparkline draws series as bars side by side, the newest on the right,
 // in a box room for n samples wide, labeled with the largest value.
 func Sparkline(c *ui.Context, n int, series [][]float64, colors []ui.Color, format func(float64) string) {
+	BarChart(c, 46, n, series, colors, format)
+}
+
+// BarChart is a Sparkline height DIPs high.
+func BarChart(c *ui.Context, height float32, n int, series [][]float64, colors []ui.Color, format func(float64) string) {
 	peak := 0.0
 	for _, s := range series {
 		for _, v := range s {
@@ -103,7 +108,7 @@ func Sparkline(c *ui.Context, n int, series [][]float64, colors []ui.Color, form
 	}
 	t := c.Theme()
 	_, _, border := chartColors(t)
-	ui.Box(c).Height(46).Background(t.Background).Border(1, border).Draw(func(p *ui.Painter, r ui.Rect) {
+	ui.Box(c).Height(height).Background(t.Background).Border(1, border).Draw(func(p *ui.Painter, r ui.Rect) {
 		if peak <= 0 {
 			return
 		}

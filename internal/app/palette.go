@@ -77,6 +77,13 @@ type palette struct {
 	// activeLine is the line with the caret in the file editor, and
 	// lineNumber its line numbers.
 	activeLine, lineNumber ui.Color
+	// overviewPage is the Overview tab's background, and card its cards
+	// on it (overview.go).
+	overviewPage, card ui.Color
+	// gaugeOK, gaugeBusy and gaugeHigh color the Overview tab's gauges
+	// and disk bars by how full they are (usageLevel); gaugeTrack is the
+	// ring or bar under them.
+	gaugeOK, gaugeBusy, gaugeHigh, gaugeTrack ui.Color
 }
 
 var lightColors = palette{
@@ -101,6 +108,12 @@ var lightColors = palette{
 	warningText:   ui.Hex("#a16207"),
 	activeLine:    ui.Hex("#f6f7f9"),
 	lineNumber:    ui.Hex("#9ca3af"),
+	overviewPage:  ui.Hex("#f3f4f6"),
+	card:          ui.Hex("#ffffff"),
+	gaugeOK:       ui.Hex("#22c55e"),
+	gaugeBusy:     ui.Hex("#f59e0b"),
+	gaugeHigh:     ui.Hex("#ef4444"),
+	gaugeTrack:    ui.Hex("#e5e7eb"),
 }
 
 // darkColors are lightColors for the dark theme's background (#18181b):
@@ -128,6 +141,12 @@ var darkColors = palette{
 	warningText:   ui.Hex("#facc15"),
 	activeLine:    ui.RGBA(255, 255, 255, 0.045),
 	lineNumber:    ui.Hex("#71717a"),
+	overviewPage:  ui.Hex("#18181b"),
+	card:          ui.Hex("#202024"),
+	gaugeOK:       ui.Hex("#4ade80"),
+	gaugeBusy:     ui.Hex("#fbbf24"),
+	gaugeHigh:     ui.Hex("#f87171"),
+	gaugeTrack:    ui.Hex("#2e2e33"),
 }
 
 // Colors that read on both backgrounds.

@@ -69,8 +69,14 @@ jobs:
       version: ${{ needs.version.outputs.version }}
       sign: false
 
+  # Publishes when only some platforms failed (GitHub's macOS runners are
+  # often out of capacity), as long as Linux and Windows are built; the
+  # next step checks those. Never after a failed gate, which skips build.
   publish:
     needs: [version, build]
+    if: >-
+      !cancelled() && needs.version.outputs.version != '' &&
+      (needs.build.result == 'success' || needs.build.result == 'failure')
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -88,6 +94,25 @@ jobs:
         with:
           path: upload
           merge-multiple: true
+      - name: Check the platforms
+        # Linux and Windows are required; macOS is published when it built.
+        run: |
+          ls -l upload
+          missing=
+          for pattern in "*_amd64.deb" "*-linux-amd64.tar.gz" "*_arm64.deb" "*-linux-arm64.tar.gz" \
+            "*-setup-*-amd64.exe" "*-windows-amd64.zip"; do
+            ls upload/$pattern > /dev/null 2>&1 || missing="$missing $pattern"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Not built:$missing"
+            exit 1
+          fi
+          for arch in arm64 amd64; do
+            if ! ls upload/*-"$arch".dmg > /dev/null 2>&1; then
+              echo "::warning::macOS $arch was not built, publishing without it"
+              echo "- macOS $arch" >> missing-platforms.txt
+            fi
+          done
       - name: Licenses and checksums
         run: |
           cp LICENSE upload/LICENSE.txt
@@ -103,6 +128,12 @@ jobs:
           {
             echo "Build of dev at $link. / dev 分支在 $link 的构建。"
             echo
+            if [ -f missing-platforms.txt ]; then
+              echo "Not built this time / 本次未构建："
+              echo
+              cat missing-platforms.txt
+              echo
+            fi
             echo "## Changes"
             echo
             if [ -n "$last" ]; then

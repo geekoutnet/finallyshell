@@ -197,6 +197,8 @@ func fullHost() *Host {
 		NoRememberPassword: true,
 		CreatedAt:          time.Date(2026, 10, 1, 8, 0, 0, 0, time.UTC),
 		MonitorIfaces:      []string{"eth0", "wg0"},
+		Kind:               KindRDP,
+		RDP:                fullRDP(),
 	}
 }
 
@@ -230,7 +232,7 @@ func TestRoundTripEveryField(t *testing.T) {
 	data, _ := json.Marshal(got.Hosts[1])
 	var keys map[string]any
 	json.Unmarshal(data, &keys)
-	for _, k := range []string{"folder", "notes", "noMonitor", "lastConnectedAt", "deletedAt", "termType", "backspace", "delete", "encoding", "proxy", "tunnels", "noRememberPassword", "createdAt", "monitorIfaces"} {
+	for _, k := range []string{"folder", "notes", "noMonitor", "lastConnectedAt", "deletedAt", "termType", "backspace", "delete", "encoding", "proxy", "tunnels", "noRememberPassword", "createdAt", "monitorIfaces", "kind", "rdp"} {
 		if _, ok := keys[k]; ok {
 			t.Errorf("plain host has %q: %s", k, data)
 		}

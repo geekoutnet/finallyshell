@@ -109,6 +109,14 @@ type Host struct {
 	// server's, so they sync with the host.
 	MonitorIfaces []string `json:"monitorIfaces,omitempty"`
 
+	// Kind is what the host is: KindSSH ("") or KindRDP, a Remote
+	// Desktop host, whose options are RDP. Such a host keeps no proxy,
+	// tunnels or key: the system's client connects, not the app.
+	Kind HostKind `json:"kind,omitempty"`
+	// RDP are a Remote Desktop host's options: nil for the defaults. Read
+	// them with RDPOf.
+	RDP *RDPConfig `json:"rdp,omitempty"`
+
 	extra extras
 }
 
@@ -116,10 +124,11 @@ type Host struct {
 // the terminal is, Ghostty's VT core with 256 colors and more.
 const DefaultTermType = "xterm-256color"
 
-// PortOr22 is the host's port, 22 when unset.
+// PortOr22 is the host's port, when unset the default of its kind
+// (DefaultPort): 22, or 3389 for a Remote Desktop host.
 func (h *Host) PortOr22() int {
 	if h.Port == 0 {
-		return 22
+		return h.DefaultPort()
 	}
 	return h.Port
 }
@@ -132,10 +141,11 @@ func (h *Host) Title() string {
 	return h.Addr
 }
 
-// Target is user@addr, with the port when it is not 22.
+// Target is user@addr, with the port when it is not the default of its
+// kind.
 func (h *Host) Target() string {
 	s := h.User + "@" + h.Addr
-	if h.PortOr22() != 22 {
+	if h.PortOr22() != h.DefaultPort() {
 		s += ":" + strconv.Itoa(h.PortOr22())
 	}
 	return s
@@ -158,9 +168,9 @@ func (h *Host) MonitorEnabled() bool { return !h.NoMonitor }
 // key's passphrase, in the system's credential store.
 func (h *Host) RemembersPassword() bool { return !h.NoRememberPassword }
 
-// Clone is a copy of h, its proxy, its tunnels and the keys this build
-// does not know included, sharing nothing with h, with the same ID: give
-// it another before adding it.
+// Clone is a copy of h, its proxy, its tunnels, its Remote Desktop
+// options and the keys this build does not know included, sharing
+// nothing with h, with the same ID: give it another before adding it.
 func (h *Host) Clone() *Host {
 	c := *h
 	c.extra = maps.Clone(h.extra)
@@ -168,6 +178,9 @@ func (h *Host) Clone() *Host {
 		p := *h.Proxy
 		p.extra = maps.Clone(h.Proxy.extra)
 		c.Proxy = &p
+	}
+	if h.RDP != nil {
+		c.RDP = h.RDP.clone()
 	}
 	c.Tunnels = slices.Clone(h.Tunnels)
 	c.MonitorIfaces = slices.Clone(h.MonitorIfaces)

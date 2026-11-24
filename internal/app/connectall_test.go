@@ -53,7 +53,8 @@ func TestConnectAllFromPage(t *testing.T) {
 
 			tt.RightClickAt(connRow(t, tt, "Production"))
 			tt.Frame()
-			if menu := tt.Menu(); len(menu) < 2 || menu[0] != locales.ConnectAll() || menu[1] != "-" {
+			// Connect all, then running a command on its hosts, then the rest.
+			if menu := tt.Menu(); len(menu) < 3 || menu[0] != locales.ConnectAll() || menu[1] != locales.BulkOpen() || menu[2] != "-" {
 				t.Fatalf("menu %q", menu)
 			}
 			if err := tt.ChooseMenuItem(locales.ConnectAll()); err != nil {

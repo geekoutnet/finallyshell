@@ -10104,6 +10104,54 @@ func (msgs Messages) OverviewShowLess() string {
 	return Catalog.Format(msgs.locale, "overviewShowLess", nil)
 }
 
+// OverviewRunning says "{count} running"
+// in the language the app shows.
+//
+// How many containers run, under their number in the Docker card.
+func OverviewRunning(count int) string { return In(i18n.Locale()).OverviewRunning(count) }
+
+// OverviewRunning says "{count} running"
+// in the language of msgs.
+//
+// How many containers run, under their number in the Docker card.
+func (msgs Messages) OverviewRunning(count int) string {
+	return Catalog.Format(msgs.locale, "overviewRunning", map[string]any{"count": count})
+}
+
+// OverviewPaused says "{count} paused"
+// in the language the app shows.
+func OverviewPaused(count int) string { return In(i18n.Locale()).OverviewPaused(count) }
+
+// OverviewPaused says "{count} paused"
+// in the language of msgs.
+func (msgs Messages) OverviewPaused(count int) string {
+	return Catalog.Format(msgs.locale, "overviewPaused", map[string]any{"count": count})
+}
+
+// OverviewStopped says "{count} stopped"
+// in the language the app shows.
+func OverviewStopped(count int) string { return In(i18n.Locale()).OverviewStopped(count) }
+
+// OverviewStopped says "{count} stopped"
+// in the language of msgs.
+func (msgs Messages) OverviewStopped(count int) string {
+	return Catalog.Format(msgs.locale, "overviewStopped", map[string]any{"count": count})
+}
+
+// OverviewReclaimable says "{size} reclaimable"
+// in the language the app shows.
+//
+// What of Docker's disk use can be removed, under the total.
+func OverviewReclaimable(size string) string { return In(i18n.Locale()).OverviewReclaimable(size) }
+
+// OverviewReclaimable says "{size} reclaimable"
+// in the language of msgs.
+//
+// What of Docker's disk use can be removed, under the total.
+func (msgs Messages) OverviewReclaimable(size string) string {
+	return Catalog.Format(msgs.locale, "overviewReclaimable", map[string]any{"size": size})
+}
+
 // CopyAll says "Copy all"
 // in the language the app shows.
 func CopyAll() string { return In(i18n.Locale()).CopyAll() }
@@ -11434,6 +11482,16 @@ func (msgs Messages) DockerVersion() string {
 	return Catalog.Format(msgs.locale, "dockerVersion", nil)
 }
 
+// DockerAPI says "API {api}"
+// in the language the app shows.
+func DockerAPI(api string) string { return In(i18n.Locale()).DockerAPI(api) }
+
+// DockerAPI says "API {api}"
+// in the language of msgs.
+func (msgs Messages) DockerAPI(api string) string {
+	return Catalog.Format(msgs.locale, "dockerAPI", map[string]any{"api": api})
+}
+
 // DockerVersionAPI says "{version} (API {api})"
 // in the language the app shows.
 func DockerVersionAPI(version string, api string) string {
@@ -11530,6 +11588,16 @@ func DockerStorage() string { return In(i18n.Locale()).DockerStorage() }
 // in the language of msgs.
 func (msgs Messages) DockerStorage() string {
 	return Catalog.Format(msgs.locale, "dockerStorage", nil)
+}
+
+// DockerRootDir says "Root directory"
+// in the language the app shows.
+func DockerRootDir() string { return In(i18n.Locale()).DockerRootDir() }
+
+// DockerRootDir says "Root directory"
+// in the language of msgs.
+func (msgs Messages) DockerRootDir() string {
+	return Catalog.Format(msgs.locale, "dockerRootDir", nil)
 }
 
 // DockerCgroup says "Cgroup"

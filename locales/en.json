@@ -1693,6 +1693,39 @@
     }
   },
   "overviewShowLess": "Show less",
+  "overviewRunning": "{count} running",
+  "@overviewRunning": {
+    "description": "How many containers run, under their number in the Docker card.",
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewPaused": "{count} paused",
+  "@overviewPaused": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewStopped": "{count} stopped",
+  "@overviewStopped": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "overviewReclaimable": "{size} reclaimable",
+  "@overviewReclaimable": {
+    "description": "What of Docker's disk use can be removed, under the total.",
+    "placeholders": {
+      "size": {
+      }
+    }
+  },
   "copyAll": "Copy all",
   "copiedText": "Copied: {text}",
   "@copiedText": {
@@ -1882,6 +1915,12 @@
     }
   },
   "dockerVersion": "Version",
+  "dockerAPI": "API {api}",
+  "@dockerAPI": {
+    "placeholders": {
+      "api": {}
+    }
+  },
   "dockerVersionAPI": "{version} (API {api})",
   "@dockerVersionAPI": {
     "placeholders": {
@@ -1918,6 +1957,7 @@
   "dockerNetworks": "Networks",
   "dockerBuildCache": "Build cache",
   "dockerStorage": "Storage",
+  "dockerRootDir": "Root directory",
   "dockerCgroup": "Cgroup",
   "dockerLogging": "Logging",
   "dockerResources": "Resources",

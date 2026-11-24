@@ -16,8 +16,9 @@ import (
 
 // The Overview tab of the bottom panel is a server's dashboard: a header
 // with what the server is, four ring gauges (load, CPU, memory, the disk
-// of /), then cards in columns that follow the width: the network, the
-// disks, the system, the IP addresses and the top processes. The live
+// of /), then rows of cards as high as each other, as many to a row as
+// the width takes: network, disks and system; the Docker summary; then
+// IP addresses, top processes and the containers (docker.go). The live
 // numbers are the monitor's (Session.stats); what the server is comes
 // from one read of its system info, as the System info popover does
 // (sysinfo.go), made when the tab first shows a connection and again on
@@ -166,7 +167,7 @@ func (a *App) overviewPage(c *ui.Context, s *Session) {
 	scroll := ui.Scroll(c).Grow(1).MinHeight(0).FillWidth()
 	width, height := scroll.Bounds().W, scroll.Bounds().H
 	scroll.Children(func() {
-		const pad = 12
+		const pad = overviewGap
 		ui.Column(c).FillWidth().Padding(pad).Gap(pad).Children(func() {
 			a.overviewHeader(c, s)
 			overviewGauges(c, s, width-2*pad, height > 0 && height < 380)
@@ -329,7 +330,7 @@ func overviewGauges(c *ui.Context, s *Session, width float32, compact bool) {
 		cols = 2
 	}
 	size := float32(92)
-	if compact {
+	if compact || cols == 2 {
 		size = 72
 	}
 	ui.Grid(c).Columns(cols).Gap(12).FillWidth().Padding(14, 12).Background(colors.card).Border(1, colors.line).Radius(8).Children(func() {
@@ -376,66 +377,74 @@ func ringPath(p *ui.Path, cx, cy, r float32) {
 	p.CubeTo(cx-r, cy-r*k, cx-r*k, cy-r, cx, cy-r)
 }
 
-// overviewCardSpec is a card of the dashboard: an estimate of its height,
-// which places it in the shortest column, and what builds it.
-type overviewCardSpec struct {
-	key    string
-	height float32
-	build  func()
+// overviewGap is the space between the cards, and around them.
+const overviewGap = 12
+
+// overviewColumns is how many cards a row takes in width DIPs.
+func overviewColumns(width float32) int {
+	switch {
+	case width >= 1200:
+		return 3
+	case width >= 600:
+		return 2
+	}
+	return 1
 }
 
-// overviewCards are the cards under the gauges, in as many columns as
-// width takes, each card in the column that is shortest so far.
-func (a *App) overviewCards(c *ui.Context, s *Session, width float32) {
-	st, ov := &s.stats, &s.overview
-	real, virtual := splitAddrs(ov.info.Addrs)
-	shownAddrs := len(real)
-	if ov.allAddrs {
-		shownAddrs += len(virtual)
-	}
-	const head, line = 52, 22
-	cards := []overviewCardSpec{
-		{"network", 150, func() { overviewNetwork(c, st) }},
-		{"disks", head + 46*float32(max(len(st.Disks), 1)), func() { overviewDisks(c, st) }},
-		{"system", head + 8*line, func() { overviewSystem(c, s) }},
-		{"addrs", head + line*float32(max(shownAddrs, 1)+1), func() { overviewAddrs(c, ov) }},
-		{"procs", head + line*float32(len(st.Procs)+1), func() { overviewProcs(c, st, a.openProcesses) }},
-	}
-	if ov.docker.shown() {
-		cards = append(cards, overviewCardSpec{"docker", dockerCardHeight(&ov.docker), func() { a.dockerCard(c, s) }})
-	}
-	const minCard, gap = 300, 12
-	cols := 1
-	if width > 0 {
-		cols = min(max(int((width+gap)/(minCard+gap)), 1), 3)
-	}
-	columns := make([][]overviewCardSpec, cols)
-	heights := make([]float32, cols)
-	for _, card := range cards {
-		i := 0
-		for j := range heights {
-			if heights[j] < heights[i]-1 {
-				i = j
-			}
-		}
-		columns[i] = append(columns[i], card)
-		heights[i] += card.height + gap
-	}
-	ui.Row(c).FillWidth().Gap(gap).AlignItems(ui.Start).Children(func() {
-		for i, col := range columns {
-			ui.Column(c.Key(i)).Grow(1).Basis(0).MinWidth(0).Gap(gap).Children(func() {
-				for _, card := range col {
-					ui.Column(c.Key(card.key)).FillWidth().Children(card.build)
-				}
-			})
+// overviewRow is a row of cards of the same width, each built by one of
+// cards. The row is as high as its highest card, and every card in it
+// stretches to that height.
+func overviewRow(c *ui.Context, key string, cards ...func()) {
+	ui.Row(c.Key(key)).Gap(overviewGap).FillWidth().AlignItems(ui.Stretch).Children(func() {
+		for i, card := range cards {
+			ui.Column(c.Key(i)).Grow(1).Basis(0).MinWidth(0).Children(card)
 		}
 	})
 }
 
+// overviewCards are the cards under the gauges, in rows of cards as high
+// as each other, as many to a row as width takes: the network, the disks
+// and the system; Docker's engine across the width; the addresses and
+// the top processes. Two to a row, the network is across the width over
+// the disks and the system; one to a row, each is under the other.
+func (a *App) overviewCards(c *ui.Context, s *Session, width float32) {
+	st, ov := &s.stats, &s.overview
+	network := func() { overviewNetwork(c, st) }
+	disks := func() { overviewDisks(c, st) }
+	system := func() { overviewSystem(c, s) }
+	addrs := func() { overviewAddrs(c, ov) }
+	procs := func() { overviewProcs(c, st, a.openProcesses) }
+	docker := func() {
+		if ov.docker.shown() {
+			ui.Column(c.Key("docker")).FillWidth().Children(func() { a.dockerCard(c, s, width) })
+		}
+	}
+	columns := overviewColumns(width)
+	switch columns {
+	case 3:
+		overviewRow(c, "machine", network, disks, system)
+	case 2:
+		overviewRow(c, "network", network)
+		overviewRow(c, "machine", disks, system)
+	default:
+		overviewRow(c, "network", network)
+		overviewRow(c, "disks", disks)
+		overviewRow(c, "system", system)
+	}
+	docker()
+	if columns > 1 {
+		overviewRow(c, "lists", addrs, procs)
+	} else {
+		overviewRow(c, "addrs", addrs)
+		overviewRow(c, "procs", procs)
+	}
+}
+
 // overviewCard is a card: an icon and a title, with actions at the
-// right, over what body builds.
+// right, over what body builds. It fills the height of its row.
 func overviewCard(c *ui.Context, icon, title string, actions, body func()) {
-	ui.Column(c).FillWidth().Background(colors.card).Border(1, colors.line).Radius(8).Padding(8, 12, 12, 12).Gap(8).Children(func() {
+	ui.Column(c).FillWidth().Grow(1).Background(colors.card).Border(1, colors.line).Radius(8).Padding(8, 12, 12, 12).Gap(8).
+		Role(ui.RoleGroup).Label(title).Children(func() {
 		ui.Row(c).Gap(7).AlignItems(ui.Center).Height(26).Children(func() {
 			ui.Icon(c, icons.Get(icon)).FontSize(14).TextColor(theme.Accent)
 			ui.Text(c, title).Bold().SingleLine().Grow(1).MinWidth(0)
@@ -447,7 +456,8 @@ func overviewCard(c *ui.Context, icon, title string, actions, body func()) {
 	})
 }
 
-// overviewNetwork is the busiest interface's speeds and their graph.
+// overviewNetwork is the busiest interface's speeds and their graph,
+// which takes the height the card's row leaves.
 func overviewNetwork(c *ui.Context, st *monitor.Stats) {
 	overviewCard(c, "arrow-down-up", locales.TabNetwork(), func() {
 		if st.Iface != "" {
@@ -464,7 +474,14 @@ func overviewNetwork(c *ui.Context, st *monitor.Stats) {
 			speed(locales.UploadDirection(), "↑", st.TxRate, colors.tx)
 			speed(locales.DownloadDirection(), "↓", st.RxRate, colors.rx)
 		})
-		widgets.BarChart(c, 64, monitor.HistoryLen, [][]float64{st.TxHist, st.RxHist}, []ui.Color{txChart, rxChart}, formatBytes)
+		const minChartHeight = 64
+		chart := ui.Box(c).Grow(1).MinHeight(minChartHeight).Clip().Role(ui.RoleImage).Label(locales.TabNetwork())
+		height := max(chart.Bounds().H, minChartHeight)
+		chart.Children(func() {
+			ui.Column(c).Absolute().Top(0).Left(0).Right(0).Children(func() {
+				widgets.BarChart(c, height, monitor.HistoryLen, [][]float64{st.TxHist, st.RxHist}, []ui.Color{txChart, rxChart}, formatBytes)
+			})
+		})
 	})
 }
 
@@ -484,7 +501,8 @@ func overviewDisks(c *ui.Context, st *monitor.Stats) {
 					ui.Text(c, fmt.Sprintf("%.0f%%", 100*frac)).FontSize(12).Bold().TextColor(usageColor(frac)).FontFeatures("tnum")
 				})
 				usageBar(c, frac)
-				widgets.Muted(c, locales.OverviewDiskUsage(formatBytes(float64(used)), formatBytes(float64(d.Avail)), formatBytes(float64(d.Size)))).FontSize(12).SingleLine()
+				usage := locales.OverviewDiskUsage(formatBytes(float64(used)), formatBytes(float64(d.Avail)), formatBytes(float64(d.Size)))
+				widgets.Muted(c, usage).FontSize(12)
 			})
 		}
 	})
@@ -547,7 +565,7 @@ func overviewSystem(c *ui.Context, s *Session) {
 					widgets.Muted(c, r.label).Width(86).Shrink(0).SingleLine()
 					ui.Column(c).Grow(1).MinWidth(0).Gap(1).Children(func() {
 						for j, v := range r.values {
-							ui.Text(c.Key(j), v).Selectable()
+							ui.Text(c.Key(j), v).MaxLines(2).Tooltip(v).Selectable()
 						}
 					})
 				})

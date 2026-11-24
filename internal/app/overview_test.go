@@ -1,6 +1,8 @@
 package app
 
 import (
+	"fmt"
+	"os"
 	"strings"
 	"testing"
 	"time"
@@ -128,6 +130,7 @@ func TestOverviewTab(t *testing.T) {
 
 	// As a panel row: the whole main area.
 	a.openPanelTab(a.sessions[0], tabOverview)
+	tt.SetSize(winW, 940)
 	tt.Frame()
 	tt.Frame()
 	if err := tt.Click(locales.OverviewShowAll(6)); err != nil {
@@ -199,6 +202,130 @@ func TestOverviewNarrow(t *testing.T) {
 		}
 	}
 	saveShot(t, tt, "overview-right-en.png")
+}
+
+func TestOverviewResponsive(t *testing.T) {
+	data, err := os.ReadFile("../monitor/testdata/docker-centos.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+	docker := monitor.ParseDocker(strings.ReplaceAll(string(data), "\r\n", "\n"))
+	if docker.NumContainers != 64 || len(docker.Containers) == 0 {
+		t.Fatalf("unexpected Docker fixture: %d containers, %d rows", docker.NumContainers, len(docker.Containers))
+	}
+	for index := len(docker.Containers); index < docker.NumContainers; index++ {
+		name := fmt.Sprintf("sample-worker-%02d", index)
+		docker.Containers = append(docker.Containers, demoContainer(name, "redis:7", time.Hour, 0.1, 24<<20))
+	}
+	for _, width := range []int{460, 1040, 1630, 2000} {
+		for _, withDocker := range []bool{true, false} {
+			variant := "no-docker"
+			var data monitor.Docker
+			if withDocker {
+				variant, data = "docker", docker
+			}
+			name := fmt.Sprintf("overview-%d-%s", width, variant)
+			t.Run(name, func(t *testing.T) {
+				a, _, tt, _ := dockerApp(t, data)
+				switch width {
+				case 460:
+					a.setPanelOnRight(true)
+					tt.SetSize(winW, 1680)
+				case 1040:
+					a.terminalPct = 24
+					tt.SetSize(winW, 1420)
+				default:
+					a.openPanelTab(a.sessions[0], tabOverview)
+					tt.SetSize(width+int(a.sideWidth), 940)
+				}
+				tt.Frame()
+				tt.Frame()
+				checkOverviewRows(t, tt, width, withDocker)
+				saveShot(t, tt, name+"-light.png")
+				tt.SetDark(true)
+				tt.Frame()
+				saveShot(t, tt, name+"-dark.png")
+				if withDocker {
+					engine, _ := tt.AccessByRole(ui.RoleGroup, locales.DockerTitle())
+					count, ok := tt.Find(locales.DockerCount(64, 64))
+					if !ok {
+						t.Fatal("container count is missing")
+					}
+					distance := count.Y - engine.Bounds.Y + engine.Bounds.H
+					tt.Scroll(engine.Bounds.X+engine.Bounds.W/2, engine.Bounds.Y+engine.Bounds.H/2, 0, distance)
+					tt.Move(0, 0)
+					tt.Frame()
+					filter, ok := tt.Access(locales.DockerFilter())
+					if !ok || filter.Bounds.H <= 0 {
+						t.Errorf("container table header is not visible after scrolling: %+v", filter.Bounds)
+					}
+					saveShot(t, tt, name+"-containers-dark.png")
+					tt.SetDark(false)
+					tt.Frame()
+					saveShot(t, tt, name+"-containers-light.png")
+				}
+			})
+		}
+	}
+}
+
+func checkOverviewRows(t *testing.T, tt *ui.Tester, width int, withDocker bool) {
+	t.Helper()
+	card := func(title string) ui.Rect {
+		item, ok := tt.AccessByRole(ui.RoleGroup, title)
+		if !ok || item.Bounds.W <= 0 || item.Bounds.H <= 0 {
+			t.Errorf("missing visible card %q: %+v", title, item.Bounds)
+		}
+		return item.Bounds
+	}
+	sameRow := func(left, right ui.Rect) {
+		if !near(left.Y, right.Y) || !near(left.H, right.H) || !near(left.X+left.W+overviewGap, right.X) {
+			t.Errorf("cards are not aligned side by side: %+v, %+v", left, right)
+		}
+	}
+	nextRow := func(above, below ui.Rect) {
+		if !near(above.Y+above.H+overviewGap, below.Y) {
+			t.Errorf("cards are not on consecutive rows: %+v, %+v", above, below)
+		}
+	}
+	network, disk, system := card(locales.TabNetwork()), card(locales.OverviewDisks()), card(locales.SystemInfo())
+	addresses, processes := card(locales.SysAddresses()), card(locales.OverviewTopProcs())
+	switch width {
+	case 460:
+		nextRow(network, disk)
+		nextRow(disk, system)
+		nextRow(addresses, processes)
+	case 1040:
+		nextRow(network, disk)
+		sameRow(disk, system)
+		sameRow(addresses, processes)
+	default:
+		sameRow(network, disk)
+		sameRow(disk, system)
+		sameRow(addresses, processes)
+		chart, ok := tt.AccessByRole(ui.RoleImage, locales.TabNetwork())
+		if !ok || chart.Bounds.H <= 64 || !near(chart.Bounds.Y+chart.Bounds.H+overviewGap+1, network.Y+network.H) {
+			t.Errorf("network chart does not fill the card: %+v in %+v", chart.Bounds, network)
+		}
+	}
+	if withDocker {
+		engine := card(locales.DockerTitle())
+		right := network.X + network.W
+		if width >= 1630 {
+			right = system.X + system.W
+		}
+		if !near(engine.X, network.X) || !near(engine.X+engine.W, right) {
+			t.Errorf("Docker card does not span the dashboard: %+v", engine)
+		}
+		nextRow(system, engine)
+		nextRow(engine, addresses)
+		wantTexts(t, tt, "Docker fixture", locales.OverviewRunning(64), locales.DockerCount(64, 64), "docker_sub_store")
+	} else {
+		if _, ok := tt.AccessByRole(ui.RoleGroup, locales.DockerTitle()); ok || tt.HasText(locales.DockerContainers()) {
+			t.Error("Docker shows on a server without it")
+		}
+		nextRow(system, addresses)
+	}
 }
 
 func TestOverviewStates(t *testing.T) {

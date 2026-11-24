@@ -126,7 +126,7 @@ func demoDocker() monitor.Docker {
 		Networks:   make([]monitor.DockerNetwork, 5),
 		Disk: []monitor.DockerDiskUsage{
 			{Type: "Images", Total: "9", Active: "6", Size: "3.214GB", Reclaimable: "1.02GB (31%)"},
-			{Type: "Containers", Total: "6", Active: "4", Size: "88.1MB", Reclaimable: "12MB (13%)"},
+			{Type: "Containers", Total: "6", Active: "4", Size: "88.1MB", Reclaimable: "12 MB (13%)"},
 			{Type: "Local Volumes", Total: "4", Active: "3", Size: "1.9GB", Reclaimable: "0B (0%)"},
 			{Type: "Build Cache", Total: "0", Active: "0", Size: "0B", Reclaimable: "0B"},
 		},
@@ -176,7 +176,8 @@ func TestOverviewDocker(t *testing.T) {
 	tt.Frame()
 	tt.Frame()
 	wantTexts(t, tt, "panel",
-		"Docker", "26.1.4 (API 1.45)", locales.DockerContainerCounts(6, 4, 1, 1), "overlay2, /var/lib/docker", "systemd, v2",
+		"Docker", "26.1.4", locales.DockerAPI("1.45"), locales.OverviewRunning(4), locales.OverviewPaused(1), locales.OverviewStopped(1),
+		"overlay2", "/var/lib/docker", "systemd, v2", "3.214GB", "5.202GB", locales.OverviewReclaimable("1.032GB"),
 		locales.DockerDiskLine("3.214GB", "1.02GB (31%)"), locales.DockerWarnings(1),
 		locales.DockerContainers(), locales.DockerCount(6, 4), "shop", locales.DockerOther(),
 		"shop-web-1", "nginx:1.27-alpine", "0.0.0.0:8080→80/tcp  +1", "172.20.0.3  +1", "12.6%", "24.0M / 512M",

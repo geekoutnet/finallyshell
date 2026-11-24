@@ -20,8 +20,8 @@ import (
 )
 
 // The Overview tab's Docker cards: when the server has Docker (or
-// Podman), a card of the engine and its disk use among the other cards,
-// and below them, across the width, the containers, grouped by Compose
+// Podman), under the other cards a strip of the engine and its disk use,
+// and below it, across the width, the containers, grouped by Compose
 // project, which a filter and the headers sort. A click on a container
 // opens its details (docker_dialog.go). It is one read, as the system
 // info is: when the tab first shows the connection, on Refresh, and when
@@ -138,22 +138,18 @@ func dockerName(d *monitor.Docker) string {
 	return locales.DockerTitle()
 }
 
-// dockerCardHeight is an estimate of the summary card's height, for
-// overviewCards to place it.
-func dockerCardHeight(ds *dockerState) float32 {
-	const head, line = 52, 22
-	if ds.d.State != monitor.DockerOK {
-		return head + 3*line
-	}
-	return head + line*float32(9+len(ds.d.Disk)+min(len(ds.d.Warnings), 1))
-}
-
-// dockerCard is the engine: its version, its counts and its disk use; or
+// dockerCard is the engine, across the width of the page, width DIPs:
+// tiles of its version, its containers, images, volumes, networks and
+// disk use, then how it is set up in a line, its warnings in a badge; or
 // why it could not be read.
-func (a *App) dockerCard(c *ui.Context, s *Session) {
+func (a *App) dockerCard(c *ui.Context, s *Session, width float32) {
 	ds := &s.overview.docker
 	d := &ds.d
+	ok := ds.read && d.State == monitor.DockerOK
 	overviewCard(c, "container", dockerName(d), func() {
+		if ok && len(d.Warnings) > 0 {
+			dockerWarningsBadge(c, d.Warnings)
+		}
 		if ds.loading {
 			ui.Box(c).Size(24, 24).Center().Children(func() { ui.Spinner(c).Label(locales.DockerReading()) })
 		} else if widgets.IconButton(c, "refresh-cw", locales.DockerRefresh()).Clicked() {
@@ -177,51 +173,147 @@ func (a *App) dockerCard(c *ui.Context, s *Session) {
 			dockerProblem(c, locales.DockerFailed(d.Error), "")
 			return
 		}
-		ui.Column(c).FillWidth().Children(func() {
+		cols := 6
+		switch inner := width - 24; {
+		case inner < 365:
+			cols = 2
+		case inner < 860:
+			cols = 3
+		}
+		ui.Grid(c).Columns(cols).Gap(8).FillWidth().Children(func() {
+			dockerTiles(c, d)
+		})
+		ui.Row(c).FillWidth().Wrap().GapX(14).GapY(2).Children(func() {
 			for i, r := range dockerSummary(d) {
-				copyRow(c.Key(i), r.label, r.value, 86, true)
+				dockerSetting(c.Key(i), r.label, r.value)
 			}
 		})
-		if len(d.Disk) > 0 {
-			ui.Row(c).Gap(10).Padding(4, 4, 0, 4).Children(func() {
-				widgets.Muted(c, locales.DockerDiskUsage()).FontSize(12).Bold().Width(86).Shrink(0).SingleLine()
-				widgets.Muted(c, locales.DockerSize()).FontSize(12).Width(64).Shrink(0).TextAlign(ui.End).SingleLine()
-				widgets.Muted(c, locales.DockerReclaimable()).FontSize(12).Grow(1).MinWidth(0).TextAlign(ui.End).SingleLine()
-			})
-			ui.Column(c).FillWidth().Children(func() {
-				for i, u := range d.Disk {
-					dockerDiskRow(c.Key(i), u)
-				}
-			})
+	})
+}
+
+// dockerTiles are the summary card's tiles: the version, the containers
+// by state, the images, volumes and networks with what their disk holds,
+// and the disk use in all, which a click copies line by line.
+func dockerTiles(c *ui.Context, d *monitor.Docker) {
+	disk := map[string]string{}
+	var size, reclaim uint64
+	var lines []string
+	for _, u := range d.Disk {
+		disk[u.Type] = u.Size
+		size += monitor.ParseSize(u.Size)
+		reclaimable, _, _ := strings.Cut(u.Reclaimable, "(")
+		reclaim += monitor.ParseSize(reclaimable)
+		lines = append(lines, diskTypeLabel(u.Type)+": "+locales.DockerDiskLine(u.Size, orDash(u.Reclaimable)))
+	}
+	text := func(s string) func() {
+		if s == "" {
+			return nil
 		}
-		if n := len(d.Warnings); n > 0 {
-			all := strings.Join(d.Warnings, "\n")
-			ui.Row(c).Gap(6).AlignItems(ui.Center).Tooltip(all).Children(func() {
-				ui.Icon(c, icons.Get("triangle-alert")).FontSize(12).TextColor(colors.gaugeBusy)
-				widgets.Muted(c, locales.DockerWarnings(n)).FontSize(12).SingleLine()
-			})
+		return func() { widgets.Muted(c, s).FontSize(12).MaxLines(2).Tooltip(s) }
+	}
+
+	var about []string
+	if d.APIVersion != "" && d.APIVersion != d.Version {
+		about = append(about, locales.DockerAPI(d.APIVersion))
+	}
+	if d.Sudo {
+		about = append(about, locales.DockerViaSudo())
+	}
+	statTile(c.Key("version"), locales.DockerVersion(), orDash(d.Version), text(strings.Join(about, ", "))).
+		Tooltip(dockerVersionText(d))
+
+	counts := locales.DockerContainerCounts(d.NumContainers, d.Running, d.Paused, d.Stopped)
+	statTile(c.Key("containers"), locales.DockerContainers(), strconv.Itoa(d.NumContainers), func() {
+		ui.Row(c).Wrap().GapX(8).GapY(2).Children(func() {
+			state := func(color ui.Color, text string) {
+				ui.Row(c).Gap(4).AlignItems(ui.Center).Children(func() {
+					widgets.StatusDot(c, color)
+					widgets.Muted(c, text).FontSize(12).SingleLine()
+				})
+			}
+			state(colors.gaugeOK, locales.OverviewRunning(d.Running))
+			state(colors.gaugeBusy, locales.OverviewPaused(d.Paused))
+			state(theme.TextMuted, locales.OverviewStopped(d.Stopped))
+		})
+	}).Tooltip(counts).Label(locales.DockerContainers() + ": " + counts)
+
+	statTile(c.Key("images"), locales.DockerImages(), strconv.Itoa(max(d.NumImages, len(d.Images))), text(disk["Images"]))
+	statTile(c.Key("volumes"), locales.DockerVolumes(), strconv.Itoa(len(d.Volumes)), text(disk["Local Volumes"]))
+	statTile(c.Key("networks"), locales.DockerNetworks(), strconv.Itoa(len(d.Networks)), nil)
+
+	if len(d.Disk) == 0 {
+		statTile(c.Key("disk"), locales.DockerDiskUsage(), "-", nil)
+		return
+	}
+	all := strings.Join(lines, "\n")
+	tile := statTile(c.Key("disk"), locales.DockerDiskUsage(), dockerSize(size), text(locales.OverviewReclaimable(dockerSize(reclaim)))).
+		Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(all).Tooltip(all)
+	if tile.Hovered() {
+		tile.Background(theme.Text.Alpha(0.08))
+	}
+	if tile.Clicked() {
+		c.WriteClipboard(all)
+		c.Toast(locales.CopiedText(locales.DockerDiskUsage()))
+	}
+}
+
+// statTile is a tile of a number: what it counts, its value large, and
+// what sub builds under it.
+func statTile(c *ui.Context, label, value string, sub func()) ui.Element {
+	return ui.Column(c).MinWidth(0).Gap(2).Padding(8, 10).Radius(6).Background(colors.overviewPage).Children(func() {
+		widgets.Muted(c, label).FontSize(12).SingleLine()
+		ui.Text(c, value).FontSize(18).Bold().SingleLine().FontFeatures("tnum")
+		if sub != nil {
+			sub()
 		}
 	})
 }
 
-// dockerDiskRow is a line of docker system df: what, its size and what
-// can be removed; a click copies it.
-func dockerDiskRow(c *ui.Context, u monitor.DockerDiskUsage) {
-	label := diskTypeLabel(u.Type)
-	line := label + ": " + locales.DockerDiskLine(u.Size, orDash(u.Reclaimable))
-	row := ui.Row(c).Gap(10).Padding(2, 4).Radius(4).AlignItems(ui.Center).FillWidth().
-		Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(line).Tooltip(locales.Copy())
+// dockerSize is n bytes as docker writes a size: at most 4 digits, in
+// units of 1000, as 5.202GB.
+func dockerSize(n uint64) string {
+	f := float64(n)
+	units := []string{"B", "kB", "MB", "GB", "TB", "PB"}
+	i := 0
+	for f >= 1000 && i < len(units)-1 {
+		f /= 1000
+		i++
+	}
+	return strconv.FormatFloat(f, 'g', 4, 64) + units[i]
+}
+
+// dockerWarningsBadge is the engine's warnings as a badge: their number,
+// all of them in its tooltip; a click copies them.
+func dockerWarningsBadge(c *ui.Context, warnings []string) {
+	all := strings.Join(warnings, "\n")
+	text := locales.DockerWarnings(len(warnings))
+	b := ui.Row(c).Gap(5).AlignItems(ui.Center).Padding(2, 8).Radius(10).Shrink(0).Background(colors.gaugeBusy.Alpha(0.14)).
+		Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(text).Tooltip(all)
+	if b.Clicked() {
+		c.WriteClipboard(all)
+		c.Toast(locales.CopiedText(text))
+	}
+	b.Children(func() {
+		ui.Icon(c, icons.Get("triangle-alert")).FontSize(12).TextColor(colors.gaugeBusy)
+		ui.Text(c, text).FontSize(12).SingleLine()
+	})
+}
+
+// dockerSetting is a setting of the engine in the line under the tiles:
+// what, and its value, which a click copies.
+func dockerSetting(c *ui.Context, label, value string) {
+	row := ui.Row(c).Gap(6).Padding(2, 4).Radius(4).AlignItems(ui.Center).Shrink(1).MinWidth(0).
+		Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(label + ": " + value).Tooltip(value)
 	if row.Hovered() {
 		row.Background(theme.Text.Alpha(0.06))
 	}
 	if row.Clicked() {
-		c.WriteClipboard(line)
+		c.WriteClipboard(value)
 		c.Toast(locales.CopiedText(label))
 	}
 	row.Children(func() {
-		widgets.Muted(c, label).Width(86).Shrink(0).SingleLine()
-		ui.Text(c, u.Size).Width(64).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
-		widgets.Muted(c, orDash(u.Reclaimable)).Grow(1).MinWidth(0).TextAlign(ui.End).SingleLine().Tooltip(u.Reclaimable).FontFeatures("tnum")
+		widgets.Muted(c, label).FontSize(12).SingleLine().Shrink(0)
+		ui.Text(c, value).FontSize(12).SingleLine().Shrink(1).MinWidth(0)
 	})
 }
 
@@ -240,8 +332,9 @@ func dockerProblem(c *ui.Context, text, detail string) {
 // labelValue is a line of a card or of the details: what, and its value.
 type labelValue struct{ label, value string }
 
-// dockerSummary is the summary card's lines.
-func dockerSummary(d *monitor.Docker) []labelValue {
+// dockerVersionText is the engine's version, with its API's and how it
+// was read: 26.1.4 (API 1.45), read with sudo.
+func dockerVersionText(d *monitor.Docker) string {
 	version := orDash(d.Version)
 	if d.APIVersion != "" && d.APIVersion != d.Version {
 		version = locales.DockerVersionAPI(version, d.APIVersion)
@@ -249,6 +342,12 @@ func dockerSummary(d *monitor.Docker) []labelValue {
 	if d.Sudo {
 		version += ", " + locales.DockerViaSudo()
 	}
+	return version
+}
+
+// dockerSummary is how the engine is set up, the line under the summary
+// card's tiles.
+func dockerSummary(d *monitor.Docker) []labelValue {
 	join := func(parts ...string) string {
 		var kept []string
 		for _, p := range parts {
@@ -267,14 +366,10 @@ func dockerSummary(d *monitor.Docker) []labelValue {
 		res = locales.DockerCPUsMem(d.CPUs, formatSize(int64(d.MemTotal)))
 	}
 	return []labelValue{
-		{locales.DockerVersion(), version},
-		{locales.DockerContainers(), locales.DockerContainerCounts(d.NumContainers, d.Running, d.Paused, d.Stopped)},
-		{locales.DockerImages(), strconv.Itoa(max(d.NumImages, len(d.Images)))},
-		{locales.DockerVolumes(), strconv.Itoa(len(d.Volumes))},
-		{locales.DockerNetworks(), strconv.Itoa(len(d.Networks))},
-		{locales.DockerStorage(), join(d.StorageDriver, d.RootDir)},
+		{locales.DockerStorage(), orDash(d.StorageDriver)},
 		{locales.DockerCgroup(), orDash(cgroup)},
 		{locales.DockerLogging(), orDash(d.LoggingDriver)},
+		{locales.DockerRootDir(), orDash(d.RootDir)},
 		{locales.DockerResources(), res},
 	}
 }

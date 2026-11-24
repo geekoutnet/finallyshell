@@ -135,6 +135,7 @@ var (
 		"x11Display",
 		"downloadDir", "askDownloadDir",
 		"terminalHighlight", "terminalRecording",
+		"alertRules", // the alerts this device shows, while it runs
 		"sync",
 		// Agreeing to download the location data, or to send the
 		// server's peers to an online service, is each device's own:

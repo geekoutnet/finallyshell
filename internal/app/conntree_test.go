@@ -392,6 +392,7 @@ func TestConnectionPageAndManager(t *testing.T) {
 		t.Errorf("page %q", connShown(a))
 	}
 	rowMenu(t, mw, "web-two", locales.Delete())
+	managerClick(t, mw, locales.Delete())
 	tt.Frame()
 	if slices.Contains(connShown(a), "  web-two") || a.manager.question != nil {
 		t.Errorf("page %q", connShown(a))

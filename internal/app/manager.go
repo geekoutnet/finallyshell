@@ -54,6 +54,7 @@ type managerState struct {
 
 	tree        ui.OutlineState[managerItem]
 	row         int // the row chosen, -1 for none
+	selection   ui.Selection[managerItem]
 	sort        ui.SortOrder
 	query       string
 	filter      string // the folder shown, "" for all
@@ -91,6 +92,8 @@ type managerPrompt struct {
 type managerQuestion struct {
 	title, body, ok func() string
 	yes             func()
+	names           []string
+	more            int
 }
 
 // reveal chooses it in the manager the next time it draws, opening the
@@ -265,11 +268,12 @@ func sortHosts(hosts []*config.Host, s ui.SortOrder) []*config.Host {
 func managerColumns(width float32) []ui.TableColumn {
 	compact := min(1, max(0, (float32(managerSpec.Width)-width)/float32(managerSpec.Width-managerSpec.MinWidth)))
 	return []ui.TableColumn{
+		{ID: "selection", Width: 38, Align: ui.Center, Fixed: true},
 		{ID: "name", Title: locales.HostColName(), Width: 230 - 70*compact, MinWidth: 140, Sortable: true},
 		{ID: "type", Title: locales.FieldHostKind(), Width: 84, MinWidth: 70, Sortable: true},
 		{ID: "host", Title: locales.HostColHost(), Width: 160 - 10*compact, MinWidth: 80, Sortable: true},
 		{ID: "port", Title: locales.HostColPort(), Width: 64 - 10*compact, MinWidth: 48, Align: ui.End, Sortable: true},
-		{ID: "user", Title: locales.HostColUser(), Width: 110, MinWidth: 60, Sortable: true},
+		{ID: "user", Title: locales.HostColUser(), Width: 110 - 28*compact, MinWidth: 60, Sortable: true},
 		{ID: "notes", Title: locales.HostColNotes(), MinWidth: 80, Sortable: true},
 	}
 }
@@ -321,6 +325,7 @@ func (a *App) managerView(c *ui.Context) {
 			} else if m.notice != nil {
 				ui.Text(c, m.notice()).TextColor(theme.TextMuted).SingleLine().MinWidth(0)
 			}
+			a.managerSelectionTools(c, m, &later)
 		})
 	})
 	for _, fn := range later {
@@ -470,6 +475,9 @@ func (m *managerState) chosen() (managerItem, bool) {
 
 // isChosen tells whether it is the item of the row chosen.
 func (m *managerState) isChosen(it managerItem) bool {
+	if m.win == WindowManager {
+		return m.selection.Has(it)
+	}
 	ch, ok := m.chosen()
 	return ok && ch == it
 }
@@ -561,13 +569,19 @@ func (a *App) treeDropZone(m *managerState, later *[]func(), over *managerItem) 
 func (a *App) finishTree(c *ui.Context, m *managerState, tree ui.Element, choose int, later *[]func()) {
 	if choose >= 0 {
 		m.row = choose
+		if m.win == WindowManager {
+			m.selectOnly(m.tree.Item(choose))
+		}
 		m.tree.List.ScrollIntoView(choose)
 	}
 	if m.focus && m.tree.List.Focus(c) {
 		m.focus = false
 	}
+	if m.win == WindowManager && a.managerSelectionKeys(c, m, later) {
+		return
+	}
 	it, ok := m.chosen()
-	if !ok {
+	if !ok || !m.isChosen(it) {
 		return
 	}
 	switch {
@@ -591,26 +605,45 @@ func (a *App) managerTable(c *ui.Context, later *[]func()) {
 	m := &a.manager
 	t := a.newManagerTree(m)
 	choose := a.treeFrame(c, m, t)
+	visible := flatItems(t)
+	m.keepVisibleSelection(visible)
 	over := managerItem{}
 	m.tree.List.Sort = &m.sort
+	m.tree.List.Selection = &m.selection
+	m.tree.List.HeaderCell = func(_ ui.Element, col int) {
+		if col == 0 {
+			m.managerSelectionHeader(c, visible)
+		}
+	}
 	m.tree.List.CellMenu = func(menu *ui.Menu, row, _ int) {
 		if row < 0 || row >= m.tree.Rows() {
 			return
 		}
+		it := m.tree.Item(row)
+		if m.selection.Len() > 1 && m.selection.Has(it) {
+			a.managerSelectionMenu(menu, m, m.selectedRows(), later)
+			return
+		}
 		*later = append(*later, func() { m.row = row })
-		a.managerItemMenu(c, m, menu, m.tree.Item(row), later)
+		a.managerItemMenu(c, m, menu, it, later)
 	}
 	// A drop on a folder's row goes into the folder, on a host's into its
 	// folder, and past the rows to the top of what the tree shows.
 	dropZone := a.treeDropZone(m, later, &over)
 	width, _ := c.Size()
+	var prefix ui.OutlineRow
+	m.tree.Prefix = func(row ui.OutlineRow) { prefix = row }
 	table := ui.OutlineTable(c, &m.tree, managerColumns(width), t.roots(), t.children, func(it managerItem, col int) {
+		if col == 0 {
+			a.managerRowCheckbox(c, m, it)
+			return
+		}
 		chosen := m.isChosen(it)
 		// The cell's padding included, for drops to land on the row.
 		padY, padX := theme.Space(1.5), theme.Space(2.5)
 		cell := ui.Row(c).Grow(1).MinWidth(0).Gap(6).AlignItems(ui.Center).AlignSelf(ui.Stretch).
 			Margin(-padY, -padX, -padY, 0).Padding(padY, padX, padY, 0)
-		if col > 0 {
+		if col > 1 {
 			cell.Margin(-padY, -padX).Padding(padY, padX)
 		}
 		if it == m.over && it != (managerItem{}) {
@@ -623,7 +656,8 @@ func (a *App) managerTable(c *ui.Context, later *[]func()) {
 			}
 			dropZone(cell, it, f.ID)
 			cell.Children(func() {
-				if col == 0 {
+				if col == 1 {
+					managerDisclosure(c, prefix, chosen)
 					ui.Icon(c, icons.Get("folder")).FontSize(15).TextColor(folderColor)
 					ui.Text(c, f.Name).SingleLine().MinWidth(0)
 				}
@@ -649,23 +683,24 @@ func (a *App) managerTable(c *ui.Context, later *[]func()) {
 				ui.Text(c, s).SingleLine().TextColor(color).MinWidth(0)
 			}
 			switch col {
-			case 0:
+			case 1:
+				managerDisclosure(c, prefix, chosen)
 				if h.Deleted() {
 					ui.Icon(c, icons.Get("trash-2")).FontSize(14).TextColor(color.Alpha(0.75))
 				} else {
 					hostIcon(c, h, chosen, color)
 				}
 				text(h.Title())
-			case 1:
-				kindPill(c, h, chosen, color)
 			case 2:
-				text(h.Addr)
+				kindPill(c, h, chosen, color)
 			case 3:
+				text(h.Addr)
+			case 4:
 				ui.Spacer(c)
 				text(strconv.Itoa(h.PortOr22()))
-			case 4:
-				text(h.User)
 			case 5:
+				text(h.User)
+			case 6:
 				notes, _, _ := strings.Cut(h.Notes, "\n")
 				text(notes)
 			}
@@ -949,11 +984,11 @@ func (a *App) deleteItem(m *managerState, it managerItem) {
 		m.question = &managerQuestion{title: title, body: body, ok: locales.DeleteForever, yes: func() {
 			a.deleteHostForever(h)
 		}}
-	case len(users) > 0 || m.win != WindowManager:
+	default:
 		title := func() string { return locales.DeleteHostTitle(h.Title()) }
 		body := func() string {
 			var parts []string
-			if m.win != WindowManager {
+			if len(users) == 0 || m.win != WindowManager {
 				parts = append(parts, locales.DeleteHostBody())
 			}
 			if len(users) > 0 {
@@ -965,9 +1000,6 @@ func (a *App) deleteItem(m *managerState, it managerItem) {
 			a.hosts.SoftDelete(h.ID, time.Now())
 			a.saveFromTree(m)
 		}}
-	default:
-		a.hosts.SoftDelete(h.ID, time.Now())
-		a.saveFromTree(m)
 	}
 }
 
@@ -1005,12 +1037,16 @@ func (a *App) restoreHost(m *managerState, h *config.Host) {
 // elsewhere for the host, as its password in the system's keychain, goes
 // with it. Sessions open to h keep it until they close.
 func (a *App) deleteHostForever(h *config.Host) {
+	a.removeHostForever(h)
+	a.saveFromManager()
+}
+
+func (a *App) removeHostForever(h *config.Host) {
 	a.hosts.Remove(h.ID)
 	delete(a.passwords, h.ID)
 	delete(a.passwords, proxySecretKey(h.ID))
 	a.deleteHostSecrets(h.ID)
 	a.deleteHostHistory(h.ID)
-	a.saveFromManager()
 }
 
 // duplicateHost adds a copy of h after it, with its proxy or jump host,
@@ -1044,6 +1080,14 @@ func (a *App) moveItems(m *managerState, items managerDrag, folder string) {
 		return
 	}
 	path := a.hosts.FolderPath(folder)
+	if len(items) > 1 {
+		for _, ancestor := range path {
+			if slices.Contains(items, managerItem{folder: ancestor.ID}) {
+				return
+			}
+		}
+		items = a.managerDragRoots(items)
+	}
 	moved := false
 	for _, it := range items {
 		if h := a.hosts.Host(it.host); it.isHost() {
@@ -1109,10 +1153,25 @@ func (a *App) managerQuestionView(c *ui.Context, m *managerState) {
 		return
 	}
 	open := true
+	_, height := c.Size()
 	ui.Modal(c, &open, func() {
 		ui.Column(c).Width(400).Gap(12).Children(func() {
 			ui.Text(c, q.title()).FontSize(15).Bold()
-			ui.Text(c, q.body())
+			if len(q.names) == 0 {
+				ui.Text(c, q.body())
+			} else {
+				ui.Text(c, q.body())
+				ui.Scroll(c).FillWidth().MaxHeight(max(80, height-240)).Children(func() {
+					ui.Column(c).FillWidth().Gap(2).Padding(8, 10).Background(theme.Surface).Radius(4).Children(func() {
+						for _, name := range q.names {
+							ui.Text(c, name).SingleLine().MinWidth(0)
+						}
+						if q.more > 0 {
+							widgets.Muted(c, locales.CmdBarMore(q.more))
+						}
+					})
+				})
+			}
 			ui.Row(c).Gap(8).Justify(ui.End).Children(func() {
 				if ui.Button(c, locales.Cancel()).Clicked() {
 					open = false

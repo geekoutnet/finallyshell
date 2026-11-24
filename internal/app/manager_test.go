@@ -442,6 +442,7 @@ func TestManagerSoftDeleteAndRestore(t *testing.T) {
 	a, p, tt := openTestManager(t)
 	saved := savedHosts(a)
 	rowMenu(t, tt, "web-2", locales.Delete())
+	managerClick(t, tt, locales.Delete())
 	h := a.hosts.Host("web-2")
 	if !h.Deleted() || slices.Contains(shown(a), "  web-2") || !strings.Contains(string(*saved), `"deletedAt"`) {
 		t.Fatalf("deleted %v; rows %q", h.DeletedAt, shown(a))
@@ -449,6 +450,7 @@ func TestManagerSoftDeleteAndRestore(t *testing.T) {
 	// The Delete key, on the host chosen.
 	tt.ClickAt(rowCenter(t, tt, "vps"))
 	tt.Key(0, ui.KeyDelete)
+	managerClick(t, tt, locales.Delete())
 	if !a.hosts.Host("vps").Deleted() {
 		t.Fatal("Delete deleted nothing")
 	}

@@ -6080,6 +6080,146 @@ func (msgs Messages) DeleteForeverBody() string {
 	return Catalog.Format(msgs.locale, "deleteForeverBody", nil)
 }
 
+// ManagerSelectRow says "Select {name}"
+// in the language the app shows.
+func ManagerSelectRow(name string) string { return In(i18n.Locale()).ManagerSelectRow(name) }
+
+// ManagerSelectRow says "Select {name}"
+// in the language of msgs.
+func (msgs Messages) ManagerSelectRow(name string) string {
+	return Catalog.Format(msgs.locale, "managerSelectRow", map[string]any{"name": name})
+}
+
+// ManagerSelectedCount says "{count, plural, one {# item selected} other {# items selected}}"
+// in the language the app shows.
+func ManagerSelectedCount(count int) string { return In(i18n.Locale()).ManagerSelectedCount(count) }
+
+// ManagerSelectedCount says "{count, plural, one {# item selected} other {# items selected}}"
+// in the language of msgs.
+func (msgs Messages) ManagerSelectedCount(count int) string {
+	return Catalog.Format(msgs.locale, "managerSelectedCount", map[string]any{"count": count})
+}
+
+// ManagerDeleteCount says "Delete ({count})"
+// in the language the app shows.
+func ManagerDeleteCount(count int) string { return In(i18n.Locale()).ManagerDeleteCount(count) }
+
+// ManagerDeleteCount says "Delete ({count})"
+// in the language of msgs.
+func (msgs Messages) ManagerDeleteCount(count int) string {
+	return Catalog.Format(msgs.locale, "managerDeleteCount", map[string]any{"count": count})
+}
+
+// ManagerDeleteForeverCount says "Delete permanently ({count})"
+// in the language the app shows.
+func ManagerDeleteForeverCount(count int) string {
+	return In(i18n.Locale()).ManagerDeleteForeverCount(count)
+}
+
+// ManagerDeleteForeverCount says "Delete permanently ({count})"
+// in the language of msgs.
+func (msgs Messages) ManagerDeleteForeverCount(count int) string {
+	return Catalog.Format(msgs.locale, "managerDeleteForeverCount", map[string]any{"count": count})
+}
+
+// ManagerDeleteSelected says "{count, plural, one {Delete # selected item} other {Delete # selected items}}"
+// in the language the app shows.
+func ManagerDeleteSelected(count int) string { return In(i18n.Locale()).ManagerDeleteSelected(count) }
+
+// ManagerDeleteSelected says "{count, plural, one {Delete # selected item} other {Delete # selected items}}"
+// in the language of msgs.
+func (msgs Messages) ManagerDeleteSelected(count int) string {
+	return Catalog.Format(msgs.locale, "managerDeleteSelected", map[string]any{"count": count})
+}
+
+// ManagerRestoreSelected says "{count, plural, one {Restore # selected connection} other {Restore # selected connections}}"
+// in the language the app shows.
+func ManagerRestoreSelected(count int) string { return In(i18n.Locale()).ManagerRestoreSelected(count) }
+
+// ManagerRestoreSelected says "{count, plural, one {Restore # selected connection} other {Restore # selected connections}}"
+// in the language of msgs.
+func (msgs Messages) ManagerRestoreSelected(count int) string {
+	return Catalog.Format(msgs.locale, "managerRestoreSelected", map[string]any{"count": count})
+}
+
+// ManagerDeleteSelectedTitle says "{count, plural, one {Delete # selected item?} other {Delete # selected items?}}"
+// in the language the app shows.
+func ManagerDeleteSelectedTitle(count int) string {
+	return In(i18n.Locale()).ManagerDeleteSelectedTitle(count)
+}
+
+// ManagerDeleteSelectedTitle says "{count, plural, one {Delete # selected item?} other {Delete # selected items?}}"
+// in the language of msgs.
+func (msgs Messages) ManagerDeleteSelectedTitle(count int) string {
+	return Catalog.Format(msgs.locale, "managerDeleteSelectedTitle", map[string]any{"count": count})
+}
+
+// ManagerTrashTitle says "{count, plural, one {Move # connection to Deleted?} other {Move # connections to Deleted?}}"
+// in the language the app shows.
+func ManagerTrashTitle(count int) string { return In(i18n.Locale()).ManagerTrashTitle(count) }
+
+// ManagerTrashTitle says "{count, plural, one {Move # connection to Deleted?} other {Move # connections to Deleted?}}"
+// in the language of msgs.
+func (msgs Messages) ManagerTrashTitle(count int) string {
+	return Catalog.Format(msgs.locale, "managerTrashTitle", map[string]any{"count": count})
+}
+
+// ManagerTrashBody says "{count, plural, one {# connection will move to Deleted, where you can restore it.} other {# connections will move to …"
+// in the language the app shows.
+func ManagerTrashBody(count int) string { return In(i18n.Locale()).ManagerTrashBody(count) }
+
+// ManagerTrashBody says "{count, plural, one {# connection will move to Deleted, where you can restore it.} other {# connections will move to …"
+// in the language of msgs.
+func (msgs Messages) ManagerTrashBody(count int) string {
+	return Catalog.Format(msgs.locale, "managerTrashBody", map[string]any{"count": count})
+}
+
+// ManagerDeleteFoldersBody says "Selected folders are removed. Their unselected contents move up to the nearest remaining parent folder, or to the top…"
+// in the language the app shows.
+func ManagerDeleteFoldersBody() string { return In(i18n.Locale()).ManagerDeleteFoldersBody() }
+
+// ManagerDeleteFoldersBody says "Selected folders are removed. Their unselected contents move up to the nearest remaining parent folder, or to the top…"
+// in the language of msgs.
+func (msgs Messages) ManagerDeleteFoldersBody() string {
+	return Catalog.Format(msgs.locale, "managerDeleteFoldersBody", nil)
+}
+
+// ManagerDeleteForeverSelectionTitle says "{count, plural, one {Permanently delete # connection?} other {Permanently delete # connections?}}"
+// in the language the app shows.
+func ManagerDeleteForeverSelectionTitle(count int) string {
+	return In(i18n.Locale()).ManagerDeleteForeverSelectionTitle(count)
+}
+
+// ManagerDeleteForeverSelectionTitle says "{count, plural, one {Permanently delete # connection?} other {Permanently delete # connections?}}"
+// in the language of msgs.
+func (msgs Messages) ManagerDeleteForeverSelectionTitle(count int) string {
+	return Catalog.Format(msgs.locale, "managerDeleteForeverSelectionTitle", map[string]any{"count": count})
+}
+
+// ManagerDeleteForeverSelectionBody says "{count, plural, one {# connection will be permanently deleted and cannot be restored.} other {# connections will be p…"
+// in the language the app shows.
+func ManagerDeleteForeverSelectionBody(count int) string {
+	return In(i18n.Locale()).ManagerDeleteForeverSelectionBody(count)
+}
+
+// ManagerDeleteForeverSelectionBody says "{count, plural, one {# connection will be permanently deleted and cannot be restored.} other {# connections will be p…"
+// in the language of msgs.
+func (msgs Messages) ManagerDeleteForeverSelectionBody(count int) string {
+	return Catalog.Format(msgs.locale, "managerDeleteForeverSelectionBody", map[string]any{"count": count})
+}
+
+// ManagerDeleteJumpWarning says "{count, plural, one {# other connection uses a selected jump host and will not be able to connect.} other {# other co…"
+// in the language the app shows.
+func ManagerDeleteJumpWarning(count int) string {
+	return In(i18n.Locale()).ManagerDeleteJumpWarning(count)
+}
+
+// ManagerDeleteJumpWarning says "{count, plural, one {# other connection uses a selected jump host and will not be able to connect.} other {# other co…"
+// in the language of msgs.
+func (msgs Messages) ManagerDeleteJumpWarning(count int) string {
+	return Catalog.Format(msgs.locale, "managerDeleteJumpWarning", map[string]any{"count": count})
+}
+
 // ManagerEmpty says "No connections yet. Click New connection to add one."
 // in the language the app shows.
 func ManagerEmpty() string { return In(i18n.Locale()).ManagerEmpty() }

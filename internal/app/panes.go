@@ -60,6 +60,8 @@ type pane struct {
 	find  findState          // the find bar over its terminal
 	shell shellDirState      // its shell's folder and foreground program
 	title string             // the title a local terminal's program set
+
+	stream atomic.Pointer[terminalStream]
 	// stop ends its shell's follower: nil while none runs.
 	stop context.CancelFunc
 	// pick is which of the connection's shells this pane's is, as its

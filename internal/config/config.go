@@ -190,7 +190,9 @@ type Settings struct {
 	// TermBackgroundOpacity is how much of the image shows through the
 	// color scheme's background, in percent from 1 to 100: 0 for
 	// DefaultBackgroundOpacity.
-	TermBackgroundOpacity float32 `json:"termBackgroundOpacity,omitempty"`
+	TermBackgroundOpacity float32            `json:"termBackgroundOpacity,omitempty"`
+	Highlight             *TerminalHighlight `json:"terminalHighlight,omitempty"`
+	Recording             *TerminalRecording `json:"terminalRecording,omitempty"`
 
 	// The Transfers page of the options.
 	//

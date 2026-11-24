@@ -239,6 +239,12 @@ Details of each option are in [features.md](features.md): see
 [Command editor](features.md#command-editor) and
 [Layout and split dividers](features.md#layout-and-split-dividers).
 
+### Terminal stream settings
+
+- `terminalHighlight`: this device's optional object with `disabled`, `useCustom` and `rules`. Without `useCustom`, built-in rules apply. A custom rule has `pattern`, `regex`, `caseSensitive`, `color`, `bold`, `underline` and an optional `host` ID; an empty host applies to all hosts.
+- `terminalRecording`: this device's optional object with `automatic`, `text`, `folder` and `limitMiB`. Automatic recording and text logs default to off. The default folder is `recordings/` under the config directory, and the default rotation limit is 64 MiB per file (range 1–512 MiB).
+- `.cast` files and optional `.txt` companions are created in a host-specific subfolder. Their names start with the local date and time (`yyyy-mm-dd_HH-MM-SS`); extra parts get a numbered suffix. New parts never replace existing files. Terminal stream settings save a `settings.json.bak-<yyyymmddHHMMSS>` copy before replacing existing settings.
+
 ## Sync
 
 The Sync page of the options (see [Sync](features.md#sync)) is the `sync`

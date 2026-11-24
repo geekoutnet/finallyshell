@@ -1062,6 +1062,34 @@ does not free memory held by running apps. The result compares observed
 before and after readings, not a guaranteed amount freed. Swap is
 read-only in this card.
 
+### Docker tab › Compose
+
+Select **Compose** in the Docker tab to inspect projects and their service
+containers. The project list shows how many containers are running. The
+service table supports filtering, sorting, and selecting multiple rows to
+act on their services. The app prefers Docker Compose v2 and uses container
+labels when enumeration is unavailable, including with Docker Compose v1
+and `podman-compose`. Unsupported options explain why they are disabled.
+
+Deploy, start, stop, restart, pull, or pull and recreate from the project or
+service menu. Validate saved configuration before deploying and view or
+follow logs per project or service. Operations stream output; canceling
+closes the SSH command channel, but work already started on the server may
+continue. The app refreshes Compose and Overview after changes.
+
+Open the Compose files or `.env` in the remote SFTP editor. After saving,
+return to the project to validate or deploy. **New project** writes
+`compose.yaml` and an optional `.env`, never overwriting existing files.
+It asks before using a nonempty directory, tries noninteractive sudo where
+SFTP cannot write, and can deploy after validation. The app remembers its
+projects locally so even undeployed projects remain listed.
+
+**Take down** removes the project's containers and networks. Volumes and
+images are kept unless explicitly selected; the confirmation lists volumes
+found by project label when available. **Delete project** can also
+remove an app-created directory after you type its project name; everything
+under that path, including bind-mounted data stored there, will be lost.
+
 <a id="terminal-section"></a>
 
 ## Terminal

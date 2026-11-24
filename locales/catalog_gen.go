@@ -13556,6 +13556,688 @@ func (msgs Messages) DockerSecLabels() string {
 	return Catalog.Format(msgs.locale, "dockerSecLabels", nil)
 }
 
+// DockerCmpEmpty says "No Compose projects on this connection"
+// in the language the app shows.
+func DockerCmpEmpty() string { return In(i18n.Locale()).DockerCmpEmpty() }
+
+// DockerCmpEmpty says "No Compose projects on this connection"
+// in the language of msgs.
+func (msgs Messages) DockerCmpEmpty() string {
+	return Catalog.Format(msgs.locale, "dockerCmpEmpty", nil)
+}
+
+// DockerCmpProjects says "Projects"
+// in the language the app shows.
+func DockerCmpProjects() string { return In(i18n.Locale()).DockerCmpProjects() }
+
+// DockerCmpProjects says "Projects"
+// in the language of msgs.
+func (msgs Messages) DockerCmpProjects() string {
+	return Catalog.Format(msgs.locale, "dockerCmpProjects", nil)
+}
+
+// DockerCmpProjectCount says "{count, plural, one {# project} other {# projects}}"
+// in the language the app shows.
+func DockerCmpProjectCount(count int) string { return In(i18n.Locale()).DockerCmpProjectCount(count) }
+
+// DockerCmpProjectCount says "{count, plural, one {# project} other {# projects}}"
+// in the language of msgs.
+func (msgs Messages) DockerCmpProjectCount(count int) string {
+	return Catalog.Format(msgs.locale, "dockerCmpProjectCount", map[string]any{"count": count})
+}
+
+// DockerCmpPicked says "{count, plural, one {# selected} other {# selected}}"
+// in the language the app shows.
+func DockerCmpPicked(count int) string { return In(i18n.Locale()).DockerCmpPicked(count) }
+
+// DockerCmpPicked says "{count, plural, one {# selected} other {# selected}}"
+// in the language of msgs.
+func (msgs Messages) DockerCmpPicked(count int) string {
+	return Catalog.Format(msgs.locale, "dockerCmpPicked", map[string]any{"count": count})
+}
+
+// DockerCmpFilter says "Filter services…"
+// in the language the app shows.
+func DockerCmpFilter() string { return In(i18n.Locale()).DockerCmpFilter() }
+
+// DockerCmpFilter says "Filter services…"
+// in the language of msgs.
+func (msgs Messages) DockerCmpFilter() string {
+	return Catalog.Format(msgs.locale, "dockerCmpFilter", nil)
+}
+
+// DockerCmpNew says "New project"
+// in the language the app shows.
+func DockerCmpNew() string { return In(i18n.Locale()).DockerCmpNew() }
+
+// DockerCmpNew says "New project"
+// in the language of msgs.
+func (msgs Messages) DockerCmpNew() string {
+	return Catalog.Format(msgs.locale, "dockerCmpNew", nil)
+}
+
+// DockerCmpNoDocker says "Docker Compose is unavailable: neither ‘docker compose’ nor ‘docker-compose’ is installed or accessible."
+// in the language the app shows.
+func DockerCmpNoDocker() string { return In(i18n.Locale()).DockerCmpNoDocker() }
+
+// DockerCmpNoDocker says "Docker Compose is unavailable: neither ‘docker compose’ nor ‘docker-compose’ is installed or accessible."
+// in the language of msgs.
+func (msgs Messages) DockerCmpNoDocker() string {
+	return Catalog.Format(msgs.locale, "dockerCmpNoDocker", nil)
+}
+
+// DockerCmpNoPodman says "Podman Compose is unavailable: ‘podman-compose’ is not installed or accessible."
+// in the language the app shows.
+func DockerCmpNoPodman() string { return In(i18n.Locale()).DockerCmpNoPodman() }
+
+// DockerCmpNoPodman says "Podman Compose is unavailable: ‘podman-compose’ is not installed or accessible."
+// in the language of msgs.
+func (msgs Messages) DockerCmpNoPodman() string {
+	return Catalog.Format(msgs.locale, "dockerCmpNoPodman", nil)
+}
+
+// DockerCmpRegistryFailed says "Could not access the local Compose project list"
+// in the language the app shows.
+func DockerCmpRegistryFailed() string { return In(i18n.Locale()).DockerCmpRegistryFailed() }
+
+// DockerCmpRegistryFailed says "Could not access the local Compose project list"
+// in the language of msgs.
+func (msgs Messages) DockerCmpRegistryFailed() string {
+	return Catalog.Format(msgs.locale, "dockerCmpRegistryFailed", nil)
+}
+
+// DockerCmpLabelsFallback says "Using container labels"
+// in the language the app shows.
+func DockerCmpLabelsFallback() string { return In(i18n.Locale()).DockerCmpLabelsFallback() }
+
+// DockerCmpLabelsFallback says "Using container labels"
+// in the language of msgs.
+func (msgs Messages) DockerCmpLabelsFallback() string {
+	return Catalog.Format(msgs.locale, "dockerCmpLabelsFallback", nil)
+}
+
+// DockerCmpNotDeployed says "Not deployed"
+// in the language the app shows.
+func DockerCmpNotDeployed() string { return In(i18n.Locale()).DockerCmpNotDeployed() }
+
+// DockerCmpNotDeployed says "Not deployed"
+// in the language of msgs.
+func (msgs Messages) DockerCmpNotDeployed() string {
+	return Catalog.Format(msgs.locale, "dockerCmpNotDeployed", nil)
+}
+
+// DockerCmpStopped says "Stopped"
+// in the language the app shows.
+func DockerCmpStopped() string { return In(i18n.Locale()).DockerCmpStopped() }
+
+// DockerCmpStopped says "Stopped"
+// in the language of msgs.
+func (msgs Messages) DockerCmpStopped() string {
+	return Catalog.Format(msgs.locale, "dockerCmpStopped", nil)
+}
+
+// DockerCmpProjectStopped says "{count, plural, one {# stopped} other {# stopped}}"
+// in the language the app shows.
+func DockerCmpProjectStopped(count int) string {
+	return In(i18n.Locale()).DockerCmpProjectStopped(count)
+}
+
+// DockerCmpProjectStopped says "{count, plural, one {# stopped} other {# stopped}}"
+// in the language of msgs.
+func (msgs Messages) DockerCmpProjectStopped(count int) string {
+	return Catalog.Format(msgs.locale, "dockerCmpProjectStopped", map[string]any{"count": count})
+}
+
+// DockerCmpRunning says "{running}/{total} running"
+// in the language the app shows.
+func DockerCmpRunning(running int, total int) string {
+	return In(i18n.Locale()).DockerCmpRunning(running, total)
+}
+
+// DockerCmpRunning says "{running}/{total} running"
+// in the language of msgs.
+func (msgs Messages) DockerCmpRunning(running int, total int) string {
+	return Catalog.Format(msgs.locale, "dockerCmpRunning", map[string]any{"running": running, "total": total})
+}
+
+// DockerCmpMetadata says "The project’s working directory or local Compose files are unknown or invalid."
+// in the language the app shows.
+func DockerCmpMetadata() string { return In(i18n.Locale()).DockerCmpMetadata() }
+
+// DockerCmpMetadata says "The project’s working directory or local Compose files are unknown or invalid."
+// in the language of msgs.
+func (msgs Messages) DockerCmpMetadata() string {
+	return Catalog.Format(msgs.locale, "dockerCmpMetadata", nil)
+}
+
+// DockerCmpService says "Service"
+// in the language the app shows.
+func DockerCmpService() string { return In(i18n.Locale()).DockerCmpService() }
+
+// DockerCmpService says "Service"
+// in the language of msgs.
+func (msgs Messages) DockerCmpService() string {
+	return Catalog.Format(msgs.locale, "dockerCmpService", nil)
+}
+
+// DockerCmpServiceRunning says "Running"
+// in the language the app shows.
+func DockerCmpServiceRunning() string { return In(i18n.Locale()).DockerCmpServiceRunning() }
+
+// DockerCmpServiceRunning says "Running"
+// in the language of msgs.
+func (msgs Messages) DockerCmpServiceRunning() string {
+	return Catalog.Format(msgs.locale, "dockerCmpServiceRunning", nil)
+}
+
+// DockerCmpServiceHealth says "Running ({health})"
+// in the language the app shows.
+func DockerCmpServiceHealth(health string) string {
+	return In(i18n.Locale()).DockerCmpServiceHealth(health)
+}
+
+// DockerCmpServiceHealth says "Running ({health})"
+// in the language of msgs.
+func (msgs Messages) DockerCmpServiceHealth(health string) string {
+	return Catalog.Format(msgs.locale, "dockerCmpServiceHealth", map[string]any{"health": health})
+}
+
+// DockerCmpServices says "Compose services"
+// in the language the app shows.
+func DockerCmpServices() string { return In(i18n.Locale()).DockerCmpServices() }
+
+// DockerCmpServices says "Compose services"
+// in the language of msgs.
+func (msgs Messages) DockerCmpServices() string {
+	return Catalog.Format(msgs.locale, "dockerCmpServices", nil)
+}
+
+// DockerCmpCreated says "Created"
+// in the language the app shows.
+func DockerCmpCreated() string { return In(i18n.Locale()).DockerCmpCreated() }
+
+// DockerCmpCreated says "Created"
+// in the language of msgs.
+func (msgs Messages) DockerCmpCreated() string {
+	return Catalog.Format(msgs.locale, "dockerCmpCreated", nil)
+}
+
+// DockerCmpCanceled says "Output stopped. Check the project’s state before retrying; remote work may have continued."
+// in the language the app shows.
+func DockerCmpCanceled() string { return In(i18n.Locale()).DockerCmpCanceled() }
+
+// DockerCmpCanceled says "Output stopped. Check the project’s state before retrying; remote work may have continued."
+// in the language of msgs.
+func (msgs Messages) DockerCmpCanceled() string {
+	return Catalog.Format(msgs.locale, "dockerCmpCanceled", nil)
+}
+
+// DockerCmpBusy says "Wait for the current Docker operation to finish."
+// in the language the app shows.
+func DockerCmpBusy() string { return In(i18n.Locale()).DockerCmpBusy() }
+
+// DockerCmpBusy says "Wait for the current Docker operation to finish."
+// in the language of msgs.
+func (msgs Messages) DockerCmpBusy() string {
+	return Catalog.Format(msgs.locale, "dockerCmpBusy", nil)
+}
+
+// DockerCmpServiceState says "No selected containers are in a state that supports this action."
+// in the language the app shows.
+func DockerCmpServiceState() string { return In(i18n.Locale()).DockerCmpServiceState() }
+
+// DockerCmpServiceState says "No selected containers are in a state that supports this action."
+// in the language of msgs.
+func (msgs Messages) DockerCmpServiceState() string {
+	return Catalog.Format(msgs.locale, "dockerCmpServiceState", nil)
+}
+
+// DockerCmpDeploy says "Deploy"
+// in the language the app shows.
+func DockerCmpDeploy() string { return In(i18n.Locale()).DockerCmpDeploy() }
+
+// DockerCmpDeploy says "Deploy"
+// in the language of msgs.
+func (msgs Messages) DockerCmpDeploy() string {
+	return Catalog.Format(msgs.locale, "dockerCmpDeploy", nil)
+}
+
+// DockerCmpPull says "Pull images"
+// in the language the app shows.
+func DockerCmpPull() string { return In(i18n.Locale()).DockerCmpPull() }
+
+// DockerCmpPull says "Pull images"
+// in the language of msgs.
+func (msgs Messages) DockerCmpPull() string {
+	return Catalog.Format(msgs.locale, "dockerCmpPull", nil)
+}
+
+// DockerCmpRecreate says "Pull and recreate"
+// in the language the app shows.
+func DockerCmpRecreate() string { return In(i18n.Locale()).DockerCmpRecreate() }
+
+// DockerCmpRecreate says "Pull and recreate"
+// in the language of msgs.
+func (msgs Messages) DockerCmpRecreate() string {
+	return Catalog.Format(msgs.locale, "dockerCmpRecreate", nil)
+}
+
+// DockerCmpDown says "Take down"
+// in the language the app shows.
+func DockerCmpDown() string { return In(i18n.Locale()).DockerCmpDown() }
+
+// DockerCmpDown says "Take down"
+// in the language of msgs.
+func (msgs Messages) DockerCmpDown() string {
+	return Catalog.Format(msgs.locale, "dockerCmpDown", nil)
+}
+
+// DockerCmpValidate says "Validate"
+// in the language the app shows.
+func DockerCmpValidate() string { return In(i18n.Locale()).DockerCmpValidate() }
+
+// DockerCmpValidate says "Validate"
+// in the language of msgs.
+func (msgs Messages) DockerCmpValidate() string {
+	return Catalog.Format(msgs.locale, "dockerCmpValidate", nil)
+}
+
+// DockerCmpActions says "Actions"
+// in the language the app shows.
+func DockerCmpActions() string { return In(i18n.Locale()).DockerCmpActions() }
+
+// DockerCmpActions says "Actions"
+// in the language of msgs.
+func (msgs Messages) DockerCmpActions() string {
+	return Catalog.Format(msgs.locale, "dockerCmpActions", nil)
+}
+
+// DockerCmpTerminalReason says "Select one running container with an available terminal pane."
+// in the language the app shows.
+func DockerCmpTerminalReason() string { return In(i18n.Locale()).DockerCmpTerminalReason() }
+
+// DockerCmpTerminalReason says "Select one running container with an available terminal pane."
+// in the language of msgs.
+func (msgs Messages) DockerCmpTerminalReason() string {
+	return Catalog.Format(msgs.locale, "dockerCmpTerminalReason", nil)
+}
+
+// DockerCmpSftpRequired says "A working SFTP connection is required to edit files."
+// in the language the app shows.
+func DockerCmpSftpRequired() string { return In(i18n.Locale()).DockerCmpSftpRequired() }
+
+// DockerCmpSftpRequired says "A working SFTP connection is required to edit files."
+// in the language of msgs.
+func (msgs Messages) DockerCmpSftpRequired() string {
+	return Catalog.Format(msgs.locale, "dockerCmpSftpRequired", nil)
+}
+
+// DockerCmpEdit says "Edit {file}"
+// in the language the app shows.
+func DockerCmpEdit(file string) string { return In(i18n.Locale()).DockerCmpEdit(file) }
+
+// DockerCmpEdit says "Edit {file}"
+// in the language of msgs.
+func (msgs Messages) DockerCmpEdit(file string) string {
+	return Catalog.Format(msgs.locale, "dockerCmpEdit", map[string]any{"file": file})
+}
+
+// DockerCmpDelete says "Delete project"
+// in the language the app shows.
+func DockerCmpDelete() string { return In(i18n.Locale()).DockerCmpDelete() }
+
+// DockerCmpDelete says "Delete project"
+// in the language of msgs.
+func (msgs Messages) DockerCmpDelete() string {
+	return Catalog.Format(msgs.locale, "dockerCmpDelete", nil)
+}
+
+// DockerCmpDeleteType says "Type {project} to confirm"
+// in the language the app shows.
+func DockerCmpDeleteType(project string) string {
+	return In(i18n.Locale()).DockerCmpDeleteType(project)
+}
+
+// DockerCmpDeleteType says "Type {project} to confirm"
+// in the language of msgs.
+func (msgs Messages) DockerCmpDeleteType(project string) string {
+	return Catalog.Format(msgs.locale, "dockerCmpDeleteType", map[string]any{"project": project})
+}
+
+// DockerCmpDirectoryChanged says "The directory changed or is not safe to use. No existing files were overwritten."
+// in the language the app shows.
+func DockerCmpDirectoryChanged() string { return In(i18n.Locale()).DockerCmpDirectoryChanged() }
+
+// DockerCmpDirectoryChanged says "The directory changed or is not safe to use. No existing files were overwritten."
+// in the language of msgs.
+func (msgs Messages) DockerCmpDirectoryChanged() string {
+	return Catalog.Format(msgs.locale, "dockerCmpDirectoryChanged", nil)
+}
+
+// DockerCmpDeployWarning says "This applies the saved Compose files. Running services may be replaced or interrupted."
+// in the language the app shows.
+func DockerCmpDeployWarning() string { return In(i18n.Locale()).DockerCmpDeployWarning() }
+
+// DockerCmpDeployWarning says "This applies the saved Compose files. Running services may be replaced or interrupted."
+// in the language of msgs.
+func (msgs Messages) DockerCmpDeployWarning() string {
+	return Catalog.Format(msgs.locale, "dockerCmpDeployWarning", nil)
+}
+
+// DockerCmpBuild says "Build images before deploying"
+// in the language the app shows.
+func DockerCmpBuild() string { return In(i18n.Locale()).DockerCmpBuild() }
+
+// DockerCmpBuild says "Build images before deploying"
+// in the language of msgs.
+func (msgs Messages) DockerCmpBuild() string {
+	return Catalog.Format(msgs.locale, "dockerCmpBuild", nil)
+}
+
+// DockerCmpPullAlways says "Always pull images"
+// in the language the app shows.
+func DockerCmpPullAlways() string { return In(i18n.Locale()).DockerCmpPullAlways() }
+
+// DockerCmpPullAlways says "Always pull images"
+// in the language of msgs.
+func (msgs Messages) DockerCmpPullAlways() string {
+	return Catalog.Format(msgs.locale, "dockerCmpPullAlways", nil)
+}
+
+// DockerCmpV2Only says "Requires Docker Compose v2."
+// in the language the app shows.
+func DockerCmpV2Only() string { return In(i18n.Locale()).DockerCmpV2Only() }
+
+// DockerCmpV2Only says "Requires Docker Compose v2."
+// in the language of msgs.
+func (msgs Messages) DockerCmpV2Only() string {
+	return Catalog.Format(msgs.locale, "dockerCmpV2Only", nil)
+}
+
+// DockerCmpForce says "Force recreation (changes in container writable layers are lost)"
+// in the language the app shows.
+func DockerCmpForce() string { return In(i18n.Locale()).DockerCmpForce() }
+
+// DockerCmpForce says "Force recreation (changes in container writable layers are lost)"
+// in the language of msgs.
+func (msgs Messages) DockerCmpForce() string {
+	return Catalog.Format(msgs.locale, "dockerCmpForce", nil)
+}
+
+// DockerCmpOrphans says "Remove containers for services no longer in the configuration"
+// in the language the app shows.
+func DockerCmpOrphans() string { return In(i18n.Locale()).DockerCmpOrphans() }
+
+// DockerCmpOrphans says "Remove containers for services no longer in the configuration"
+// in the language of msgs.
+func (msgs Messages) DockerCmpOrphans() string {
+	return Catalog.Format(msgs.locale, "dockerCmpOrphans", nil)
+}
+
+// DockerCmpUnsupported says "This option is not supported by the detected Compose CLI."
+// in the language the app shows.
+func DockerCmpUnsupported() string { return In(i18n.Locale()).DockerCmpUnsupported() }
+
+// DockerCmpUnsupported says "This option is not supported by the detected Compose CLI."
+// in the language of msgs.
+func (msgs Messages) DockerCmpUnsupported() string {
+	return Catalog.Format(msgs.locale, "dockerCmpUnsupported", nil)
+}
+
+// DockerCmpDownWarning says "This stops the project and removes its service containers and non-external networks. Container writable layers are lost."
+// in the language the app shows.
+func DockerCmpDownWarning() string { return In(i18n.Locale()).DockerCmpDownWarning() }
+
+// DockerCmpDownWarning says "This stops the project and removes its service containers and non-external networks. Container writable layers are lost."
+// in the language of msgs.
+func (msgs Messages) DockerCmpDownWarning() string {
+	return Catalog.Format(msgs.locale, "dockerCmpDownWarning", nil)
+}
+
+// DockerCmpVolumes says "Also remove project volumes (-v)"
+// in the language the app shows.
+func DockerCmpVolumes() string { return In(i18n.Locale()).DockerCmpVolumes() }
+
+// DockerCmpVolumes says "Also remove project volumes (-v)"
+// in the language of msgs.
+func (msgs Messages) DockerCmpVolumes() string {
+	return Catalog.Format(msgs.locale, "dockerCmpVolumes", nil)
+}
+
+// DockerCmpVolumeLoss says "Permanent data loss: this deletes the non-external named and anonymous volumes of {project}."
+// in the language the app shows.
+func DockerCmpVolumeLoss(project string) string {
+	return In(i18n.Locale()).DockerCmpVolumeLoss(project)
+}
+
+// DockerCmpVolumeLoss says "Permanent data loss: this deletes the non-external named and anonymous volumes of {project}."
+// in the language of msgs.
+func (msgs Messages) DockerCmpVolumeLoss(project string) string {
+	return Catalog.Format(msgs.locale, "dockerCmpVolumeLoss", map[string]any{"project": project})
+}
+
+// DockerCmpNamedVolumes says "Volumes labeled for this project: {names}"
+// in the language the app shows.
+func DockerCmpNamedVolumes(names string) string {
+	return In(i18n.Locale()).DockerCmpNamedVolumes(names)
+}
+
+// DockerCmpNamedVolumes says "Volumes labeled for this project: {names}"
+// in the language of msgs.
+func (msgs Messages) DockerCmpNamedVolumes(names string) string {
+	return Catalog.Format(msgs.locale, "dockerCmpNamedVolumes", map[string]any{"names": names})
+}
+
+// DockerCmpVolumeNamesUnknown says "No labeled volumes found, or the list is unavailable. Anonymous volumes can still be removed."
+// in the language the app shows.
+func DockerCmpVolumeNamesUnknown() string { return In(i18n.Locale()).DockerCmpVolumeNamesUnknown() }
+
+// DockerCmpVolumeNamesUnknown says "No labeled volumes found, or the list is unavailable. Anonymous volumes can still be removed."
+// in the language of msgs.
+func (msgs Messages) DockerCmpVolumeNamesUnknown() string {
+	return Catalog.Format(msgs.locale, "dockerCmpVolumeNamesUnknown", nil)
+}
+
+// DockerCmpImages says "Images: {choice}"
+// in the language the app shows.
+func DockerCmpImages(choice string) string { return In(i18n.Locale()).DockerCmpImages(choice) }
+
+// DockerCmpImages says "Images: {choice}"
+// in the language of msgs.
+func (msgs Messages) DockerCmpImages(choice string) string {
+	return Catalog.Format(msgs.locale, "dockerCmpImages", map[string]any{"choice": choice})
+}
+
+// DockerCmpKeepImages says "Keep images"
+// in the language the app shows.
+func DockerCmpKeepImages() string { return In(i18n.Locale()).DockerCmpKeepImages() }
+
+// DockerCmpKeepImages says "Keep images"
+// in the language of msgs.
+func (msgs Messages) DockerCmpKeepImages() string {
+	return Catalog.Format(msgs.locale, "dockerCmpKeepImages", nil)
+}
+
+// DockerCmpLocalImages says "Remove images without a custom tag"
+// in the language the app shows.
+func DockerCmpLocalImages() string { return In(i18n.Locale()).DockerCmpLocalImages() }
+
+// DockerCmpLocalImages says "Remove images without a custom tag"
+// in the language of msgs.
+func (msgs Messages) DockerCmpLocalImages() string {
+	return Catalog.Format(msgs.locale, "dockerCmpLocalImages", nil)
+}
+
+// DockerCmpAllImages says "Remove all images used by the project"
+// in the language the app shows.
+func DockerCmpAllImages() string { return In(i18n.Locale()).DockerCmpAllImages() }
+
+// DockerCmpAllImages says "Remove all images used by the project"
+// in the language of msgs.
+func (msgs Messages) DockerCmpAllImages() string {
+	return Catalog.Format(msgs.locale, "dockerCmpAllImages", nil)
+}
+
+// DockerCmpConfirm says "Run ‘{action}’ on this selection?"
+// in the language the app shows.
+func DockerCmpConfirm(action string) string { return In(i18n.Locale()).DockerCmpConfirm(action) }
+
+// DockerCmpConfirm says "Run ‘{action}’ on this selection?"
+// in the language of msgs.
+func (msgs Messages) DockerCmpConfirm(action string) string {
+	return Catalog.Format(msgs.locale, "dockerCmpConfirm", map[string]any{"action": action})
+}
+
+// DockerCmpOwnedOnly says "Only directories newly created from this app can be removed here."
+// in the language the app shows.
+func DockerCmpOwnedOnly() string { return In(i18n.Locale()).DockerCmpOwnedOnly() }
+
+// DockerCmpOwnedOnly says "Only directories newly created from this app can be removed here."
+// in the language of msgs.
+func (msgs Messages) DockerCmpOwnedOnly() string {
+	return Catalog.Format(msgs.locale, "dockerCmpOwnedOnly", nil)
+}
+
+// DockerCmpRemoveDir says "Also delete the entire project directory"
+// in the language the app shows.
+func DockerCmpRemoveDir() string { return In(i18n.Locale()).DockerCmpRemoveDir() }
+
+// DockerCmpRemoveDir says "Also delete the entire project directory"
+// in the language of msgs.
+func (msgs Messages) DockerCmpRemoveDir() string {
+	return Catalog.Format(msgs.locale, "dockerCmpRemoveDir", nil)
+}
+
+// DockerCmpDirectoryLoss says "Permanently deletes {dir} and everything in it, including configuration and any bind-mounted data stored there."
+// in the language the app shows.
+func DockerCmpDirectoryLoss(dir string) string { return In(i18n.Locale()).DockerCmpDirectoryLoss(dir) }
+
+// DockerCmpDirectoryLoss says "Permanently deletes {dir} and everything in it, including configuration and any bind-mounted data stored there."
+// in the language of msgs.
+func (msgs Messages) DockerCmpDirectoryLoss(dir string) string {
+	return Catalog.Format(msgs.locale, "dockerCmpDirectoryLoss", map[string]any{"dir": dir})
+}
+
+// DockerCmpUsedSudo says "SFTP could not write all files directly. The operation used sudo -n on the server."
+// in the language the app shows.
+func DockerCmpUsedSudo() string { return In(i18n.Locale()).DockerCmpUsedSudo() }
+
+// DockerCmpUsedSudo says "SFTP could not write all files directly. The operation used sudo -n on the server."
+// in the language of msgs.
+func (msgs Messages) DockerCmpUsedSudo() string {
+	return Catalog.Format(msgs.locale, "dockerCmpUsedSudo", nil)
+}
+
+// DockerCmpDirectory says "Remote project directory"
+// in the language the app shows.
+func DockerCmpDirectory() string { return In(i18n.Locale()).DockerCmpDirectory() }
+
+// DockerCmpDirectory says "Remote project directory"
+// in the language of msgs.
+func (msgs Messages) DockerCmpDirectory() string {
+	return Catalog.Format(msgs.locale, "dockerCmpDirectory", nil)
+}
+
+// DockerCmpDirConfirm says "{dir} is not empty. Continue only if you intend to add these files there. Existing files are never overwritten."
+// in the language the app shows.
+func DockerCmpDirConfirm(dir string) string { return In(i18n.Locale()).DockerCmpDirConfirm(dir) }
+
+// DockerCmpDirConfirm says "{dir} is not empty. Continue only if you intend to add these files there. Existing files are never overwritten."
+// in the language of msgs.
+func (msgs Messages) DockerCmpDirConfirm(dir string) string {
+	return Catalog.Format(msgs.locale, "dockerCmpDirConfirm", map[string]any{"dir": dir})
+}
+
+// DockerCmpEnv says ".env (optional, one NAME=value per line)"
+// in the language the app shows.
+func DockerCmpEnv() string { return In(i18n.Locale()).DockerCmpEnv() }
+
+// DockerCmpEnv says ".env (optional, one NAME=value per line)"
+// in the language of msgs.
+func (msgs Messages) DockerCmpEnv() string {
+	return Catalog.Format(msgs.locale, "dockerCmpEnv", nil)
+}
+
+// DockerCmpDeployNow says "Deploy now after validation"
+// in the language the app shows.
+func DockerCmpDeployNow() string { return In(i18n.Locale()).DockerCmpDeployNow() }
+
+// DockerCmpDeployNow says "Deploy now after validation"
+// in the language of msgs.
+func (msgs Messages) DockerCmpDeployNow() string {
+	return Catalog.Format(msgs.locale, "dockerCmpDeployNow", nil)
+}
+
+// DockerCmpCreate says "Create project"
+// in the language the app shows.
+func DockerCmpCreate() string { return In(i18n.Locale()).DockerCmpCreate() }
+
+// DockerCmpCreate says "Create project"
+// in the language of msgs.
+func (msgs Messages) DockerCmpCreate() string {
+	return Catalog.Format(msgs.locale, "dockerCmpCreate", nil)
+}
+
+// DockerCmpCreateAnyway says "Create in this directory"
+// in the language the app shows.
+func DockerCmpCreateAnyway() string { return In(i18n.Locale()).DockerCmpCreateAnyway() }
+
+// DockerCmpCreateAnyway says "Create in this directory"
+// in the language of msgs.
+func (msgs Messages) DockerCmpCreateAnyway() string {
+	return Catalog.Format(msgs.locale, "dockerCmpCreateAnyway", nil)
+}
+
+// DockerCmpInvalidName says "Start with a lowercase letter or digit. Use only lowercase letters, digits, hyphens and underscores."
+// in the language the app shows.
+func DockerCmpInvalidName() string { return In(i18n.Locale()).DockerCmpInvalidName() }
+
+// DockerCmpInvalidName says "Start with a lowercase letter or digit. Use only lowercase letters, digits, hyphens and underscores."
+// in the language of msgs.
+func (msgs Messages) DockerCmpInvalidName() string {
+	return Catalog.Format(msgs.locale, "dockerCmpInvalidName", nil)
+}
+
+// DockerCmpInvalidDir says "Enter an absolute server path with at least two components and no ‘.’ or ‘..’ segments."
+// in the language the app shows.
+func DockerCmpInvalidDir() string { return In(i18n.Locale()).DockerCmpInvalidDir() }
+
+// DockerCmpInvalidDir says "Enter an absolute server path with at least two components and no ‘.’ or ‘..’ segments."
+// in the language of msgs.
+func (msgs Messages) DockerCmpInvalidDir() string {
+	return Catalog.Format(msgs.locale, "dockerCmpInvalidDir", nil)
+}
+
+// DockerCmpDuplicate says "A project already uses this name or directory."
+// in the language the app shows.
+func DockerCmpDuplicate() string { return In(i18n.Locale()).DockerCmpDuplicate() }
+
+// DockerCmpDuplicate says "A project already uses this name or directory."
+// in the language of msgs.
+func (msgs Messages) DockerCmpDuplicate() string {
+	return Catalog.Format(msgs.locale, "dockerCmpDuplicate", nil)
+}
+
+// DockerCmpInvalidFiles says "Enter a Compose configuration. Each file must be plain text and at most 1 MiB."
+// in the language the app shows.
+func DockerCmpInvalidFiles() string { return In(i18n.Locale()).DockerCmpInvalidFiles() }
+
+// DockerCmpInvalidFiles says "Enter a Compose configuration. Each file must be plain text and at most 1 MiB."
+// in the language of msgs.
+func (msgs Messages) DockerCmpInvalidFiles() string {
+	return Catalog.Format(msgs.locale, "dockerCmpInvalidFiles", nil)
+}
+
+// DockerCmpFilesExist says "This directory already contains compose.yaml or .env. Choose another directory; existing files are never overwritten."
+// in the language the app shows.
+func DockerCmpFilesExist() string { return In(i18n.Locale()).DockerCmpFilesExist() }
+
+// DockerCmpFilesExist says "This directory already contains compose.yaml or .env. Choose another directory; existing files are never overwritten."
+// in the language of msgs.
+func (msgs Messages) DockerCmpFilesExist() string {
+	return Catalog.Format(msgs.locale, "dockerCmpFilesExist", nil)
+}
+
 // DockerSecLogging says "Logging"
 // in the language the app shows.
 func DockerSecLogging() string { return In(i18n.Locale()).DockerSecLogging() }

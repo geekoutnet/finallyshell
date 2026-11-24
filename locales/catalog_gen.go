@@ -13188,6 +13188,844 @@ func (msgs Messages) DockerNoMatch() string {
 	return Catalog.Format(msgs.locale, "dockerNoMatch", nil)
 }
 
+// DockerCtrNew says "New container"
+// in the language the app shows.
+func DockerCtrNew() string { return In(i18n.Locale()).DockerCtrNew() }
+
+// DockerCtrNew says "New container"
+// in the language of msgs.
+func (msgs Messages) DockerCtrNew() string {
+	return Catalog.Format(msgs.locale, "dockerCtrNew", nil)
+}
+
+// DockerCtrCreate says "Create container"
+// in the language the app shows.
+func DockerCtrCreate() string { return In(i18n.Locale()).DockerCtrCreate() }
+
+// DockerCtrCreate says "Create container"
+// in the language of msgs.
+func (msgs Messages) DockerCtrCreate() string {
+	return Catalog.Format(msgs.locale, "dockerCtrCreate", nil)
+}
+
+// DockerCtrShowStopped says "Show stopped containers"
+// in the language the app shows.
+func DockerCtrShowStopped() string { return In(i18n.Locale()).DockerCtrShowStopped() }
+
+// DockerCtrShowStopped says "Show stopped containers"
+// in the language of msgs.
+func (msgs Messages) DockerCtrShowStopped() string {
+	return Catalog.Format(msgs.locale, "dockerCtrShowStopped", nil)
+}
+
+// DockerCtrSelection says "{count, plural, one {# selected} other {# selected}}"
+// in the language the app shows.
+func DockerCtrSelection(count int) string { return In(i18n.Locale()).DockerCtrSelection(count) }
+
+// DockerCtrSelection says "{count, plural, one {# selected} other {# selected}}"
+// in the language of msgs.
+func (msgs Messages) DockerCtrSelection(count int) string {
+	return Catalog.Format(msgs.locale, "dockerCtrSelection", map[string]any{"count": count})
+}
+
+// DockerCtrEdit says "Edit container"
+// in the language the app shows.
+func DockerCtrEdit() string { return In(i18n.Locale()).DockerCtrEdit() }
+
+// DockerCtrEdit says "Edit container"
+// in the language of msgs.
+func (msgs Messages) DockerCtrEdit() string {
+	return Catalog.Format(msgs.locale, "dockerCtrEdit", nil)
+}
+
+// DockerCtrDuplicate says "Duplicate container"
+// in the language the app shows.
+func DockerCtrDuplicate() string { return In(i18n.Locale()).DockerCtrDuplicate() }
+
+// DockerCtrDuplicate says "Duplicate container"
+// in the language of msgs.
+func (msgs Messages) DockerCtrDuplicate() string {
+	return Catalog.Format(msgs.locale, "dockerCtrDuplicate", nil)
+}
+
+// DockerCtrStats says "Live stats"
+// in the language the app shows.
+func DockerCtrStats() string { return In(i18n.Locale()).DockerCtrStats() }
+
+// DockerCtrStats says "Live stats"
+// in the language of msgs.
+func (msgs Messages) DockerCtrStats() string {
+	return Catalog.Format(msgs.locale, "dockerCtrStats", nil)
+}
+
+// DockerCtrFiles says "Container files"
+// in the language the app shows.
+func DockerCtrFiles() string { return In(i18n.Locale()).DockerCtrFiles() }
+
+// DockerCtrFiles says "Container files"
+// in the language of msgs.
+func (msgs Messages) DockerCtrFiles() string {
+	return Catalog.Format(msgs.locale, "dockerCtrFiles", nil)
+}
+
+// DockerCtrCommit says "Commit to image"
+// in the language the app shows.
+func DockerCtrCommit() string { return In(i18n.Locale()).DockerCtrCommit() }
+
+// DockerCtrCommit says "Commit to image"
+// in the language of msgs.
+func (msgs Messages) DockerCtrCommit() string {
+	return Catalog.Format(msgs.locale, "dockerCtrCommit", nil)
+}
+
+// DockerCtrExport says "Export filesystem"
+// in the language the app shows.
+func DockerCtrExport() string { return In(i18n.Locale()).DockerCtrExport() }
+
+// DockerCtrExport says "Export filesystem"
+// in the language of msgs.
+func (msgs Messages) DockerCtrExport() string {
+	return Catalog.Format(msgs.locale, "dockerCtrExport", nil)
+}
+
+// DockerCtrMustStop says "The container must be stopped"
+// in the language the app shows.
+func DockerCtrMustStop() string { return In(i18n.Locale()).DockerCtrMustStop() }
+
+// DockerCtrMustStop says "The container must be stopped"
+// in the language of msgs.
+func (msgs Messages) DockerCtrMustStop() string {
+	return Catalog.Format(msgs.locale, "dockerCtrMustStop", nil)
+}
+
+// DockerCtrMustRun says "The container must be running and unpaused"
+// in the language the app shows.
+func DockerCtrMustRun() string { return In(i18n.Locale()).DockerCtrMustRun() }
+
+// DockerCtrMustRun says "The container must be running and unpaused"
+// in the language of msgs.
+func (msgs Messages) DockerCtrMustRun() string {
+	return Catalog.Format(msgs.locale, "dockerCtrMustRun", nil)
+}
+
+// DockerCtrMustPause says "The container must be paused"
+// in the language the app shows.
+func DockerCtrMustPause() string { return In(i18n.Locale()).DockerCtrMustPause() }
+
+// DockerCtrMustPause says "The container must be paused"
+// in the language of msgs.
+func (msgs Messages) DockerCtrMustPause() string {
+	return Catalog.Format(msgs.locale, "dockerCtrMustPause", nil)
+}
+
+// DockerCtrStateReason says "Not available in the current state"
+// in the language the app shows.
+func DockerCtrStateReason() string { return In(i18n.Locale()).DockerCtrStateReason() }
+
+// DockerCtrStateReason says "Not available in the current state"
+// in the language of msgs.
+func (msgs Messages) DockerCtrStateReason() string {
+	return Catalog.Format(msgs.locale, "dockerCtrStateReason", nil)
+}
+
+// DockerCtrAutoRemoveReason says "Auto-removal prevents a safe rollback"
+// in the language the app shows.
+func DockerCtrAutoRemoveReason() string { return In(i18n.Locale()).DockerCtrAutoRemoveReason() }
+
+// DockerCtrAutoRemoveReason says "Auto-removal prevents a safe rollback"
+// in the language of msgs.
+func (msgs Messages) DockerCtrAutoRemoveReason() string {
+	return Catalog.Format(msgs.locale, "dockerCtrAutoRemoveReason", nil)
+}
+
+// DockerCtrDockerOnly says "Editing in place requires the Docker Engine socket"
+// in the language the app shows.
+func DockerCtrDockerOnly() string { return In(i18n.Locale()).DockerCtrDockerOnly() }
+
+// DockerCtrDockerOnly says "Editing in place requires the Docker Engine socket"
+// in the language of msgs.
+func (msgs Messages) DockerCtrDockerOnly() string {
+	return Catalog.Format(msgs.locale, "dockerCtrDockerOnly", nil)
+}
+
+// DockerCtrComposeReason says "Managed by Compose project {project}; edit its Compose file instead"
+// in the language the app shows.
+func DockerCtrComposeReason(project string) string {
+	return In(i18n.Locale()).DockerCtrComposeReason(project)
+}
+
+// DockerCtrComposeReason says "Managed by Compose project {project}; edit its Compose file instead"
+// in the language of msgs.
+func (msgs Messages) DockerCtrComposeReason(project string) string {
+	return Catalog.Format(msgs.locale, "dockerCtrComposeReason", map[string]any{"project": project})
+}
+
+// DockerCtrInspectMissing says "The container configuration could not be read"
+// in the language the app shows.
+func DockerCtrInspectMissing() string { return In(i18n.Locale()).DockerCtrInspectMissing() }
+
+// DockerCtrInspectMissing says "The container configuration could not be read"
+// in the language of msgs.
+func (msgs Messages) DockerCtrInspectMissing() string {
+	return Catalog.Format(msgs.locale, "dockerCtrInspectMissing", nil)
+}
+
+// DockerCtrChanged says "The container changed. Reopen the editor to reload its settings."
+// in the language the app shows.
+func DockerCtrChanged() string { return In(i18n.Locale()).DockerCtrChanged() }
+
+// DockerCtrChanged says "The container changed. Reopen the editor to reload its settings."
+// in the language of msgs.
+func (msgs Messages) DockerCtrChanged() string {
+	return Catalog.Format(msgs.locale, "dockerCtrChanged", nil)
+}
+
+// DockerCtrNameExists says "A container with this name already exists."
+// in the language the app shows.
+func DockerCtrNameExists() string { return In(i18n.Locale()).DockerCtrNameExists() }
+
+// DockerCtrNameExists says "A container with this name already exists."
+// in the language of msgs.
+func (msgs Messages) DockerCtrNameExists() string {
+	return Catalog.Format(msgs.locale, "dockerCtrNameExists", nil)
+}
+
+// DockerCtrGeneral says "General"
+// in the language the app shows.
+func DockerCtrGeneral() string { return In(i18n.Locale()).DockerCtrGeneral() }
+
+// DockerCtrGeneral says "General"
+// in the language of msgs.
+func (msgs Messages) DockerCtrGeneral() string {
+	return Catalog.Format(msgs.locale, "dockerCtrGeneral", nil)
+}
+
+// DockerCtrAdvanced says "Advanced"
+// in the language the app shows.
+func DockerCtrAdvanced() string { return In(i18n.Locale()).DockerCtrAdvanced() }
+
+// DockerCtrAdvanced says "Advanced"
+// in the language of msgs.
+func (msgs Messages) DockerCtrAdvanced() string {
+	return Catalog.Format(msgs.locale, "dockerCtrAdvanced", nil)
+}
+
+// DockerCtrImageTag says "Image reference"
+// in the language the app shows.
+func DockerCtrImageTag() string { return In(i18n.Locale()).DockerCtrImageTag() }
+
+// DockerCtrImageTag says "Image reference"
+// in the language of msgs.
+func (msgs Messages) DockerCtrImageTag() string {
+	return Catalog.Format(msgs.locale, "dockerCtrImageTag", nil)
+}
+
+// DockerCtrSuggestions says "Suggestions for {field}"
+// in the language the app shows.
+func DockerCtrSuggestions(field string) string { return In(i18n.Locale()).DockerCtrSuggestions(field) }
+
+// DockerCtrSuggestions says "Suggestions for {field}"
+// in the language of msgs.
+func (msgs Messages) DockerCtrSuggestions(field string) string {
+	return Catalog.Format(msgs.locale, "dockerCtrSuggestions", map[string]any{"field": field})
+}
+
+// DockerCtrPull says "Pull the image if missing"
+// in the language the app shows.
+func DockerCtrPull() string { return In(i18n.Locale()).DockerCtrPull() }
+
+// DockerCtrPull says "Pull the image if missing"
+// in the language of msgs.
+func (msgs Messages) DockerCtrPull() string {
+	return Catalog.Format(msgs.locale, "dockerCtrPull", nil)
+}
+
+// DockerCtrArgsHint says "Enter an array of JSON strings, one string per argument. Leave blank to use the image defaults."
+// in the language the app shows.
+func DockerCtrArgsHint() string { return In(i18n.Locale()).DockerCtrArgsHint() }
+
+// DockerCtrArgsHint says "Enter an array of JSON strings, one string per argument. Leave blank to use the image defaults."
+// in the language of msgs.
+func (msgs Messages) DockerCtrArgsHint() string {
+	return Catalog.Format(msgs.locale, "dockerCtrArgsHint", nil)
+}
+
+// DockerCtrPublishAll says "Publish all exposed ports to random host ports"
+// in the language the app shows.
+func DockerCtrPublishAll() string { return In(i18n.Locale()).DockerCtrPublishAll() }
+
+// DockerCtrPublishAll says "Publish all exposed ports to random host ports"
+// in the language of msgs.
+func (msgs Messages) DockerCtrPublishAll() string {
+	return Catalog.Format(msgs.locale, "dockerCtrPublishAll", nil)
+}
+
+// DockerCtrHostIP says "Host IP"
+// in the language the app shows.
+func DockerCtrHostIP() string { return In(i18n.Locale()).DockerCtrHostIP() }
+
+// DockerCtrHostIP says "Host IP"
+// in the language of msgs.
+func (msgs Messages) DockerCtrHostIP() string {
+	return Catalog.Format(msgs.locale, "dockerCtrHostIP", nil)
+}
+
+// DockerCtrHostPort says "Host port"
+// in the language the app shows.
+func DockerCtrHostPort() string { return In(i18n.Locale()).DockerCtrHostPort() }
+
+// DockerCtrHostPort says "Host port"
+// in the language of msgs.
+func (msgs Messages) DockerCtrHostPort() string {
+	return Catalog.Format(msgs.locale, "dockerCtrHostPort", nil)
+}
+
+// DockerCtrContainerPort says "Container port"
+// in the language the app shows.
+func DockerCtrContainerPort() string { return In(i18n.Locale()).DockerCtrContainerPort() }
+
+// DockerCtrContainerPort says "Container port"
+// in the language of msgs.
+func (msgs Messages) DockerCtrContainerPort() string {
+	return Catalog.Format(msgs.locale, "dockerCtrContainerPort", nil)
+}
+
+// DockerCtrProtocol says "Protocol"
+// in the language the app shows.
+func DockerCtrProtocol() string { return In(i18n.Locale()).DockerCtrProtocol() }
+
+// DockerCtrProtocol says "Protocol"
+// in the language of msgs.
+func (msgs Messages) DockerCtrProtocol() string {
+	return Catalog.Format(msgs.locale, "dockerCtrProtocol", nil)
+}
+
+// DockerCtrAddPort says "Add port"
+// in the language the app shows.
+func DockerCtrAddPort() string { return In(i18n.Locale()).DockerCtrAddPort() }
+
+// DockerCtrAddPort says "Add port"
+// in the language of msgs.
+func (msgs Messages) DockerCtrAddPort() string {
+	return Catalog.Format(msgs.locale, "dockerCtrAddPort", nil)
+}
+
+// DockerCtrRemoveRow says "Remove row"
+// in the language the app shows.
+func DockerCtrRemoveRow() string { return In(i18n.Locale()).DockerCtrRemoveRow() }
+
+// DockerCtrRemoveRow says "Remove row"
+// in the language of msgs.
+func (msgs Messages) DockerCtrRemoveRow() string {
+	return Catalog.Format(msgs.locale, "dockerCtrRemoveRow", nil)
+}
+
+// DockerCtrMountSource says "Host path or volume"
+// in the language the app shows.
+func DockerCtrMountSource() string { return In(i18n.Locale()).DockerCtrMountSource() }
+
+// DockerCtrMountSource says "Host path or volume"
+// in the language of msgs.
+func (msgs Messages) DockerCtrMountSource() string {
+	return Catalog.Format(msgs.locale, "dockerCtrMountSource", nil)
+}
+
+// DockerCtrMountTarget says "Container path"
+// in the language the app shows.
+func DockerCtrMountTarget() string { return In(i18n.Locale()).DockerCtrMountTarget() }
+
+// DockerCtrMountTarget says "Container path"
+// in the language of msgs.
+func (msgs Messages) DockerCtrMountTarget() string {
+	return Catalog.Format(msgs.locale, "dockerCtrMountTarget", nil)
+}
+
+// DockerCtrAddMount says "Add mount"
+// in the language the app shows.
+func DockerCtrAddMount() string { return In(i18n.Locale()).DockerCtrAddMount() }
+
+// DockerCtrAddMount says "Add mount"
+// in the language of msgs.
+func (msgs Messages) DockerCtrAddMount() string {
+	return Catalog.Format(msgs.locale, "dockerCtrAddMount", nil)
+}
+
+// DockerCtrShowValues says "Show environment values"
+// in the language the app shows.
+func DockerCtrShowValues() string { return In(i18n.Locale()).DockerCtrShowValues() }
+
+// DockerCtrShowValues says "Show environment values"
+// in the language of msgs.
+func (msgs Messages) DockerCtrShowValues() string {
+	return Catalog.Format(msgs.locale, "dockerCtrShowValues", nil)
+}
+
+// DockerCtrKey says "Key"
+// in the language the app shows.
+func DockerCtrKey() string { return In(i18n.Locale()).DockerCtrKey() }
+
+// DockerCtrKey says "Key"
+// in the language of msgs.
+func (msgs Messages) DockerCtrKey() string {
+	return Catalog.Format(msgs.locale, "dockerCtrKey", nil)
+}
+
+// DockerCtrValue says "Value"
+// in the language the app shows.
+func DockerCtrValue() string { return In(i18n.Locale()).DockerCtrValue() }
+
+// DockerCtrValue says "Value"
+// in the language of msgs.
+func (msgs Messages) DockerCtrValue() string {
+	return Catalog.Format(msgs.locale, "dockerCtrValue", nil)
+}
+
+// DockerCtrAddEnv says "Add variable"
+// in the language the app shows.
+func DockerCtrAddEnv() string { return In(i18n.Locale()).DockerCtrAddEnv() }
+
+// DockerCtrAddEnv says "Add variable"
+// in the language of msgs.
+func (msgs Messages) DockerCtrAddEnv() string {
+	return Catalog.Format(msgs.locale, "dockerCtrAddEnv", nil)
+}
+
+// DockerCtrPasteEnv says "Paste KEY=VALUE lines"
+// in the language the app shows.
+func DockerCtrPasteEnv() string { return In(i18n.Locale()).DockerCtrPasteEnv() }
+
+// DockerCtrPasteEnv says "Paste KEY=VALUE lines"
+// in the language of msgs.
+func (msgs Messages) DockerCtrPasteEnv() string {
+	return Catalog.Format(msgs.locale, "dockerCtrPasteEnv", nil)
+}
+
+// DockerCtrImportEnv says "Import variables"
+// in the language the app shows.
+func DockerCtrImportEnv() string { return In(i18n.Locale()).DockerCtrImportEnv() }
+
+// DockerCtrImportEnv says "Import variables"
+// in the language of msgs.
+func (msgs Messages) DockerCtrImportEnv() string {
+	return Catalog.Format(msgs.locale, "dockerCtrImportEnv", nil)
+}
+
+// DockerCtrStaticIP says "Static IPv4 address"
+// in the language the app shows.
+func DockerCtrStaticIP() string { return In(i18n.Locale()).DockerCtrStaticIP() }
+
+// DockerCtrStaticIP says "Static IPv4 address"
+// in the language of msgs.
+func (msgs Messages) DockerCtrStaticIP() string {
+	return Catalog.Format(msgs.locale, "dockerCtrStaticIP", nil)
+}
+
+// DockerCtrAliases says "Network aliases (space-separated)"
+// in the language the app shows.
+func DockerCtrAliases() string { return In(i18n.Locale()).DockerCtrAliases() }
+
+// DockerCtrAliases says "Network aliases (space-separated)"
+// in the language of msgs.
+func (msgs Messages) DockerCtrAliases() string {
+	return Catalog.Format(msgs.locale, "dockerCtrAliases", nil)
+}
+
+// DockerCtrCapabilities says "Linux capabilities"
+// in the language the app shows.
+func DockerCtrCapabilities() string { return In(i18n.Locale()).DockerCtrCapabilities() }
+
+// DockerCtrCapabilities says "Linux capabilities"
+// in the language of msgs.
+func (msgs Messages) DockerCtrCapabilities() string {
+	return Catalog.Format(msgs.locale, "dockerCtrCapabilities", nil)
+}
+
+// DockerCtrCapAdd says "Add capabilities"
+// in the language the app shows.
+func DockerCtrCapAdd() string { return In(i18n.Locale()).DockerCtrCapAdd() }
+
+// DockerCtrCapAdd says "Add capabilities"
+// in the language of msgs.
+func (msgs Messages) DockerCtrCapAdd() string {
+	return Catalog.Format(msgs.locale, "dockerCtrCapAdd", nil)
+}
+
+// DockerCtrCapDrop says "Drop capabilities"
+// in the language the app shows.
+func DockerCtrCapDrop() string { return In(i18n.Locale()).DockerCtrCapDrop() }
+
+// DockerCtrCapDrop says "Drop capabilities"
+// in the language of msgs.
+func (msgs Messages) DockerCtrCapDrop() string {
+	return Catalog.Format(msgs.locale, "dockerCtrCapDrop", nil)
+}
+
+// DockerCtrDevices says "Devices"
+// in the language the app shows.
+func DockerCtrDevices() string { return In(i18n.Locale()).DockerCtrDevices() }
+
+// DockerCtrDevices says "Devices"
+// in the language of msgs.
+func (msgs Messages) DockerCtrDevices() string {
+	return Catalog.Format(msgs.locale, "dockerCtrDevices", nil)
+}
+
+// DockerCtrDeviceSource says "Host device path"
+// in the language the app shows.
+func DockerCtrDeviceSource() string { return In(i18n.Locale()).DockerCtrDeviceSource() }
+
+// DockerCtrDeviceSource says "Host device path"
+// in the language of msgs.
+func (msgs Messages) DockerCtrDeviceSource() string {
+	return Catalog.Format(msgs.locale, "dockerCtrDeviceSource", nil)
+}
+
+// DockerCtrDeviceTarget says "Container device path"
+// in the language the app shows.
+func DockerCtrDeviceTarget() string { return In(i18n.Locale()).DockerCtrDeviceTarget() }
+
+// DockerCtrDeviceTarget says "Container device path"
+// in the language of msgs.
+func (msgs Messages) DockerCtrDeviceTarget() string {
+	return Catalog.Format(msgs.locale, "dockerCtrDeviceTarget", nil)
+}
+
+// DockerCtrAddDevice says "Add device"
+// in the language the app shows.
+func DockerCtrAddDevice() string { return In(i18n.Locale()).DockerCtrAddDevice() }
+
+// DockerCtrAddDevice says "Add device"
+// in the language of msgs.
+func (msgs Messages) DockerCtrAddDevice() string {
+	return Catalog.Format(msgs.locale, "dockerCtrAddDevice", nil)
+}
+
+// DockerCtrLogOptions says "Log options (KEY=VALUE)"
+// in the language the app shows.
+func DockerCtrLogOptions() string { return In(i18n.Locale()).DockerCtrLogOptions() }
+
+// DockerCtrLogOptions says "Log options (KEY=VALUE)"
+// in the language of msgs.
+func (msgs Messages) DockerCtrLogOptions() string {
+	return Catalog.Format(msgs.locale, "dockerCtrLogOptions", nil)
+}
+
+// DockerCtrAutoRemove says "Remove automatically when stopped"
+// in the language the app shows.
+func DockerCtrAutoRemove() string { return In(i18n.Locale()).DockerCtrAutoRemove() }
+
+// DockerCtrAutoRemove says "Remove automatically when stopped"
+// in the language of msgs.
+func (msgs Messages) DockerCtrAutoRemove() string {
+	return Catalog.Format(msgs.locale, "dockerCtrAutoRemove", nil)
+}
+
+// DockerCtrInit says "Use an init process"
+// in the language the app shows.
+func DockerCtrInit() string { return In(i18n.Locale()).DockerCtrInit() }
+
+// DockerCtrInit says "Use an init process"
+// in the language of msgs.
+func (msgs Messages) DockerCtrInit() string {
+	return Catalog.Format(msgs.locale, "dockerCtrInit", nil)
+}
+
+// DockerCtrTTY says "Allocate a TTY"
+// in the language the app shows.
+func DockerCtrTTY() string { return In(i18n.Locale()).DockerCtrTTY() }
+
+// DockerCtrTTY says "Allocate a TTY"
+// in the language of msgs.
+func (msgs Messages) DockerCtrTTY() string {
+	return Catalog.Format(msgs.locale, "dockerCtrTTY", nil)
+}
+
+// DockerCtrStdin says "Keep stdin open"
+// in the language the app shows.
+func DockerCtrStdin() string { return In(i18n.Locale()).DockerCtrStdin() }
+
+// DockerCtrStdin says "Keep stdin open"
+// in the language of msgs.
+func (msgs Messages) DockerCtrStdin() string {
+	return Catalog.Format(msgs.locale, "dockerCtrStdin", nil)
+}
+
+// DockerCtrPreview says "Show run command (sensitive values masked)"
+// in the language the app shows.
+func DockerCtrPreview() string { return In(i18n.Locale()).DockerCtrPreview() }
+
+// DockerCtrPreview says "Show run command (sensitive values masked)"
+// in the language of msgs.
+func (msgs Messages) DockerCtrPreview() string {
+	return Catalog.Format(msgs.locale, "dockerCtrPreview", nil)
+}
+
+// DockerCtrEditPreview says "Show equivalent run options (sensitive values masked)"
+// in the language the app shows.
+func DockerCtrEditPreview() string { return In(i18n.Locale()).DockerCtrEditPreview() }
+
+// DockerCtrEditPreview says "Show equivalent run options (sensitive values masked)"
+// in the language of msgs.
+func (msgs Messages) DockerCtrEditPreview() string {
+	return Catalog.Format(msgs.locale, "dockerCtrEditPreview", nil)
+}
+
+// DockerCtrApply says "Apply and replace"
+// in the language the app shows.
+func DockerCtrApply() string { return In(i18n.Locale()).DockerCtrApply() }
+
+// DockerCtrApply says "Apply and replace"
+// in the language of msgs.
+func (msgs Messages) DockerCtrApply() string {
+	return Catalog.Format(msgs.locale, "dockerCtrApply", nil)
+}
+
+// DockerCtrCreateWarning says "Create and start {name} with these settings. Published ports and mounted paths take effect immediately."
+// in the language the app shows.
+func DockerCtrCreateWarning(name string) string {
+	return In(i18n.Locale()).DockerCtrCreateWarning(name)
+}
+
+// DockerCtrCreateWarning says "Create and start {name} with these settings. Published ports and mounted paths take effect immediately."
+// in the language of msgs.
+func (msgs Messages) DockerCtrCreateWarning(name string) string {
+	return Catalog.Format(msgs.locale, "dockerCtrCreateWarning", map[string]any{"name": name})
+}
+
+// DockerCtrPrivilegeWarning says "Privileged mode, extra capabilities, and host devices reduce isolation and may give the container access to the server."
+// in the language the app shows.
+func DockerCtrPrivilegeWarning() string { return In(i18n.Locale()).DockerCtrPrivilegeWarning() }
+
+// DockerCtrPrivilegeWarning says "Privileged mode, extra capabilities, and host devices reduce isolation and may give the container access to the server."
+// in the language of msgs.
+func (msgs Messages) DockerCtrPrivilegeWarning() string {
+	return Catalog.Format(msgs.locale, "dockerCtrPrivilegeWarning", nil)
+}
+
+// DockerCtrEditWarning says "This replaces the container and interrupts it if running. Mounted data is kept, but the writable layer is lost. The o…"
+// in the language the app shows.
+func DockerCtrEditWarning() string { return In(i18n.Locale()).DockerCtrEditWarning() }
+
+// DockerCtrEditWarning says "This replaces the container and interrupts it if running. Mounted data is kept, but the writable layer is lost. The o…"
+// in the language of msgs.
+func (msgs Messages) DockerCtrEditWarning() string {
+	return Catalog.Format(msgs.locale, "dockerCtrEditWarning", nil)
+}
+
+// DockerCtrDuplicateNote says "Review ports and network settings for the copy. Its mounts may share data with the original."
+// in the language the app shows.
+func DockerCtrDuplicateNote() string { return In(i18n.Locale()).DockerCtrDuplicateNote() }
+
+// DockerCtrDuplicateNote says "Review ports and network settings for the copy. Its mounts may share data with the original."
+// in the language of msgs.
+func (msgs Messages) DockerCtrDuplicateNote() string {
+	return Catalog.Format(msgs.locale, "dockerCtrDuplicateNote", nil)
+}
+
+// DockerCtrCommitWarning says "Save the writable layer and container settings to an image on this server. Mounted volumes are excluded. The image ma…"
+// in the language the app shows.
+func DockerCtrCommitWarning() string { return In(i18n.Locale()).DockerCtrCommitWarning() }
+
+// DockerCtrCommitWarning says "Save the writable layer and container settings to an image on this server. Mounted volumes are excluded. The image ma…"
+// in the language of msgs.
+func (msgs Messages) DockerCtrCommitWarning() string {
+	return Catalog.Format(msgs.locale, "dockerCtrCommitWarning", nil)
+}
+
+// DockerCtrCommitMessage says "Commit message"
+// in the language the app shows.
+func DockerCtrCommitMessage() string { return In(i18n.Locale()).DockerCtrCommitMessage() }
+
+// DockerCtrCommitMessage says "Commit message"
+// in the language of msgs.
+func (msgs Messages) DockerCtrCommitMessage() string {
+	return Catalog.Format(msgs.locale, "dockerCtrCommitMessage", nil)
+}
+
+// DockerCtrAuthor says "Author"
+// in the language the app shows.
+func DockerCtrAuthor() string { return In(i18n.Locale()).DockerCtrAuthor() }
+
+// DockerCtrAuthor says "Author"
+// in the language of msgs.
+func (msgs Messages) DockerCtrAuthor() string {
+	return Catalog.Format(msgs.locale, "dockerCtrAuthor", nil)
+}
+
+// DockerCtrCommitPause says "Pause the container while committing"
+// in the language the app shows.
+func DockerCtrCommitPause() string { return In(i18n.Locale()).DockerCtrCommitPause() }
+
+// DockerCtrCommitPause says "Pause the container while committing"
+// in the language of msgs.
+func (msgs Messages) DockerCtrCommitPause() string {
+	return Catalog.Format(msgs.locale, "dockerCtrCommitPause", nil)
+}
+
+// DockerCtrServerPath says "Absolute path on the SSH server"
+// in the language the app shows.
+func DockerCtrServerPath() string { return In(i18n.Locale()).DockerCtrServerPath() }
+
+// DockerCtrServerPath says "Absolute path on the SSH server"
+// in the language of msgs.
+func (msgs Messages) DockerCtrServerPath() string {
+	return Catalog.Format(msgs.locale, "dockerCtrServerPath", nil)
+}
+
+// DockerCtrExportWarning says "Export the container filesystem to a tar file on this server. Mounted volumes are excluded. The archive may contain s…"
+// in the language the app shows.
+func DockerCtrExportWarning() string { return In(i18n.Locale()).DockerCtrExportWarning() }
+
+// DockerCtrExportWarning says "Export the container filesystem to a tar file on this server. Mounted volumes are excluded. The archive may contain s…"
+// in the language of msgs.
+func (msgs Messages) DockerCtrExportWarning() string {
+	return Catalog.Format(msgs.locale, "dockerCtrExportWarning", nil)
+}
+
+// DockerCtrBatchWarning says "Apply this action to all the containers listed above?"
+// in the language the app shows.
+func DockerCtrBatchWarning() string { return In(i18n.Locale()).DockerCtrBatchWarning() }
+
+// DockerCtrBatchWarning says "Apply this action to all the containers listed above?"
+// in the language of msgs.
+func (msgs Messages) DockerCtrBatchWarning() string {
+	return Catalog.Format(msgs.locale, "dockerCtrBatchWarning", nil)
+}
+
+// DockerCtrInvalid says "This operation cannot be prepared with the current settings."
+// in the language the app shows.
+func DockerCtrInvalid() string { return In(i18n.Locale()).DockerCtrInvalid() }
+
+// DockerCtrInvalid says "This operation cannot be prepared with the current settings."
+// in the language of msgs.
+func (msgs Messages) DockerCtrInvalid() string {
+	return Catalog.Format(msgs.locale, "dockerCtrInvalid", nil)
+}
+
+// DockerCtrInvalidField says "Check the settings for {field}."
+// in the language the app shows.
+func DockerCtrInvalidField(field string) string {
+	return In(i18n.Locale()).DockerCtrInvalidField(field)
+}
+
+// DockerCtrInvalidField says "Check the settings for {field}."
+// in the language of msgs.
+func (msgs Messages) DockerCtrInvalidField(field string) string {
+	return Catalog.Format(msgs.locale, "dockerCtrInvalidField", map[string]any{"field": field})
+}
+
+// DockerCtrNoStats says "No sample from the engine yet."
+// in the language the app shows.
+func DockerCtrNoStats() string { return In(i18n.Locale()).DockerCtrNoStats() }
+
+// DockerCtrNoStats says "No sample from the engine yet."
+// in the language of msgs.
+func (msgs Messages) DockerCtrNoStats() string {
+	return Catalog.Format(msgs.locale, "dockerCtrNoStats", nil)
+}
+
+// DockerCtrPIDs says "{count, plural, one {# PID} other {# PIDs}}"
+// in the language the app shows.
+func DockerCtrPIDs(count int) string { return In(i18n.Locale()).DockerCtrPIDs(count) }
+
+// DockerCtrPIDs says "{count, plural, one {# PID} other {# PIDs}}"
+// in the language of msgs.
+func (msgs Messages) DockerCtrPIDs(count int) string {
+	return Catalog.Format(msgs.locale, "dockerCtrPIDs", map[string]any{"count": count})
+}
+
+// DockerCtrPath says "Container path"
+// in the language the app shows.
+func DockerCtrPath() string { return In(i18n.Locale()).DockerCtrPath() }
+
+// DockerCtrPath says "Container path"
+// in the language of msgs.
+func (msgs Messages) DockerCtrPath() string {
+	return Catalog.Format(msgs.locale, "dockerCtrPath", nil)
+}
+
+// DockerCtrGo says "Go"
+// in the language the app shows.
+func DockerCtrGo() string { return In(i18n.Locale()).DockerCtrGo() }
+
+// DockerCtrGo says "Go"
+// in the language of msgs.
+func (msgs Messages) DockerCtrGo() string {
+	return Catalog.Format(msgs.locale, "dockerCtrGo", nil)
+}
+
+// DockerCtrCopyFromServer says "Copy from server"
+// in the language the app shows.
+func DockerCtrCopyFromServer() string { return In(i18n.Locale()).DockerCtrCopyFromServer() }
+
+// DockerCtrCopyFromServer says "Copy from server"
+// in the language of msgs.
+func (msgs Messages) DockerCtrCopyFromServer() string {
+	return Catalog.Format(msgs.locale, "dockerCtrCopyFromServer", nil)
+}
+
+// DockerCtrCopyToServer says "Copy to server"
+// in the language the app shows.
+func DockerCtrCopyToServer() string { return In(i18n.Locale()).DockerCtrCopyToServer() }
+
+// DockerCtrCopyToServer says "Copy to server"
+// in the language of msgs.
+func (msgs Messages) DockerCtrCopyToServer() string {
+	return Catalog.Format(msgs.locale, "dockerCtrCopyToServer", nil)
+}
+
+// DockerCtrEmptyFolder says "This folder is empty."
+// in the language the app shows.
+func DockerCtrEmptyFolder() string { return In(i18n.Locale()).DockerCtrEmptyFolder() }
+
+// DockerCtrEmptyFolder says "This folder is empty."
+// in the language of msgs.
+func (msgs Messages) DockerCtrEmptyFolder() string {
+	return Catalog.Format(msgs.locale, "dockerCtrEmptyFolder", nil)
+}
+
+// DockerCtrFileParse says "The container returned a directory listing that could not be read safely."
+// in the language the app shows.
+func DockerCtrFileParse() string { return In(i18n.Locale()).DockerCtrFileParse() }
+
+// DockerCtrFileParse says "The container returned a directory listing that could not be read safely."
+// in the language of msgs.
+func (msgs Messages) DockerCtrFileParse() string {
+	return Catalog.Format(msgs.locale, "dockerCtrFileParse", nil)
+}
+
+// DockerCtrCopyWarning says "Copy between the server path and {dir} in the container. Existing files may be overwritten. For local files, use the …"
+// in the language the app shows.
+func DockerCtrCopyWarning(dir string) string { return In(i18n.Locale()).DockerCtrCopyWarning(dir) }
+
+// DockerCtrCopyWarning says "Copy between the server path and {dir} in the container. Existing files may be overwritten. For local files, use the …"
+// in the language of msgs.
+func (msgs Messages) DockerCtrCopyWarning(dir string) string {
+	return Catalog.Format(msgs.locale, "dockerCtrCopyWarning", map[string]any{"dir": dir})
+}
+
+// DockerCtrFolderWarning says "Apply the change in {dir} inside the container."
+// in the language the app shows.
+func DockerCtrFolderWarning(dir string) string { return In(i18n.Locale()).DockerCtrFolderWarning(dir) }
+
+// DockerCtrFolderWarning says "Apply the change in {dir} inside the container."
+// in the language of msgs.
+func (msgs Messages) DockerCtrFolderWarning(dir string) string {
+	return Catalog.Format(msgs.locale, "dockerCtrFolderWarning", map[string]any{"dir": dir})
+}
+
+// DockerCtrFileDeleteWarning says "Permanently delete {path} in the container, including all its contents if it is a directory. This cannot be undone, a…"
+// in the language the app shows.
+func DockerCtrFileDeleteWarning(path string) string {
+	return In(i18n.Locale()).DockerCtrFileDeleteWarning(path)
+}
+
+// DockerCtrFileDeleteWarning says "Permanently delete {path} in the container, including all its contents if it is a directory. This cannot be undone, a…"
+// in the language of msgs.
+func (msgs Messages) DockerCtrFileDeleteWarning(path string) string {
+	return Catalog.Format(msgs.locale, "dockerCtrFileDeleteWarning", map[string]any{"path": path})
+}
+
 // DockerSortBy says "Sort by {column}"
 // in the language the app shows.
 func DockerSortBy(column string) string { return In(i18n.Locale()).DockerSortBy(column) }

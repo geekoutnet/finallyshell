@@ -80,6 +80,10 @@ const procOutputLimit = 32 << 20
 // csh, only has to start sh. err is the channel's error or the script's
 // exit status (*ssh.ExitError); the output read is returned with it.
 func RunScript(ctx context.Context, client *ssh.Client, script string) (stdout, stderr string, err error) {
+	return runScript(ctx, client, script, nil)
+}
+
+func runScript(ctx context.Context, client *ssh.Client, script string, progress func(string)) (stdout, stderr string, err error) {
 	if client == nil {
 		return "", "", errors.New("not connected")
 	}
@@ -100,7 +104,11 @@ func RunScript(ctx context.Context, client *ssh.Client, script string) (stdout, 
 	if err := s.Start("sh -s"); err != nil {
 		return "", "", err
 	}
-	data, rerr := io.ReadAll(io.LimitReader(out, procOutputLimit))
+	var limited io.Reader = io.LimitReader(out, procOutputLimit)
+	if progress != nil {
+		limited = io.TeeReader(limited, scriptProgress(progress))
+	}
+	data, rerr := io.ReadAll(limited)
 	io.Copy(io.Discard, out) // past the limit, let the script end
 	werr := s.Wait()
 	if ctx.Err() != nil {
@@ -110,6 +118,13 @@ func RunScript(ctx context.Context, client *ssh.Client, script string) (stdout, 
 		werr = rerr
 	}
 	return string(data), errBuf.String(), werr
+}
+
+type scriptProgress func(string)
+
+func (report scriptProgress) Write(chunk []byte) (int, error) {
+	report(string(chunk))
+	return len(chunk), nil
 }
 
 // limitWriter keeps the first n bytes written to it and drops the rest.

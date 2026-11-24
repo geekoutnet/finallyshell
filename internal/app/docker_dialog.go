@@ -28,6 +28,8 @@ type containerDialog struct {
 	s       *Session
 	id      string
 	showEnv bool
+	action  *dockerActionDialog
+	logs    *dockerLogsDialog
 }
 
 func (a *App) openContainer(s *Session, id string) {
@@ -36,8 +38,12 @@ func (a *App) openContainer(s *Session, id string) {
 
 // dialogContainer is the container d shows, nil once it is gone.
 func (d *containerDialog) container() *monitor.Container {
-	list := d.s.overview.docker.d.Containers
-	if i := slices.IndexFunc(list, func(ct monitor.Container) bool { return ct.ID == d.id }); i >= 0 {
+	return dockerContainer(d.s, d.id)
+}
+
+func dockerContainer(s *Session, id string) *monitor.Container {
+	list := s.overview.docker.d.Containers
+	if i := slices.IndexFunc(list, func(ct monitor.Container) bool { return ct.ID == id }); i >= 0 {
 		return &list[i]
 	}
 	return nil
@@ -47,6 +53,25 @@ func (d *containerDialog) container() *monitor.Container {
 func (a *App) containerDialogView(c *ui.Context) {
 	d := a.ctrDlg
 	if d == nil {
+		for _, s := range a.sessions {
+			state := &s.overview.docker
+			if state.actionError != nil {
+				d = &containerDialog{s: s, action: state.actionError}
+				state.actionError = nil
+				a.ctrDlg = d
+				break
+			}
+		}
+		if d == nil {
+			return
+		}
+	}
+	if d.action != nil {
+		a.dockerActionView(c, d)
+		return
+	}
+	if d.logs != nil {
+		a.dockerLogsView(c, d)
 		return
 	}
 	ct := d.container()

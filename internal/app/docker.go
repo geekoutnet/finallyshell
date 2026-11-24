@@ -57,21 +57,25 @@ const (
 
 // dockerState is a session's Docker cards.
 type dockerState struct {
-	d       monitor.Docker
-	read    bool      // d holds what a read found
-	at      time.Time // when
-	client  *ssh.Client
-	loading bool
-	err     error
-	gen     int // counts the reads; a result of an older one is dropped
-	cancel  context.CancelFunc
-	frame   uint64 // the last frame of the main window that showed the cards
+	d          monitor.Docker
+	read       bool      // d holds what a read found
+	at         time.Time // when
+	client     *ssh.Client
+	dataClient *ssh.Client
+	loading    bool
+	err        error
+	gen        int // counts the reads; a result of an older one is dropped
+	cancel     context.CancelFunc
+	frame      uint64 // the last frame of the main window that showed the cards
 
-	filter string
-	sortBy int
-	desc   bool // the other way from the column's own
-	flat   bool // not grouped by project
-	closed map[string]bool
+	filter      string
+	sortBy      int
+	desc        bool // the other way from the column's own
+	flat        bool // not grouped by project
+	closed      map[string]bool
+	run         dockerRunner
+	work        *dockerWork
+	actionError *dockerActionDialog
 }
 
 // shown tells whether the server has Docker, so that the cards show.
@@ -105,9 +109,12 @@ func (a *App) readDockerOf(s *Session) {
 				return
 			}
 			ds.loading, ds.cancel, ds.err = false, nil, err
+			if ds.work != nil && ds.work.done {
+				ds.work = nil
+			}
 			switch {
 			case err == nil:
-				ds.d, ds.read, ds.at = d, true, time.Now()
+				ds.d, ds.read, ds.at, ds.dataClient = d, true, time.Now(), client
 			case !ds.read:
 				ds.d = d // what the output had: whether Docker is there
 			}
@@ -675,7 +682,7 @@ func ctrCompare(sortBy int, desc bool) func(a, b *monitor.Container) int {
 	}
 }
 
-// ctrGroup is a Compose project of several containers, as the card
+// ctrGroup is a Compose project, as the card
 // shows it, or with project "" the other containers.
 type ctrGroup struct {
 	project string
@@ -683,16 +690,10 @@ type ctrGroup struct {
 }
 
 // ctrGroups are the containers that show for the filter, sorted: the
-// projects of more than one container, then the others; all in one group
+// projects, then the others; all in one group
 // when flat.
 func (ds *dockerState) ctrGroups(now time.Time) (groups []ctrGroup, shown int) {
 	q := strings.ToLower(strings.TrimSpace(ds.filter))
-	size := map[string]int{}
-	for i := range ds.d.Containers {
-		if p := ds.d.Containers[i].Project; p != "" {
-			size[p]++
-		}
-	}
 	byProject := map[string]*ctrGroup{}
 	rest := &ctrGroup{}
 	for i := range ds.d.Containers {
@@ -702,7 +703,7 @@ func (ds *dockerState) ctrGroups(now time.Time) (groups []ctrGroup, shown int) {
 		}
 		shown++
 		g := rest
-		if !ds.flat && size[ct.Project] > 1 {
+		if !ds.flat && ct.Project != "" {
 			if g = byProject[ct.Project]; g == nil {
 				g = &ctrGroup{project: ct.Project}
 				byProject[ct.Project] = g
@@ -866,6 +867,7 @@ func (a *App) ctrHeader(c *ui.Context, ds *dockerState, cols ctrColumns) {
 		}
 		head(locales.Cpu(), ctrSortCPU, ctrCPUW, true)
 		head(locales.DockerColMemory(), ctrSortMemory, ctrMemW, true)
+		ui.Box(c).Width(ctrMenuW).Shrink(0)
 	})
 }
 
@@ -877,41 +879,52 @@ func (a *App) ctrGroupView(c *ui.Context, s *Session, g ctrGroup, headed bool, c
 	open := g.project == "" || !ds.closed[g.project]
 	if g.project != "" {
 		title := g.project
-		row := ui.Row(c).Gap(6).Padding(5, 6).Margin(4, 0, 0, 0).Radius(4).AlignItems(ui.Center).FillWidth().
-			Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(title).Expanded(open)
+		row := ui.Row(c).Gap(10).Padding(5, 6).Margin(4, 0, 0, 0).Radius(4).AlignItems(ui.Center).FillWidth().
+			Cursor(ui.CursorPointer).Role(ui.RoleGroup).Label(title)
+		menu := func(m *ui.Menu) { a.dockerProjectMenu(m, s, g.project) }
+		row.ContextMenu(menu)
 		if row.Hovered() {
 			row.Background(theme.Text.Alpha(0.06))
 		}
-		if row.Clicked() {
-			if ds.closed == nil {
-				ds.closed = map[string]bool{}
-			}
-			ds.closed[g.project] = open
-			open = !open
-		}
 		row.Children(func() {
-			icon := "chevron-right"
-			if open {
-				icon = "chevron-down"
-			}
-			ui.Icon(c, icons.Get(icon)).FontSize(13).TextColor(theme.TextMuted)
-			ui.Icon(c, icons.Get("layout-grid")).FontSize(12).TextColor(theme.Accent)
-			ui.Text(c, title).Bold().SingleLine().Shrink(1).MinWidth(0).Tooltip(locales.DockerProject() + ": " + title)
-			running := 0
-			var cpu float64
-			var mem uint64
-			for _, ct := range g.list {
-				if ct.Status == "running" {
-					running++
+			content := ui.Row(c).Gap(10).AlignItems(ui.Center).Grow(1).MinWidth(0).Cursor(ui.CursorPointer).
+				Role(ui.RoleButton).Label(title).Expanded(open)
+			if content.Clicked() {
+				if ds.closed == nil {
+					ds.closed = map[string]bool{}
 				}
-				if ct.Stats != nil {
-					cpu += ct.Stats.CPU
-					mem += ct.Stats.MemUsed
-				}
+				ds.closed[g.project] = open
+				open = !open
 			}
-			widgets.Muted(c, locales.DockerCount(len(g.list), running)).FontSize(12).SingleLine().Grow(1).MinWidth(0)
-			widgets.Muted(c, fmt.Sprintf("%.1f%%", cpu)).FontSize(12).Width(ctrCPUW).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
-			widgets.Muted(c, formatBytes(float64(mem))).FontSize(12).Width(ctrMemW).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
+			content.Children(func() {
+				icon := "chevron-right"
+				if open {
+					icon = "chevron-down"
+				}
+				ui.Icon(c, icons.Get(icon)).FontSize(13).TextColor(theme.TextMuted)
+				ui.Icon(c, icons.Get("layout-grid")).FontSize(12).TextColor(theme.Accent)
+				ui.Text(c, title).Bold().SingleLine().Shrink(1).MinWidth(0).Tooltip(locales.DockerProject() + ": " + title)
+				running := 0
+				var cpu float64
+				var mem uint64
+				for _, ct := range g.list {
+					if ct.Status == "running" {
+						running++
+					}
+					if ct.Stats != nil {
+						cpu += ct.Stats.CPU
+						mem += ct.Stats.MemUsed
+					}
+				}
+				count := locales.DockerCount(len(g.list), running)
+				if work := ds.work; work != nil && work.target.project == g.project && work.target.id == "" {
+					count = work.busyText()
+				}
+				widgets.Muted(c, count).FontSize(12).SingleLine().Grow(1).MinWidth(0)
+				widgets.Muted(c, fmt.Sprintf("%.1f%%", cpu)).FontSize(12).Width(ctrCPUW).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
+				widgets.Muted(c, formatBytes(float64(mem))).FontSize(12).Width(ctrMemW).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
+			})
+			dockerMoreButton(c, title, menu)
 		})
 	} else if headed {
 		widgets.Muted(c, locales.DockerOther()).FontSize(12).Bold().Padding(8, 6, 2, 6)
@@ -927,49 +940,66 @@ func (a *App) ctrGroupView(c *ui.Context, s *Session, g ctrGroup, headed bool, c
 // ctrRow is a container's line; a click opens its details.
 func (a *App) ctrRow(c *ui.Context, s *Session, ct *monitor.Container, indent bool, cols ctrColumns, now time.Time) {
 	row := ui.Row(c).Gap(10).Padding(4, 6).Radius(4).AlignItems(ui.Center).FillWidth().MinHeight(26).
-		Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(ct.Name)
+		Cursor(ui.CursorPointer).Role(ui.RoleGroup).Label(ct.Name)
+	menu := func(m *ui.Menu) { a.dockerContainerMenu(c, m, s, ct) }
+	row.ContextMenu(menu)
 	if row.Hovered() {
 		row.Background(theme.Text.Alpha(0.06))
 	}
-	if row.Clicked() {
-		a.openContainer(s, ct.ID)
-	}
 	status := ctrStatusText(ct, now)
+	work := s.overview.docker.work
+	busy := work != nil && (work.target.id == ct.ID || work.target.id == "" && work.target.project == ct.Project)
+	if busy {
+		status = work.busyText()
+	}
 	row.Children(func() {
-		// The names line up, a project's containers' dots indented.
-		ui.Row(c).Width(ctrDotW).Shrink(0).Children(func() {
-			dot := widgets.StatusDot(c, ctrColor(ct)).Tooltip(status)
-			if indent {
-				dot.Margin(0, 0, 0, 14)
-			}
-		})
-		name := ct.Name
-		tip := ct.Name
-		if ct.Service != "" && ct.Project != "" {
-			tip += "\n" + ct.Project + " / " + ct.Service
+		content := ui.Row(c).Gap(10).AlignItems(ui.Center).Grow(1).MinWidth(0).Cursor(ui.CursorPointer).
+			Role(ui.RoleButton).Label(ct.Name)
+		if content.Clicked() {
+			a.openContainer(s, ct.ID)
 		}
-		if !cols.status {
-			tip += "\n" + status
-		}
-		ui.Text(c, name).SingleLine().Grow(2).Basis(0).MinWidth(0).Tooltip(tip)
-		if cols.image {
-			widgets.Muted(c, ct.Image).SingleLine().Grow(1).Basis(0).MinWidth(0).Tooltip(ct.Image)
-		}
-		if cols.status {
-			t := ui.Text(c, status).FontSize(12).SingleLine().Width(ctrStatusW).Shrink(0).Tooltip(status)
-			if ct.Status != "running" || ct.Health == "unhealthy" {
-				t.TextColor(ctrColor(ct))
-			}
-		}
-		if cols.ports {
-			ports := portTexts(ct.Ports)
-			widgets.Muted(c, firstAndMore(ports)).FontSize(12).SingleLine().Width(ctrPortsW).Shrink(0).Tooltip(strings.Join(ports, "\n"))
-		}
-		if cols.ip {
-			ips := ctrIPs(ct)
-			widgets.Muted(c, firstAndMore(ips)).FontSize(12).SingleLine().Width(ctrIPW).Shrink(0).Tooltip(strings.Join(ips, "\n"))
-		}
-		ui.Text(c, ctrCPUText(ct)).FontSize(12).Width(ctrCPUW).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
-		ui.Text(c, ctrMemText(ct)).FontSize(12).Width(ctrMemW).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
+		content.Children(func() { ctrRowCells(c, ct, indent, cols, status, busy) })
+		dockerMoreButton(c, ct.Name, menu)
 	})
+}
+
+func ctrRowCells(c *ui.Context, ct *monitor.Container, indent bool, cols ctrColumns, status string, busy bool) {
+	// The names line up, a project's containers' dots indented.
+	ui.Row(c).Width(ctrDotW).Shrink(0).Children(func() {
+		dot := widgets.StatusDot(c, ctrColor(ct)).Tooltip(status)
+		if indent {
+			dot.Margin(0, 0, 0, 14)
+		}
+	})
+	name := ct.Name
+	tip := ct.Name
+	if ct.Service != "" && ct.Project != "" {
+		tip += "\n" + ct.Project + " / " + ct.Service
+	}
+	if !cols.status {
+		tip += "\n" + status
+		if busy {
+			name += " · " + status
+		}
+	}
+	ui.Text(c, name).SingleLine().Grow(2).Basis(0).MinWidth(0).Tooltip(tip)
+	if cols.image {
+		widgets.Muted(c, ct.Image).SingleLine().Grow(1).Basis(0).MinWidth(0).Tooltip(ct.Image)
+	}
+	if cols.status {
+		t := ui.Text(c, status).FontSize(12).SingleLine().Width(ctrStatusW).Shrink(0).Tooltip(status)
+		if ct.Status != "running" || ct.Health == "unhealthy" {
+			t.TextColor(ctrColor(ct))
+		}
+	}
+	if cols.ports {
+		ports := portTexts(ct.Ports)
+		widgets.Muted(c, firstAndMore(ports)).FontSize(12).SingleLine().Width(ctrPortsW).Shrink(0).Tooltip(strings.Join(ports, "\n"))
+	}
+	if cols.ip {
+		ips := ctrIPs(ct)
+		widgets.Muted(c, firstAndMore(ips)).FontSize(12).SingleLine().Width(ctrIPW).Shrink(0).Tooltip(strings.Join(ips, "\n"))
+	}
+	ui.Text(c, ctrCPUText(ct)).FontSize(12).Width(ctrCPUW).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
+	ui.Text(c, ctrMemText(ct)).FontSize(12).Width(ctrMemW).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
 }

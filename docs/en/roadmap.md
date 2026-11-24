@@ -36,38 +36,25 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 | v2.0.11 | Sync backups: versions kept on the server, local snapshots, preview, restore, mass-deletion guard |
 | v2.0.12 | The Overview's Memory card: physical memory, swap, virtual memory; drop caches and compact memory |
 | v2.0.13 | The Docker tab: containers (create, edit by recreating, batch actions, usage charts, files in a container), images (pull, build, push, prune), Compose (deploy, take down, edit compose files, new projects), networks, volumes, system (disk use, cleanup, events, registries, daemon config); shared escalation: root, passwordless sudo, sudo password, su, and a message only when all fail |
+| v2.0.14 | Run on many hosts with results; the System tab: services, logs, scheduled jobs, disk usage, updates, security, firewall; SSH key manager, key deployment, turning off password login, agent and X11 forwarding; ZMODEM (rz/sz), terminal keyword highlighting, session recording; the Docker tab escalates when needed; hosts made in a row on Windows no longer share an ID and crash the UI |
 
 ## In progress
 
-### First batch of extensions
+### Second batch of extensions
 
-Based on `feature/ext-base` (the Docker tab, escalation, the System tab skeleton), five Codex agents work in parallel, each on its own files:
+Based on `feature/ext-1` (everything of the first batch), five Codex agents work in parallel:
 
 | What | Scope | Branch |
 |---|---|---|
-| Run on many hosts with results | Pick hosts (not necessarily connected), run in parallel with a concurrency limit and a timeout; a table of each host's status, exit code, duration and output, retry the failed, export CSV; optionally as root; the last 20 runs kept. An untrusted host key fails the host, never accepted silently | `feature/bulk-exec` |
-| Services, logs, scheduled jobs | System tab: start/stop/enable systemd services, their logs and unit files, edit through an override; follow journalctl and log files with filter and highlights; add/edit/remove/enable crontab entries, schedules in words with the next runs; systemd timers read-only | `feature/server-services` |
-| Disk, updates, security, firewall | System tab: folder sizes level by level and the largest files, system folders cannot be deleted; apt / dnf updates with security updates apart and a reboot note; SSH brute-force attempts, logins, fail2ban; ufw / firewalld rules, the rule allowing the current SSH port cannot be removed | `feature/server-ops` |
-| SSH keys and forwarding | Generate, import, delete keys; deploy the public key and switch to key login, optionally turn off password login (only after the key login worked and `sshd -t` passes); agent and X11 forwarding per host | `feature/ssh-keys` |
-| ZMODEM, highlighting, recording | `rz` / `sz` in the terminal with progress in the Transfers tab; keyword highlighting (never in full-screen programs such as vim or top); session recordings as asciicast and plain text | `feature/terminal-stream` |
-
-One follow-up: the Docker tab's actions move to the escalation layer. Today a server that wants a sudo password only shows "Permission denied"; afterwards it shows a "Use root / sudo" button.
-
-### System tab
-
-A "System" tab in the bottom panel, with a row of sections: Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall, Websites. One file per section (`internal/app/serverpage_*.go`); what needs root goes through escalation.
+| Websites and certificates | The System tab's Websites: sites, domains, ports and certificates from `nginx -T`; config edits backed up, reloaded only when `nginx -t` passes, restorable; new site templates; certificate expiry checked from the server and from this computer; certbot renewals | `feature/server-sites` |
+| Server-to-server transfers, alerts | Send files from the file panel to another server: directly when A can reach B with a key, else relayed through this computer without touching its disk; system notifications when a server goes down, CPU / memory / disk / load cross a threshold or a service fails, with cooldown and dedup | `feature/relay-alerts` |
+| App lock, two-factor | A master password lock (only an Argon2id verifier is kept), idle lock, lock now; a TOTP secret per host answers verification code prompts | `feature/lock-totp` |
+| Database client | A new Database tab: MySQL / MariaDB, PostgreSQL and Redis through the SSH connection (no local port); browse databases and tables, paged data, structure, an SQL editor, confirmations for dangerous statements, read-only mode, CSV / JSON export | `feature/db-client` |
+| Telnet and serial | New connection kinds: Telnet (option negotiation, window size, automatic login) and serial ports (baud, parity, flow control); importers no longer skip them | `feature/telnet-serial` |
 
 ## Next
 
-Starts after the first batch is merged and released, one Codex agent per group:
-
-| What | Scope |
-|---|---|
-| Websites and certificates | The System tab's Websites: sites, domains, ports and certificates from `nginx -T`; config edits backed up, reloaded only when `nginx -t` passes, restorable; new site templates; certificate expiry checked from the server and from this computer; certbot renewals |
-| Server-to-server transfers, alerts | Send files from the file panel to another server: directly when A can reach B with a key, else relayed through this computer without touching its disk; system notifications when a server goes down, CPU / memory / disk / load cross a threshold or a service fails, with cooldown and dedup |
-| App lock, two-factor | A master password lock (only an Argon2id verifier is kept), idle lock, lock now; a TOTP secret per host answers verification code prompts |
-| Database client | A new Database tab: MySQL / MariaDB, PostgreSQL and Redis through the SSH connection (no local port); browse databases and tables, paged data, structure, an SQL editor, confirmations for dangerous statements, read-only mode, CSV / JSON export |
-| Telnet and serial | New connection kinds: Telnet (option negotiation, window size, automatic login) and serial ports (baud, parity, flow control); importers no longer skip them |
+Nothing yet. Once the second batch is done, every feature the roadmap listed is built.
 
 ## Candidates
 

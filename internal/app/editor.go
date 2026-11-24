@@ -95,6 +95,8 @@ type connEditor struct {
 	backspace               config.BackspaceKey
 	delete                  config.DeleteKey
 	encoding                config.Encoding
+	forwardAgent            bool
+	x11Forward              string
 	proxy                   proxyFields  // the Proxy page (editor_proxy.go)
 	tunnels                 tunnelEditor // see editor_tunnels.go
 	folder                  string       // a new host's, from the manager
@@ -157,6 +159,7 @@ func (a *App) openEditor(h *config.Host, from WindowKind) {
 		ed.remember = h.RemembersPassword()
 		ed.monitor = h.MonitorEnabled()
 		ed.termType, ed.backspace, ed.delete, ed.encoding = h.TermType, h.Backspace, h.Delete, h.Encoding
+		ed.forwardAgent, ed.x11Forward = h.ForwardAgent, h.X11Forward
 		ed.kind = h.Kind
 	}
 	ed.rdp = a.rdpFieldsOf(h)
@@ -245,6 +248,7 @@ func (a *App) saveEditor() {
 	wasRDP := h.IsRDP()
 	h.Kind = ed.kind
 	if ed.kind == config.KindRDP {
+		h.ForwardAgent, h.X11Forward = false, ""
 		a.saveRDP(h, ed)
 	} else {
 		a.saveSSH(h, ed)
@@ -271,6 +275,7 @@ func (a *App) saveEditor() {
 // proxy and its tunnels. Its Remote Desktop options, if it had some, are
 // kept, for switching back.
 func (a *App) saveSSH(h *config.Host, ed *connEditor) {
+	keepStoredPassword := h.Auth == config.AuthKey && ed.auth == config.AuthKey
 	h.User, h.Auth = strings.TrimSpace(ed.user), ed.auth
 	secret := ed.password
 	h.KeyPath = ""
@@ -280,9 +285,14 @@ func (a *App) saveSSH(h *config.Host, ed *connEditor) {
 	case config.AuthAgent:
 		secret = ""
 	}
-	a.keepLogin(h, secret, ed.remember, ed.readingSecret)
+	if keepStoredPassword {
+		a.saveManagedKeyLogin(h, secret, ed.remember, ed.readingSecret)
+	} else {
+		a.keepLogin(h, secret, ed.remember, ed.readingSecret)
+	}
 	h.NoMonitor = !ed.monitor
 	h.TermType, h.Backspace, h.Delete, h.Encoding = strings.TrimSpace(ed.termType), ed.backspace, ed.delete, ed.encoding
+	h.ForwardAgent, h.X11Forward = ed.forwardAgent, ed.x11Forward
 	if h.TermType == config.DefaultTermType {
 		h.TermType = ""
 	}
@@ -467,6 +477,7 @@ func (a *App) terminalPage(c *ui.Context, ed *connEditor, errs map[editorField]s
 			def := a.settings.TermDeleteKey()
 			choiceSelect(c, locales.FieldDelete(), &ed.delete, deleteChoices, &def)
 		})
+		a.forwardingFields(c, ed)
 	})
 	widgets.Muted(c, locales.TerminalNextConnect()).FontSize(12)
 }

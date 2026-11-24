@@ -246,6 +246,10 @@ func TestEditorEditKeepsFields(t *testing.T) {
 		tunnels: newTunnelEditor(&h)}
 	fields := *ed
 	fields.nav = widgets.NavState{}
+	if ed.serial.device != "" {
+		t.Errorf("an SSH host has the serial device %q", ed.serial.device)
+	}
+	fields.serial = serialFields{}
 	if !reflect.DeepEqual(fields, want) || ed.nav.Page != editorSSH {
 		t.Errorf("editor on %q\n%+v\nwant\n%+v", ed.nav.Page, fields, want)
 	}

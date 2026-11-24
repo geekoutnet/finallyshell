@@ -41,6 +41,9 @@ func TestDeviceQuickConnect(t *testing.T) {
 		}
 	}
 	a, p := testApp(t)
+	// Quick connect is on the page with hosts; the page with none stays
+	// new, import and a local terminal.
+	a.hosts.Add(&config.Host{ID: "h1", Name: "web", Addr: "10.0.0.1"})
 	a.NewTab()
 	calls := make(chan string, 1)
 	a.telnetDial = func(_ context.Context, network, address string) (net.Conn, error) {
@@ -49,11 +52,11 @@ func TestDeviceQuickConnect(t *testing.T) {
 	}
 	tt := ui.NewTester(a.View, 960, 720)
 	tt.Frame()
-	clickKindControl(t, tt, ui.RoleTextField, locales.QuickConnect())
+	clickKindControl(t, tt, ui.RoleTextField, locales.SearchHosts())
 	tt.Type("telnet://console.example:2323")
 	tt.Key(0, ui.KeyEnter)
 	p.until(t, "quick Telnet connection", func() bool { return len(calls) == 1 })
-	if got := <-calls; got != "tcp console.example:2323" || len(a.hosts.Live()) != 0 {
+	if got := <-calls; got != "tcp console.example:2323" || len(a.hosts.Live()) != 1 {
 		t.Fatalf("quick connect dialed %q or saved a transient host", got)
 	}
 }

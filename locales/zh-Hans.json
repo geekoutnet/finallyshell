@@ -1262,6 +1262,7 @@
   "relayProgress": "{mode} · {files}/{total} 个文件",
   "relayTransferEnded": "此传输已经结束。",
   "alertTitle": "告警",
+  "alertShowHistory": "查看告警记录…",
   "alertUnreadCount": "{count, plural, =0 {告警} other {告警（# 条待确认）}}",
   "alertBadge": "{count, plural, =100 {99+} other {#}}",
   "alertNotification": "{host}：{rule}",

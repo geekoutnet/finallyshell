@@ -15,7 +15,12 @@ const pageAlerts = "alerts"
 func (a *App) alertsPage(c *ui.Context) {
 	state := &a.alerts
 	ui.Column(c).Gap(10).FillWidth().Children(func() {
-		widgets.Muted(c, locales.AlertWhileRunning()).FontSize(12)
+		ui.Row(c).FillWidth().Gap(8).AlignItems(ui.Center).Children(func() {
+			widgets.Muted(c, locales.AlertWhileRunning()).FontSize(12).Grow(1).MinWidth(0)
+			if ui.Button(c, locales.AlertShowHistory()).Shrink(0).Clicked() {
+				a.openAlerts()
+			}
+		})
 		label := locales.AlertAllHosts()
 		if host := a.hosts.Host(state.scope); host != nil && !host.Deleted() && host.Kind == config.KindSSH {
 			label = host.Title()

@@ -12750,6 +12750,16 @@ func (msgs Messages) AlertTitle() string {
 	return Catalog.Format(msgs.locale, "alertTitle", nil)
 }
 
+// AlertShowHistory says "View alerts…"
+// in the language the app shows.
+func AlertShowHistory() string { return In(i18n.Locale()).AlertShowHistory() }
+
+// AlertShowHistory says "View alerts…"
+// in the language of msgs.
+func (msgs Messages) AlertShowHistory() string {
+	return Catalog.Format(msgs.locale, "alertShowHistory", nil)
+}
+
 // AlertUnreadCount says "{count, plural, =0 {Alerts} one {Alerts (# new)} other {Alerts (# new)}}"
 // in the language the app shows.
 func AlertUnreadCount(count int) string { return In(i18n.Locale()).AlertUnreadCount(count) }

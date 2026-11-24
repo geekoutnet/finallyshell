@@ -58,6 +58,9 @@ func (a *App) alertButton(c *ui.Context) {
 			count++
 		}
 	}
+	if count == 0 {
+		return
+	}
 	label := locales.AlertUnreadCount(count)
 	button := ui.Box(c.Key("alert-bell")).Width(23).Height(24).Center().Shrink(0).Radius(5).Role(ui.RoleButton).Label(label).Tooltip(label)
 	if button.Hovered() {

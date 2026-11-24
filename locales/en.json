@@ -1666,6 +1666,7 @@
   "@relayProgress": { "placeholders": { "mode": { "type": "String" }, "files": { "type": "int" }, "total": { "type": "int" } } },
   "relayTransferEnded": "This transfer has already ended.",
   "alertTitle": "Alerts",
+  "alertShowHistory": "View alerts…",
   "alertUnreadCount": "{count, plural, =0 {Alerts} one {Alerts (# new)} other {Alerts (# new)}}",
   "@alertUnreadCount": { "placeholders": { "count": { "type": "int" } } },
   "alertBadge": "{count, plural, =100 {99+} one {#} other {#}}",

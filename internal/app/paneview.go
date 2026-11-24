@@ -173,6 +173,8 @@ func (a *App) paneExited(s *Session, p *pane) {
 func (a *App) connectionLost(s *Session) {
 	s.status, s.err = statusClosed, errConnectionLost
 	s.stopTunnels()
+	a.transfers.cancelRelaySession(s)
+	a.syncAlertSessions()
 }
 
 // connectionAlive asks the server for an answer on client's connection:

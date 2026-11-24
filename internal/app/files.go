@@ -245,6 +245,7 @@ func (a *App) filePanel(c *ui.Context) {
 			if dl.Clicked() && len(names) > 0 {
 				a.download(s, names, "")
 			}
+			a.relayButton(c, s, f.cwd, names)
 			if f.loading {
 				ui.Spinner(c)
 			}
@@ -382,6 +383,7 @@ func (a *App) fileTable(c *ui.Context, s *Session) {
 				m.Separator()
 			}
 			a.downloadMenuItems(m, s, names)
+			a.relayMenu(m, s, f.cwd, names)
 			m.Separator()
 			a.uploadMenuItems(m, s, f.cwd)
 			m.Separator()

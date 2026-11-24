@@ -1701,6 +1701,36 @@ The transfer then ends as done, with a warning line such as "2 links were
 not created: they point outside the folder"; its tooltip lists the links.
 "Retry over SFTP" is not offered for it.
 
+### Send to another server
+
+Select files or folders in the file panel and choose **Send to another
+server…**. The toolbar button also accepts a drag onto a connected SSH
+session. Connected servers appear first; selecting a saved server opens
+it using the usual credential and host-key prompts. Browse the destination
+with SFTP or enter an absolute path, then review the files and the destination
+before starting.
+
+**Automatic** first tries non-interactive public-key SSH from the source to
+the destination, requiring a host key already trusted on the source. When
+that probe fails, the app streams between the two SFTP connections without
+writing to local disk. You can force either mode. Direct transfer streams
+tar; the app never sends the destination password or key to the source.
+
+Choose once whether to skip conflicts, rename incoming items, or replace whole
+items after making a `.bak-YYYYMMDDhhmmss` backup (UTC). Folders are not merged.
+Files and directories are staged on the destination and checked by size
+before publishing. Permissions and modification times are preserved, but
+ownership, symbolic links, special files and privileged mode bits are not
+copied. Names that can be interpreted differently across SFTP servers,
+such as names containing backslashes or colons, are rejected. Transfers
+run with the existing SSH accounts, without elevation.
+
+The Transfers tab shows a single source → destination job, with bytes,
+file counts, speed, estimated time and a cancel button. A canceled or
+failed job does not resume. Canceling during publication does not undo items
+already published; a lost connection may leave a staging folder, whose path
+is reported if cleanup fails.
+
 ### Transfers tab
 
 The "Transfers" tab at the bottom right shows progress, speed, time left
@@ -2310,6 +2340,25 @@ lines in and send them, without saving them as a quick command first.
 
 Not supported: syntax highlighting, several editor tabs, variables in
 commands, and opening the editor in a window of its own.
+
+## Alerts
+
+In **Options › Alerts**, configure defaults for all SSH hosts or override
+them for individual hosts. Rules are off by default. They can alert on
+unreachable SSH endpoints during a connection attempt, unexpected SSH
+disconnects, CPU usage above a threshold for a continuous number of
+minutes, memory or monitored disk usage above a threshold, 1-minute load
+relative to the number of online CPU cores, and failed systemd services.
+Intentional disconnects do not raise alerts. Resource and service checks
+require a connected session with monitoring enabled. The systemd check runs
+separately, about once a minute, and is skipped on non-systemd hosts.
+
+An ongoing incident is reported once; even after recovery, a host and rule
+will not notify again within 15 minutes. Desktop notifications use the
+system notification service. If delivery fails, the app shows an in-app
+notice. The bell opens recent alerts with time, host, rule, observed value
+and acknowledgment state. Filter, sort or select several to acknowledge
+them together. Alerts and their history only run while the app is open.
 
 ## Options window
 

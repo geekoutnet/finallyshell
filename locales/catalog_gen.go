@@ -12699,3 +12699,413 @@ func DockerReclaimable() string { return In(i18n.Locale()).DockerReclaimable() }
 func (msgs Messages) DockerReclaimable() string {
 	return Catalog.Format(msgs.locale, "dockerReclaimable", nil)
 }
+
+// DockerMore says "Actions for {name}"
+// in the language the app shows.
+func DockerMore(name string) string { return In(i18n.Locale()).DockerMore(name) }
+
+// DockerMore says "Actions for {name}"
+// in the language of msgs.
+func (msgs Messages) DockerMore(name string) string {
+	return Catalog.Format(msgs.locale, "dockerMore", map[string]any{"name": name})
+}
+
+// DockerStart says "Start"
+// in the language the app shows.
+func DockerStart() string { return In(i18n.Locale()).DockerStart() }
+
+// DockerStart says "Start"
+// in the language of msgs.
+func (msgs Messages) DockerStart() string {
+	return Catalog.Format(msgs.locale, "dockerStart", nil)
+}
+
+// DockerStop says "Stop"
+// in the language the app shows.
+func DockerStop() string { return In(i18n.Locale()).DockerStop() }
+
+// DockerStop says "Stop"
+// in the language of msgs.
+func (msgs Messages) DockerStop() string {
+	return Catalog.Format(msgs.locale, "dockerStop", nil)
+}
+
+// DockerRestart says "Restart"
+// in the language the app shows.
+func DockerRestart() string { return In(i18n.Locale()).DockerRestart() }
+
+// DockerRestart says "Restart"
+// in the language of msgs.
+func (msgs Messages) DockerRestart() string {
+	return Catalog.Format(msgs.locale, "dockerRestart", nil)
+}
+
+// DockerKill says "Kill"
+// in the language the app shows.
+func DockerKill() string { return In(i18n.Locale()).DockerKill() }
+
+// DockerKill says "Kill"
+// in the language of msgs.
+func (msgs Messages) DockerKill() string {
+	return Catalog.Format(msgs.locale, "dockerKill", nil)
+}
+
+// DockerPause says "Pause"
+// in the language the app shows.
+func DockerPause() string { return In(i18n.Locale()).DockerPause() }
+
+// DockerPause says "Pause"
+// in the language of msgs.
+func (msgs Messages) DockerPause() string {
+	return Catalog.Format(msgs.locale, "dockerPause", nil)
+}
+
+// DockerUnpause says "Unpause"
+// in the language the app shows.
+func DockerUnpause() string { return In(i18n.Locale()).DockerUnpause() }
+
+// DockerUnpause says "Unpause"
+// in the language of msgs.
+func (msgs Messages) DockerUnpause() string {
+	return Catalog.Format(msgs.locale, "dockerUnpause", nil)
+}
+
+// DockerRemove says "Remove"
+// in the language the app shows.
+func DockerRemove() string { return In(i18n.Locale()).DockerRemove() }
+
+// DockerRemove says "Remove"
+// in the language of msgs.
+func (msgs Messages) DockerRemove() string {
+	return Catalog.Format(msgs.locale, "dockerRemove", nil)
+}
+
+// DockerForceRemove says "Force remove"
+// in the language the app shows.
+func DockerForceRemove() string { return In(i18n.Locale()).DockerForceRemove() }
+
+// DockerForceRemove says "Force remove"
+// in the language of msgs.
+func (msgs Messages) DockerForceRemove() string {
+	return Catalog.Format(msgs.locale, "dockerForceRemove", nil)
+}
+
+// DockerRecreate says "Pull image and recreate"
+// in the language the app shows.
+func DockerRecreate() string { return In(i18n.Locale()).DockerRecreate() }
+
+// DockerRecreate says "Pull image and recreate"
+// in the language of msgs.
+func (msgs Messages) DockerRecreate() string {
+	return Catalog.Format(msgs.locale, "dockerRecreate", nil)
+}
+
+// DockerDetails says "Details"
+// in the language the app shows.
+func DockerDetails() string { return In(i18n.Locale()).DockerDetails() }
+
+// DockerDetails says "Details"
+// in the language of msgs.
+func (msgs Messages) DockerDetails() string {
+	return Catalog.Format(msgs.locale, "dockerDetails", nil)
+}
+
+// DockerTerminal says "Open terminal"
+// in the language the app shows.
+func DockerTerminal() string { return In(i18n.Locale()).DockerTerminal() }
+
+// DockerTerminal says "Open terminal"
+// in the language of msgs.
+func (msgs Messages) DockerTerminal() string {
+	return Catalog.Format(msgs.locale, "dockerTerminal", nil)
+}
+
+// DockerOpenPort says "Open published port"
+// in the language the app shows.
+func DockerOpenPort() string { return In(i18n.Locale()).DockerOpenPort() }
+
+// DockerOpenPort says "Open published port"
+// in the language of msgs.
+func (msgs Messages) DockerOpenPort() string {
+	return Catalog.Format(msgs.locale, "dockerOpenPort", nil)
+}
+
+// DockerProjectStart says "Start all"
+// in the language the app shows.
+func DockerProjectStart() string { return In(i18n.Locale()).DockerProjectStart() }
+
+// DockerProjectStart says "Start all"
+// in the language of msgs.
+func (msgs Messages) DockerProjectStart() string {
+	return Catalog.Format(msgs.locale, "dockerProjectStart", nil)
+}
+
+// DockerProjectStop says "Stop all"
+// in the language the app shows.
+func DockerProjectStop() string { return In(i18n.Locale()).DockerProjectStop() }
+
+// DockerProjectStop says "Stop all"
+// in the language of msgs.
+func (msgs Messages) DockerProjectStop() string {
+	return Catalog.Format(msgs.locale, "dockerProjectStop", nil)
+}
+
+// DockerProjectRestart says "Restart all"
+// in the language the app shows.
+func DockerProjectRestart() string { return In(i18n.Locale()).DockerProjectRestart() }
+
+// DockerProjectRestart says "Restart all"
+// in the language of msgs.
+func (msgs Messages) DockerProjectRestart() string {
+	return Catalog.Format(msgs.locale, "dockerProjectRestart", nil)
+}
+
+// DockerProjectRecreate says "Pull images and recreate project"
+// in the language the app shows.
+func DockerProjectRecreate() string { return In(i18n.Locale()).DockerProjectRecreate() }
+
+// DockerProjectRecreate says "Pull images and recreate project"
+// in the language of msgs.
+func (msgs Messages) DockerProjectRecreate() string {
+	return Catalog.Format(msgs.locale, "dockerProjectRecreate", nil)
+}
+
+// DockerProjectDown says "Take project down"
+// in the language the app shows.
+func DockerProjectDown() string { return In(i18n.Locale()).DockerProjectDown() }
+
+// DockerProjectDown says "Take project down"
+// in the language of msgs.
+func (msgs Messages) DockerProjectDown() string {
+	return Catalog.Format(msgs.locale, "dockerProjectDown", nil)
+}
+
+// DockerUnavailable says "This action is no longer available for the selected container or project."
+// in the language the app shows.
+func DockerUnavailable() string { return In(i18n.Locale()).DockerUnavailable() }
+
+// DockerUnavailable says "This action is no longer available for the selected container or project."
+// in the language of msgs.
+func (msgs Messages) DockerUnavailable() string {
+	return Catalog.Format(msgs.locale, "dockerUnavailable", nil)
+}
+
+// DockerUpdatingList says "Refreshing containers…"
+// in the language the app shows.
+func DockerUpdatingList() string { return In(i18n.Locale()).DockerUpdatingList() }
+
+// DockerUpdatingList says "Refreshing containers…"
+// in the language of msgs.
+func (msgs Messages) DockerUpdatingList() string {
+	return Catalog.Format(msgs.locale, "dockerUpdatingList", nil)
+}
+
+// DockerActionRestarting says "Restarting…"
+// in the language the app shows.
+func DockerActionRestarting() string { return In(i18n.Locale()).DockerActionRestarting() }
+
+// DockerActionRestarting says "Restarting…"
+// in the language of msgs.
+func (msgs Messages) DockerActionRestarting() string {
+	return Catalog.Format(msgs.locale, "dockerActionRestarting", nil)
+}
+
+// DockerActionRunning says "In progress: {action}"
+// in the language the app shows.
+func DockerActionRunning(action string) string { return In(i18n.Locale()).DockerActionRunning(action) }
+
+// DockerActionRunning says "In progress: {action}"
+// in the language of msgs.
+func (msgs Messages) DockerActionRunning(action string) string {
+	return Catalog.Format(msgs.locale, "dockerActionRunning", map[string]any{"action": action})
+}
+
+// DockerActionFailed says "Docker action failed"
+// in the language the app shows.
+func DockerActionFailed() string { return In(i18n.Locale()).DockerActionFailed() }
+
+// DockerActionFailed says "Docker action failed"
+// in the language of msgs.
+func (msgs Messages) DockerActionFailed() string {
+	return Catalog.Format(msgs.locale, "dockerActionFailed", nil)
+}
+
+// DockerActionDone says "Docker action finished"
+// in the language the app shows.
+func DockerActionDone() string { return In(i18n.Locale()).DockerActionDone() }
+
+// DockerActionDone says "Docker action finished"
+// in the language of msgs.
+func (msgs Messages) DockerActionDone() string {
+	return Catalog.Format(msgs.locale, "dockerActionDone", nil)
+}
+
+// DockerKillWarning says "This immediately kills the container's main process. In-flight work and unsaved data can be lost."
+// in the language the app shows.
+func DockerKillWarning() string { return In(i18n.Locale()).DockerKillWarning() }
+
+// DockerKillWarning says "This immediately kills the container's main process. In-flight work and unsaved data can be lost."
+// in the language of msgs.
+func (msgs Messages) DockerKillWarning() string {
+	return Catalog.Format(msgs.locale, "dockerKillWarning", nil)
+}
+
+// DockerRemoveWarning says "This permanently removes the container and its writable layer. Named volumes and bind mounts are kept."
+// in the language the app shows.
+func DockerRemoveWarning() string { return In(i18n.Locale()).DockerRemoveWarning() }
+
+// DockerRemoveWarning says "This permanently removes the container and its writable layer. Named volumes and bind mounts are kept."
+// in the language of msgs.
+func (msgs Messages) DockerRemoveWarning() string {
+	return Catalog.Format(msgs.locale, "dockerRemoveWarning", nil)
+}
+
+// DockerForceRemoveWarning says "This forcibly kills the container if it is running and permanently removes its writable layer. Unsaved data can be lost."
+// in the language the app shows.
+func DockerForceRemoveWarning() string { return In(i18n.Locale()).DockerForceRemoveWarning() }
+
+// DockerForceRemoveWarning says "This forcibly kills the container if it is running and permanently removes its writable layer. Unsaved data can be lost."
+// in the language of msgs.
+func (msgs Messages) DockerForceRemoveWarning() string {
+	return Catalog.Format(msgs.locale, "dockerForceRemoveWarning", nil)
+}
+
+// DockerRemoveVolumes says "Also remove anonymous volumes (-v)"
+// in the language the app shows.
+func DockerRemoveVolumes() string { return In(i18n.Locale()).DockerRemoveVolumes() }
+
+// DockerRemoveVolumes says "Also remove anonymous volumes (-v)"
+// in the language of msgs.
+func (msgs Messages) DockerRemoveVolumes() string {
+	return Catalog.Format(msgs.locale, "dockerRemoveVolumes", nil)
+}
+
+// DockerRecreateWarning says "This pulls the image, interrupts the container if it is running, and starts a replacement. Mounted volumes are kept, …"
+// in the language the app shows.
+func DockerRecreateWarning() string { return In(i18n.Locale()).DockerRecreateWarning() }
+
+// DockerRecreateWarning says "This pulls the image, interrupts the container if it is running, and starts a replacement. Mounted volumes are kept, …"
+// in the language of msgs.
+func (msgs Messages) DockerRecreateWarning() string {
+	return Catalog.Format(msgs.locale, "dockerRecreateWarning", nil)
+}
+
+// DockerComposeRecreateWarning says "This pulls the images and replaces the affected containers from the Compose files. Services may be interrupted and ch…"
+// in the language the app shows.
+func DockerComposeRecreateWarning() string { return In(i18n.Locale()).DockerComposeRecreateWarning() }
+
+// DockerComposeRecreateWarning says "This pulls the images and replaces the affected containers from the Compose files. Services may be interrupted and ch…"
+// in the language of msgs.
+func (msgs Messages) DockerComposeRecreateWarning() string {
+	return Catalog.Format(msgs.locale, "dockerComposeRecreateWarning", nil)
+}
+
+// DockerDownWarning says "This stops and removes the project's containers and networks. Volumes are kept, but changes in the containers' writab…"
+// in the language the app shows.
+func DockerDownWarning() string { return In(i18n.Locale()).DockerDownWarning() }
+
+// DockerDownWarning says "This stops and removes the project's containers and networks. Volumes are kept, but changes in the containers' writab…"
+// in the language of msgs.
+func (msgs Messages) DockerDownWarning() string {
+	return Catalog.Format(msgs.locale, "dockerDownWarning", nil)
+}
+
+// DockerPolicyMax says "Maximum retries (0 = unlimited)"
+// in the language the app shows.
+func DockerPolicyMax() string { return In(i18n.Locale()).DockerPolicyMax() }
+
+// DockerPolicyMax says "Maximum retries (0 = unlimited)"
+// in the language of msgs.
+func (msgs Messages) DockerPolicyMax() string {
+	return Catalog.Format(msgs.locale, "dockerPolicyMax", nil)
+}
+
+// DockerInvalidName says "Start with a letter or number; use only letters, numbers, dots, underscores and hyphens."
+// in the language the app shows.
+func DockerInvalidName() string { return In(i18n.Locale()).DockerInvalidName() }
+
+// DockerInvalidName says "Start with a letter or number; use only letters, numbers, dots, underscores and hyphens."
+// in the language of msgs.
+func (msgs Messages) DockerInvalidName() string {
+	return Catalog.Format(msgs.locale, "dockerInvalidName", nil)
+}
+
+// DockerLogs says "Logs"
+// in the language the app shows.
+func DockerLogs() string { return In(i18n.Locale()).DockerLogs() }
+
+// DockerLogs says "Logs"
+// in the language of msgs.
+func (msgs Messages) DockerLogs() string {
+	return Catalog.Format(msgs.locale, "dockerLogs", nil)
+}
+
+// DockerLogTail says "Last lines"
+// in the language the app shows.
+func DockerLogTail() string { return In(i18n.Locale()).DockerLogTail() }
+
+// DockerLogTail says "Last lines"
+// in the language of msgs.
+func (msgs Messages) DockerLogTail() string {
+	return Catalog.Format(msgs.locale, "dockerLogTail", nil)
+}
+
+// DockerLogFollow says "Follow"
+// in the language the app shows.
+func DockerLogFollow() string { return In(i18n.Locale()).DockerLogFollow() }
+
+// DockerLogFollow says "Follow"
+// in the language of msgs.
+func (msgs Messages) DockerLogFollow() string {
+	return Catalog.Format(msgs.locale, "dockerLogFollow", nil)
+}
+
+// DockerLogWrap says "Wrap lines"
+// in the language the app shows.
+func DockerLogWrap() string { return In(i18n.Locale()).DockerLogWrap() }
+
+// DockerLogWrap says "Wrap lines"
+// in the language of msgs.
+func (msgs Messages) DockerLogWrap() string {
+	return Catalog.Format(msgs.locale, "dockerLogWrap", nil)
+}
+
+// DockerLogFilter says "Filter log lines"
+// in the language the app shows.
+func DockerLogFilter() string { return In(i18n.Locale()).DockerLogFilter() }
+
+// DockerLogFilter says "Filter log lines"
+// in the language of msgs.
+func (msgs Messages) DockerLogFilter() string {
+	return Catalog.Format(msgs.locale, "dockerLogFilter", nil)
+}
+
+// DockerLogLoading says "Reading logs…"
+// in the language the app shows.
+func DockerLogLoading() string { return In(i18n.Locale()).DockerLogLoading() }
+
+// DockerLogLoading says "Reading logs…"
+// in the language of msgs.
+func (msgs Messages) DockerLogLoading() string {
+	return Catalog.Format(msgs.locale, "dockerLogLoading", nil)
+}
+
+// DockerLogEmpty says "No log output."
+// in the language the app shows.
+func DockerLogEmpty() string { return In(i18n.Locale()).DockerLogEmpty() }
+
+// DockerLogEmpty says "No log output."
+// in the language of msgs.
+func (msgs Messages) DockerLogEmpty() string {
+	return Catalog.Format(msgs.locale, "dockerLogEmpty", nil)
+}
+
+// DockerLogNoMatches says "No log lines match the filter."
+// in the language the app shows.
+func DockerLogNoMatches() string { return In(i18n.Locale()).DockerLogNoMatches() }
+
+// DockerLogNoMatches says "No log lines match the filter."
+// in the language of msgs.
+func (msgs Messages) DockerLogNoMatches() string {
+	return Catalog.Format(msgs.locale, "dockerLogNoMatches", nil)
+}

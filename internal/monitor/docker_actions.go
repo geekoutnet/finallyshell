@@ -293,6 +293,10 @@ func (c DockerCmd) ComposeLogsScript(p Compose, tail int) (string, error) {
 // removed. When a step fails, the new container is removed and the old
 // one takes its name back and starts again.
 func (c DockerCmd) RecreateScript(ct *Container, at time.Time) (string, error) {
+	return c.recreateScript(ct, at, nil)
+}
+
+func (c DockerCmd) recreateScript(ct *Container, at time.Time, edit *ctrEdit) (string, error) {
 	if c.Tool == "podman" {
 		return "", errors.New("recreating a container is for Docker only")
 	}
@@ -308,7 +312,11 @@ func (c DockerCmd) RecreateScript(ct *Container, at time.Time) (string, error) {
 	if ct.Paused || ct.Status == "paused" {
 		return "", errors.New("unpause the container before recreating it")
 	}
-	r, err := recreateRequest(ct.Inspect)
+	inspect := ct.Inspect
+	if edit != nil {
+		inspect = edit.inspect
+	}
+	r, err := recreateRequestFor(inspect, edit != nil)
 	if err != nil {
 		return "", err
 	}
@@ -324,6 +332,10 @@ func (c DockerCmd) RecreateScript(ct *Container, at time.Time) (string, error) {
 	curl := sudo + `curl -q -sS --globoff --noproxy '*' --unix-socket "$sock"`
 	var b strings.Builder
 	b.WriteString(scriptHead)
+	name := ct.Name
+	if edit != nil {
+		name = edit.name
+	}
 	fmt.Fprintf(&b, `id=%s name=%s old=%s running=%s new=
 step() { echo "==> $*"; }
 fail() { echo "$*"; exit 1; }
@@ -348,16 +360,18 @@ rollback() {
   step "Rolling back"
   if [ -n "$new" ]; then %s || fail "$1 Rollback could not remove the replacement; the original is named $old."; fi
   %s || fail "$1 Rollback could not restore the original name; the original is named $old."
-  if [ "$running" = true ]; then %s || fail "$1 Rollback restored the original name but could not start it."; fi
+%s  if [ "$running" = true ]; then %s || fail "$1 Rollback restored the original name but could not start it."; fi
   fail "$1 The container was put back as it was."
 }
-step %s
-%s || fail "Could not pull the image. Nothing was changed."
-`, dockerQuote(ct.ID), dockerQuote(ct.Name), dockerQuote(old), start,
+`, dockerQuote(ct.ID), dockerQuote(name), dockerQuote(old), start,
 		c.Line("context", "inspect", "--format", "{{.Endpoints.docker.Host}}"), curl, curl,
 		c.Line("rm", "-f")+` "$new" >/dev/null`,
-		c.Line("rename", ct.ID, ct.Name), c.Line("start", ct.ID)+" >/dev/null",
-		dockerQuote("Pulling "+r.image), c.Line("pull", "--", r.image))
+		c.Line("rename", ct.ID, ct.Name), ctrRestoreNetworks(edit), c.Line("start", ct.ID)+" >/dev/null")
+	if edit == nil {
+		fmt.Fprintf(&b, "step %s\n%s || fail \"Could not pull the image. Nothing was changed.\"\n", dockerQuote("Pulling "+r.image), c.Line("pull", "--", r.image))
+	} else {
+		b.WriteString(edit.preflight(c, r.image))
+	}
 	fmt.Fprintf(&b, `if [ "$running" = true ]; then
   step "Stopping $name"
   %s >/dev/null || fail "Could not stop the container. Nothing was changed."
@@ -366,12 +380,12 @@ fi
   if [ "$running" = true ]; then %s || fail "Could not rename or restart the original container."; fi
   fail "Could not rename the container."
 }
-step "Creating $name"
+%sstep "Creating $name"
 post %s %s || rollback "Could not reach the Docker socket."
 new=$(printf '%%s' "$resp" | sed -n 's/.*"Id": *"\([0-9a-f]*\)".*/\1/p')
 [ "$code" = 201 ] && [ -n "$new" ] || { echo "$resp"; new=; rollback "Could not create the new container."; }
-`, c.Line("stop", ct.ID), c.Line("rename", ct.ID, old), c.Line("start", ct.ID)+" >/dev/null",
-		dockerQuote("/containers/create?name="+ct.Name), dockerQuote(string(r.body)))
+`, c.Line("stop", ct.ID), c.Line("rename", ct.ID, old), c.Line("start", ct.ID)+" >/dev/null", ctrReleaseNetworks(c, ct.ID, edit),
+		dockerQuote("/containers/create?name="+name), dockerQuote(string(r.body)))
 	for _, n := range r.networks {
 		fmt.Fprintf(&b, `step "Connecting to %s"
 post %s "%s$new%s" || rollback "Could not reach the Docker socket."
@@ -380,10 +394,10 @@ post %s "%s$new%s" || rollback "Could not reach the Docker socket."
 	}
 	fmt.Fprintf(&b, `step "Starting $name"
 %s "$new" >/dev/null || rollback "The new container did not start."
-step "Removing the old container"
+%sstep "Removing the old container"
 %s >/dev/null || fail "The replacement started, but the old container $old could not be removed."
 step "Done: $name is recreated from %s."
-`, c.Line("start"), c.Line("rm", ct.ID), shDouble(r.image))
+`, c.Line("start"), ctrCheckReplacement(c, edit), c.Line("rm", ct.ID), shDouble(r.image))
 	return b.String(), nil
 }
 
@@ -411,12 +425,19 @@ type netJoin struct {
 
 // recreateRequest reads a container's docker inspect for RecreateScript.
 func recreateRequest(inspect json.RawMessage) (recreate, error) {
+	return recreateRequestFor(inspect, false)
+}
+
+func recreateRequestFor(inspect json.RawMessage, allowImageID bool) (recreate, error) {
 	var j struct {
 		ID         string `json:"Id"`
 		Config     map[string]json.RawMessage
 		HostConfig map[string]json.RawMessage
 		State      struct{ Running, Restarting bool }
-		Mounts     []struct{ Type, Name, Destination string }
+		Mounts     []struct {
+			Type, Name, Destination string
+			RW                      *bool
+		}
 
 		NetworkSettings struct {
 			Networks map[string]map[string]json.RawMessage
@@ -427,7 +448,7 @@ func recreateRequest(inspect json.RawMessage) (recreate, error) {
 	}
 	r := recreate{running: j.State.Running || j.State.Restarting}
 	json.Unmarshal(j.Config["Image"], &r.image)
-	if r.image == "" || strings.HasPrefix(r.image, "sha256:") {
+	if r.image == "" || !allowImageID && strings.HasPrefix(r.image, "sha256:") {
 		return recreate{}, errors.New("the container's image has no name to pull")
 	}
 	// A host name docker gave it, its ID's start, is the new one's ID's.
@@ -460,7 +481,11 @@ func recreateRequest(inspect json.RawMessage) (recreate, error) {
 	added := false
 	for _, m := range j.Mounts {
 		if m.Type == "volume" && m.Name != "" && !covered[m.Destination] {
-			mounts = append(mounts, map[string]any{"Type": "volume", "Source": m.Name, "Target": m.Destination})
+			mount := map[string]any{"Type": "volume", "Source": m.Name, "Target": m.Destination}
+			if m.RW != nil && !*m.RW {
+				mount["ReadOnly"] = true
+			}
+			mounts = append(mounts, mount)
 			covered[m.Destination] = true
 			added = true
 		}

@@ -132,10 +132,13 @@ func checkTreeKindIcon(t *testing.T, tt *ui.Tester, host *config.Host, offset in
 	}
 	image := tt.Image()
 	color := kindLook(host).color
-	left := int(row.X) + offset
+	// Anywhere in the row, the icon or the kind's pill: fonts, and so where
+	// the icon is drawn, differ between systems.
+	_ = offset
+	left := int(row.X)
 	top := int(row.Y + row.H/2 - 8)
 	for posY := top; posY < top+16; posY++ {
-		for posX := left; posX < left+16; posX++ {
+		for posX := left; posX < int(row.X+row.W); posX++ {
 			pixel := image.RGBAAt(posX, posY)
 			if pixel.R == color.R && pixel.G == color.G && pixel.B == color.B {
 				return

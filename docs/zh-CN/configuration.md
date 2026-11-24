@@ -282,10 +282,11 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 - `host/<主机 ID>/password`：密码；
 - `host/<主机 ID>/passphrase`：私钥密码；
 - `host/<主机 ID>/proxy-password`：这台主机的 SOCKS5 或 HTTP 代理的密码；
+- `host/<主机 ID>/privilege/<端点哈希>`：提权弹窗中保存的方式（`sudo` 或 `su`）和密码。端点哈希由 SSH 用户名、地址和端口确定，与主机 ID 一起限定适用范围。它独立于登录的 **记住密码** 设置，不参与同步或备份；删除连接后仍可在系统凭据存储中手动移除。
 - `sync/password`：同步密码（见[同步](features.md#同步)）；
 - `sync/<服务>/credential`：同步服务（`gist`、`webdav` 或 `s3`）的令牌、密码或私有访问密钥。
 
-“记住密码”按主机设置，管这台主机的这几个密码。
+“记住密码”按主机设置，适用于登录和代理凭据。提权弹窗有独立的 **记住** 选项。
 
 | 系统 | 存在哪里 | 怎么查看 |
 |---|---|---|

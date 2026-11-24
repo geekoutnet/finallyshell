@@ -153,10 +153,14 @@ func dockerWorkView(c *ui.Context, work *dockerWork, height float32, open *bool)
 		dockerOutput(c, work.output, true, min(280, max(height-220, 100)), &work.scroll)
 	}
 	ui.Row(c).Gap(8).Justify(ui.End).Children(func() {
+		if !work.done && work.cancel != nil && ui.Button(c, locales.Cancel()).Clicked() {
+			work.cancel()
+			work.cancel = nil
+		}
 		if work.output != "" && ui.Button(c, locales.CopyAll()).Clicked() {
 			c.WriteClipboard(work.output)
 		}
-		if ui.PrimaryButton(c, locales.Close()).Clicked() {
+		if ui.PrimaryButton(c, locales.Close()).Disabled(work.label != "" && !work.done).Clicked() {
 			*open = false
 		}
 	})

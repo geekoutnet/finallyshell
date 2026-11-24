@@ -2,7 +2,6 @@ package app
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 	"testing"
@@ -42,7 +41,7 @@ type memoryReply struct {
 	err            error
 }
 
-func memoryApp(t *testing.T, width int) (*fakePlatform, *ui.Tester, chan memoryRequest) {
+func memoryApp(t *testing.T, width int) (*App, *fakePlatform, *ui.Tester, chan memoryRequest) {
 	t.Helper()
 	a, p := testApp(t)
 	session := demoSession(a, "web-1", "45.56.78.90")
@@ -82,7 +81,7 @@ func memoryApp(t *testing.T, width int) (*fakePlatform, *ui.Tester, chan memoryR
 	p.tt = tt
 	tt.Frame()
 	tt.Frame()
-	return p, tt, requests
+	return a, p, tt, requests
 }
 
 func nextMemoryRequest(t *testing.T, p *fakePlatform, requests chan memoryRequest, expected string) memoryRequest {
@@ -105,7 +104,7 @@ func nextMemoryRequest(t *testing.T, p *fakePlatform, requests chan memoryReques
 func TestMemoryOverview(t *testing.T) {
 	for _, width := range []int{1040, 460} {
 		for _, language := range []string{"en", "zh-Hans"} {
-			p, tt, _ := memoryApp(t, width)
+			_, p, tt, _ := memoryApp(t, width)
 			p.SetLocale(language)
 			for _, dark := range []bool{false, true} {
 				tt.SetDark(dark)
@@ -126,7 +125,16 @@ func TestMemoryOverview(t *testing.T) {
 }
 
 func TestMemoryOverviewClean(t *testing.T) {
-	p, tt, requests := memoryApp(t, 1040)
+	a, p, tt, requests := memoryApp(t, 1040)
+	state := &a.current().overview.memory
+	memoryRunner := a.current().overview.memoryRunner
+	state.privilegeRunner = func(ctx context.Context, request monitor.PrivilegeRequest) (monitor.PrivilegeResult, error) {
+		if request.Probe {
+			return monitor.PrivilegeResult{Stdout: "root"}, nil
+		}
+		out, stderr, err := memoryRunner(ctx, request.Action)
+		return monitor.PrivilegeResult{Started: true, Stdout: out, Stderr: stderr}, err
+	}
 	clickButton(t, tt, locales.MemoryFree())
 	wantTexts(t, tt, "confirmation", locales.MemoryDropWarning())
 	saveShot(t, tt, "memory-confirm-en.png")
@@ -160,21 +168,4 @@ func openMemoryActions(t *testing.T, tt *ui.Tester) {
 	}
 	tt.ClickAt(more.Bounds.X+more.Bounds.W/2, more.Bounds.Y+more.Bounds.H/2)
 	tt.Frame()
-}
-
-func TestMemoryOverviewDenied(t *testing.T) {
-	p, tt, requests := memoryApp(t, 460)
-	clickButton(t, tt, locales.MemoryFree())
-	clickButton(t, tt, locales.MemoryDropCaches())
-	nextMemoryRequest(t, p, requests, "cat /proc/meminfo").reply <- memoryReply{stdout: memoryBefore}
-	nextMemoryRequest(t, p, requests, "sudo -n -- sh -c").reply <- memoryReply{
-		stdout: "---FINALLYSHELL:memory-sudo---\n", stderr: "sudo: a password is required", err: errors.New("exit status 1"),
-	}
-	nextMemoryRequest(t, p, requests, "cat /proc/meminfo").reply <- memoryReply{stdout: memoryBefore}
-	p.until(t, "permission error", func() bool { return tt.HasText(locales.MemoryNeedsRoot()) })
-	wantTexts(t, tt, "error dialog", "sudo: a password is required")
-	clickButton(t, tt, locales.Close())
-	if tt.HasText(locales.MemoryNeedsRoot()) || tt.HasText(locales.MemoryAvailableChange("180 MB", "180 MB")) {
-		t.Fatal("close left an error or a success message for a failed operation")
-	}
 }

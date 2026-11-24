@@ -398,7 +398,7 @@ func TestOverviewDockerMany(t *testing.T) {
 func TestOverviewDockerStates(t *testing.T) {
 	// No Docker: no card.
 	_, _, tt, _ := dockerApp(t, monitor.Docker{})
-	if tt.HasText(locales.DockerContainers()) || tt.HasText("Docker") {
+	if _, card := tt.AccessByRole(ui.RoleGroup, "Docker"); card || tt.HasText(locales.DockerContainers()) {
 		t.Errorf("no Docker: texts %q", tt.Texts())
 	}
 

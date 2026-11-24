@@ -115,10 +115,10 @@ func TestMemoryCommands(t *testing.T) {
 		want           error
 		contains       []string
 	}{
-		{"root", MemoryDropCaches, memoryStarted, "", false, nil, []string{`[ "$(id -u)" = 0 ]`, "sync || exit $?\necho 3 > /proc/sys/vm/drop_caches"}},
-		{"sudo", MemoryCompact, memorySudo + "\n" + memoryStarted, "", false, nil, []string{`sudo -n -- sh -c '`, `echo 1 > /proc/sys/vm/compact_memory`}},
-		{"denied", MemoryDropCaches, memorySudo, "sudo: a password is required", true, ErrMemoryPrivilege, nil},
-		{"read-only container", MemoryDropCaches, memoryStarted, "sh: /proc/sys/vm/drop_caches: Read-only file system", true, ErrMemoryRestricted, nil},
+		{"drop caches", MemoryDropCaches, "", "", false, nil, []string{"sync || exit $?\necho 3 > /proc/sys/vm/drop_caches"}},
+		{"compact", MemoryCompact, "", "", false, nil, []string{`echo 1 > /proc/sys/vm/compact_memory`}},
+		{"no compact", MemoryCompact, "", memoryCompact, true, ErrMemoryNoCompact, nil},
+		{"read-only container", MemoryDropCaches, "", "sh: /proc/sys/vm/drop_caches: Read-only file system", true, ErrMemoryRestricted, nil},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			failure := errors.New("exit status 1")

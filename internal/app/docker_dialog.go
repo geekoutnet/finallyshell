@@ -30,6 +30,7 @@ type containerDialog struct {
 	showEnv bool
 	action  *dockerActionDialog
 	logs    *dockerLogsDialog
+	ctr     *ctrModal
 }
 
 func (a *App) openContainer(s *Session, id string) {
@@ -68,6 +69,10 @@ func (a *App) containerDialogView(c *ui.Context) {
 	}
 	if d.action != nil {
 		a.dockerActionView(c, d)
+		return
+	}
+	if d.ctr != nil {
+		a.ctrModalView(c, d)
 		return
 	}
 	if d.logs != nil {

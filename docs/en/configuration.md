@@ -413,12 +413,18 @@ same entries, as they share `hosts.json`. The keys are:
 - `host/<host ID>/passphrase`: the private key passphrase;
 - `host/<host ID>/proxy-password`: the password of this host's SOCKS5 or
   HTTP proxy;
+- `host/<host ID>/privilege/<endpoint hash>`: the method (`sudo` or `su`)
+  and password selected in the privilege dialog. The endpoint hash scopes
+  the entry to the SSH user, address and port as well as the saved host.
+  It is independent of **Remember password**, is not synced or backed up,
+  and can be removed in the system's credential store, including after
+  deleting the saved connection.
 - `sync/password`: the sync password (see [Sync](features.md#sync));
 - `sync/<service>/credential`: the token, password or secret access key of
   the sync service (`gist`, `webdav` or `s3`).
 
-"Remember password" is a per-host setting and covers all of these for the
-host.
+"Remember password" is a per-host setting for the login and proxy
+credentials. The privilege dialog has its own **Remember** checkbox.
 
 | System | Where | How to look at it |
 |---|---|---|

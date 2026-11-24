@@ -283,7 +283,7 @@ Connections", shows the session tabs or the saved connections. The
 Connections page is the connection manager's tree of folders and
 connections, kept in the main window as MobaXterm's session tree and
 Xshell's Sessions pane are, without taking width from the terminal. It
-shows the names only, in the order the connection manager shows them
+shows names and type badges, in the order the connection manager shows them
 unsorted, and never the deleted connections. A connection's tooltip
 shows `user@host:port` and the first line of its notes. A connection
 with a session open has a dot after its name, in the color of that
@@ -297,7 +297,9 @@ connecting.
   new ones. Double-click or Enter on a folder opens or closes it, as do
   its arrow and the Left and Right keys.
 - The search box at the top filters as the connection manager's does:
-  every word must be in the name, address, user or notes, ignoring case.
+  every word must match the name, address, user, notes or connection type,
+  ignoring case. The type switch below the search box combines with the
+  search and keeps its choice until the app quits.
   The folders holding the results open and the first result is
   selected, so Enter connects to it; Down moves to the tree; Esc clears
   the search and closes again the folders it opened. Its search is its
@@ -346,10 +348,11 @@ When both parts are present they are headed "Recent" and "Other
 connections". A host that was just added therefore appears here right
 away, without having to be connected once first.
 
-- Clicking a host or pressing Enter connects in this tab, and the same row
-  turns into the session.
-- The search box filters as you type, matching name, address, user and
-  notes. Results keep the same order as without a search. The up and down
+- SSH and Remote Desktop hosts use distinct icons and type badges. Clicking
+  an SSH host or pressing Enter opens a session in this tab; Remote Desktop
+  opens in the system client and leaves the tab in place.
+- The search box filters as you type, matching name, address, user, notes
+  and type. Results keep the same order as without a search. The up and down
   arrow keys move the selection and skip the "Recent" and "Other
   connections" rows.
 - "Clear" clears the list of recent connections. It does not delete
@@ -428,7 +431,7 @@ browser and saving local terminals across restarts are not done.
 The connection manager opens with Cmd+O on macOS and Ctrl+Shift+O on
 other systems (the key can be changed on the Shortcuts page). It is a
 separate window titled "Connections". As in FinalShell, it is a tree of
-folders and connections, with the columns Name, Host, Port, User and
+folders and connections, with the columns Name, Type, Host, Port, User and
 Notes (only the first line of the notes is shown). Clicking a column
 header sorts by it, and dragging the edge of a header resizes the column.
 
@@ -446,16 +449,18 @@ Toolbar:
 - Import: import connections from another client (see below).
 - Show deleted.
 - A folder filter: "All", or only one folder.
+- A type filter: "All types", "SSH" or "Remote Desktop".
 - A search box.
 
 Below the tree is "Close window after connecting", checked by default. It
 is stored as `keepManagerOpen` in `settings.json`; without that key the
 window closes.
 
-Search filters as you type, matching name, address, user and notes. Every
-word must match, ignoring case. Folders that contain results are expanded
-and the first result is selected, so Enter connects to it. Clearing the
-search restores the folders that were expanded before.
+Search filters as you type, matching name, address, user, notes and type.
+Every word must match, ignoring case. Search and both filters apply together.
+Folders that contain results are expanded and the first result is selected,
+so Enter connects to it. Clearing the search and type filter restores the
+folders that were expanded before.
 
 Double-clicking a connection, or pressing Enter, opens a session in the
 main window (in the selected tab if the main window has a new tab

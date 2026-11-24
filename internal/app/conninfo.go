@@ -301,7 +301,11 @@ func (a *App) connInfoView(c *ui.Context, m *managerState) {
 		ui.Column(c).Width(560).Gap(12).Children(func() {
 			ui.Column(c).Gap(2).Children(func() {
 				ui.Text(c, locales.ConnInfo()).FontSize(16).Bold()
-				widgets.Muted(c, d.host.Title()).SingleLine()
+				ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
+					hostIcon(c, d.host, false, theme.Text)
+					widgets.Muted(c, d.host.Title()).SingleLine().Shrink(1).MinWidth(0)
+					kindPill(c, d.host, false, theme.Text)
+				})
 			})
 			ui.Scroll(c).MaxHeight(520).FillWidth().Children(func() {
 				ui.Column(c).FillWidth().Border(1, colors.line).Radius(6).Children(func() {

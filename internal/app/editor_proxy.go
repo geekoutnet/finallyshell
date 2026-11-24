@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"finallyshell/internal/config"
+	"finallyshell/internal/icons"
 	"finallyshell/internal/widgets"
 	"finallyshell/locales"
 
@@ -136,7 +137,8 @@ func (a *App) saveProxy(h *config.Host, pf *proxyFields) {
 
 // jumpChoice is a host the Proxy page offers as the jump host.
 type jumpChoice struct {
-	id, label string
+	host  *config.Host
+	label string
 }
 
 // jumpChoices are the hosts that can be the jump host of the host with
@@ -157,7 +159,7 @@ func jumpChoices(hosts *config.Store, id string) []jumpChoice {
 		if seen[label]++; seen[label] > 1 {
 			label += " #" + strconv.Itoa(seen[label])
 		}
-		out = append(out, jumpChoice{h.ID, label})
+		out = append(out, jumpChoice{h, label})
 	}
 	return out
 }
@@ -214,24 +216,57 @@ func (a *App) proxyPage(c *ui.Context, ed *connEditor, errs map[editorField]stri
 				}).Error(errs[fieldJumpHost])
 				break
 			}
-			labels := make([]string, len(choices))
-			chosen := ""
-			for i, ch := range choices {
-				labels[i] = ch.label
-				if ch.id == pf.jump {
-					chosen = ch.label
-				}
-			}
 			ui.Field(c, locales.FieldJumpHost(), func() {
-				if ui.Select(c, &chosen, labels).Width(320).Changed() {
-					for _, ch := range choices {
-						if ch.label == chosen {
-							pf.jump = ch.id
-						}
-					}
-				}
+				jumpHostSelect(c, &pf.jump, choices)
 			}).Error(errs[fieldJumpHost]).Description(locales.JumpHostNote())
 		}
+	})
+}
+
+func jumpHostSelect(c *ui.Context, selected *string, choices []jumpChoice) {
+	parts := ui.SelectBase(c, selected)
+	trigger := parts.Trigger.Width(320).Shrink(1).MinWidth(0).Gap(6).Padding(4.5, 10.5).AlignItems(ui.Center).
+		Radius(theme.Radius).Border(1, theme.Border).Background(theme.Surface).Label(locales.FieldJumpHost()).Value("")
+	if trigger.Hovered() {
+		trigger.Background(theme.SurfaceHover)
+	}
+	trigger.Children(func() {
+		found := false
+		for _, choice := range choices {
+			if choice.host.ID == *selected {
+				found = true
+				trigger.Value(choice.label)
+				hostIcon(c, choice.host, false, theme.Text)
+				ui.Text(c, choice.label).SingleLine().Grow(1).MinWidth(0)
+				kindPill(c, choice.host, false, theme.Text)
+				break
+			}
+		}
+		if !found {
+			ui.Spacer(c).MinHeight(16)
+		}
+		ui.Icon(c, icons.Get("chevron-down")).FontSize(12).TextColor(theme.TextMuted).Shrink(0)
+	})
+	parts.Popup(func(panel ui.Element) {
+		panel.Margin(3, 0, 0, 0).Padding(3).Radius(theme.Radius+2).Background(theme.Background).
+			Border(1, theme.Border).Shadow(0, 6, 20, 0, ui.RGBA(0, 0, 0, 0.18))
+		ui.Scroll(c).MaxHeight(240).Children(func() {
+			for _, choice := range choices {
+				item := parts.Item(choice.host.ID).Label(choice.label).Gap(6).AlignItems(ui.Center).Padding(4.5, 7.5).Radius(theme.Radius)
+				color := theme.Text
+				if item.Highlighted() {
+					item.Background(theme.Accent)
+					color = theme.AccentText
+				} else if choice.host.ID == *selected {
+					item.Background(theme.Surface)
+				}
+				item.Children(func() {
+					hostIcon(c, choice.host, item.Highlighted(), color)
+					ui.Text(c, choice.label).SingleLine().Grow(1).MinWidth(0).TextColor(color)
+					kindPill(c, choice.host, item.Highlighted(), color)
+				})
+			}
+		})
 	})
 }
 

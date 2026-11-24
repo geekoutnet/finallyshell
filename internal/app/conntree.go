@@ -18,15 +18,15 @@ import (
 // in their folders, as MobaXterm's session tree and Xshell's Sessions
 // pane keep them in the main window. Connections is the connection
 // manager's tree (manager.go), with its search, menus and dragging, in
-// one column: the names, a dot on the hosts with a session open, and the
-// rest in a tooltip. Opening a host there opens a session as the start
+// one column: the names, kinds, a dot on the hosts with a session open,
+// and the rest in a tooltip. Opening a host there works as the start
 // page does, and the page stays, to open the next.
 //
 // Both trees read a.hosts, so a change in one shows in the other at once.
 // Each has its own managerState: what is open, chosen and searched, and
-// its questions, which this page asks in the main window. It never shows
-// the deleted hosts, so it asks before deleting one, and has neither the
-// manager's filter nor its sort.
+// its kind filter and its questions, which this page asks in the main
+// window. It never shows the deleted hosts, so it asks before deleting
+// one, and has neither the manager's folder filter nor its sort.
 //
 // The page shown and the folders open are kept in the settings
 // (leftPanelPage, connectionTreeExpanded), on this device only: the
@@ -208,7 +208,7 @@ func leftPageSwitch(c *ui.Context, page *int, labels ...string) ui.Element {
 	return track
 }
 
-// connectionPage is the Connections page: the search over the tree.
+// connectionPage is the Connections page: search and type filter over the tree.
 func (a *App) connectionPage(c *ui.Context) {
 	m := &a.connTree
 	var later []func() // what changes the tree, once it is built
@@ -227,6 +227,12 @@ func (a *App) connectionPage(c *ui.Context) {
 		}
 		if search.Submitted() {
 			a.connectFound(m)
+		}
+		kind := int(m.kind)
+		leftPageSwitch(c, &kind, kindFilterLabels(true)...).Label(locales.FieldHostKind()).Margin(0, 2)
+		if kindFilter(kind) != m.kind {
+			m.kind = kindFilter(kind)
+			a.searchChanged(m)
 		}
 		a.connTreeView(c, m, &later)
 		if m.saveErr != nil {
@@ -323,8 +329,9 @@ func (a *App) connTreeRow(c *ui.Context, m *managerState, it managerItem, r ui.O
 			ui.Text(c, f.Name).SingleLine().MinWidth(0).TextColor(color)
 			return
 		}
-		ui.Icon(c, icons.Get(hostIcon(h))).FontSize(14).TextColor(color.Alpha(0.75))
-		ui.Text(c, h.Title()).SingleLine().MinWidth(0).TextColor(color)
+		hostIcon(c, h, m.isChosen(it), color)
+		ui.Text(c, h.Title()).SingleLine().MinWidth(0).Shrink(1).TextColor(color)
+		kindPill(c, h, m.isChosen(it), color)
 		if dot, ok := a.sessionDot(h); ok {
 			widgets.StatusDot(c, dot)
 		}

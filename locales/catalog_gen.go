@@ -762,11 +762,11 @@ func (msgs Messages) QuickConnect() string {
 	return Catalog.Format(msgs.locale, "quickConnect", nil)
 }
 
-// SearchHosts says "Search name, host, user or notes"
+// SearchHosts says "Search name, host, user, notes or type"
 // in the language the app shows.
 func SearchHosts() string { return In(i18n.Locale()).SearchHosts() }
 
-// SearchHosts says "Search name, host, user or notes"
+// SearchHosts says "Search name, host, user, notes or type"
 // in the language of msgs.
 func (msgs Messages) SearchHosts() string {
 	return Catalog.Format(msgs.locale, "searchHosts", nil)
@@ -10316,6 +10316,36 @@ func KindRDP() string { return In(i18n.Locale()).KindRDP() }
 // in the language of msgs.
 func (msgs Messages) KindRDP() string {
 	return Catalog.Format(msgs.locale, "kindRDP", nil)
+}
+
+// KindRDPShort says "RDP"
+// in the language the app shows.
+func KindRDPShort() string { return In(i18n.Locale()).KindRDPShort() }
+
+// KindRDPShort says "RDP"
+// in the language of msgs.
+func (msgs Messages) KindRDPShort() string {
+	return Catalog.Format(msgs.locale, "kindRDPShort", nil)
+}
+
+// RemoteDesktop says "Remote Desktop"
+// in the language the app shows.
+func RemoteDesktop() string { return In(i18n.Locale()).RemoteDesktop() }
+
+// RemoteDesktop says "Remote Desktop"
+// in the language of msgs.
+func (msgs Messages) RemoteDesktop() string {
+	return Catalog.Format(msgs.locale, "remoteDesktop", nil)
+}
+
+// AllTypes says "All types"
+// in the language the app shows.
+func AllTypes() string { return In(i18n.Locale()).AllTypes() }
+
+// AllTypes says "All types"
+// in the language of msgs.
+func (msgs Messages) AllTypes() string {
+	return Catalog.Format(msgs.locale, "allTypes", nil)
 }
 
 // KindRDPHint says "Opens in {client}, the system's Remote Desktop client, with every option below."

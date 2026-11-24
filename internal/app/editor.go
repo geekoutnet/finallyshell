@@ -35,7 +35,7 @@ func editorSpec(editing bool) WindowSpec {
 	return WindowSpec{
 		Kind:  WindowEditor,
 		Title: title,
-		Width: 680, Height: 600,
+		Width: 680, Height: 700,
 		MinWidth: 600, MinHeight: 440,
 	}
 }
@@ -111,6 +111,9 @@ type connEditor struct {
 	readingSecret bool
 	// readingProxySecret is the same of its proxy's password.
 	readingProxySecret bool
+	totpText           string
+	totpChange         totpEditAction
+	totpBusy           bool
 
 	// agentCheck is what the SSH agent's Check found (agent.go).
 	agentCheck agentCheck
@@ -177,9 +180,17 @@ func (a *App) openEditor(h *config.Host, from WindowKind) {
 	ed.tunnels = newTunnelEditor(h)
 	a.editor = ed
 	a.readEditorSecret(ed, h)
+	if h != nil && !h.IsRDP() {
+		a.readTOTP(h.ID, nil)
+	}
 	spec := editorSpec(h != nil)
+	if ed.kind == config.KindRDP {
+		spec.Height = 600
+	}
+	spec.CloseRequested = func() bool { return !ed.totpBusy }
 	spec.Closed = func() {
 		ed.password, ed.passphrase = "", ""
+		ed.totpText = ""
 	}
 	if from == WindowManager && a.windowOpen(WindowManager) {
 		// A sheet of the manager on macOS, showing its title inside;
@@ -238,6 +249,9 @@ func (ed *connEditor) problems() map[editorField]string {
 // and keeps the editor open.
 func (a *App) saveEditor() {
 	ed := a.editor
+	if ed.totpBusy {
+		return
+	}
 	ed.checked = true
 	if errs := ed.problems(); len(errs) > 0 {
 		first, here := "", false
@@ -256,15 +270,23 @@ func (a *App) saveEditor() {
 		}
 		return
 	}
+	if ed.kind != config.KindRDP && (ed.totpText != "" || ed.totpChange == totpRemove) {
+		a.confirmTOTPEdit(ed)
+		return
+	}
+	a.saveEditorFields(ed, "")
+}
+
+func (a *App) saveEditorFields(ed *connEditor, newID string) bool {
 	var h *config.Host
 	if ed.id != "" {
 		// Deleted in the manager while the editor was open: not saved back.
 		if h = a.hosts.Host(ed.id); h == nil || h.Deleted() {
 			ed.saveErr = locales.ErrHostDeleted
-			return
+			return false
 		}
 	} else {
-		h = &config.Host{Folder: ed.folder, CreatedAt: time.Now()}
+		h = &config.Host{ID: newID, Folder: ed.folder, CreatedAt: time.Now()}
 		a.hosts.Add(h)
 		ed.id = h.ID
 	}
@@ -302,10 +324,11 @@ func (a *App) saveEditor() {
 
 	if err := a.saveHosts(a.hosts); err != nil {
 		ed.saveErr = func() string { return locales.ErrSaveFailed(err.Error()) }
-		return
+		return false
 	}
 	ed.saveErr = nil
 	a.closeWindow(WindowEditor)
+	return true
 }
 
 // saveSSH saves the SSH pages into h: how it logs in, its terminal, its
@@ -408,10 +431,10 @@ func (a *App) editorView(c *ui.Context) {
 			} else {
 				ui.Spacer(c)
 			}
-			if ui.Button(c, locales.Cancel()).Clicked() {
+			if ui.Button(c, locales.Cancel()).Disabled(ed.totpBusy).Clicked() {
 				a.closeWindow(WindowEditor)
 			}
-			if ui.PrimaryButton(c, locales.Ok()).Clicked() {
+			if ui.PrimaryButton(c, locales.Ok()).Disabled(ed.totpBusy).Clicked() {
 				submit = true
 			}
 		})
@@ -476,6 +499,7 @@ func (a *App) sshPage(c *ui.Context, ed *connEditor, errs map[editorField]string
 			if ed.auth != config.AuthAgent {
 				a.rememberField(c, &ed.remember, ed.auth == config.AuthKey)
 			}
+			a.totpEditorField(c, ed, input)
 		})
 		ui.Fieldset(c, locales.SectionAdvanced(), func() {
 			ui.Field(c, "", func() {

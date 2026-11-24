@@ -2162,6 +2162,588 @@ func (msgs Messages) FieldHostPlaceholder() string {
 	return Catalog.Format(msgs.locale, "fieldHostPlaceholder", nil)
 }
 
+// LockSecurity says "Security"
+// in the language the app shows.
+func LockSecurity() string { return In(i18n.Locale()).LockSecurity() }
+
+// LockSecurity says "Security"
+// in the language of msgs.
+func (msgs Messages) LockSecurity() string {
+	return Catalog.Format(msgs.locale, "lockSecurity", nil)
+}
+
+// LockSetting says "Lock the app with a password"
+// in the language the app shows.
+func LockSetting() string { return In(i18n.Locale()).LockSetting() }
+
+// LockSetting says "Lock the app with a password"
+// in the language of msgs.
+func (msgs Messages) LockSetting() string {
+	return Catalog.Format(msgs.locale, "lockSetting", nil)
+}
+
+// LockHidden says "Your connections keep running while the app is locked."
+// in the language the app shows.
+func LockHidden() string { return In(i18n.Locale()).LockHidden() }
+
+// LockHidden says "Your connections keep running while the app is locked."
+// in the language of msgs.
+func (msgs Messages) LockHidden() string {
+	return Catalog.Format(msgs.locale, "lockHidden", nil)
+}
+
+// LockSetPassword says "Set password"
+// in the language the app shows.
+func LockSetPassword() string { return In(i18n.Locale()).LockSetPassword() }
+
+// LockSetPassword says "Set password"
+// in the language of msgs.
+func (msgs Messages) LockSetPassword() string {
+	return Catalog.Format(msgs.locale, "lockSetPassword", nil)
+}
+
+// LockChangePassword says "Change password"
+// in the language the app shows.
+func LockChangePassword() string { return In(i18n.Locale()).LockChangePassword() }
+
+// LockChangePassword says "Change password"
+// in the language of msgs.
+func (msgs Messages) LockChangePassword() string {
+	return Catalog.Format(msgs.locale, "lockChangePassword", nil)
+}
+
+// LockRemovePassword says "Remove password"
+// in the language the app shows.
+func LockRemovePassword() string { return In(i18n.Locale()).LockRemovePassword() }
+
+// LockRemovePassword says "Remove password"
+// in the language of msgs.
+func (msgs Messages) LockRemovePassword() string {
+	return Catalog.Format(msgs.locale, "lockRemovePassword", nil)
+}
+
+// LockSetDetail says "This device will require this password when opening or unlocking the app."
+// in the language the app shows.
+func LockSetDetail() string { return In(i18n.Locale()).LockSetDetail() }
+
+// LockSetDetail says "This device will require this password when opening or unlocking the app."
+// in the language of msgs.
+func (msgs Messages) LockSetDetail() string {
+	return Catalog.Format(msgs.locale, "lockSetDetail", nil)
+}
+
+// LockChangeDetail says "The new password will replace the current app lock password on this device."
+// in the language the app shows.
+func LockChangeDetail() string { return In(i18n.Locale()).LockChangeDetail() }
+
+// LockChangeDetail says "The new password will replace the current app lock password on this device."
+// in the language of msgs.
+func (msgs Messages) LockChangeDetail() string {
+	return Catalog.Format(msgs.locale, "lockChangeDetail", nil)
+}
+
+// LockRemoveDetail says "This turns off the app lock and automatic locking. It does not delete saved connection passwords."
+// in the language the app shows.
+func LockRemoveDetail() string { return In(i18n.Locale()).LockRemoveDetail() }
+
+// LockRemoveDetail says "This turns off the app lock and automatic locking. It does not delete saved connection passwords."
+// in the language of msgs.
+func (msgs Messages) LockRemoveDetail() string {
+	return Catalog.Format(msgs.locale, "lockRemoveDetail", nil)
+}
+
+// LockIdle says "Lock after inactivity"
+// in the language the app shows.
+func LockIdle() string { return In(i18n.Locale()).LockIdle() }
+
+// LockIdle says "Lock after inactivity"
+// in the language of msgs.
+func (msgs Messages) LockIdle() string {
+	return Catalog.Format(msgs.locale, "lockIdle", nil)
+}
+
+// LockOff says "Off"
+// in the language the app shows.
+func LockOff() string { return In(i18n.Locale()).LockOff() }
+
+// LockOff says "Off"
+// in the language of msgs.
+func (msgs Messages) LockOff() string {
+	return Catalog.Format(msgs.locale, "lockOff", nil)
+}
+
+// LockOn says "On"
+// in the language the app shows.
+func LockOn() string { return In(i18n.Locale()).LockOn() }
+
+// LockOn says "On"
+// in the language of msgs.
+func (msgs Messages) LockOn() string {
+	return Catalog.Format(msgs.locale, "lockOn", nil)
+}
+
+// LockMinutes says "{minutes, plural, one {# minute} other {# minutes}}"
+// in the language the app shows.
+func LockMinutes(minutes int) string { return In(i18n.Locale()).LockMinutes(minutes) }
+
+// LockMinutes says "{minutes, plural, one {# minute} other {# minutes}}"
+// in the language of msgs.
+func (msgs Messages) LockMinutes(minutes int) string {
+	return Catalog.Format(msgs.locale, "lockMinutes", map[string]any{"minutes": minutes})
+}
+
+// LockMinimize says "Lock when the window is minimized"
+// in the language the app shows.
+func LockMinimize() string { return In(i18n.Locale()).LockMinimize() }
+
+// LockMinimize says "Lock when the window is minimized"
+// in the language of msgs.
+func (msgs Messages) LockMinimize() string {
+	return Catalog.Format(msgs.locale, "lockMinimize", nil)
+}
+
+// LockOptionChange says "Change “{setting}” to “{value}”?"
+// in the language the app shows.
+func LockOptionChange(setting string, value string) string {
+	return In(i18n.Locale()).LockOptionChange(setting, value)
+}
+
+// LockOptionChange says "Change “{setting}” to “{value}”?"
+// in the language of msgs.
+func (msgs Messages) LockOptionChange(setting string, value string) string {
+	return Catalog.Format(msgs.locale, "lockOptionChange", map[string]any{"setting": setting, "value": value})
+}
+
+// LockOptionDetail says "This changes when the app locks automatically on this device."
+// in the language the app shows.
+func LockOptionDetail() string { return In(i18n.Locale()).LockOptionDetail() }
+
+// LockOptionDetail says "This changes when the app locks automatically on this device."
+// in the language of msgs.
+func (msgs Messages) LockOptionDetail() string {
+	return Catalog.Format(msgs.locale, "lockOptionDetail", nil)
+}
+
+// LockNow says "Lock now"
+// in the language the app shows.
+func LockNow() string { return In(i18n.Locale()).LockNow() }
+
+// LockNow says "Lock now"
+// in the language of msgs.
+func (msgs Messages) LockNow() string {
+	return Catalog.Format(msgs.locale, "lockNow", nil)
+}
+
+// LockShortcutHint says "You can also lock from the command palette, tray menu, or with {shortcut}."
+// in the language the app shows.
+func LockShortcutHint(shortcut string) string { return In(i18n.Locale()).LockShortcutHint(shortcut) }
+
+// LockShortcutHint says "You can also lock from the command palette, tray menu, or with {shortcut}."
+// in the language of msgs.
+func (msgs Messages) LockShortcutHint(shortcut string) string {
+	return Catalog.Format(msgs.locale, "lockShortcutHint", map[string]any{"shortcut": shortcut})
+}
+
+// LockPassword says "App lock password"
+// in the language the app shows.
+func LockPassword() string { return In(i18n.Locale()).LockPassword() }
+
+// LockPassword says "App lock password"
+// in the language of msgs.
+func (msgs Messages) LockPassword() string {
+	return Catalog.Format(msgs.locale, "lockPassword", nil)
+}
+
+// LockCurrentPassword says "Current password"
+// in the language the app shows.
+func LockCurrentPassword() string { return In(i18n.Locale()).LockCurrentPassword() }
+
+// LockCurrentPassword says "Current password"
+// in the language of msgs.
+func (msgs Messages) LockCurrentPassword() string {
+	return Catalog.Format(msgs.locale, "lockCurrentPassword", nil)
+}
+
+// LockCurrentRequired says "Enter your current app lock password."
+// in the language the app shows.
+func LockCurrentRequired() string { return In(i18n.Locale()).LockCurrentRequired() }
+
+// LockCurrentRequired says "Enter your current app lock password."
+// in the language of msgs.
+func (msgs Messages) LockCurrentRequired() string {
+	return Catalog.Format(msgs.locale, "lockCurrentRequired", nil)
+}
+
+// LockNewPassword says "New password"
+// in the language the app shows.
+func LockNewPassword() string { return In(i18n.Locale()).LockNewPassword() }
+
+// LockNewPassword says "New password"
+// in the language of msgs.
+func (msgs Messages) LockNewPassword() string {
+	return Catalog.Format(msgs.locale, "lockNewPassword", nil)
+}
+
+// LockRepeatPassword says "Repeat new password"
+// in the language the app shows.
+func LockRepeatPassword() string { return In(i18n.Locale()).LockRepeatPassword() }
+
+// LockRepeatPassword says "Repeat new password"
+// in the language of msgs.
+func (msgs Messages) LockRepeatPassword() string {
+	return Catalog.Format(msgs.locale, "lockRepeatPassword", nil)
+}
+
+// LockPasswordRules says "Enter matching passwords of at least 8 characters and no more than 1,024 bytes."
+// in the language the app shows.
+func LockPasswordRules() string { return In(i18n.Locale()).LockPasswordRules() }
+
+// LockPasswordRules says "Enter matching passwords of at least 8 characters and no more than 1,024 bytes."
+// in the language of msgs.
+func (msgs Messages) LockPasswordRules() string {
+	return Catalog.Format(msgs.locale, "lockPasswordRules", nil)
+}
+
+// LockUnlock says "Unlock"
+// in the language the app shows.
+func LockUnlock() string { return In(i18n.Locale()).LockUnlock() }
+
+// LockUnlock says "Unlock"
+// in the language of msgs.
+func (msgs Messages) LockUnlock() string {
+	return Catalog.Format(msgs.locale, "lockUnlock", nil)
+}
+
+// LockWrongPassword says "Incorrect password."
+// in the language the app shows.
+func LockWrongPassword() string { return In(i18n.Locale()).LockWrongPassword() }
+
+// LockWrongPassword says "Incorrect password."
+// in the language of msgs.
+func (msgs Messages) LockWrongPassword() string {
+	return Catalog.Format(msgs.locale, "lockWrongPassword", nil)
+}
+
+// LockRetry says "{seconds, plural, one {Incorrect password. Try again in # second.} other {Incorrect password. Try again in # seconds.}}"
+// in the language the app shows.
+func LockRetry(seconds int) string { return In(i18n.Locale()).LockRetry(seconds) }
+
+// LockRetry says "{seconds, plural, one {Incorrect password. Try again in # second.} other {Incorrect password. Try again in # seconds.}}"
+// in the language of msgs.
+func (msgs Messages) LockRetry(seconds int) string {
+	return Catalog.Format(msgs.locale, "lockRetry", map[string]any{"seconds": seconds})
+}
+
+// LockVerifierUnavailable says "Could not access the app lock verifier in the system credential store."
+// in the language the app shows.
+func LockVerifierUnavailable() string { return In(i18n.Locale()).LockVerifierUnavailable() }
+
+// LockVerifierUnavailable says "Could not access the app lock verifier in the system credential store."
+// in the language of msgs.
+func (msgs Messages) LockVerifierUnavailable() string {
+	return Catalog.Format(msgs.locale, "lockVerifierUnavailable", nil)
+}
+
+// LockSettingsFailed says "Could not back up or save the app lock settings."
+// in the language the app shows.
+func LockSettingsFailed() string { return In(i18n.Locale()).LockSettingsFailed() }
+
+// LockSettingsFailed says "Could not back up or save the app lock settings."
+// in the language of msgs.
+func (msgs Messages) LockSettingsFailed() string {
+	return Catalog.Format(msgs.locale, "lockSettingsFailed", nil)
+}
+
+// LockReset says "Reset lock…"
+// in the language the app shows.
+func LockReset() string { return In(i18n.Locale()).LockReset() }
+
+// LockReset says "Reset lock…"
+// in the language of msgs.
+func (msgs Messages) LockReset() string {
+	return Catalog.Format(msgs.locale, "lockReset", nil)
+}
+
+// LockResetTitle says "Permanently delete remembered credentials and remove the app lock?"
+// in the language the app shows.
+func LockResetTitle() string { return In(i18n.Locale()).LockResetTitle() }
+
+// LockResetTitle says "Permanently delete remembered credentials and remove the app lock?"
+// in the language of msgs.
+func (msgs Messages) LockResetTitle() string {
+	return Catalog.Format(msgs.locale, "lockResetTitle", nil)
+}
+
+// LockResetDetail says "This removes this app’s saved passwords, key passphrases, verification secrets and sync credentials from this devic…"
+// in the language the app shows.
+func LockResetDetail() string { return In(i18n.Locale()).LockResetDetail() }
+
+// LockResetDetail says "This removes this app’s saved passwords, key passphrases, verification secrets and sync credentials from this devic…"
+// in the language of msgs.
+func (msgs Messages) LockResetDetail() string {
+	return Catalog.Format(msgs.locale, "lockResetDetail", nil)
+}
+
+// LockResetConfirm says "Delete credentials and reset"
+// in the language the app shows.
+func LockResetConfirm() string { return In(i18n.Locale()).LockResetConfirm() }
+
+// LockResetConfirm says "Delete credentials and reset"
+// in the language of msgs.
+func (msgs Messages) LockResetConfirm() string {
+	return Catalog.Format(msgs.locale, "lockResetConfirm", nil)
+}
+
+// LockResetFailed says "Could not clear the saved credentials. The app remains locked. You can retry the reset."
+// in the language the app shows.
+func LockResetFailed() string { return In(i18n.Locale()).LockResetFailed() }
+
+// LockResetFailed says "Could not clear the saved credentials. The app remains locked. You can retry the reset."
+// in the language of msgs.
+func (msgs Messages) LockResetFailed() string {
+	return Catalog.Format(msgs.locale, "lockResetFailed", nil)
+}
+
+// LockSyncBusy says "Wait for the current sync to finish before resetting the lock."
+// in the language the app shows.
+func LockSyncBusy() string { return In(i18n.Locale()).LockSyncBusy() }
+
+// LockSyncBusy says "Wait for the current sync to finish before resetting the lock."
+// in the language of msgs.
+func (msgs Messages) LockSyncBusy() string {
+	return Catalog.Format(msgs.locale, "lockSyncBusy", nil)
+}
+
+// LockQuitDetail says "Quitting ends open connections and transfers and discards unsaved edits."
+// in the language the app shows.
+func LockQuitDetail() string { return In(i18n.Locale()).LockQuitDetail() }
+
+// LockQuitDetail says "Quitting ends open connections and transfers and discards unsaved edits."
+// in the language of msgs.
+func (msgs Messages) LockQuitDetail() string {
+	return Catalog.Format(msgs.locale, "lockQuitDetail", nil)
+}
+
+// TotpField says "Two-factor (TOTP)"
+// in the language the app shows.
+func TotpField() string { return In(i18n.Locale()).TotpField() }
+
+// TotpField says "Two-factor (TOTP)"
+// in the language of msgs.
+func (msgs Messages) TotpField() string {
+	return Catalog.Format(msgs.locale, "totpField", nil)
+}
+
+// TotpPlaceholder says "Base32 secret or otpauth URI"
+// in the language the app shows.
+func TotpPlaceholder() string { return In(i18n.Locale()).TotpPlaceholder() }
+
+// TotpPlaceholder says "Base32 secret or otpauth URI"
+// in the language of msgs.
+func (msgs Messages) TotpPlaceholder() string {
+	return Catalog.Format(msgs.locale, "totpPlaceholder", nil)
+}
+
+// TotpFieldHint says "Optional. Stored in the system credential store."
+// in the language the app shows.
+func TotpFieldHint() string { return In(i18n.Locale()).TotpFieldHint() }
+
+// TotpFieldHint says "Optional. Stored in the system credential store."
+// in the language of msgs.
+func (msgs Messages) TotpFieldHint() string {
+	return Catalog.Format(msgs.locale, "totpFieldHint", nil)
+}
+
+// TotpStored says "Secret saved. Leave blank to keep it, or enter a replacement."
+// in the language the app shows.
+func TotpStored() string { return In(i18n.Locale()).TotpStored() }
+
+// TotpStored says "Secret saved. Leave blank to keep it, or enter a replacement."
+// in the language of msgs.
+func (msgs Messages) TotpStored() string {
+	return Catalog.Format(msgs.locale, "totpStored", nil)
+}
+
+// TotpKeep says "Keep secret"
+// in the language the app shows.
+func TotpKeep() string { return In(i18n.Locale()).TotpKeep() }
+
+// TotpKeep says "Keep secret"
+// in the language of msgs.
+func (msgs Messages) TotpKeep() string {
+	return Catalog.Format(msgs.locale, "totpKeep", nil)
+}
+
+// TotpRemove says "Remove secret"
+// in the language the app shows.
+func TotpRemove() string { return In(i18n.Locale()).TotpRemove() }
+
+// TotpRemove says "Remove secret"
+// in the language of msgs.
+func (msgs Messages) TotpRemove() string {
+	return Catalog.Format(msgs.locale, "totpRemove", nil)
+}
+
+// TotpRemovePending says "The saved secret will be deleted if you confirm this change."
+// in the language the app shows.
+func TotpRemovePending() string { return In(i18n.Locale()).TotpRemovePending() }
+
+// TotpRemovePending says "The saved secret will be deleted if you confirm this change."
+// in the language of msgs.
+func (msgs Messages) TotpRemovePending() string {
+	return Catalog.Format(msgs.locale, "totpRemovePending", nil)
+}
+
+// TotpSave says "Save TOTP secret"
+// in the language the app shows.
+func TotpSave() string { return In(i18n.Locale()).TotpSave() }
+
+// TotpSave says "Save TOTP secret"
+// in the language of msgs.
+func (msgs Messages) TotpSave() string {
+	return Catalog.Format(msgs.locale, "totpSave", nil)
+}
+
+// TotpSaveDetail says "Save or replace the TOTP secret for {host}? It will be used for future SSH verification prompts."
+// in the language the app shows.
+func TotpSaveDetail(host string) string { return In(i18n.Locale()).TotpSaveDetail(host) }
+
+// TotpSaveDetail says "Save or replace the TOTP secret for {host}? It will be used for future SSH verification prompts."
+// in the language of msgs.
+func (msgs Messages) TotpSaveDetail(host string) string {
+	return Catalog.Format(msgs.locale, "totpSaveDetail", map[string]any{"host": host})
+}
+
+// TotpRemoveDetail says "Delete the saved TOTP secret for {host}? Future SSH verification prompts will ask for a code."
+// in the language the app shows.
+func TotpRemoveDetail(host string) string { return In(i18n.Locale()).TotpRemoveDetail(host) }
+
+// TotpRemoveDetail says "Delete the saved TOTP secret for {host}? Future SSH verification prompts will ask for a code."
+// in the language of msgs.
+func (msgs Messages) TotpRemoveDetail(host string) string {
+	return Catalog.Format(msgs.locale, "totpRemoveDetail", map[string]any{"host": host})
+}
+
+// TotpInvalid says "Enter a valid Base32 secret or an otpauth TOTP URI."
+// in the language the app shows.
+func TotpInvalid() string { return In(i18n.Locale()).TotpInvalid() }
+
+// TotpInvalid says "Enter a valid Base32 secret or an otpauth TOTP URI."
+// in the language of msgs.
+func (msgs Messages) TotpInvalid() string {
+	return Catalog.Format(msgs.locale, "totpInvalid", nil)
+}
+
+// TotpBackupError says "Could not back up the connections file. No TOTP changes were saved."
+// in the language the app shows.
+func TotpBackupError() string { return In(i18n.Locale()).TotpBackupError() }
+
+// TotpBackupError says "Could not back up the connections file. No TOTP changes were saved."
+// in the language of msgs.
+func (msgs Messages) TotpBackupError() string {
+	return Catalog.Format(msgs.locale, "totpBackupError", nil)
+}
+
+// TotpStoreError says "TOTP secret unavailable in the system credential store."
+// in the language the app shows.
+func TotpStoreError() string { return In(i18n.Locale()).TotpStoreError() }
+
+// TotpStoreError says "TOTP secret unavailable in the system credential store."
+// in the language of msgs.
+func (msgs Messages) TotpStoreError() string {
+	return Catalog.Format(msgs.locale, "totpStoreError", nil)
+}
+
+// TotpPromptTitle says "SSH verification code"
+// in the language the app shows.
+func TotpPromptTitle() string { return In(i18n.Locale()).TotpPromptTitle() }
+
+// TotpPromptTitle says "SSH verification code"
+// in the language of msgs.
+func (msgs Messages) TotpPromptTitle() string {
+	return Catalog.Format(msgs.locale, "totpPromptTitle", nil)
+}
+
+// TotpCode says "Verification code"
+// in the language the app shows.
+func TotpCode() string { return In(i18n.Locale()).TotpCode() }
+
+// TotpCode says "Verification code"
+// in the language of msgs.
+func (msgs Messages) TotpCode() string {
+	return Catalog.Format(msgs.locale, "totpCode", nil)
+}
+
+// TotpSubmit says "Continue"
+// in the language the app shows.
+func TotpSubmit() string { return In(i18n.Locale()).TotpSubmit() }
+
+// TotpSubmit says "Continue"
+// in the language of msgs.
+func (msgs Messages) TotpSubmit() string {
+	return Catalog.Format(msgs.locale, "totpSubmit", nil)
+}
+
+// TotpVerificationFailed says "SSH two-factor verification was not completed."
+// in the language the app shows.
+func TotpVerificationFailed() string { return In(i18n.Locale()).TotpVerificationFailed() }
+
+// TotpVerificationFailed says "SSH two-factor verification was not completed."
+// in the language of msgs.
+func (msgs Messages) TotpVerificationFailed() string {
+	return Catalog.Format(msgs.locale, "totpVerificationFailed", nil)
+}
+
+// TotpCopy says "Copy current code"
+// in the language the app shows.
+func TotpCopy() string { return In(i18n.Locale()).TotpCopy() }
+
+// TotpCopy says "Copy current code"
+// in the language of msgs.
+func (msgs Messages) TotpCopy() string {
+	return Catalog.Format(msgs.locale, "totpCopy", nil)
+}
+
+// TotpChecking says "Checking credential store…"
+// in the language the app shows.
+func TotpChecking() string { return In(i18n.Locale()).TotpChecking() }
+
+// TotpChecking says "Checking credential store…"
+// in the language of msgs.
+func (msgs Messages) TotpChecking() string {
+	return Catalog.Format(msgs.locale, "totpChecking", nil)
+}
+
+// TotpNotSet says "No TOTP secret configured."
+// in the language the app shows.
+func TotpNotSet() string { return In(i18n.Locale()).TotpNotSet() }
+
+// TotpNotSet says "No TOTP secret configured."
+// in the language of msgs.
+func (msgs Messages) TotpNotSet() string {
+	return Catalog.Format(msgs.locale, "totpNotSet", nil)
+}
+
+// TotpSeconds says "{seconds, plural, one {# second left} other {# seconds left}}"
+// in the language the app shows.
+func TotpSeconds(seconds int) string { return In(i18n.Locale()).TotpSeconds(seconds) }
+
+// TotpSeconds says "{seconds, plural, one {# second left} other {# seconds left}}"
+// in the language of msgs.
+func (msgs Messages) TotpSeconds(seconds int) string {
+	return Catalog.Format(msgs.locale, "totpSeconds", map[string]any{"seconds": seconds})
+}
+
+// TotpCopied says "Verification code copied ({remaining})."
+// in the language the app shows.
+func TotpCopied(remaining string) string { return In(i18n.Locale()).TotpCopied(remaining) }
+
+// TotpCopied says "Verification code copied ({remaining})."
+// in the language of msgs.
+func (msgs Messages) TotpCopied(remaining string) string {
+	return Catalog.Format(msgs.locale, "totpCopied", map[string]any{"remaining": remaining})
+}
+
 // FieldPort says "Port"
 // in the language the app shows.
 func FieldPort() string { return In(i18n.Locale()).FieldPort() }

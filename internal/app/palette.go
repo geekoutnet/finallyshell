@@ -9,11 +9,15 @@ import (
 )
 
 func (a *App) openBulkPalette(hosts []*config.Host) {
-	a.showBulkPalette([]bulkPaletteAction{
+	commands := []bulkPaletteAction{
 		{locales.BulkOpen(), func() { a.openBulkExec(hosts, "") }},
 		{locales.ManagerTitle(), a.openManager},
 		{locales.Options(), a.openOptions},
-	})
+	}
+	if a.CanLock() {
+		commands = append(commands, bulkPaletteAction{locales.LockNow(), a.LockNow})
+	}
+	a.showBulkPalette(commands)
 }
 
 // The app has a light and a dark look, and shows the one of the system's

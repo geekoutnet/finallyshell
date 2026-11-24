@@ -6,6 +6,7 @@ package app
 // editor_proxy.go.
 
 import (
+	"context"
 	"errors"
 	"strings"
 
@@ -58,6 +59,10 @@ func (a *App) hopOptions(h *config.Host, secret string, ask func(*sshx.HostKeyQu
 // connecting goroutine reads it while the editor may change the saved
 // one. It fails when a jump host is missing or the chain loops.
 func (a *App) dialOptions(h *config.Host, secret string, ask func(*sshx.HostKeyQuestion)) (sshx.Options, error) {
+	return a.dialOptionsFor(context.Background(), h, secret, ask, false)
+}
+
+func (a *App) dialOptionsFor(ctx context.Context, h *config.Host, secret string, ask func(*sshx.HostKeyQuestion), interactive bool) (sshx.Options, error) {
 	jumps, err := a.hosts.JumpHosts(h)
 	if err != nil {
 		return sshx.Options{}, err
@@ -67,10 +72,12 @@ func (a *App) dialOptions(h *config.Host, secret string, ask func(*sshx.HostKeyQ
 	for i := len(jumps) - 1; i >= 0; i-- {
 		j := *jumps[i]
 		opts := a.hopOptions(&j, a.passwords[j.ID], ask)
+		opts.AskVerificationCode = a.totpVerification(ctx, j, interactive)
 		opts.Jump = next
 		next = &sshx.Hop{Host: &j, Options: opts}
 	}
 	opts := a.hopOptions(h, secret, ask)
+	opts.AskVerificationCode = a.totpVerification(ctx, *h, interactive)
 	opts.Jump = next
 	return opts, nil
 }

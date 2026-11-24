@@ -169,6 +169,7 @@ type App struct {
 	terminalPct float32
 	treeWidth   float32
 	bottomTab   int // tabFiles, tabTransfers, …
+	db          dbWorkspace
 	termFont    terminal.Font
 	termTheme   *terminal.Theme
 	look        appearance // the rest of the terminal's look
@@ -447,6 +448,7 @@ const (
 	tabOverview
 	tabDocker
 	tabSystem
+	tabDatabase
 )
 
 // bottomTab is a tab of the bottom panel: its label, and its page.
@@ -475,6 +477,7 @@ func (a *App) bottomTabs() []bottomTab {
 		tabOverview:  {locales.TabOverview(), a.overviewPanel},
 		tabDocker:    {locales.TabDocker(), a.dockerPanel},
 		tabSystem:    {locales.TabSystem(), a.serverPanel},
+		tabDatabase:  {locales.DbTab(), a.databasePanel},
 	}
 }
 

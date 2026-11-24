@@ -11,6 +11,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
   - [文件夹、已删除的主机和其他字段](#文件夹已删除的主机和其他字段)
   - [安全](#安全)
 - [settings.json](#settingsjson)
+- [db.json](#dbjson)
 - [同步](#同步)
 - [命令历史](#命令历史)
 - [quickcommands.json](#quickcommandsjson)
@@ -30,6 +31,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `hosts.v1.json` | 迁移第 1 版的 `hosts.json` 时保留的原文件。 |
 | `hosts.json.broken-<日期-时间>` | 读不出来的 `hosts.json` 的副本。 |
 | `settings.json` | 选项（见下面）。 |
+| `db.json` | 按 SSH 主机 ID 保存的本机数据库连接配置，不含凭据和查询历史。 |
 | `log-paths/<连接哈希>.json` | 每个连接最近输入的最多 12 个远程日志路径，仅存本机，不保存日志内容。旧版本以 `.bak-YYYYMMDDHHMMSS` 为后缀。 |
 | `known_hosts` | 信任过的主机指纹。 |
 | `background-<时间>.<扩展名>` | 终端背景图片的副本。 |
@@ -207,6 +209,16 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 ### 网站与证书文件
 
 “网站”模块不添加主机或应用设置项。它读取远程服务器的 Nginx 配置，在 `/etc/nginx/sites-available/` 或 `/etc/nginx/conf.d/` 下创建网站，并管理 Debian 风格布局中 `/etc/nginx/sites-enabled/` 下的对应链接。备份放在原目录，文件名为 `<file>.bak-<YYYYMMDDHHMMSS>`。客户端只读取 Nginx 配置所引用的公开证书及 `/etc/letsencrypt/live/*/fullchain.pem`，不会下载私钥或在本机缓存配置。
+
+## db.json
+
+此文件可以不存在，按 SSH 主机 ID 保存数据库页的连接配置列表。每条配置包含
+`id`、`name`、`engine`（`mysql`、`postgres` 或 `redis`）、`host`、`port`、
+`user`、`database`（或 Redis 库编号）、`tls`（`disable`、`require` 或
+`verify-full`）、`remember` 和 `readOnly`。未填写的布尔值默认为关闭。
+该文件不参与同步，不修改 `hosts.json` 或 `settings.json`，读取失败时不会覆盖。
+更新前将原文件备份为 `db.json.bak-<YYYYMMDDHHMMSS>`（协调世界时）。
+记住的密码以 `database/<SSH 主机 ID>/<配置 ID>/password` 为键存入系统凭据库。
 
 ## 同步
 

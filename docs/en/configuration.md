@@ -14,6 +14,7 @@ behind each setting.
   - [Folders, deleted hosts and other fields](#folders-deleted-hosts-and-other-fields)
   - [Safety](#safety)
 - [settings.json](#settingsjson)
+- [db.json](#dbjson)
 - [Sync](#sync)
 - [Command history](#command-history)
 - [quickcommands.json](#quickcommandsjson)
@@ -37,6 +38,7 @@ instead.
 | `hosts.v1.json` | The original file, kept when a version 1 `hosts.json` is migrated. |
 | `hosts.json.broken-<date-time>` | A copy of a `hosts.json` that could not be read. |
 | `settings.json` | The options (see below). |
+| `db.json` | Local database connection profiles by SSH host ID; no credentials or query history. |
 | `log-paths/<host-hash>.json` | Up to 12 recently entered remote log paths per connection; local only. No log contents are stored here. Previous versions use the `.bak-YYYYMMDDHHMMSS` suffix. |
 | `known_hosts` | Host keys you have trusted. |
 | `background-<time>.<extension>` | The copy of the terminal background image. |
@@ -262,6 +264,18 @@ Details of each option are in [features.md](features.md): see
 ### Website and certificate files
 
 The Websites section adds no host or application settings. It reads Nginx configuration on the remote server, creates site files under `/etc/nginx/sites-available/` or `/etc/nginx/conf.d/`, and manages corresponding Debian links under `/etc/nginx/sites-enabled/`. Backups use the sibling name `<file>.bak-<YYYYMMDDHHMMSS>`. The app reads public certificates configured by Nginx and `/etc/letsencrypt/live/*/fullchain.pem`; it does not download private keys or cache configuration locally.
+
+## db.json
+
+This optional file maps SSH host IDs to arrays of Database tab connection
+profiles. Each profile stores `id`, `name`, `engine` (`mysql`, `postgres`
+or `redis`), `host`, `port`, `user`, `database` (or Redis index), `tls`
+(`disable`, `require` or `verify-full`), `remember` and `readOnly`. Missing
+boolean fields are false. Profiles are not synced and do not change
+`hosts.json` or `settings.json`. Unreadable data is not overwritten.
+Updates back up the previous file as `db.json.bak-<YYYYMMDDHHMMSS>` (UTC).
+Remembered passwords are system credentials under
+`database/<SSH host ID>/<profile ID>/password`.
 
 ## Sync
 

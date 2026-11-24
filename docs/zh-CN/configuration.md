@@ -198,6 +198,10 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - `terminalRecording`：本机可选设置对象，含 `automatic`、`text`、`folder` 和 `limitMiB`。自动录制和纯文本日志默认关闭。默认保存在配置目录下的 `recordings/`，单个文件默认 64 MiB 轮转，可设为 1–512 MiB。
 - `.cast` 和可选的 `.txt` 文件保存在对应主机的子目录中。文件名以本地日期和时间开头（`yyyy-mm-dd_HH-MM-SS`），后续分段加序号，不覆盖已有文件。保存终端数据流设置前会将现有设置备份为 `settings.json.bak-<yyyymmddHHMMSS>`。
 
+### 网站与证书文件
+
+“网站”模块不添加主机或应用设置项。它读取远程服务器的 Nginx 配置，在 `/etc/nginx/sites-available/` 或 `/etc/nginx/conf.d/` 下创建网站，并管理 Debian 风格布局中 `/etc/nginx/sites-enabled/` 下的对应链接。备份放在原目录，文件名为 `<file>.bak-<YYYYMMDDHHMMSS>`。客户端只读取 Nginx 配置所引用的公开证书及 `/etc/letsencrypt/live/*/fullchain.pem`，不会下载私钥或在本机缓存配置。
+
 ## 同步
 
 选项里的“同步”页（见[同步](features.md#同步)）是 `settings.json` 的 `sync` 对象，从没设置过同步时没有这个键：

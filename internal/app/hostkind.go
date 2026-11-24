@@ -26,11 +26,18 @@ type hostKindLook struct {
 // kindLook is how h's kind shows.
 func kindLook(h *config.Host) hostKindLook {
 	sshColor, rdpColor := ui.Hex("#047857"), ui.Hex("#1d4ed8")
+	telnetColor, serialColor := ui.Hex("#a0400a"), ui.Hex("#6d28d9")
 	if theme.Dark {
 		sshColor, rdpColor = ui.Hex("#6ee7b7"), ui.Hex("#93c5fd")
+		telnetColor, serialColor = ui.Hex("#fdba74"), ui.Hex("#c4b5fd")
 	}
-	if h.IsRDP() {
+	switch h.Kind {
+	case config.KindRDP:
 		return hostKindLook{icon: "monitor", label: locales.KindRDPShort(), color: rdpColor}
+	case config.KindTelnet:
+		return hostKindLook{icon: "network", label: locales.TelnetKind(), color: telnetColor}
+	case config.KindSerial:
+		return hostKindLook{icon: "cable", label: locales.SerialKind(), color: serialColor}
 	}
 	return hostKindLook{icon: "square-terminal", label: locales.KindSSH(), color: sshColor}
 }
@@ -61,15 +68,21 @@ const (
 	kindsAll kindFilter = iota
 	kindsSSH
 	kindsRDP
+	kindsTelnet
+	kindsSerial
 )
 
 // keeps tells whether the filter shows h.
 func (k kindFilter) keeps(h *config.Host) bool {
 	switch k {
 	case kindsSSH:
-		return !h.IsRDP()
+		return h.IsSSH()
 	case kindsRDP:
 		return h.IsRDP()
+	case kindsTelnet:
+		return h.Kind == config.KindTelnet
+	case kindsSerial:
+		return h.Kind == config.KindSerial
 	}
 	return true
 }
@@ -81,11 +94,17 @@ func kindFilterLabels(short bool) []string {
 	if short {
 		rdp = locales.KindRDPShort()
 	}
-	return []string{locales.AllTypes(), locales.KindSSH(), rdp}
+	return []string{locales.AllTypes(), locales.KindSSH(), rdp, locales.TelnetKind(), locales.SerialKind()}
 }
 
 // matchesKind recognizes kind keywords in either supported language.
 func matchesKind(h *config.Host, word string) bool {
+	if h.Kind == config.KindTelnet {
+		return word == "telnet"
+	}
+	if h.Kind == config.KindSerial {
+		return word == "serial" || word == "串口"
+	}
 	if h.IsRDP() {
 		return slices.Contains([]string{"rdp", "remote", "desktop", "远程桌面", "远程", "桌面"}, word) ||
 			strings.EqualFold(word, locales.KindRDPShort())

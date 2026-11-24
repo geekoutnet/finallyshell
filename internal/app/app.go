@@ -6,6 +6,9 @@
 package app
 
 import (
+	"context"
+	"io"
+	"net"
 	"slices"
 	"time"
 
@@ -275,8 +278,11 @@ type App struct {
 
 	// Sync (sync.go), and how it makes its remote: syncRemote, which
 	// tests replace.
-	sync      syncState
-	newRemote func(config.SyncSettings, string) (cloudsync.Remote, error)
+	sync        syncState
+	newRemote   func(config.SyncSettings, string) (cloudsync.Remote, error)
+	telnetDial  func(context.Context, string, string) (net.Conn, error)
+	serialOpen  func(string, config.SerialConfig) (io.ReadWriteCloser, error)
+	serialPorts func() ([]string, error)
 
 	// The command bar's history of each host (commandbar_data.go).
 	history cmdHistories
@@ -480,7 +486,11 @@ func (a *App) bottomPanel(c *ui.Context, tab *int) {
 	ui.Column(c).Fill().Background(theme.Background).Children(func() {
 		a.panelTabRow(c, tabs, tab, false)
 		if *tab >= 0 && *tab < len(tabs) {
-			tabs[*tab].page(c)
+			if s := a.connSession(); s.isDeviceSession() && *tab != tabCommands {
+				deviceUnavailable(c, s)
+			} else {
+				tabs[*tab].page(c)
+			}
 		}
 	})
 }
@@ -505,8 +515,15 @@ func (a *App) openSession(h *config.Host) { a.openSessionIn(a.selectedNewTab(), 
 // asks for those the store does not have either: h's own, then its
 // proxy's and jump hosts', one at a time.
 func (a *App) openSessionIn(tab *Session, h *config.Host) {
-	if h.IsRDP() { // the system's client, no session
+	switch h.Kind {
+	case config.KindRDP:
 		a.openRDP(h)
+		return
+	case config.KindTelnet:
+		a.withTelnetLogin(h, func(password string) { a.openDeviceSession(tab, h, password) })
+		return
+	case config.KindSerial:
+		a.openDeviceSession(tab, h, "")
 		return
 	}
 	if a.readChainSecrets(h, func() { a.openSessionIn(tab, h) }) {
@@ -535,6 +552,14 @@ func (a *App) reconnect(s *Session) {
 	}
 	if s.isLocal() { // its program again, in the same tab
 		a.connectLocal(s)
+		return
+	}
+	if s.Host.Kind == config.KindTelnet || s.Host.Kind == config.KindSerial {
+		a.reconnectDevice(s)
+		return
+	}
+	if s.Host.IsRDP() {
+		a.openRDP(s.Host)
 		return
 	}
 	// A jump host or a proxy with a password not known yet, as the host

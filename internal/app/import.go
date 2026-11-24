@@ -410,7 +410,7 @@ func (a *App) importTable(c *ui.Context, st *importState, statuses []importStatu
 			})
 		case "host":
 			addr := h.Addr
-			if h.PortOr22() != 22 {
+			if h.PortOr22() != h.DefaultPort() {
 				addr = net.JoinHostPort(addr, strconv.Itoa(h.PortOr22())) // [2001:db8::1]:2200
 			}
 			text(addr)

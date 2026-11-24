@@ -18044,6 +18044,386 @@ func (msgs Messages) RdpDrivesSome() string {
 	return Catalog.Format(msgs.locale, "rdpDrivesSome", nil)
 }
 
+// TelnetKind says "Telnet"
+// in the language the app shows.
+func TelnetKind() string { return In(i18n.Locale()).TelnetKind() }
+
+// TelnetKind says "Telnet"
+// in the language of msgs.
+func (msgs Messages) TelnetKind() string {
+	return Catalog.Format(msgs.locale, "telnetKind", nil)
+}
+
+// TelnetUnavailable says "Not available for Telnet connections"
+// in the language the app shows.
+func TelnetUnavailable() string { return In(i18n.Locale()).TelnetUnavailable() }
+
+// TelnetUnavailable says "Not available for Telnet connections"
+// in the language of msgs.
+func (msgs Messages) TelnetUnavailable() string {
+	return Catalog.Format(msgs.locale, "telnetUnavailable", nil)
+}
+
+// TelnetPanelTab says "Panel tab"
+// in the language the app shows.
+func TelnetPanelTab() string { return In(i18n.Locale()).TelnetPanelTab() }
+
+// TelnetPanelTab says "Panel tab"
+// in the language of msgs.
+func (msgs Messages) TelnetPanelTab() string {
+	return Catalog.Format(msgs.locale, "telnetPanelTab", nil)
+}
+
+// TelnetPlaintext says "Telnet is not encrypted. Only use it on a trusted network."
+// in the language the app shows.
+func TelnetPlaintext() string { return In(i18n.Locale()).TelnetPlaintext() }
+
+// TelnetPlaintext says "Telnet is not encrypted. Only use it on a trusted network."
+// in the language of msgs.
+func (msgs Messages) TelnetPlaintext() string {
+	return Catalog.Format(msgs.locale, "telnetPlaintext", nil)
+}
+
+// TelnetAutoLogin says "Log in automatically"
+// in the language the app shows.
+func TelnetAutoLogin() string { return In(i18n.Locale()).TelnetAutoLogin() }
+
+// TelnetAutoLogin says "Log in automatically"
+// in the language of msgs.
+func (msgs Messages) TelnetAutoLogin() string {
+	return Catalog.Format(msgs.locale, "telnetAutoLogin", nil)
+}
+
+// TelnetAutoLoginNote says "Send the username and stored password only after matching the login prompts. Leave the password empty to enter it man…"
+// in the language the app shows.
+func TelnetAutoLoginNote() string { return In(i18n.Locale()).TelnetAutoLoginNote() }
+
+// TelnetAutoLoginNote says "Send the username and stored password only after matching the login prompts. Leave the password empty to enter it man…"
+// in the language of msgs.
+func (msgs Messages) TelnetAutoLoginNote() string {
+	return Catalog.Format(msgs.locale, "telnetAutoLoginNote", nil)
+}
+
+// TelnetLoginPrompt says "Username prompt (regular expression)"
+// in the language the app shows.
+func TelnetLoginPrompt() string { return In(i18n.Locale()).TelnetLoginPrompt() }
+
+// TelnetLoginPrompt says "Username prompt (regular expression)"
+// in the language of msgs.
+func (msgs Messages) TelnetLoginPrompt() string {
+	return Catalog.Format(msgs.locale, "telnetLoginPrompt", nil)
+}
+
+// TelnetPasswordPrompt says "Password prompt (regular expression)"
+// in the language the app shows.
+func TelnetPasswordPrompt() string { return In(i18n.Locale()).TelnetPasswordPrompt() }
+
+// TelnetPasswordPrompt says "Password prompt (regular expression)"
+// in the language of msgs.
+func (msgs Messages) TelnetPasswordPrompt() string {
+	return Catalog.Format(msgs.locale, "telnetPasswordPrompt", nil)
+}
+
+// TelnetPromptInvalid says "Enter a valid regular expression."
+// in the language the app shows.
+func TelnetPromptInvalid() string { return In(i18n.Locale()).TelnetPromptInvalid() }
+
+// TelnetPromptInvalid says "Enter a valid regular expression."
+// in the language of msgs.
+func (msgs Messages) TelnetPromptInvalid() string {
+	return Catalog.Format(msgs.locale, "telnetPromptInvalid", nil)
+}
+
+// TelnetKeepAlive says "Send a keepalive every 30 seconds"
+// in the language the app shows.
+func TelnetKeepAlive() string { return In(i18n.Locale()).TelnetKeepAlive() }
+
+// TelnetKeepAlive says "Send a keepalive every 30 seconds"
+// in the language of msgs.
+func (msgs Messages) TelnetKeepAlive() string {
+	return Catalog.Format(msgs.locale, "telnetKeepAlive", nil)
+}
+
+// TelnetQuickConnect says "Search connections or enter telnet://host[:port]"
+// in the language the app shows.
+func TelnetQuickConnect() string { return In(i18n.Locale()).TelnetQuickConnect() }
+
+// TelnetQuickConnect says "Search connections or enter telnet://host[:port]"
+// in the language of msgs.
+func (msgs Messages) TelnetQuickConnect() string {
+	return Catalog.Format(msgs.locale, "telnetQuickConnect", nil)
+}
+
+// TelnetQuickInvalid says "Enter telnet://host or telnet://host:port, without a username or password."
+// in the language the app shows.
+func TelnetQuickInvalid() string { return In(i18n.Locale()).TelnetQuickInvalid() }
+
+// TelnetQuickInvalid says "Enter telnet://host or telnet://host:port, without a username or password."
+// in the language of msgs.
+func (msgs Messages) TelnetQuickInvalid() string {
+	return Catalog.Format(msgs.locale, "telnetQuickInvalid", nil)
+}
+
+// TelnetHostInvalid says "Enter a hostname or IP address, without a port or login details."
+// in the language the app shows.
+func TelnetHostInvalid() string { return In(i18n.Locale()).TelnetHostInvalid() }
+
+// TelnetHostInvalid says "Enter a hostname or IP address, without a port or login details."
+// in the language of msgs.
+func (msgs Messages) TelnetHostInvalid() string {
+	return Catalog.Format(msgs.locale, "telnetHostInvalid", nil)
+}
+
+// TelnetConfirmTitle says "Send an unencrypted password?"
+// in the language the app shows.
+func TelnetConfirmTitle() string { return In(i18n.Locale()).TelnetConfirmTitle() }
+
+// TelnetConfirmTitle says "Send an unencrypted password?"
+// in the language of msgs.
+func (msgs Messages) TelnetConfirmTitle() string {
+	return Catalog.Format(msgs.locale, "telnetConfirmTitle", nil)
+}
+
+// TelnetConfirmBody says "The password for {target} will be sent in clear text when the login prompts match. Anyone who can observe the connect…"
+// in the language the app shows.
+func TelnetConfirmBody(target string) string { return In(i18n.Locale()).TelnetConfirmBody(target) }
+
+// TelnetConfirmBody says "The password for {target} will be sent in clear text when the login prompts match. Anyone who can observe the connect…"
+// in the language of msgs.
+func (msgs Messages) TelnetConfirmBody(target string) string {
+	return Catalog.Format(msgs.locale, "telnetConfirmBody", map[string]any{"target": target})
+}
+
+// TelnetCredentialInvalid says "The username and password must not contain control characters."
+// in the language the app shows.
+func TelnetCredentialInvalid() string { return In(i18n.Locale()).TelnetCredentialInvalid() }
+
+// TelnetCredentialInvalid says "The username and password must not contain control characters."
+// in the language of msgs.
+func (msgs Messages) TelnetCredentialInvalid() string {
+	return Catalog.Format(msgs.locale, "telnetCredentialInvalid", nil)
+}
+
+// TelnetUnsupportedImport says "unsupported connection type, skipped"
+// in the language the app shows.
+func TelnetUnsupportedImport() string { return In(i18n.Locale()).TelnetUnsupportedImport() }
+
+// TelnetUnsupportedImport says "unsupported connection type, skipped"
+// in the language of msgs.
+func (msgs Messages) TelnetUnsupportedImport() string {
+	return Catalog.Format(msgs.locale, "telnetUnsupportedImport", nil)
+}
+
+// SerialKind says "Serial"
+// in the language the app shows.
+func SerialKind() string { return In(i18n.Locale()).SerialKind() }
+
+// SerialKind says "Serial"
+// in the language of msgs.
+func (msgs Messages) SerialKind() string {
+	return Catalog.Format(msgs.locale, "serialKind", nil)
+}
+
+// SerialUnavailable says "Not available for serial connections"
+// in the language the app shows.
+func SerialUnavailable() string { return In(i18n.Locale()).SerialUnavailable() }
+
+// SerialUnavailable says "Not available for serial connections"
+// in the language of msgs.
+func (msgs Messages) SerialUnavailable() string {
+	return Catalog.Format(msgs.locale, "serialUnavailable", nil)
+}
+
+// SerialDevice says "Serial port"
+// in the language the app shows.
+func SerialDevice() string { return In(i18n.Locale()).SerialDevice() }
+
+// SerialDevice says "Serial port"
+// in the language of msgs.
+func (msgs Messages) SerialDevice() string {
+	return Catalog.Format(msgs.locale, "serialDevice", nil)
+}
+
+// SerialSettings says "Port settings"
+// in the language the app shows.
+func SerialSettings() string { return In(i18n.Locale()).SerialSettings() }
+
+// SerialSettings says "Port settings"
+// in the language of msgs.
+func (msgs Messages) SerialSettings() string {
+	return Catalog.Format(msgs.locale, "serialSettings", nil)
+}
+
+// SerialDeviceInvalid says "Enter a local serial port name or choose a detected port."
+// in the language the app shows.
+func SerialDeviceInvalid() string { return In(i18n.Locale()).SerialDeviceInvalid() }
+
+// SerialDeviceInvalid says "Enter a local serial port name or choose a detected port."
+// in the language of msgs.
+func (msgs Messages) SerialDeviceInvalid() string {
+	return Catalog.Format(msgs.locale, "serialDeviceInvalid", nil)
+}
+
+// SerialRefresh says "Refresh ports"
+// in the language the app shows.
+func SerialRefresh() string { return In(i18n.Locale()).SerialRefresh() }
+
+// SerialRefresh says "Refresh ports"
+// in the language of msgs.
+func (msgs Messages) SerialRefresh() string {
+	return Catalog.Format(msgs.locale, "serialRefresh", nil)
+}
+
+// SerialNoPorts says "No ports detected. You can enter the port name manually."
+// in the language the app shows.
+func SerialNoPorts() string { return In(i18n.Locale()).SerialNoPorts() }
+
+// SerialNoPorts says "No ports detected. You can enter the port name manually."
+// in the language of msgs.
+func (msgs Messages) SerialNoPorts() string {
+	return Catalog.Format(msgs.locale, "serialNoPorts", nil)
+}
+
+// SerialPortsFailed says "Could not list serial ports: {detail}"
+// in the language the app shows.
+func SerialPortsFailed(detail string) string { return In(i18n.Locale()).SerialPortsFailed(detail) }
+
+// SerialPortsFailed says "Could not list serial ports: {detail}"
+// in the language of msgs.
+func (msgs Messages) SerialPortsFailed(detail string) string {
+	return Catalog.Format(msgs.locale, "serialPortsFailed", map[string]any{"detail": detail})
+}
+
+// SerialBaud says "Baud rate"
+// in the language the app shows.
+func SerialBaud() string { return In(i18n.Locale()).SerialBaud() }
+
+// SerialBaud says "Baud rate"
+// in the language of msgs.
+func (msgs Messages) SerialBaud() string {
+	return Catalog.Format(msgs.locale, "serialBaud", nil)
+}
+
+// SerialBaudInvalid says "Enter a baud rate from 1 to 100,000,000."
+// in the language the app shows.
+func SerialBaudInvalid() string { return In(i18n.Locale()).SerialBaudInvalid() }
+
+// SerialBaudInvalid says "Enter a baud rate from 1 to 100,000,000."
+// in the language of msgs.
+func (msgs Messages) SerialBaudInvalid() string {
+	return Catalog.Format(msgs.locale, "serialBaudInvalid", nil)
+}
+
+// SerialDataBits says "Data bits"
+// in the language the app shows.
+func SerialDataBits() string { return In(i18n.Locale()).SerialDataBits() }
+
+// SerialDataBits says "Data bits"
+// in the language of msgs.
+func (msgs Messages) SerialDataBits() string {
+	return Catalog.Format(msgs.locale, "serialDataBits", nil)
+}
+
+// SerialParity says "Parity"
+// in the language the app shows.
+func SerialParity() string { return In(i18n.Locale()).SerialParity() }
+
+// SerialParity says "Parity"
+// in the language of msgs.
+func (msgs Messages) SerialParity() string {
+	return Catalog.Format(msgs.locale, "serialParity", nil)
+}
+
+// SerialParityNone says "None"
+// in the language the app shows.
+func SerialParityNone() string { return In(i18n.Locale()).SerialParityNone() }
+
+// SerialParityNone says "None"
+// in the language of msgs.
+func (msgs Messages) SerialParityNone() string {
+	return Catalog.Format(msgs.locale, "serialParityNone", nil)
+}
+
+// SerialParityEven says "Even"
+// in the language the app shows.
+func SerialParityEven() string { return In(i18n.Locale()).SerialParityEven() }
+
+// SerialParityEven says "Even"
+// in the language of msgs.
+func (msgs Messages) SerialParityEven() string {
+	return Catalog.Format(msgs.locale, "serialParityEven", nil)
+}
+
+// SerialParityOdd says "Odd"
+// in the language the app shows.
+func SerialParityOdd() string { return In(i18n.Locale()).SerialParityOdd() }
+
+// SerialParityOdd says "Odd"
+// in the language of msgs.
+func (msgs Messages) SerialParityOdd() string {
+	return Catalog.Format(msgs.locale, "serialParityOdd", nil)
+}
+
+// SerialStopBits says "Stop bits"
+// in the language the app shows.
+func SerialStopBits() string { return In(i18n.Locale()).SerialStopBits() }
+
+// SerialStopBits says "Stop bits"
+// in the language of msgs.
+func (msgs Messages) SerialStopBits() string {
+	return Catalog.Format(msgs.locale, "serialStopBits", nil)
+}
+
+// SerialStopBitsInvalid says "This combination of data bits and stop bits is not supported on this system."
+// in the language the app shows.
+func SerialStopBitsInvalid() string { return In(i18n.Locale()).SerialStopBitsInvalid() }
+
+// SerialStopBitsInvalid says "This combination of data bits and stop bits is not supported on this system."
+// in the language of msgs.
+func (msgs Messages) SerialStopBitsInvalid() string {
+	return Catalog.Format(msgs.locale, "serialStopBitsInvalid", nil)
+}
+
+// SerialFlow says "Flow control"
+// in the language the app shows.
+func SerialFlow() string { return In(i18n.Locale()).SerialFlow() }
+
+// SerialFlow says "Flow control"
+// in the language of msgs.
+func (msgs Messages) SerialFlow() string {
+	return Catalog.Format(msgs.locale, "serialFlow", nil)
+}
+
+// SerialLocalEcho says "Echo typed characters locally"
+// in the language the app shows.
+func SerialLocalEcho() string { return In(i18n.Locale()).SerialLocalEcho() }
+
+// SerialLocalEcho says "Echo typed characters locally"
+// in the language of msgs.
+func (msgs Messages) SerialLocalEcho() string {
+	return Catalog.Format(msgs.locale, "serialLocalEcho", nil)
+}
+
+// SerialLineEnding says "Send line endings as"
+// in the language the app shows.
+func SerialLineEnding() string { return In(i18n.Locale()).SerialLineEnding() }
+
+// SerialLineEnding says "Send line endings as"
+// in the language of msgs.
+func (msgs Messages) SerialLineEnding() string {
+	return Catalog.Format(msgs.locale, "serialLineEnding", nil)
+}
+
+// SerialUnsupported says "Serial connections are not supported on this platform."
+// in the language the app shows.
+func SerialUnsupported() string { return In(i18n.Locale()).SerialUnsupported() }
+
+// SerialUnsupported says "Serial connections are not supported on this platform."
+// in the language of msgs.
+func (msgs Messages) SerialUnsupported() string {
+	return Catalog.Format(msgs.locale, "serialUnsupported", nil)
+}
+
 // FieldRDPDriveLetters says "Drive letters"
 // in the language the app shows.
 func FieldRDPDriveLetters() string { return In(i18n.Locale()).FieldRDPDriveLetters() }

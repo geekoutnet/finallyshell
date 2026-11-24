@@ -283,6 +283,8 @@ FinalShell 把连接存在数据目录的 `conn` 文件夹里，Finallyshell 按
 
 FinalShell 的文件格式没有官方文档，导入按其他开源客户端（Hatoba、LiteShell、MeatShell、OpenFinalShell）的 FinalShell 导入代码整理，写在 `internal/importer/finalshell.go` 的注释里。解析尽量宽松：不认识的字段忽略，缺的字段用默认值（端口 22、密码认证），端口写成字符串也认。
 
+当 `protocol` 或 `conection_type` 明确写出协议名称时，也能导入 Telnet 和串口连接；不根据端口猜测未知的数字类型。文件中有可识别的串口参数时会一并导入。
+
 ### 从 Xshell 导入
 
 Xshell 把每个会话存成一个文件 `<名称>.xsh`，放在它的 `Sessions` 文件夹里，子文件夹就是它的文件夹。在 Windows 上，Finallyshell 按顺序找这个文件夹：
@@ -293,7 +295,7 @@ Xshell 把每个会话存成一个文件 `<名称>.xsh`，放在它的 `Sessions
 
 在 macOS 和 Linux 上，或者 Xshell 的会话存在别处（在它的选项里设置）时，要自己选。可以选 `Sessions` 文件夹、它所在的 `Xshell` 文件夹，或者任何里面有 `.xsh` 文件或 `.xts` 导出文件（Xshell 的“文件”→“导出”）的文件夹：导出文件直接读，不解压，里面的文件夹导入到它所在的文件夹下面。选择对话框只能选文件夹，所以要导入 `.xts` 文件，就选它所在的文件夹。
 
-导入的字段：名称（文件名去掉 `.xsh`）、主机、端口、用户名、备注（会话的“说明”）、文件夹、认证方法。只导入 SSH 会话；Telnet、Rlogin、串口等会话跳过。
+导入的字段：名称（文件名去掉 `.xsh`）、主机、端口、用户名、备注（会话的“说明”）、文件夹、认证方法。支持 SSH、Telnet 和串口，跳过 Rlogin 等不支持的类型。Telnet 还会保留终端类型和登录提示文本。导入串口后请核对设备名和参数；无法识别的参数使用默认值。
 
 - 密码不导入。Xshell 把密码加密存在会话文件里，Finallyshell 不解密，也不读这个字段。
 - 公钥认证的会话导入后是“私钥”认证但没有私钥文件：Xshell 把私钥存在它自己的密钥库里，会话只记着私钥的名字。要编辑连接选私钥文件（需要的话从 Xshell 的“用户密钥”导出成 OpenSSH 格式）。
@@ -311,7 +313,7 @@ SecureCRT 在配置文件夹的 `Sessions` 文件夹里每个会话存一个 `.i
 
 SecureCRT 可以把配置文件夹放到别处（Options › Global Options › General › Configuration Paths 里能看到在哪）。可以选配置文件夹、它的 `Sessions` 文件夹，或者里面的某个文件夹（导入它的会话，文件夹从它下面算起）。`Sessions` 顶层的 `Default.ini` 是 SecureCRT 的默认设置，`__FolderData__.ini` 是文件夹里会话的顺序，都不是会话。最多读 10000 个会话文件，超出后的第一个列为失败。
 
-导入的字段：名称（去掉 `.ini` 的文件名）、主机、端口、用户名、备注（会话的描述）、文件夹。导入 SSH2 和 SSH1 会话；Telnet、Serial、RLogin、RDP 等会话算跳过。
+导入的字段：名称（去掉 `.ini` 的文件名）、主机、端口、用户名、备注（会话的描述）、文件夹。支持 SSH2、SSH1、Telnet 和串口，跳过 RLogin、RDP 等不支持的类型。串口会保留 COM 口或设备名及可识别的参数。
 
 - 密码不导入。SecureCRT 把密码加密存在会话文件里，Finallyshell 不解密，也不读这些行。
 - 有自己的私钥文件的会话（公钥选项里设的）导入后是“私钥”认证，用这个私钥文件；SecureCRT 写的是 `.pub` 文件时，用对应的私钥。路径里的 `${VDS_CONFIG_PATH}` 是配置文件夹。用 SecureCRT 全局私钥的会话，如果它的认证方法里公钥排在密码前面，就用配置文件夹里 `SSH2.ini` 写的全局私钥文件。认不出的私钥路径（别的 SecureCRT 变量、在 macOS、Linux 上读到 Windows 路径，或者 `Sessions` 文件夹旁边找不到 `SSH2.ini` 时的全局私钥）导入后要自己选私钥文件，“说明”列会提示。
@@ -323,7 +325,7 @@ SecureCRT 的文件格式没有官方文档，导入按 VanDyke 的脚本示例�
 
 MobaXterm 把会话存在 `MobaXterm.ini` 里。在 Windows 上，Finallyshell 先找 `%APPDATA%\MobaXterm`（安装版），再找 `Documents\MobaXterm`。便携版把它放在 `MobaXterm.exe` 旁边，要自己选。也可以选从 MobaXterm 导出的会话文件：“Export all sessions to file”或“Export sessions from this folder”导出 `.mxtsessions` 文件，“Save session to file”导出一个会话的 `.moba` 文件。中文 Windows 上保存的文件（GBK 编码）也能读。
 
-只导入 SSH 会话，RDP、VNC、SFTP、Telnet 等其他会话跳过。导入的字段：名称、主机、端口、用户名（MobaXterm 的 `<default>` 是不指定用户名）、注释（作为备注）、文件夹（会话文件夹，和 MobaXterm 里一样嵌套；单独导出的文件夹就是同名的文件夹），以及私钥文件，作为主机的私钥文件（路径里的 `_CurrentDrive_` 就是盘符 `C`）。在 macOS 和 Linux 上，Windows 的私钥路径在本机不存在：主机是“私钥”认证但没有私钥文件，导入后再选。
+支持 SSH、Telnet 和串口，跳过 RDP、VNC、SFTP 等不支持的类型。串口会保留 COM 口和可识别的参数。导入的字段：名称、主机、端口、用户名（MobaXterm 的 `<default>` 是不指定用户名）、注释（作为备注）、文件夹（会话文件夹，和 MobaXterm 里一样嵌套；单独导出的文件夹就是同名的文件夹），以及私钥文件，作为主机的私钥文件（路径里的 `_CurrentDrive_` 就是盘符 `C`）。在 macOS 和 Linux 上，Windows 的私钥路径在本机不存在：主机是“私钥”认证但没有私钥文件，导入后再选。
 
 - 密码不导入。MobaXterm 把密码加密存在会话之外（有主密码保护），Finallyshell 不读。
 - SSH 网关（跳板机）和代理不导入：主机直接连接，“说明”列里会注明。导入后可以在连接编辑器里设置跳板机。
@@ -391,6 +393,18 @@ Excel 文件：单元格都按文字读，数字不带末尾的 `.0`，公式读
 选 **SSH Agent** 时，用 SSH Agent 里的私钥登录（Bitwarden、1Password、KeePassXC、OpenSSH 的 `ssh-agent`、Windows 的 OpenSSH agent 服务），硬盘上不需要私钥文件。只填用户名：私钥文件、私钥密码、密码和“记住密码”都不显示，凭据存储里也不保存什么。“SSH Agent：使用 选项 › 常规 里的地址”这一行有个 **检测** 按钮，列出 agent 里的私钥（类型、SHA256 指纹、备注），不登录；只是列出私钥，不会让 agent 弹窗请你批准。连接时像 OpenSSH 一样依次尝试 agent 里的私钥，直到服务器接受其中一把。Bitwarden 等每次签名都会弹窗请你批准，连接会一直等你的答复。登录期间 agent 的连接一直开着，登录后关闭。跳板机也能用 SSH Agent 登录，每一跳按它自己的方式登录。
 
 失败时，终端上方的提示条说明原因，并带一个“SSH Agent 设置”按钮，打开 选项 › 常规：地址上找不到 agent（写出地址，或者说没有设置 `SSH_AUTH_SOCK`）、agent 里没有私钥、服务器拒绝了 agent 里的所有私钥、agent 没有签名（被你拒绝了）。不会弹出密码框。不支持 agent 转发（`ssh -A`）。
+
+### Telnet 连接
+
+在连接编辑器中选择 **Telnet**，填写主机和端口（默认 23），需要时可开启每 30 秒一次的保活。不保存连接也可以在“快速连接”中输入 `telnet://主机[:端口]` 后按回车；IPv6 地址需要用方括号括起来。不要在地址中写用户名或密码。“终端”页可设置上报的终端类型、字符编码和退格键、删除键的行为；对端支持窗口尺寸协商时，调整终端大小会同步给对端。
+
+自动登录默认关闭，导入的连接也是如此。“认证”页默认不区分大小写地匹配 `login:` 或 `username:`，以及 `password:`，也可自定义正则表达式。只有先匹配用户名提示、且你已确认明文风险，才会自动发送密码。“记住密码”只存到系统凭据库，不参与同步；密码留空则手动输入。**Telnet 不加密**，请只在可信网络中使用，并避免复用 SSH 密码。Telnet 直连，不支持代理或 SSH 管理功能。
+
+### 串口连接
+
+在连接编辑器中选择 **串口**。可以选择或刷新已检测到的串口，也可以手动输入本机设备名，例如 `COM4`、`/dev/ttyUSB0` 或 `/dev/cu.usbserial-…`。Windows、Linux、macOS 均以当前账户权限直接打开设备，不会自动提权。
+
+可选择常见波特率或输入自定义值，并设置数据位、校验位、停止位和流控（无、RTS/CTS 或 XON/XOFF）。默认是 9600 波特、8 数据位、无校验、1 停止位、无流控。发送的行结束符可选 CR、LF 或 CRLF。本地回显默认关闭，在设备上输入密码时请保持关闭。“终端”页可设置字符编码和退格键、删除键的行为。设备拔出后，重新接入并选择 **重新连接**。串口不支持 SSH 管理功能。
 
 <a id="terminal-page"></a>
 

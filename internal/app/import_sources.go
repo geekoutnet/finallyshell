@@ -128,7 +128,7 @@ func importProblemText(p importer.Problem, source string) string {
 	case importer.NoHost:
 		return locales.ProblemNoHost()
 	case importer.NotSSH:
-		return locales.ProblemNotSSH()
+		return locales.TelnetUnsupportedImport()
 	case importer.DeletedThere:
 		return locales.ProblemDeleted(source)
 	case importer.SSHMatch:

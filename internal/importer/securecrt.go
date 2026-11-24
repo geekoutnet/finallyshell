@@ -44,8 +44,7 @@ import (
 // The options read here (the others, as fonts, colors, port forwards and
 // logon actions, are not imported):
 //
-//	Protocol Name          SSH2 or SSH1 is imported; Telnet, Serial,
-//	                       RLogin, RDP and the others are not SSH
+//	Protocol Name          SSH2, SSH1, Telnet or Serial
 //	Hostname, Username
 //	[SSH2] Port            [SSH1] Port for SSH1
 //	Description            a Z list: the notes
@@ -279,12 +278,15 @@ func (r *crtReader) read(path, rel, name string, folder []string) {
 	}
 	protocol := strings.ToUpper(s.str("Protocol Name"))
 	switch protocol {
-	case "", "SSH2", "SSH1": // none is SSH2, SecureCRT's default
+	case "", "SSH2", "SSH1", "TELNET", "SERIAL":
 	default:
 		r.problem(rel, NotSSH, nil)
 		return
 	}
 	addr := s.str("Hostname")
+	if protocol == "SERIAL" {
+		addr = serialPortName(s.str("Com Port"))
+	}
 	if addr == "" {
 		r.problem(rel, NoHost, nil)
 		return
@@ -296,16 +298,52 @@ func (r *crtReader) read(path, rel, name string, folder []string) {
 		Auth:  config.AuthPassword,
 		Notes: strings.TrimSpace(strings.Join(s.lists["Description"], "\n")),
 	}
-	port, ok := s.num("[SSH2] Port")
-	if protocol == "SSH1" {
-		if p, ok1 := s.num("[SSH1] Port"); ok1 {
-			port, ok = p, true
-		}
-	}
-	if ok && port > 0 && port <= 65535 && port != 22 {
-		h.Port = int(port)
-	}
 	e := &Entry{File: rel, Host: h, Folder: folder}
+	switch protocol {
+	case "TELNET":
+		h.Kind = config.KindTelnet
+		h.TermType = s.str("Emulation")
+		port, ok := s.num("[Telnet] Port")
+		if !ok {
+			port, _ = s.num("Port")
+		}
+		devicePort(h, int(port))
+	case "SERIAL":
+		h.Kind, h.User = config.KindSerial, ""
+		h.Serial = serialSettings(crtNumber(s, "Baud Rate"), crtNumber(s, "Data Bits"), crtNumber(s, "Parity"), crtNumber(s, "Stop Bits"), "")
+		if flow, _ := s.num("Flow Control"); flow&1 != 0 {
+			h.Serial.Flow = "rtscts"
+		} else if flow&2 != 0 {
+			h.Serial.Flow = "xonxoff"
+		}
+	default:
+		port, _ := s.num("[SSH2] Port")
+		if protocol == "SSH1" {
+			if legacy, ok := s.num("[SSH1] Port"); ok {
+				port = legacy
+			}
+		}
+		devicePort(h, int(port))
+		r.addCRTKey(s, h, e)
+	}
+	switch fw := s.str("Firewall Name"); {
+	case fw == "" || strings.EqualFold(fw, "None"):
+	case len(fw) >= 8 && strings.EqualFold(fw[:8], "Session:"):
+		e.Note = JumpHostNotImported
+	default:
+		e.Note = ProxyNotImported
+	}
+	r.src.Entries = append(r.src.Entries, e)
+}
+
+func crtNumber(s *crtSession, field string) string {
+	if value, ok := s.num(field); ok {
+		return strconv.FormatUint(uint64(value), 10)
+	}
+	return ""
+}
+
+func (r *crtReader) addCRTKey(s *crtSession, h *config.Host, e *Entry) {
 	switch key, global := r.key(s); {
 	case global && !s.prefersKey():
 		// The password is tried first: the global key is not imported.
@@ -317,14 +355,6 @@ func (r *crtReader) read(path, rel, name string, folder []string) {
 			h.Auth, e.KeyFile, e.NeedsKey = config.AuthKey, file, needsKey
 		}
 	}
-	switch fw := s.str("Firewall Name"); {
-	case fw == "" || strings.EqualFold(fw, "None"):
-	case len(fw) >= 8 && strings.EqualFold(fw[:8], "Session:"):
-		e.Note = JumpHostNotImported
-	default:
-		e.Note = ProxyNotImported
-	}
-	r.src.Entries = append(r.src.Entries, e)
 }
 
 // key is the identity file the session s logs in with, as SecureCRT has
@@ -396,6 +426,15 @@ var crtOptions = map[string]byte{
 	"Firewall Name":           'S',
 	"[SSH2] Port":             'D',
 	"[SSH1] Port":             'D',
+	"Port":                    'D',
+	"[Telnet] Port":           'D',
+	"Com Port":                'S',
+	"Emulation":               'S',
+	"Baud Rate":               'D',
+	"Data Bits":               'D',
+	"Parity":                  'D',
+	"Stop Bits":               'D',
+	"Flow Control":            'D',
 	"Use Global Public Key":   'D',
 	"Description":             'Z',
 }

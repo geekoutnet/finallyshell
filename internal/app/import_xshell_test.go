@@ -51,11 +51,10 @@ func TestImportXshell(t *testing.T) {
 	if len(p.folderPicks()) != 0 || a.importKind != importer.Xshell {
 		t.Errorf("picks %v, kind %s", p.folderPicks(), a.importKind)
 	}
-	for _, s := range []string{"web-1", "bastion", "pg-main", "树莓派", "legacy", "192.0.2.10", "bastion.example.com:2222", "db.example.com:5022",
+	for _, s := range []string{"web-1", "bastion", "pg-main", "树莓派", "legacy", "router", "console", "192.0.2.10", "bastion.example.com:2222", "db.example.com:5022",
 		"Production / Databases", "实验室", tildePath(sessions, home, runtime.GOOS), locales.ImportPasswordsNote("Xshell"),
-		locales.ImportChosen(5, 5), locales.ImportCount(5), locales.ImportProblems(2, 2),
-		locales.ProblemLine("deploy.xsh", locales.ProblemBroken()), locales.ProblemLine("no-host.xsh", locales.ProblemNoHost()),
-		locales.ProblemLine("router.xsh", locales.ProblemNotSSH())} {
+		locales.ImportChosen(7, 7), locales.ImportCount(7), locales.ImportProblems(2, 0),
+		locales.ProblemLine("deploy.xsh", locales.ProblemBroken()), locales.ProblemLine("no-host.xsh", locales.ProblemNoHost())} {
 		if !tt.HasText(s) {
 			t.Errorf("missing %q; texts %q", s, tt.Texts())
 		}
@@ -67,7 +66,7 @@ func TestImportXshell(t *testing.T) {
 	sourcesShot(t, tt, "import-xshell-sources-en.png")
 	p.SetLocale("zh-Hans")
 	tt.Frame()
-	for _, s := range []string{"导入来源", "导入 5 个", "导入后需要选择私钥文件", "代理没有导入", "密码不导入（Xshell 对密码做了加密），第一次连接时会询问密码。"} {
+	for _, s := range []string{"导入来源", "导入 7 个", "导入后需要选择私钥文件", "代理没有导入", "密码不导入（Xshell 对密码做了加密），第一次连接时会询问密码。"} {
 		if !tt.HasText(s) {
 			t.Errorf("missing %q; texts %q", s, tt.Texts())
 		}
@@ -82,7 +81,7 @@ func TestImportXshell(t *testing.T) {
 	tt.SetDark(false)
 	tt.Frame()
 
-	if err := tt.Click(locales.ImportCount(5)); err != nil {
+	if err := tt.Click(locales.ImportCount(7)); err != nil {
 		t.Fatal(err)
 	}
 	var names []string
@@ -94,7 +93,7 @@ func TestImportXshell(t *testing.T) {
 		}
 	}
 	slices.Sort(names)
-	if want := []string{"Production / Databases|pg-main", "Production|bastion", "|legacy", "|web-1", "实验室|树莓派"}; !slices.Equal(names, want) || keys != 2 {
+	if want := []string{"Production / Databases|pg-main", "Production|bastion", "|console", "|legacy", "|router", "|web-1", "实验室|树莓派"}; !slices.Equal(names, want) || keys != 2 {
 		t.Errorf("added %q, want %q; %d keys to choose", names, want, keys)
 	}
 	if strings.Contains(string(*saved), "c2FtcGxl") || !strings.Contains(string(*saved), "bastion.example.com") {
@@ -102,7 +101,7 @@ func TestImportXshell(t *testing.T) {
 	}
 	manager := p.show(t, WindowManager)
 	manager.Frame()
-	if want := locales.ImportResult(5, 2, 2) + " " + locales.ImportKeysNote(2); !manager.HasText(want) {
+	if want := locales.ImportResult(7, 0, 2) + " " + locales.ImportKeysNote(2); !manager.HasText(want) {
 		t.Errorf("no %q; texts %q", want, manager.Texts())
 	}
 
@@ -145,7 +144,7 @@ func TestImportXshellExport(t *testing.T) {
 	p.until(t, "the folder read", func() bool { return !a.imp.busy && a.imp.src != nil })
 	tt.Frame()
 	for _, s := range []string{"stage-web", "Staging / Web", "测试机", "测试", locales.ImportCount(3), locales.ImportProblems(0, 1),
-		locales.ProblemLine("sessions.xts/Staging/rlogin.xsh", locales.ProblemNotSSH())} {
+		locales.ProblemLine("sessions.xts/Staging/rlogin.xsh", locales.TelnetUnsupportedImport())} {
 		if !tt.HasText(s) {
 			t.Errorf("missing %q; texts %q", s, tt.Texts())
 		}

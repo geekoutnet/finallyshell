@@ -38,7 +38,7 @@ var connectionProbeTimeout = 10 * time.Second
 // canSplit tells whether s's focused pane can split: a session whose
 // shell runs.
 func canSplit(s *Session) bool {
-	return s != nil && !s.isNewTab() && !s.isPanelTab() && s.status == statusConnected && s.term() != nil
+	return s != nil && !s.isNewTab() && !s.isPanelTab() && !s.isDeviceSession() && s.status == statusConnected && s.term() != nil
 }
 
 // splitPane opens a new pane beside s's focused pane, as dir says, and
@@ -621,6 +621,12 @@ func (a *App) paneTerminal(c *ui.Context, s *Session, p *pane) {
 // innermost element's: an app cannot add to it, so these items are on
 // the session's row and the bar's button.
 func (a *App) paneMenu(m *ui.Menu, s *Session) {
+	if s.isDeviceSession() {
+		for _, label := range []string{locales.SplitRight(), locales.SplitDown()} {
+			m.Item(label).Disabled(true).Subtitle(deviceUnavailableText(s))
+		}
+		return
+	}
 	a.recordingMenu(m, s)
 	m.Separator()
 	item := func(label string, id shortcutID) *ui.MenuItem {

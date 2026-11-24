@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"maps"
+	"net"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -117,11 +118,40 @@ type Host struct {
 	// them with RDPOf.
 	RDP *RDPConfig `json:"rdp,omitempty"`
 
-	ForwardAgent bool   `json:"forwardAgent,omitempty"`
-	X11Forward   string `json:"x11Forward,omitempty"`
+	ForwardAgent bool          `json:"forwardAgent,omitempty"`
+	X11Forward   string        `json:"x11Forward,omitempty"`
+	Telnet       *TelnetConfig `json:"telnet,omitempty"`
+	Serial       *SerialConfig `json:"serial,omitempty"`
 
 	extra extras
 }
+
+const (
+	KindTelnet                  HostKind = "telnet"
+	KindSerial                  HostKind = "serial"
+	DefaultTelnetPort                    = 23
+	DefaultTelnetLoginPrompt             = `(?i)(?:login|username):[ \t]*$`
+	DefaultTelnetPasswordPrompt          = `(?i)password:[ \t]*$`
+)
+
+type TelnetConfig struct {
+	AutoLogin      bool   `json:"autoLogin,omitempty"`
+	LoginPrompt    string `json:"loginPrompt,omitempty"`
+	PasswordPrompt string `json:"passwordPrompt,omitempty"`
+	KeepAlive      bool   `json:"keepAlive,omitempty"`
+}
+
+type SerialConfig struct {
+	Baud       int     `json:"baud,omitempty"`
+	DataBits   int     `json:"dataBits,omitempty"`
+	Parity     string  `json:"parity,omitempty"`
+	StopBits   float64 `json:"stopBits,omitempty"`
+	Flow       string  `json:"flow,omitempty"`
+	LocalEcho  bool    `json:"localEcho,omitempty"`
+	LineEnding string  `json:"lineEnding,omitempty"`
+}
+
+func (h *Host) IsSSH() bool { return h != nil && h.Kind == KindSSH }
 
 // DefaultTermType is the terminal type of a host that names none: what
 // the terminal is, Ghostty's VT core with 256 colors and more.
@@ -147,6 +177,12 @@ func (h *Host) Title() string {
 // Target is user@addr, with the port when it is not the default of its
 // kind.
 func (h *Host) Target() string {
+	if h.Kind == KindSerial {
+		return h.Addr
+	}
+	if h.Kind == KindTelnet {
+		return "telnet://" + net.JoinHostPort(h.Addr, strconv.Itoa(h.PortOr22()))
+	}
 	s := h.User + "@" + h.Addr
 	if h.PortOr22() != h.DefaultPort() {
 		s += ":" + strconv.Itoa(h.PortOr22())
@@ -165,7 +201,7 @@ func (h *Host) TermTypeOrDefault() string {
 
 // MonitorEnabled says whether sessions to h poll the server for the side
 // panel.
-func (h *Host) MonitorEnabled() bool { return !h.NoMonitor }
+func (h *Host) MonitorEnabled() bool { return h.IsSSH() && !h.NoMonitor }
 
 // RemembersPassword says whether the app keeps h's password, or its
 // key's passphrase, in the system's credential store.
@@ -184,6 +220,14 @@ func (h *Host) Clone() *Host {
 	}
 	if h.RDP != nil {
 		c.RDP = h.RDP.clone()
+	}
+	if h.Telnet != nil {
+		options := *h.Telnet
+		c.Telnet = &options
+	}
+	if h.Serial != nil {
+		options := *h.Serial
+		c.Serial = &options
 	}
 	c.Tunnels = slices.Clone(h.Tunnels)
 	c.MonitorIfaces = slices.Clone(h.MonitorIfaces)

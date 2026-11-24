@@ -40,7 +40,7 @@ type keysDeployDialog struct {
 func (a *App) beginKeysDeploy(m *keyManager, key *keyRow) {
 	d := &keysDeployDialog{key: *key, verify: true}
 	for _, host := range a.hosts.Hosts {
-		if !host.Deleted() && !host.IsRDP() {
+		if !host.Deleted() && host.IsSSH() {
 			d.hosts = append(d.hosts, host.ID)
 			if m.hostID == host.ID && execAllowed(host) {
 				d.selected.Add(host.ID)
@@ -170,7 +170,7 @@ func (a *App) keysDeployFields(c *ui.Context, d *keysDeployDialog) {
 	filter := strings.ToLower(strings.TrimSpace(d.filter))
 	var shown []*config.Host
 	for _, id := range d.hosts {
-		if host := a.hosts.Host(id); host != nil && !host.Deleted() && !host.IsRDP() && strings.Contains(strings.ToLower(host.Title()+" "+host.Target()), filter) {
+		if host := a.hosts.Host(id); host.IsSSH() && !host.Deleted() && strings.Contains(strings.ToLower(host.Title()+" "+host.Target()), filter) {
 			shown = append(shown, host)
 		}
 	}
@@ -323,7 +323,7 @@ func (a *App) keysTarget(ctx context.Context, d *keysDeployDialog, id string, on
 	result := make(chan keysTarget, 1)
 	finish := func() {
 		host := a.hosts.Host(id)
-		if host == nil || host.Deleted() || host.IsRDP() {
+		if !host.IsSSH() || host.Deleted() {
 			result <- keysTarget{host: &config.Host{ID: id}, err: errors.New(locales.ErrHostDeleted())}
 			return
 		}
@@ -365,7 +365,7 @@ func (a *App) keysTarget(ctx context.Context, d *keysDeployDialog, id string, on
 	}
 	a.post(func() {
 		host := a.hosts.Host(id)
-		if host == nil || host.Deleted() || host.IsRDP() {
+		if !host.IsSSH() || host.Deleted() {
 			finish()
 			return
 		}
@@ -466,7 +466,7 @@ func backupKeyHostConfig(path string, now time.Time) error {
 }
 
 func keysSameHost(current, original *config.Host) bool {
-	return current != nil && !current.Deleted() && !current.IsRDP() && current.ID == original.ID && current.Addr == original.Addr && current.User == original.User && current.PortOr22() == original.PortOr22() && reflect.DeepEqual(current.Proxy, original.Proxy)
+	return current.IsSSH() && !current.Deleted() && current.ID == original.ID && current.Addr == original.Addr && current.User == original.User && current.PortOr22() == original.PortOr22() && reflect.DeepEqual(current.Proxy, original.Proxy)
 }
 
 func (a *App) runKeysDisable(m *keyManager, d *keysDeployDialog) {

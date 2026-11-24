@@ -93,6 +93,13 @@ func Wrap(rw io.ReadWriteCloser, e config.Encoding) io.ReadWriteCloser {
 	return c
 }
 
+func EncodeLogin(text string, enc config.Encoding) ([]byte, error) {
+	if codec := lookup(enc); codec != nil {
+		return codec.NewEncoder().Bytes([]byte(text))
+	}
+	return []byte(text), nil
+}
+
 type resizer interface{ Resize(cols, rows int) error }
 
 // conn is a connection converted to and from UTF-8.

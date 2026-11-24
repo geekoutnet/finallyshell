@@ -25,6 +25,10 @@ func (a *App) monitorPanel(c *ui.Context) {
 			localMonitor(c)
 			return
 		}
+		if s.isDeviceSession() {
+			deviceUnavailable(c, s)
+			return
+		}
 		a.serverView(c, s)
 	})
 }

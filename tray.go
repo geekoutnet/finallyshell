@@ -27,12 +27,7 @@ func (p *platform) HideToTray() bool {
 			Icon:           trayIcon(),
 			IconIsTemplate: runtime.GOOS != "linux",
 			ToolTip:        locales.AppTitle(),
-			Menu: mygo.NewMenu([]*mygo.MenuItem{
-				{Label: locales.TrayShow(), Click: func(*mygo.MenuItem, *mygo.Window) { p.showMain() }},
-				updater.MenuItem(), // its window says why when this copy cannot update
-				mygo.Separator(),
-				{Label: locales.TrayQuit(), Click: func(*mygo.MenuItem, *mygo.Window) { p.Quit() }},
-			}),
+			Menu:           p.trayMenu(),
 		})
 		if err != nil {
 			// Linux without libayatana-appindicator3: the window stays,
@@ -45,6 +40,24 @@ func (p *platform) HideToTray() bool {
 	}
 	p.win.Hide()
 	return true
+}
+
+func (p *platform) trayMenu() *mygo.Menu {
+	update := updater.MenuItem()
+	if p.app != nil && p.app.Locked() {
+		update.Disabled = true
+	}
+	return mygo.NewMenu([]*mygo.MenuItem{
+		{Label: locales.TrayShow(), Click: func(*mygo.MenuItem, *mygo.Window) { p.showMain() }},
+		{Label: locales.LockNow(), Disabled: p.app == nil || !p.app.CanLock(), Click: func(*mygo.MenuItem, *mygo.Window) {
+			if p.app != nil {
+				p.app.LockNow()
+			}
+		}},
+		update,
+		mygo.Separator(),
+		{Label: locales.TrayQuit(), Click: func(*mygo.MenuItem, *mygo.Window) { p.Quit() }},
+	})
 }
 
 // showMain shows the main window hidden in the tray, and takes the tray
@@ -75,10 +88,12 @@ func (p *platform) raise() {
 
 func (p *platform) Confirm(q app.Confirmation) bool {
 	var parent *mygo.Window
-	if p.win.IsVisible() {
+	if q.Parent != app.WindowMain {
+		parent = p.owner(q.Parent)
+	} else if p.win.IsVisible() {
 		parent = p.win // a sheet of it on macOS
 	}
-	r, err := mygo.Dialog.Message(mygo.MessageOptions{
+	options := mygo.MessageOptions{
 		Parent:        parent,
 		Type:          mygo.MessageQuestion,
 		Title:         q.Title,
@@ -87,11 +102,15 @@ func (p *platform) Confirm(q app.Confirmation) bool {
 		Buttons:       []string{q.OK, q.Cancel},
 		DefaultButton: 0,
 		CancelButton:  1,
-	})
+	}
+	if q.RequireExplicit {
+		options.Type, options.DefaultButton = mygo.MessageWarning, 1
+	}
+	r, err := mygo.Dialog.Message(options)
 	if err != nil {
 		// No message box: go ahead, rather than never let the app quit.
 		log.Println("confirm:", err)
-		return true
+		return !q.RequireExplicit
 	}
 	return r.Button == 0
 }

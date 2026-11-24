@@ -196,17 +196,27 @@ func (a *App) keepGatewaySecret(h *config.Host, pw string, remember, unread bool
 
 // hostKinds are the kinds the editor offers, with their labels.
 func hostKinds() ([]config.HostKind, []string) {
-	return []config.HostKind{config.KindSSH, config.KindRDP}, []string{locales.KindSSH(), locales.KindRDP()}
+	return []config.HostKind{config.KindSSH, config.KindRDP, config.KindTelnet, config.KindSerial},
+		[]string{locales.KindSSH(), locales.KindRDP(), locales.TelnetKind(), locales.SerialKind()}
 }
 
 // setKind switches the editor to the pages of kind k, with its default
 // port while the port is empty or the other kind's.
 func (ed *connEditor) setKind(k config.HostKind) {
+	if ed.kind != k && (ed.kind == config.KindTelnet || k == config.KindTelnet) {
+		ed.password, ed.passphrase, ed.readingSecret = "", "", false
+		if k == config.KindTelnet {
+			ed.remember = true
+		}
+	}
 	old := (&config.Host{Kind: ed.kind}).DefaultPort()
 	if p := strings.TrimSpace(ed.port); p == "" || p == strconv.Itoa(old) {
 		ed.port = strconv.Itoa((&config.Host{Kind: k}).DefaultPort())
 	}
 	ed.kind = k
+	if k == config.KindSerial && !ed.serial.listed {
+		ed.serial.refresh(ed.serial.list)
+	}
 }
 
 // kindField is the type choice at the top of the first page.

@@ -141,6 +141,7 @@ func (a *App) leftPanelHeader(c *ui.Context) {
 			a.setLeftPage(page)
 		}
 		ui.Spacer(c)
+		a.alertButton(c)
 		if a.managerButton(c).Clicked() {
 			a.showManager(false) // the manager alone: its Import stays in front
 		}
@@ -229,7 +230,15 @@ func (a *App) connectionPage(c *ui.Context) {
 			a.connectFound(m)
 		}
 		kind := int(m.kind)
-		leftPageSwitch(c, &kind, kindFilterLabels(true)...).Label(locales.FieldHostKind()).Margin(0, 2)
+		labels := kindFilterLabels(true)
+		if slices.ContainsFunc(a.hosts.Live(), func(h *config.Host) bool { return h.Kind == config.KindTelnet || h.Kind == config.KindSerial }) {
+			value := labels[min(max(kind, 0), len(labels)-1)]
+			if ui.Select(c, &value, labels).Label(locales.FieldHostKind()).FillWidth().Margin(0, 2).Changed() {
+				kind = slices.Index(labels, value)
+			}
+		} else {
+			leftPageSwitch(c, &kind, labels[:kindsTelnet]...).Label(locales.FieldHostKind()).Margin(0, 2)
+		}
 		if kindFilter(kind) != m.kind {
 			m.kind = kindFilter(kind)
 			a.searchChanged(m)

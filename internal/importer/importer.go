@@ -317,6 +317,12 @@ func compareFold(a, b string) int { return strings.Compare(strings.ToLower(a), s
 // SameTarget tells whether a and b reach the same account: the same
 // address, regardless of case, port and user.
 func SameTarget(a, b *config.Host) bool {
+	if a.Kind != b.Kind {
+		return false
+	}
+	if a.Kind == config.KindSerial && (strings.HasPrefix(a.Addr, "/") || strings.HasPrefix(b.Addr, "/")) {
+		return a.Addr == b.Addr
+	}
 	return strings.EqualFold(strings.TrimSpace(a.Addr), strings.TrimSpace(b.Addr)) &&
 		a.PortOr22() == b.PortOr22() && a.User == b.User
 }

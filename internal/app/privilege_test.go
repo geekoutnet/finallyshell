@@ -59,7 +59,8 @@ func TestPrivilegeMemoryPassword(t *testing.T) {
 	clickButton(t, dialog, locales.PrivRun())
 	nextMemoryRequest(t, p, requests, "cat /proc/meminfo").reply <- memoryReply{stdout: strings.Replace(memoryBefore, "184320 kB", "606208 kB", 1)}
 	p.until(t, "result and saved credential", func() bool {
-		return tt.HasText(locales.MemoryAvailableChange("180 MB", "592 MB")) && len(p.secrets()) == 1
+		key := privilegeSecretKey(session.Host, session.Host.User)
+		return tt.HasText(locales.MemoryAvailableChange("180 MB", "592 MB")) && p.secrets()[key] == "sudo\n"+secret
 	})
 	if len(commands) != 2 || strings.Contains((<-commands).Command, secret) || strings.Contains((<-commands).Command, secret) {
 		t.Fatal("unexpected action calls or password in argv")

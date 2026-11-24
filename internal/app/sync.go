@@ -234,8 +234,11 @@ func backupPayload(hosts *config.Store, settings config.Settings, quick *config.
 func (a *App) syncSecretKeys() []string {
 	var keys []string
 	for _, h := range a.hosts.Hosts {
-		if h.RemembersPassword() && !h.Deleted() {
+		if !h.Deleted() {
 			for _, name := range hostSecretNames {
+				if name == secretTOTP && h.IsRDP() || name != secretTOTP && !h.RemembersPassword() {
+					continue
+				}
 				keys = append(keys, hostSecretKey(h.ID, name))
 			}
 		}
@@ -591,12 +594,19 @@ func sameList(x, y []json.RawMessage) bool {
 // sync is kept, and synced next; one saved after the job comes after it
 // in the queue, and wins too.
 func (a *App) applySyncedSecrets(before, after map[string]string) {
+	allowed := make(map[string]bool)
+	for _, key := range a.syncSecretKeys() {
+		allowed[key] = true
+	}
 	type change struct {
 		key, from, to string
 		hadFrom, del  bool
 	}
 	var changes []change
 	for k, v := range after {
+		if !allowed[k] {
+			continue
+		}
 		if from, had := before[k]; !had || from != v {
 			changes = append(changes, change{key: k, from: from, hadFrom: had, to: v})
 		}
@@ -639,6 +649,9 @@ func (a *App) applySyncedSecrets(before, after map[string]string) {
 		a.post(func() {
 			a.noteStore(storeErr)
 			for _, ch := range applied {
+				if id, ok := totpIDFromKey(ch.key); ok {
+					delete(a.totpStatus, id)
+				}
 				a.rememberSynced(ch.key, ch.from, ch.hadFrom, ch.to, !ch.del)
 			}
 			if kept || storeErr != nil {

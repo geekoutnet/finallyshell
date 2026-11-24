@@ -46,6 +46,9 @@ func connSecretNeeds(h *config.Host) []*secretNeed {
 	if h.IsRDP() {
 		return rdpSecrets(h)
 	}
+	if h.Kind == config.KindTelnet || h.Kind == config.KindSerial {
+		return nil
+	}
 	var needs []*secretNeed
 	if h.Auth != config.AuthAgent {
 		needs = append(needs, loginNeed(h, h))
@@ -95,6 +98,22 @@ func (a *App) connInfoFields(h *config.Host, reading bool) []connField {
 	add(locales.ConnInfoFolder(), a.folderLabel(h.Folder))
 	if h.IsRDP() {
 		a.rdpConnInfoFields(h, add, secret)
+		add(locales.FieldNotes(), strings.TrimSpace(h.Notes))
+		return out
+	}
+	if h.Kind == config.KindTelnet || h.Kind == config.KindSerial {
+		add(locales.FieldHostKind(), kindLook(h).label)
+		if h.Kind == config.KindTelnet {
+			add(locales.FieldHost(), h.Addr)
+			add(locales.FieldPort(), strconv.Itoa(h.PortOr22()))
+			add(locales.FieldUser(), h.User)
+		} else {
+			add(locales.SerialDevice(), h.Addr)
+			if h.Serial != nil && h.Serial.Baud != 0 {
+				add(locales.SerialBaud(), strconv.Itoa(h.Serial.Baud))
+			}
+		}
+		add(locales.FieldEncoding(), termenc.Label(a.settings.HostEncoding(h)))
 		add(locales.FieldNotes(), strings.TrimSpace(h.Notes))
 		return out
 	}

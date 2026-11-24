@@ -2,6 +2,7 @@ package app
 
 import (
 	"path/filepath"
+	"runtime"
 	"slices"
 	"testing"
 
@@ -50,12 +51,15 @@ func TestImportMobaXterm(t *testing.T) {
 	p.until(t, "the file read", func() bool { return !a.imp.busy && a.imp.src != nil })
 	tt.Frame()
 	for _, s := range []string{"web-2", "old-box", "bastion", "app-1", "app-2", "pg-main", "bastion.example.com:2222", "db.example.com:5022",
-		"Production / Databases", locales.ImportPresent("web"), locales.ImportNoJumpHost(), locales.ImportNoProxy(), locales.ImportNeedsKey(),
+		"Production / Databases", locales.ImportPresent("web"), locales.ImportNoJumpHost(), locales.ImportNoProxy(),
 		locales.ImportPasswordsNote("MobaXterm"), locales.ChooseFile(), locales.ImportCount(6), locales.ImportProblems(2, 2),
-		locales.ProblemLine("MobaXterm.ini:20", locales.ProblemNotSSH()), locales.ProblemLine("MobaXterm.ini:35", locales.ProblemNoHost())} {
+		locales.ProblemLine("MobaXterm.ini:20", locales.TelnetUnsupportedImport()), locales.ProblemLine("MobaXterm.ini:35", locales.ProblemNoHost())} {
 		if !tt.HasText(s) {
 			t.Errorf("missing %q; texts %q", s, tt.Texts())
 		}
+	}
+	if runtime.GOOS != "windows" && !tt.HasText(locales.ImportNeedsKey()) {
+		t.Error("Windows key path should require choosing a local key")
 	}
 	saveShot(t, tt, "import-mobaxterm-en.png")
 	p.SetLocale("zh-Hans")

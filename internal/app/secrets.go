@@ -3,10 +3,12 @@ package app
 import (
 	"context"
 	"crypto/x509"
+	"encoding/json"
 	"errors"
 	"log"
 	"runtime"
 	"slices"
+	"strings"
 	"sync"
 
 	"finallyshell/internal/config"
@@ -45,12 +47,15 @@ const (
 	// the password of a Remote Desktop host's gateway, kept in memory
 	// under gatewaySecretKey (rdp.go)
 	secretGatewayPassword = "gateway-password"
+	secretTOTP            = "totp"
 )
 
 // hostSecretNames are the names of every secret a host may have:
 // deleting the host deletes them all. A new kind of secret adds its name
 // here.
-var hostSecretNames = []string{secretPassword, secretPassphrase, secretProxyPassword, secretGatewayPassword}
+var hostSecretNames = []string{secretPassword, secretPassphrase, secretProxyPassword, secretGatewayPassword, secretTOTP}
+
+const privilegeResetIndexKey = "app/lock/privilege-keys"
 
 // hostSecretKey is the key in the credential store of the secret called
 // name of the host id: "host/<id>/<name>", e.g. "host/h1/password".
@@ -59,6 +64,9 @@ func hostSecretKey(id, name string) string { return "host/" + id + "/" + name }
 // loginSecretKey is the key of what h logs in with: its password, or the
 // passphrase of its key.
 func loginSecretKey(h *config.Host) string {
+	if h.Kind == config.KindTelnet {
+		return hostSecretKey(h.ID, secretTelnetPassword)
+	}
 	if h.Auth == config.AuthKey {
 		return hostSecretKey(h.ID, secretPassphrase)
 	}
@@ -187,14 +195,52 @@ func (a *App) secret(key string, then func(value string, ok bool)) {
 // setSecret keeps value under key in the store, replacing what it had.
 // It returns at once.
 func (a *App) setSecret(key, value string) {
+	if a.lock.resetting || a.Locked() && a.quitApproved {
+		return
+	}
 	a.secrets.markRead(key)
 	if a.secretsUnavailable() {
 		return
 	}
 	a.secrets.queue.do(func() {
-		err := a.plat.SecretSet(key, value)
+		var err error
+		if isPrivilegeCredentialKey(key) {
+			err = a.trackPrivilegeCredential(key)
+		}
+		if err == nil {
+			err = a.plat.SecretSet(key, value)
+		}
 		a.post(func() { a.noteStore(err) })
 	})
+}
+
+func isPrivilegeCredentialKey(key string) bool {
+	return strings.HasPrefix(key, "host/") && strings.Contains(key, "/privilege/")
+}
+
+func (a *App) privilegeCredentialKeys() ([]string, error) {
+	value, ok, err := a.plat.SecretGet(privilegeResetIndexKey)
+	if err != nil || !ok {
+		return nil, err
+	}
+	var keys []string
+	if err := json.Unmarshal([]byte(value), &keys); err != nil {
+		return nil, err
+	}
+	return slices.DeleteFunc(keys, func(key string) bool { return !isPrivilegeCredentialKey(key) }), nil
+}
+
+func (a *App) trackPrivilegeCredential(key string) error {
+	keys, err := a.privilegeCredentialKeys()
+	if err != nil || slices.Contains(keys, key) {
+		return err
+	}
+	keys = append(keys, key)
+	data, err := json.Marshal(keys)
+	if err != nil {
+		return err
+	}
+	return a.plat.SecretSet(privilegeResetIndexKey, string(data))
 }
 
 // deleteSecret removes the secret of key from the store. It returns at
@@ -298,10 +344,21 @@ func (a *App) storedPassphrase(h *config.Host) func(ctx context.Context) string 
 // its proxy's password, with those saved, once they are read; for a new
 // host (nil) it only finds out whether there is a store.
 func (a *App) readEditorSecret(ed *connEditor, h *config.Host) {
-	if h != nil && h.Auth != config.AuthAgent {
+	if h != nil && h.Kind == config.KindTelnet {
+		if h.Telnet != nil && h.Telnet.AutoLogin {
+			ed.readingSecret = a.readSecret(telnetSecretNeed(h), func() {
+				if a.editor == ed && a.windowOpen(WindowEditor) && ed.kind == config.KindTelnet && ed.readingSecret {
+					ed.readingSecret = false
+					if ed.password == "" {
+						ed.password = a.passwords[telnetPasswordKey(h.ID)]
+					}
+				}
+			})
+		}
+	} else if h != nil && h.Kind != config.KindSerial && h.Auth != config.AuthAgent {
 		auth := h.Auth
 		ed.readingSecret = a.readSecret(loginNeed(h, h), func() {
-			if a.editor != ed || !ed.readingSecret {
+			if a.editor != ed || !a.windowOpen(WindowEditor) || !ed.readingSecret || ed.kind == config.KindTelnet || ed.kind == config.KindSerial {
 				return
 			}
 			ed.readingSecret = false
@@ -467,7 +524,7 @@ func (a *App) loggedIn(h *config.Host) {
 // it logs in, with "Remember password".
 func (a *App) loginFailed(s *Session, err error) {
 	h := s.Host
-	if h == nil || a.pwOpen || !slices.Contains(a.sessions, s) {
+	if h == nil || a.pwOpen || errors.Is(err, sshx.ErrVerificationCode) || !slices.Contains(a.sessions, s) {
 		return
 	}
 	need := a.refusedSecret(h, err)
@@ -525,6 +582,8 @@ func loginRefused(h *config.Host, err error) bool {
 // deleteHostSecrets deletes every secret the store keeps for the host
 // with the ID, as it is deleted for good (deleteHostForever).
 func (a *App) deleteHostSecrets(id string) {
+	a.forgetTelnetSecret(id)
+	delete(a.totpStatus, id)
 	for _, name := range hostSecretNames {
 		a.deleteSecret(hostSecretKey(id, name))
 	}
@@ -538,8 +597,15 @@ func (a *App) copyHostSecrets(from, to *config.Host) {
 	if !to.RemembersPassword() || a.secretsUnavailable() {
 		return
 	}
-	for _, name := range hostSecretNames {
+	names := hostSecretNames
+	if from.Kind == config.KindTelnet {
+		names = []string{secretTelnetPassword}
+	}
+	for _, name := range names {
 		src, dst := hostSecretKey(from.ID, name), hostSecretKey(to.ID, name)
+		if name == secretTOTP {
+			continue
+		}
 		a.secrets.queue.do(func() {
 			v, ok, err := a.plat.SecretGet(src)
 			if err == nil && ok {

@@ -199,6 +199,8 @@ func fullHost() *Host {
 		MonitorIfaces:      []string{"eth0", "wg0"},
 		ForwardAgent:       true,
 		X11Forward:         "trusted",
+		Telnet:             &TelnetConfig{AutoLogin: true, LoginPrompt: "user:", PasswordPrompt: "pass:", KeepAlive: true},
+		Serial:             &SerialConfig{Baud: 115200, DataBits: 7, Parity: "even", StopBits: 2, Flow: "rtscts", LocalEcho: true, LineEnding: "crlf"},
 		Kind:               KindRDP,
 		RDP:                fullRDP(),
 	}

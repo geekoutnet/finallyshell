@@ -14,6 +14,7 @@ behind each setting.
   - [Folders, deleted hosts and other fields](#folders-deleted-hosts-and-other-fields)
   - [Safety](#safety)
 - [settings.json](#settingsjson)
+- [db.json](#dbjson)
 - [Sync](#sync)
 - [Command history](#command-history)
 - [quickcommands.json](#quickcommandsjson)
@@ -37,6 +38,7 @@ instead.
 | `hosts.v1.json` | The original file, kept when a version 1 `hosts.json` is migrated. |
 | `hosts.json.broken-<date-time>` | A copy of a `hosts.json` that could not be read. |
 | `settings.json` | The options (see below). |
+| `db.json` | Local database connection profiles by SSH host ID; no credentials or query history. |
 | `log-paths/<host-hash>.json` | Up to 12 recently entered remote log paths per connection; local only. No log contents are stored here. Previous versions use the `.bak-YYYYMMDDHHMMSS` suffix. |
 | `known_hosts` | Host keys you have trusted. |
 | `background-<time>.<extension>` | The copy of the terminal background image. |
@@ -88,6 +90,20 @@ version 2.
   }]
 }
 ```
+
+### Telnet and serial fields
+
+- `kind` is absent for SSH, `telnet` for Telnet, or `serial` for a serial port.
+- Telnet uses `addr`, `port` (23 if unset), `user`, `termType`, `encoding`,
+  `backspace` and `delete`. The `telnet` object has `autoLogin`,
+  `loginPrompt`, `passwordPrompt` and `keepAlive`. Passwords are never
+  written to `hosts.json`; if remembered, the credential store uses
+  `host/<id>/telnet-password`, separate from SSH and excluded from sync.
+- Serial uses `addr` for the local device and has no network port. The
+  `serial` object has `baud`, `dataBits`, `parity` (`none`, `odd`, `even`),
+  `stopBits` (1 or 2, and 1.5 for 5 data bits on Windows), `flow`
+  (`none`, `rtscts`, `xonxoff`), `localEcho` and `lineEnding` (`cr`, `lf`,
+  `crlf`). `encoding`, `backspace` and `delete` are shared terminal fields.
 
 ### Tunnels
 
@@ -244,6 +260,35 @@ Details of each option are in [features.md](features.md): see
 - `terminalHighlight`: this device's optional object with `disabled`, `useCustom` and `rules`. Without `useCustom`, built-in rules apply. A custom rule has `pattern`, `regex`, `caseSensitive`, `color`, `bold`, `underline` and an optional `host` ID; an empty host applies to all hosts.
 - `terminalRecording`: this device's optional object with `automatic`, `text`, `folder` and `limitMiB`. Automatic recording and text logs default to off. The default folder is `recordings/` under the config directory, and the default rotation limit is 64 MiB per file (range 1–512 MiB).
 - `.cast` files and optional `.txt` companions are created in a host-specific subfolder. Their names start with the local date and time (`yyyy-mm-dd_HH-MM-SS`); extra parts get a numbered suffix. New parts never replace existing files. Terminal stream settings save a `settings.json.bak-<yyyymmddHHMMSS>` copy before replacing existing settings.
+
+### App lock settings
+
+- `lockEnabled`: enables the password gate on startup; absent means off.
+- `lockIdleMinutes`: `1`, `5`, `15`, `30`, or `60`; absent or `0` disables idle locking.
+- `lockOnMinimize`: locks when minimizing or hiding to the tray; absent means off.
+
+These settings stay on this device. Before changing them the app backs up
+an existing `settings.json` as `settings.json.bak-<yyyymmddHHMMSS>`.
+
+### Alert rules
+
+- `alertRules`: optional object keyed by SSH host ID. The empty key `""` holds defaults for all SSH hosts. A host's object replaces the defaults; `{}` disables all alerts for that host. In a rule object `unreachable` and `services` are booleans, `cpu`, `memory` and `disk` are percentage thresholds (0 disables the threshold), `cpuMinutes` is 1–60 (defaults to 1), and `loadPerCore` is a multiplier of the online CPU core count (0 disables it). This setting is local to the device and alert history is not written to disk.
+
+### Website and certificate files
+
+The Websites section adds no host or application settings. It reads Nginx configuration on the remote server, creates site files under `/etc/nginx/sites-available/` or `/etc/nginx/conf.d/`, and manages corresponding Debian links under `/etc/nginx/sites-enabled/`. Backups use the sibling name `<file>.bak-<YYYYMMDDHHMMSS>`. The app reads public certificates configured by Nginx and `/etc/letsencrypt/live/*/fullchain.pem`; it does not download private keys or cache configuration locally.
+
+## db.json
+
+This optional file maps SSH host IDs to arrays of Database tab connection
+profiles. Each profile stores `id`, `name`, `engine` (`mysql`, `postgres`
+or `redis`), `host`, `port`, `user`, `database` (or Redis index), `tls`
+(`disable`, `require` or `verify-full`), `remember` and `readOnly`. Missing
+boolean fields are false. Profiles are not synced and do not change
+`hosts.json` or `settings.json`. Unreadable data is not overwritten.
+Updates back up the previous file as `db.json.bak-<YYYYMMDDHHMMSS>` (UTC).
+Remembered passwords are system credentials under
+`database/<SSH host ID>/<profile ID>/password`.
 
 ## Sync
 
@@ -425,6 +470,10 @@ same entries, as they share `hosts.json`. The keys are:
 - `host/<host ID>/passphrase`: the private key passphrase;
 - `host/<host ID>/proxy-password`: the password of this host's SOCKS5 or
   HTTP proxy;
+- `host/<host ID>/totp`: the SSH two-factor secret and its algorithm,
+  digits and period. Nothing is stored in `hosts.json` or plaintext
+  backups. It only travels in encrypted sync when **Include passwords**
+  is enabled. Duplicating a host does not duplicate its TOTP secret;
 - `host/<host ID>/privilege/<endpoint hash>`: the method (`sudo` or `su`)
   and password selected in the privilege dialog. The endpoint hash scopes
   the entry to the SSH user, address and port as well as the saved host.
@@ -433,7 +482,12 @@ same entries, as they share `hosts.json`. The keys are:
   deleting the saved connection.
 - `sync/password`: the sync password (see [Sync](features.md#sync));
 - `sync/<service>/credential`: the token, password or secret access key of
-  the sync service (`gist`, `webdav` or `s3`).
+  the sync service (`gist`, `webdav` or `s3`);
+- `app/lock/verifier`: a randomly salted Argon2id verifier (3 passes,
+  64 MiB, 4 lanes). The lock password itself is never stored, and the
+  verifier never syncs. Reset can delete indexed privilege entries and
+  entries for current hosts; legacy privilege entries for removed hosts
+  or old endpoints may need to be removed from the system store manually.
 
 "Remember password" is a per-host setting for the login and proxy
 credentials. The privilege dialog has its own **Remember** checkbox.

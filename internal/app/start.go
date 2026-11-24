@@ -229,13 +229,24 @@ func (a *App) quickConnect(c *ui.Context, tab *Session, st *startState) {
 	var local bool // Local terminal clicked
 	ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
 		ui.Text(c, locales.QuickConnect()).FontSize(16).Bold().Grow(1)
-		search := ui.SearchField(c, &st.query).Placeholder(locales.SearchHosts()).Label(locales.SearchHosts()).Width(300).AutoFocus()
+		search := ui.SearchField(c, &st.query).Placeholder(locales.TelnetQuickConnect()).Label(locales.SearchHosts()).Width(350).MinWidth(0).Shrink(1).AutoFocus()
 		if search.Changed() {
 			rows = quickRows(quickHosts(a.hosts, st.query))
 			hostAt = hostRows(rows)
 			st.row = -1
 			if st.query != "" && len(hostAt) > 0 {
 				st.row = hostAt[0]
+			}
+		}
+		if search.Submitted() {
+			if h, matched := parseTelnetQuick(st.query); matched {
+				if h == nil {
+					c.Toast(locales.TelnetQuickInvalid())
+				} else {
+					st.query = ""
+					connect = h
+				}
+				return
 			}
 		}
 		if len(hostAt) == 0 {

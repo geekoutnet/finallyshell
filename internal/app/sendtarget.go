@@ -75,7 +75,7 @@ func (a *App) setTarget(m targetMode) {
 func (a *App) targetSessions() []*Session {
 	var out []*Session
 	for _, s := range a.sessions {
-		if !s.isNewTab() {
+		if !s.isNewTab() && !s.isDeviceSession() {
 			out = append(out, s)
 		}
 	}

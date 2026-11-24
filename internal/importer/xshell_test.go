@@ -75,7 +75,7 @@ func TestReadXshell(t *testing.T) {
 			t.Errorf("%s: kind %s, path %q", dir, src.Kind, src.Path)
 		}
 		// In folder order, then by name; the top level first.
-		want := []string{"|legacy", "|web-1", "Production|bastion", "Production / Databases|pg-main", "实验室|树莓派"}
+		want := []string{"|console", "|legacy", "|router", "|web-1", "Production|bastion", "Production / Databases|pg-main", "实验室|树莓派"}
 		if got := listing(src); !slices.Equal(got, want) {
 			t.Fatalf("entries %q, want %q", got, want)
 		}
@@ -112,8 +112,6 @@ func TestReadXshell(t *testing.T) {
 
 		problems := problemsOf(t, src)
 		want2 := map[string]Reason{
-			"router.xsh":  NotSSH,
-			"console.xsh": NotSSH,
 			"no-host.xsh": NoHost,
 			"deploy.xsh":  Broken,
 		}
@@ -121,7 +119,7 @@ func TestReadXshell(t *testing.T) {
 			t.Errorf("problems %v, want %v", problems, want2)
 		}
 		// Those that failed first.
-		if len(src.Problems) != 4 || !src.Problems[0].Reason.Failed() || !src.Problems[1].Reason.Failed() || src.Problems[2].Reason.Failed() {
+		if len(src.Problems) != 2 || !src.Problems[0].Reason.Failed() || !src.Problems[1].Reason.Failed() {
 			t.Errorf("problems %+v", src.Problems)
 		}
 		noSecrets(t, src)

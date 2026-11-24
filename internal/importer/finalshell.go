@@ -188,6 +188,13 @@ type fsConn struct {
 	Port        json.RawMessage `json:"port"`
 	UserName    json.RawMessage `json:"user_name"`
 	Type        json.RawMessage `json:"conection_type"`
+	Protocol    json.RawMessage `json:"protocol"`
+	SerialPort  json.RawMessage `json:"serial_port"`
+	Baud        json.RawMessage `json:"baud_rate"`
+	DataBits    json.RawMessage `json:"data_bits"`
+	Parity      json.RawMessage `json:"parity"`
+	StopBits    json.RawMessage `json:"stop_bits"`
+	Flow        json.RawMessage `json:"flow_control"`
 	Auth        json.RawMessage `json:"authentication_type"`
 	SecretKeyID json.RawMessage `json:"secret_key_id"`
 	ParentID    json.RawMessage `json:"parent_id"`
@@ -371,11 +378,28 @@ func (r *fsReader) add(c *fsConn) {
 		bad(DeletedThere)
 		return
 	}
-	if t, ok := numberOK(c.Type); ok && t != 100 {
+	kind := config.KindSSH
+	protocol := strings.ToLower(text(c.Protocol))
+	if protocol == "" {
+		protocol = strings.ToLower(text(c.Type))
+	}
+	switch protocol {
+	case "telnet":
+		kind = config.KindTelnet
+	case "serial":
+		kind = config.KindSerial
+	case "", "100", "ssh", "ssh2":
+	default:
 		bad(NotSSH)
 		return
 	}
 	addr := text(c.Host)
+	if kind == config.KindSerial {
+		if device := text(c.SerialPort); device != "" {
+			addr = device
+		}
+		addr = serialPortName(addr)
+	}
 	if addr == "" {
 		bad(NoHost)
 		return
@@ -386,12 +410,16 @@ func (r *fsReader) add(c *fsConn) {
 		User:  text(c.UserName),
 		Auth:  config.AuthPassword,
 		Notes: strings.TrimSpace(textRaw(c.Description)),
+		Kind:  kind,
 	}
-	if p := number(c.Port); p > 0 && p <= 65535 && p != 22 {
-		h.Port = int(p)
+	if kind == config.KindSerial {
+		h.User = ""
+		h.Serial = serialSettings(text(c.Baud), text(c.DataBits), text(c.Parity), text(c.StopBits), text(c.Flow))
+	} else if port := number(c.Port); port > 0 && port <= 65535 {
+		devicePort(h, int(port))
 	}
 	// 2 is a key; with no type, or one this does not know, a key's id is.
-	if auth := number(c.Auth); auth == 2 || auth != 1 && text(c.SecretKeyID) != "" {
+	if auth := number(c.Auth); h.IsSSH() && (auth == 2 || auth != 1 && text(c.SecretKeyID) != "") {
 		h.Auth = config.AuthKey
 	}
 	if on, ok := boolean(c.ExecChannel); ok && !on {

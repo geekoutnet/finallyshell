@@ -120,6 +120,7 @@ var (
 		"noCommandBar", "noCommandBarPaths", "noCommandBarHistory", "noCommandBarCommands", "noServerHistory",
 	}
 	localSettings = []string{
+		"lockEnabled", "lockIdleMinutes", "lockOnMinimize",
 		"sidebarWidth", "monitorPercent", "terminalPercent", "treeWidth",
 		"procListPercent", "procFieldsPercent", "netListPercent",
 		"monitorHidden", // what this device's monitor shows, as the pane sizes
@@ -135,6 +136,7 @@ var (
 		"x11Display",
 		"downloadDir", "askDownloadDir",
 		"terminalHighlight", "terminalRecording",
+		"alertRules", // the alerts this device shows, while it runs
 		"sync",
 		// Agreeing to download the location data, or to send the
 		// server's peers to an online service, is each device's own:

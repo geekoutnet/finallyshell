@@ -12,7 +12,9 @@ type Confirmation struct {
 	Title, Message, Detail string
 	// OK is the button that goes ahead, Cancel the one that does not, which
 	// Escape and closing the box answer too.
-	OK, Cancel string
+	OK, Cancel      string
+	RequireExplicit bool
+	Parent          WindowKind
 }
 
 // The main window's close button and quitting, as the General options say:
@@ -35,6 +37,7 @@ func (a *App) CloseRequested() bool {
 		return true // the quit closes the windows
 	}
 	if a.settings.MinimizeToTray && a.plat.HideToTray() {
+		a.WindowMinimized()
 		a.closeWindows()
 		return false
 	}
@@ -51,6 +54,30 @@ func (a *App) CloseRequested() bool {
 func (a *App) QuitRequested() bool {
 	if a.quitApproved {
 		return true
+	}
+	if a.Locked() {
+		if a.lock.busy || a.lock.confirming {
+			return false
+		}
+		if a.liveSessions() == 0 && a.unsavedFiles() == 0 {
+			a.quitApproved = true
+			return true
+		}
+		if !a.askingQuit {
+			a.askingQuit = true
+			q := Confirmation{Title: locales.AppTitle(), Message: locales.ConfirmQuitTitle(), Detail: locales.LockQuitDetail(), OK: locales.ConfirmQuitOK(), Cancel: locales.Cancel(), RequireExplicit: true}
+			go func() {
+				yes := a.plat.Confirm(q)
+				a.post(func() {
+					a.askingQuit = false
+					if yes && !a.lock.busy && !a.lock.confirming {
+						a.quitApproved = true
+						a.plat.Quit()
+					}
+				})
+			}()
+		}
+		return false
 	}
 	n, unsaved := a.liveSessions(), a.unsavedFiles()
 	if n == 0 && unsaved == 0 || a.settings.NoConfirmClose && unsaved == 0 {

@@ -38,8 +38,8 @@ func TestImportSecureCRT(t *testing.T) {
 	for _, s := range []string{"web-1", "bastion", "db-1", "legacy", "树莓派", "bastion.example.com:2222", "db.example.com:5522",
 		"203.0.113.5:23", "Production / Databases", filepath.Join(sample, "Sessions"),
 		locales.ImportPasswordsNote("SecureCRT"), locales.ImportNoJumpHost(), locales.ImportNoProxy(), locales.ImportNeedsKey(),
-		locales.ImportChosen(7, 7), locales.ImportCount(7), locales.ImportProblems(2, 2),
-		locales.ProblemLine("broken.ini", locales.ProblemBroken()), locales.ProblemLine("Lab/router.ini", locales.ProblemNotSSH())} {
+		locales.ImportChosen(9, 9), locales.ImportCount(9), locales.ImportProblems(2, 0),
+		locales.ProblemLine("broken.ini", locales.ProblemBroken())} {
 		if !tt.HasText(s) {
 			t.Errorf("missing %q; texts %q", s, tt.Texts())
 		}
@@ -61,7 +61,7 @@ func TestImportSecureCRT(t *testing.T) {
 	p.SetLocale("")
 	tt.Frame()
 
-	if err := tt.Click(locales.ImportCount(7)); err != nil {
+	if err := tt.Click(locales.ImportCount(9)); err != nil {
 		t.Fatalf("%v; texts %q", err, tt.Texts())
 	}
 	byName := map[string]*config.Host{}
@@ -77,7 +77,7 @@ func TestImportSecureCRT(t *testing.T) {
 	manager := p.show(t, WindowManager)
 	manager.Frame()
 	// legacy's key is SecureCRT's own: it is chosen after importing.
-	if want := locales.ImportResult(7, 2, 2) + " " + locales.ImportKeysNote(1); !manager.HasText(want) {
+	if want := locales.ImportResult(9, 0, 2) + " " + locales.ImportKeysNote(1); !manager.HasText(want) {
 		t.Errorf("no %q; texts %q", want, manager.Texts())
 	}
 }

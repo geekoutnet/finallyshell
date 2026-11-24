@@ -53,6 +53,7 @@ supported. [configuration.md](configuration.md) covers the files on disk;
   - [IP locations](#ip-locations)
   - [Trace route](#trace-route)
 - [Run on many hosts](#run-on-many-hosts)
+- [Database tab](#database-tab)
 - [Commands tab](#commands-tab)
   - [Command editor](#command-editor)
 - [Options window](#options-window)
@@ -64,6 +65,7 @@ supported. [configuration.md](configuration.md) covers the files on disk;
   - [Terminal › Command bar](#terminal--command-bar)
   - [Network monitor](#network-monitor)
   - [Sync](#sync)
+- [App lock](#app-lock)
 - [Keyboard shortcuts](#keyboard-shortcuts)
 - [Layout and split dividers](#layout-and-split-dividers)
 - [Language](#language)
@@ -631,6 +633,10 @@ LiteShell, MeatShell, OpenFinalShell), summarized in the comments of
 ignored, missing ones get defaults (port 22, password authentication), and
 a port written as a string is accepted.
 
+Telnet and serial entries are recognized when the file explicitly names
+the protocol in `protocol` or `conection_type`. Unknown numeric type codes
+are not inferred from the port. Serial settings are used when present.
+
 ### From Xshell
 
 Xshell keeps each session in a file of its own, `<name>.xsh`, in its
@@ -653,8 +659,10 @@ import an `.xts` file, choose the folder that holds it.
 
 Fields that are imported: the name (the file's, without `.xsh`), host,
 port, user, notes (the session's Description), folder and authentication
-method. Only SSH sessions are imported; Telnet, Rlogin, serial and other
-sessions are skipped.
+method. SSH, Telnet and serial sessions are imported; Rlogin and other
+unsupported sessions are skipped. Telnet also carries over the terminal
+type and literal login prompts. For serial sessions, verify the device
+name and settings after import; unrecognized settings use defaults.
 
 - Passwords are not imported. Xshell stores them encrypted in the session
   file; Finallyshell does not decrypt them and does not read that field.
@@ -694,9 +702,10 @@ folder's sessions: neither is a session. At most 10,000 session files
 are read; the first one past that is listed as failed.
 
 Fields that are imported: name (the file name without `.ini`), host,
-port, user, notes (the session's description) and folder. SSH2 and SSH1
-sessions are imported; Telnet, Serial, RLogin, RDP and other sessions
-count as skipped.
+port, user, notes (the session's description) and folder. SSH2, SSH1,
+Telnet and serial sessions are imported; RLogin, RDP and other sessions
+count as skipped. Serial imports carry over the COM port or device name
+and recognized line settings.
 
 - Passwords are not imported. SecureCRT stores them encrypted in the
   session files; Finallyshell does not decrypt them and does not read
@@ -735,8 +744,9 @@ sessions from this folder" write a `.mxtsessions` file, and "Save session
 to file" a `.moba` file of one session. Files saved on Chinese Windows
 (GBK) are read too.
 
-Only SSH sessions are imported; RDP, VNC, SFTP, Telnet and the others are
-skipped. Fields that are imported: name, host, port, user (none for
+SSH, Telnet and serial sessions are imported; RDP, VNC, SFTP and other
+unsupported sessions are skipped. Serial imports include the COM port
+and recognized line settings. Fields that are imported: name, host, port, user (none for
 MobaXterm's `<default>`), the comment as the notes, the folder (the
 session folders, nested as in MobaXterm; a folder exported on its own is
 a folder of its name), and the private key file, as the host's key file
@@ -888,15 +898,30 @@ on the left and OK and Cancel at the bottom.
   Passphrase.
 - "Remember password" ("Remember passphrase" for a private key), on by
   default.
+- **Two-factor (TOTP)**: paste a Base32 secret or an `otpauth://totp/` URI.
+  Plain secrets use six digits, a 30-second period and SHA-1. URIs can
+  also specify eight digits, a different period, and SHA-256 or SHA-512.
+  Save or remove the secret with confirmation; leave the field blank to
+  keep an existing secret. It is stored separately from the login password.
 - "Enable exec channel (server monitor)".
 
 Errors are shown under the field they belong to.
 
+When an SSH keyboard-interactive challenge asks for a verification code,
+the client uses the host's saved TOTP, waiting for the next code if the
+current one has three seconds or less left. Password questions still take
+the login password. Without a saved TOTP, interactive connections show the
+server's prompt and let you enter the code manually. In the Connections
+page or Connection Manager, right-click an SSH host and choose **Copy
+current code**. The menu or copy notice shows the remaining validity;
+the code itself goes only to the clipboard. Clipboard history is managed
+by your operating system.
+
 With **SSH agent**, the host logs in with the keys an SSH agent holds
 (Bitwarden, 1Password, KeePassXC, OpenSSH's `ssh-agent`, the Windows
 OpenSSH agent service), so no key file is needed. Only the user is asked:
-the key file, passphrase, password and "Remember" fields are hidden, and
-nothing is kept in the credential store. The line "SSH agent: Uses the
+the key file, passphrase, password and "Remember" fields are hidden. The
+optional TOTP field is still available. The line "SSH agent: Uses the
 address in Options › General" has a **Check** button, which lists the
 agent's keys (type, SHA256 fingerprint, comment) without logging in;
 listing asks the agent for no approval. Connecting tries the agent's keys
@@ -912,6 +937,42 @@ settings" button that opens Options › General: no agent at the address
 keys, the server refused every key in the agent, or the agent did not
 sign (the user denied it). No password prompt opens. Agent forwarding
 (`ssh -A`) is not supported.
+
+### Telnet connection
+
+Choose **Telnet** in the connection editor, enter a host and port (23 by
+default), and optionally turn on the 30-second keepalive. To connect
+without saving a host, enter `telnet://host[:port]` in Quick Connect and
+press Enter; wrap IPv6 addresses in brackets. Do not put credentials in
+the URL. The Terminal page sets the advertised terminal type, character
+encoding and Backspace/Delete behavior; resizing updates the server when
+it supports window-size negotiation.
+
+Automatic login is off by default, including for imported hosts. The
+Authentication page uses case-insensitive `login:` or `username:` and
+`password:` prompts by default; you can supply regular expressions. A
+password is sent only after the username prompt has matched and you have
+confirmed the clear-text warning. Remembered passwords go only to the
+system credential store and are not synced. Leave the password blank to
+enter it manually. **Telnet is not encrypted**: use it only on a trusted
+network, and do not reuse your SSH password. Telnet connects directly;
+it has no proxy or SSH management features.
+
+### Serial connection
+
+Choose **Serial** in the connection editor. Select or refresh detected
+ports, or enter a local device manually (`COM4`, `/dev/ttyUSB0`, or
+`/dev/cu.usbserial-…`). On Windows, Linux and macOS the app opens the port
+directly with your account's permissions; it does not elevate access.
+
+Choose a common baud rate or enter a custom one, and set data bits,
+parity, stop bits and flow control (none, RTS/CTS or XON/XOFF). Defaults
+are 9600 baud, 8 data bits, no parity, one stop bit and no flow control.
+Set CR, LF or CRLF for outgoing line endings. Local echo is off by
+default; leave it off when entering passwords on a device. The Terminal
+page sets character encoding and Backspace/Delete behavior. If the device
+is unplugged, plug it back in and choose **Reconnect**. Serial sessions
+have no SSH management features.
 
 <a id="terminal-page"></a>
 
@@ -1656,6 +1717,36 @@ The transfer then ends as done, with a warning line such as "2 links were
 not created: they point outside the folder"; its tooltip lists the links.
 "Retry over SFTP" is not offered for it.
 
+### Send to another server
+
+Select files or folders in the file panel and choose **Send to another
+server…**. The toolbar button also accepts a drag onto a connected SSH
+session. Connected servers appear first; selecting a saved server opens
+it using the usual credential and host-key prompts. Browse the destination
+with SFTP or enter an absolute path, then review the files and the destination
+before starting.
+
+**Automatic** first tries non-interactive public-key SSH from the source to
+the destination, requiring a host key already trusted on the source. When
+that probe fails, the app streams between the two SFTP connections without
+writing to local disk. You can force either mode. Direct transfer streams
+tar; the app never sends the destination password or key to the source.
+
+Choose once whether to skip conflicts, rename incoming items, or replace whole
+items after making a `.bak-YYYYMMDDhhmmss` backup (UTC). Folders are not merged.
+Files and directories are staged on the destination and checked by size
+before publishing. Permissions and modification times are preserved, but
+ownership, symbolic links, special files and privileged mode bits are not
+copied. Names that can be interpreted differently across SFTP servers,
+such as names containing backslashes or colons, are rejected. Transfers
+run with the existing SSH accounts, without elevation.
+
+The Transfers tab shows a single source → destination job, with bytes,
+file counts, speed, estimated time and a cancel button. A canceled or
+failed job does not resume. Canceling during publication does not undo items
+already published; a lost connection may leave a staging folder, whose path
+is reported if cleanup fails.
+
 ### Transfers tab
 
 The "Transfers" tab at the bottom right shows progress, speed, time left
@@ -1847,6 +1938,13 @@ The System tab of the bottom panel manages the connected server itself: a row at
 - **Updates** shows the OS, kernel, latest available package versions, security updates and reboot requirements when supported. Refresh indexes or upgrade all, security or selected packages on APT, DNF and YUM. Zypper, APK and Pacman show the locally available index read-only. Package operations stream output and cannot be canceled from the app once confirmed; keep SSH connected until they finish. Confirming **Reboot server** schedules a restart in one minute.
 - **Security** groups recent SSH failures by source IP, username or day, and lists successful logins, present and past sessions, recent sudo users, and selected effective SSH settings. IP locations use the existing lookup settings. Fail2ban lists active jails and their banned IPs, supports confirmed bans and unbans, and does not ban the current SSH source.
 - **Firewall** shows UFW numbered rules, Firewalld zones and listening ports. It protects the configured SSH port, the actual connection port and other SSH ports it can verify. UFW adds a source-specific SSH allow rule before enabling; unknown or potentially unsafe rule changes are refused. Firewalld changes only the chosen port or service in the live and persistent configurations, without reloading unrelated runtime rules. Rich rules, nftables and iptables are read-only. Existing firewall configuration files are backed up beside the originals before changes.
+
+### System tab › Sites and certificates
+
+- **Websites:** Inspect Nginx version, service state and master PID. The sortable list comes from `nginx -T`, including HTTP virtual hosts, listen options, TLS expiry, upstream or document root, and the configuration file and line. Apache and Caddy are detected but not managed. Use the row menu or **Site actions** for details, editing, and access or error logs under `/var/log`. On Debian-style layouts, you can enable or disable multiple sites with matching `sites-enabled` links without deleting their configurations.
+- **Configuration:** Create a static site or a reverse proxy to a port on `127.0.0.1`, optionally using existing TLS certificate and private-key paths. A new site goes in `sites-available` with a matching link or in `conf.d`. Changes require confirmation. An edit saves a sibling `.bak-YYYYMMDDHHMMSS` backup, refuses stale files, and reloads a running Nginx only after `nginx -t` succeeds. When the test fails, the previous file is put back at once and the editor shows your edits again, so the next start of Nginx never meets a broken file; if putting it back fails too, **Restore backup** does it by hand. Link and creation changes are rolled back on a failed test. Custom layouts, unsafe file ownership or permissions, and include patterns that would pick up a backup can prevent changes.
+- **Certificates:** View public certificates used by Nginx and Let's Encrypt `fullchain.pem` files, including the subject, SANs, issuer, public-key type and validity dates. Expiry turns yellow under 30 days and red under 7 days, including expired certificates. **Check domain** compares the certificate presented on port 443 from the SSH server with the certificate and trust result from this computer; the server-side probe does not verify trust.
+- **ACME:** Inspect Certbot lineages and common renewal timers or cron entries. `acme.sh` is detected only. Certbot renewal and its staging dry run both ask first because existing hooks may run. Issuing a certificate requires the Certbot Nginx plugin and asks before publishing names to an ACME CA and letting the plugin change Nginx. Supported Nginx configurations are backed up before running these tools. A canceled stream does not guarantee that the remote operation has been undone; refresh and inspect its state before retrying.
 
 ## Tunnels tab
 
@@ -2087,6 +2185,48 @@ The separate window can stay open beside the terminals.
   that a script will overwrite first. Cancelling or timing out closes the
   execution channel; it cannot undo changes or guarantee remote jobs stop.
 
+## Database tab
+
+Use **Database** on a connected SSH session to browse MySQL/MariaDB,
+PostgreSQL or Redis. The panel can be opened as a full-size tab. Each
+database connection uses the existing SSH session; it opens no local
+port and installs nothing remotely. **Find databases** suggests addresses
+from listening TCP sockets and Docker-published ports. Docker discovery
+can be retried through the shared root prompt when access is restricted.
+
+- Connections are saved per SSH host. The address is relative to the SSH
+  server (default `127.0.0.1`). If the database is on a different machine,
+  prefer TLS with certificate and name verification: SSH alone does not
+  encrypt the leg from the SSH server to the database. The password is
+  stored only in the system credential store when **Remember password**
+  is selected and authentication succeeds.
+- Choose a database, schema, table or view in the tree. Data loads 200
+  rows at a time. Sort by a column for repeatable pages, enter a WHERE
+  expression without the `WHERE` keyword, or right-click a cell to view
+  its full value. NULL is distinct from an empty string and binary values
+  display in hex. Structure shows columns, constraints and indexes, with
+  the CREATE statement (a reference reconstruction on PostgreSQL, not a
+  restorable dump). Table cells are not edited directly.
+- The SQL editor runs the selection or all statements, with a result for
+  each executed statement, elapsed time, and affected rows where available.
+  Query history holds the last 100 runs per open connection in memory only.
+  Query results are capped; export the displayed result or page to CSV or
+  JSON. JSON preserves NULL, while CSV uses an empty field. An existing
+  export requires confirmation and is backed up before replacement.
+- Redis uses cursor-based `SCAN`, not `KEYS`. Browse strings, hashes,
+  lists, sets, sorted sets and streams, and inspect TTL. Edit text strings
+  and hash fields without clearing expiration, or select multiple keys to
+  delete. The console runs one command per line; quote arguments with
+  spaces. Credential and connection-control commands are not supported.
+- **Read-only** is off by default. When on, only a conservative set of
+  read commands is accepted; SQL reads run in a read-only transaction.
+  Server-side routines may have side effects despite using read syntax.
+  Use a database account with read-only permissions for an independently
+  enforced boundary. Writes require confirmation, run in order, and stop
+  at the first error. Cancellation does not undo changes, and completed
+  statements may already be committed. Back up important data first and
+  never put passwords or private keys in the editor or console.
+
 ## Commands tab
 
 The "Commands" tab at the bottom right holds quick commands, as
@@ -2216,6 +2356,25 @@ lines in and send them, without saving them as a quick command first.
 
 Not supported: syntax highlighting, several editor tabs, variables in
 commands, and opening the editor in a window of its own.
+
+## Alerts
+
+In **Options › Alerts**, configure defaults for all SSH hosts or override
+them for individual hosts. Rules are off by default. They can alert on
+unreachable SSH endpoints during a connection attempt, unexpected SSH
+disconnects, CPU usage above a threshold for a continuous number of
+minutes, memory or monitored disk usage above a threshold, 1-minute load
+relative to the number of online CPU cores, and failed systemd services.
+Intentional disconnects do not raise alerts. Resource and service checks
+require a connected session with monitoring enabled. The systemd check runs
+separately, about once a minute, and is skipped on non-systemd hosts.
+
+An ongoing incident is reported once; even after recovery, a host and rule
+will not notify again within 15 minutes. Desktop notifications use the
+system notification service. If delivery fails, the app shows an in-app
+notice. The bell opens recent alerts with time, host, rule, observed value
+and acknowledgment state. Filter, sort or select several to acknowledge
+them together. Alerts and their history only run while the app is open.
 
 ## Options window
 
@@ -2584,6 +2743,28 @@ The **Sync log** tab shows the latest 100 sync events.
   Deleted and folder subtrees containing more than 10 live connections.
   Review versions, restore from the server copy, or approve the deletion.
   Automatic sync never confirms the deletion for you.
+
+## App lock
+
+App lock is off by default. In **Options › Security**, set a password
+to require it at startup. Use your current password to change or remove
+it. Choose **Off**, **1**, **5**, **15**, **30** or **60 minutes** of
+inactivity, and optionally lock whenever the main window is minimized
+or hidden to the tray. **Lock now** is available here, in the command
+palette and in the tray menu. The shortcut is `Ctrl+Alt+L` on Windows and
+Linux and `Command+Option+Shift+L` on macOS.
+
+While locked, the app replaces its window content with the lock screen.
+Connections and transfers already in progress keep running. Failed
+password attempts delay the next try by 1, 2, 4, 8, 16, then at most 30
+seconds. This is a privacy lock for the app, not a replacement for the
+operating system's screen lock.
+
+If you forget the password, **Reset lock…** asks you to confirm deleting
+the app's remembered credentials from this device. It removes the lock
+and quits, ending open connections and transfers and discarding unsaved
+edits. Saved connections, private key files and cloud backups are not
+changed. Reopen the app after reset to work without the lock.
 
 ## Keyboard shortcuts
 

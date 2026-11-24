@@ -11,6 +11,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
   - [文件夹、已删除的主机和其他字段](#文件夹已删除的主机和其他字段)
   - [安全](#安全)
 - [settings.json](#settingsjson)
+- [db.json](#dbjson)
 - [同步](#同步)
 - [命令历史](#命令历史)
 - [quickcommands.json](#quickcommandsjson)
@@ -30,6 +31,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `hosts.v1.json` | 迁移第 1 版的 `hosts.json` 时保留的原文件。 |
 | `hosts.json.broken-<日期-时间>` | 读不出来的 `hosts.json` 的副本。 |
 | `settings.json` | 选项（见下面）。 |
+| `db.json` | 按 SSH 主机 ID 保存的本机数据库连接配置，不含凭据和查询历史。 |
 | `log-paths/<连接哈希>.json` | 每个连接最近输入的最多 12 个远程日志路径，仅存本机，不保存日志内容。旧版本以 `.bak-YYYYMMDDHHMMSS` 为后缀。 |
 | `known_hosts` | 信任过的主机指纹。 |
 | `background-<时间>.<扩展名>` | 终端背景图片的副本。 |
@@ -75,6 +77,12 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
   }]
 }
 ```
+
+### Telnet 和串口字段
+
+- `kind` 缺省表示 SSH，`telnet` 表示 Telnet，`serial` 表示串口。
+- Telnet 使用 `addr`、`port`（缺省为 23）、`user`、`termType`、`encoding`、`backspace` 和 `delete`。`telnet` 对象包含 `autoLogin`、`loginPrompt`、`passwordPrompt` 和 `keepAlive`。密码不写入 `hosts.json`；记住的密码保存在系统凭据库的 `host/<id>/telnet-password`，与 SSH 凭据分开，不参与同步。
+- 串口以 `addr` 保存本机设备名，没有网络端口。`serial` 对象包含 `baud`、`dataBits`、`parity`（`none`、`odd`、`even`）、`stopBits`（1 或 2；Windows 上用 5 数据位时可选 1.5）、`flow`（`none`、`rtscts`、`xonxoff`）、`localEcho` 和 `lineEnding`（`cr`、`lf`、`crlf`）。字符编码和按键行为使用通用的 `encoding`、`backspace` 和 `delete` 字段。
 
 ### 隧道
 
@@ -198,6 +206,32 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - `terminalRecording`：本机可选设置对象，含 `automatic`、`text`、`folder` 和 `limitMiB`。自动录制和纯文本日志默认关闭。默认保存在配置目录下的 `recordings/`，单个文件默认 64 MiB 轮转，可设为 1–512 MiB。
 - `.cast` 和可选的 `.txt` 文件保存在对应主机的子目录中。文件名以本地日期和时间开头（`yyyy-mm-dd_HH-MM-SS`），后续分段加序号，不覆盖已有文件。保存终端数据流设置前会将现有设置备份为 `settings.json.bak-<yyyymmddHHMMSS>`。
 
+### 应用锁设置
+
+- `lockEnabled`：启动时要求输入应用锁密码；缺省为关闭。
+- `lockIdleMinutes`：`1`、`5`、`15`、`30` 或 `60`；缺省或 `0` 表示不按空闲时间锁定。
+- `lockOnMinimize`：最小化或隐藏到托盘时锁定；缺省为关闭。
+
+这些设置留在本机。更改前会把已有的 `settings.json` 备份为 `settings.json.bak-<年月日时分秒>`。
+
+### 告警规则
+
+- `alertRules`：可选对象，以 SSH 主机 ID 为键。空键 `""` 保存所有 SSH 主机的默认规则。按主机设置的对象整体覆盖默认规则；`{}` 会关闭该主机的全部告警。规则中的 `unreachable`、`services` 为开关；`cpu`、`memory`、`disk` 为百分比阈值，`0` 表示关闭；`cpuMinutes` 为 1–60 分钟（默认 1 分钟）；`loadPerCore` 是在线 CPU 核心数的倍数，`0` 表示关闭。该设置仅存于本机，告警历史不会写入磁盘。
+
+### 网站与证书文件
+
+“网站”模块不添加主机或应用设置项。它读取远程服务器的 Nginx 配置，在 `/etc/nginx/sites-available/` 或 `/etc/nginx/conf.d/` 下创建网站，并管理 Debian 风格布局中 `/etc/nginx/sites-enabled/` 下的对应链接。备份放在原目录，文件名为 `<file>.bak-<YYYYMMDDHHMMSS>`。客户端只读取 Nginx 配置所引用的公开证书及 `/etc/letsencrypt/live/*/fullchain.pem`，不会下载私钥或在本机缓存配置。
+
+## db.json
+
+此文件可以不存在，按 SSH 主机 ID 保存数据库页的连接配置列表。每条配置包含
+`id`、`name`、`engine`（`mysql`、`postgres` 或 `redis`）、`host`、`port`、
+`user`、`database`（或 Redis 库编号）、`tls`（`disable`、`require` 或
+`verify-full`）、`remember` 和 `readOnly`。未填写的布尔值默认为关闭。
+该文件不参与同步，不修改 `hosts.json` 或 `settings.json`，读取失败时不会覆盖。
+更新前将原文件备份为 `db.json.bak-<YYYYMMDDHHMMSS>`（协调世界时）。
+记住的密码以 `database/<SSH 主机 ID>/<配置 ID>/password` 为键存入系统凭据库。
+
 ## 同步
 
 选项里的“同步”页（见[同步](features.md#同步)）是 `settings.json` 的 `sync` 对象，从没设置过同步时没有这个键：
@@ -294,9 +328,11 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 - `host/<主机 ID>/password`：密码；
 - `host/<主机 ID>/passphrase`：私钥密码；
 - `host/<主机 ID>/proxy-password`：这台主机的 SOCKS5 或 HTTP 代理的密码；
+- `host/<主机 ID>/totp`：SSH 双因素认证密钥及其算法、位数和周期。不写入 `hosts.json` 或明文备份；只有开启 **包含密码** 才随加密同步传输。复制连接不会复制 TOTP 密钥；
 - `host/<主机 ID>/privilege/<端点哈希>`：提权弹窗中保存的方式（`sudo` 或 `su`）和密码。端点哈希由 SSH 用户名、地址和端口确定，与主机 ID 一起限定适用范围。它独立于登录的 **记住密码** 设置，不参与同步或备份；删除连接后仍可在系统凭据存储中手动移除。
 - `sync/password`：同步密码（见[同步](features.md#同步)）；
-- `sync/<服务>/credential`：同步服务（`gist`、`webdav` 或 `s3`）的令牌、密码或私有访问密钥。
+- `sync/<服务>/credential`：同步服务（`gist`、`webdav` 或 `s3`）的令牌、密码或私有访问密钥；
+- `app/lock/verifier`：带随机盐的 Argon2id 验证数据（3 次迭代、64 MiB、4 路并行）。不保存应用锁密码本身，验证数据也不参与同步。重置能删除已登记及当前主机的提权凭据；已移除主机或旧端点的历史提权凭据可能需要在系统凭据库手动删除。
 
 “记住密码”按主机设置，适用于登录和代理凭据。提权弹窗有独立的 **记住** 选项。
 

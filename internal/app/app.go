@@ -6,6 +6,9 @@
 package app
 
 import (
+	"context"
+	"io"
+	"net"
 	"slices"
 	"time"
 
@@ -137,8 +140,12 @@ type Platform interface {
 
 // App is the state of the window.
 type App struct {
-	plat     Platform
-	settings config.Settings
+	plat          Platform
+	settings      config.Settings
+	lock          appLock
+	totpCopies    map[WindowKind]totpClipboard
+	totpStatus    map[string]totpStatus
+	totpPromptSeq uint64
 
 	hosts     *config.Store     // deleted hosts included: lists show hosts.Live()
 	passwords map[string]string // by host ID: what the host logs in with, this run
@@ -166,6 +173,7 @@ type App struct {
 	terminalPct float32
 	treeWidth   float32
 	bottomTab   int // tabFiles, tabTransfers, …
+	db          dbWorkspace
 	termFont    terminal.Font
 	termTheme   *terminal.Theme
 	look        appearance // the rest of the terminal's look
@@ -194,6 +202,8 @@ type App struct {
 	saveSettings func(config.Settings) error
 
 	transfers transferQueue
+	relay     *relayDialog
+	alerts    alertsState
 
 	// The connection manager's window.
 	manager managerState
@@ -275,8 +285,11 @@ type App struct {
 
 	// Sync (sync.go), and how it makes its remote: syncRemote, which
 	// tests replace.
-	sync      syncState
-	newRemote func(config.SyncSettings, string) (cloudsync.Remote, error)
+	sync        syncState
+	newRemote   func(config.SyncSettings, string) (cloudsync.Remote, error)
+	telnetDial  func(context.Context, string, string) (net.Conn, error)
+	serialOpen  func(string, config.SerialConfig) (io.ReadWriteCloser, error)
+	serialPorts func() ([]string, error)
 
 	// The command bar's history of each host (commandbar_data.go).
 	history cmdHistories
@@ -324,6 +337,7 @@ func New(plat Platform) *App {
 	}
 	a.hosts, _ = config.LoadHosts()
 	a.settings = config.LoadSettings()
+	a.lock.locked = a.settings.LockEnabled
 	a.loadAppearance()
 	a.restoreLayout()
 	a.restoreLeftPanel()
@@ -345,6 +359,9 @@ func (a *App) View(c *ui.Context) {
 	defer a.stopUnseenPolls()
 	a.frame++
 	useTheme(c)
+	if a.lockGate(c, WindowMain) {
+		return
+	}
 	a.showNotices(c)
 	a.writePendingCopy(c)
 	a.shortcuts(c)
@@ -441,6 +458,7 @@ const (
 	tabOverview
 	tabDocker
 	tabSystem
+	tabDatabase
 )
 
 // bottomTab is a tab of the bottom panel: its label, and its page.
@@ -469,6 +487,7 @@ func (a *App) bottomTabs() []bottomTab {
 		tabOverview:  {locales.TabOverview(), a.overviewPanel},
 		tabDocker:    {locales.TabDocker(), a.dockerPanel},
 		tabSystem:    {locales.TabSystem(), a.serverPanel},
+		tabDatabase:  {locales.DbTab(), a.databasePanel},
 	}
 }
 
@@ -480,7 +499,11 @@ func (a *App) bottomPanel(c *ui.Context, tab *int) {
 	ui.Column(c).Fill().Background(theme.Background).Children(func() {
 		a.panelTabRow(c, tabs, tab, false)
 		if *tab >= 0 && *tab < len(tabs) {
-			tabs[*tab].page(c)
+			if s := a.connSession(); s.isDeviceSession() && *tab != tabCommands {
+				deviceUnavailable(c, s)
+			} else {
+				tabs[*tab].page(c)
+			}
 		}
 	})
 }
@@ -505,8 +528,15 @@ func (a *App) openSession(h *config.Host) { a.openSessionIn(a.selectedNewTab(), 
 // asks for those the store does not have either: h's own, then its
 // proxy's and jump hosts', one at a time.
 func (a *App) openSessionIn(tab *Session, h *config.Host) {
-	if h.IsRDP() { // the system's client, no session
+	switch h.Kind {
+	case config.KindRDP:
 		a.openRDP(h)
+		return
+	case config.KindTelnet:
+		a.withTelnetLogin(h, func(password string) { a.openDeviceSession(tab, h, password) })
+		return
+	case config.KindSerial:
+		a.openDeviceSession(tab, h, "")
 		return
 	}
 	if a.readChainSecrets(h, func() { a.openSessionIn(tab, h) }) {
@@ -537,6 +567,14 @@ func (a *App) reconnect(s *Session) {
 		a.connectLocal(s)
 		return
 	}
+	if s.Host.Kind == config.KindTelnet || s.Host.Kind == config.KindSerial {
+		a.reconnectDevice(s)
+		return
+	}
+	if s.Host.IsRDP() {
+		a.openRDP(s.Host)
+		return
+	}
 	// A jump host or a proxy with a password not known yet, as the host
 	// was edited to go through it, or one forgotten as it did not work.
 	if a.readChainSecrets(s.Host, func() { a.reconnect(s) }) {
@@ -548,6 +586,7 @@ func (a *App) reconnect(s *Session) {
 	}
 	s.disconnect()
 	a.connect(s, a.passwords[s.Host.ID])
+	a.syncAlertSessions()
 }
 
 // closeSession closes the row of s: its session, with its panel row, or
@@ -566,6 +605,7 @@ func (a *App) closeSession(s *Session) {
 		s.disconnect()
 	}
 	a.sessions = slices.Delete(a.sessions, i, i+1)
+	a.syncAlertSessions()
 	if a.active >= len(a.sessions) || a.active > i {
 		a.active--
 	}
@@ -578,6 +618,11 @@ func (a *App) closeSession(s *Session) {
 // secondary windows, and saves the pane sizes the user changed and the
 // command editor's text.
 func (a *App) CloseAll() {
+	a.stopAlerts()
+	if a.relay != nil {
+		a.closeRelay(a.relay)
+	}
+	a.stopIdleLock()
 	a.fe.discard = true // the editor's changes go with the app
 	a.closeWindows()
 	if a.layoutDirty {

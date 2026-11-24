@@ -247,7 +247,7 @@ func TestHostKindShots(t *testing.T) {
 			// pills keep inside it.
 			a.sideWidth = sidebarLimits.first
 			tt.Frame()
-			for _, s := range kindFilterLabels(true) {
+			for _, s := range kindFilterLabels(true)[:kindsTelnet] {
 				box, ok := tt.Find(s)
 				if !ok || box.W <= 0 || box.X+box.W > sidebarLimits.first {
 					t.Errorf("%q at %+v in a sidebar of %v", s, box, sidebarLimits.first)

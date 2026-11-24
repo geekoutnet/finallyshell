@@ -25,6 +25,10 @@ func (a *App) monitorPanel(c *ui.Context) {
 			localMonitor(c)
 			return
 		}
+		if s.isDeviceSession() {
+			deviceUnavailable(c, s)
+			return
+		}
 		a.serverView(c, s)
 	})
 }
@@ -260,6 +264,7 @@ func (a *App) sessionRow(c *ui.Context, s *Session, active bool) (closed bool) {
 		return a.panelRow(c, s, active)
 	}
 	row := ui.Row(c).Gap(8).Padding(5, 4, 5, 8).Radius(5)
+	a.relayDropZone(row, s)
 	hovered := row.Hovered()
 	if s.isNewTab() {
 		row.ContextMenu(func(m *ui.Menu) {
@@ -292,6 +297,7 @@ func (a *App) sessionRow(c *ui.Context, s *Session, active bool) (closed bool) {
 			a.transfers.cancelSession(s)
 			s.disconnect()
 			s.status, s.err = statusClosed, nil
+			a.syncAlertSessions()
 		}
 		if !s.isLocal() {
 			m.Separator()

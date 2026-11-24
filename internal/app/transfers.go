@@ -24,6 +24,7 @@ type direction int
 const (
 	upload direction = iota
 	download
+	serverRelay
 )
 
 type transferState int
@@ -43,6 +44,7 @@ const maxRunning = 3
 type transferJob struct {
 	id     int64
 	zmodem bool
+	relay  *relayJob
 	sess   *Session
 	sftp   *sftp.Client
 	dir    direction
@@ -106,7 +108,15 @@ func (q *transferQueue) active() int {
 
 func (q *transferQueue) cancelSession(s *Session) {
 	for _, t := range q.jobs {
-		if t.sess == s && !t.finished() {
+		if (t.sess == s || t.relay != nil && t.relay.target == s) && !t.finished() {
+			t.stop()
+		}
+	}
+}
+
+func (q *transferQueue) cancelRelaySession(s *Session) {
+	for _, t := range q.jobs {
+		if t.relay != nil && (t.sess == s || t.relay.target == s) && !t.finished() {
 			t.stop()
 		}
 	}
@@ -273,6 +283,7 @@ func (a *App) run(t *transferJob) {
 	ctx, cancel := context.WithCancel(context.Background())
 	t.cancel = cancel
 	var last time.Time
+	var finalRelay relayProgress
 	report := func(done int64, file string) {
 		if now := time.Now(); now.Sub(last) >= 150*time.Millisecond {
 			last = now
@@ -284,10 +295,29 @@ func (a *App) run(t *transferJob) {
 		}
 	}
 	go func() {
-		local, skipped, err := a.transfer(ctx, t, report)
+		var local string
+		var skipped remotefs.SkippedLinks
+		var err error
+		if t.relay == nil {
+			local, skipped, err = a.transfer(ctx, t, report)
+		} else {
+			err = t.relay.run(ctx, func(progress relayProgress) {
+				finalRelay = progress
+				if now := time.Now(); now.Sub(last) >= 150*time.Millisecond {
+					last = now
+					a.post(func() {
+						t.relayProgress(progress, now)
+						a.showTransfers()
+					})
+				}
+			})
+		}
 		a.post(func() {
 			cancel()
 			q.running--
+			if t.relay != nil && finalRelay.mode != relayAuto {
+				t.relayProgress(finalRelay, time.Now())
+			}
 			t.current = ""
 			if t.total < 0 { // an archive done before it was measured
 				t.total = t.done
@@ -297,11 +327,17 @@ func (a *App) run(t *transferJob) {
 				t.state, t.done, t.local, t.skipped = transferDone, t.total, local, skipped
 			case remotefs.IsCanceled(err):
 				t.state = transferCanceled
+				if t.relay != nil {
+					t.err = err
+				}
 			default:
 				t.state, t.err = transferFailed, err
 			}
 			if t.dir == upload {
 				a.refreshIfShowing(t.sess, t.dstDir)
+			}
+			if t.relay != nil {
+				a.refreshIfShowing(t.relay.target, t.dstDir)
 			}
 			a.pump()
 			a.showTransfers()
@@ -423,6 +459,9 @@ func (a *App) transferRow(c *ui.Context, t *transferJob) {
 	if t.zmodem {
 		row.ContextMenu(func(menu *ui.Menu) { a.zmodemTransferMenu(menu, t) })
 	}
+	if t.relay != nil {
+		a.relayTransferMenu(row, t)
+	}
 	row.Children(func() {
 		ic, dirLabel, dest := icons.Get("upload"), locales.UploadDirection(), t.sess.label()+":"+t.dstDir
 		if t.dir == download {
@@ -436,6 +475,9 @@ func (a *App) transferRow(c *ui.Context, t *transferJob) {
 			if dest == "" || t.dir == upload {
 				dest = t.sess.label()
 			}
+		}
+		if t.relay != nil {
+			ic, dirLabel, dest = relayTransferLabels(t)
 		}
 		ui.Icon(c, ic).FontSize(16).TextColor(theme.TextMuted)
 		ui.Column(c).Grow(1).MinWidth(0).Gap(3).Children(func() {
@@ -466,7 +508,14 @@ func (a *App) transferRow(c *ui.Context, t *transferJob) {
 			case transferCanceled:
 				widgets.Muted(c, locales.TransferCanceled()).FontSize(11.5)
 			case transferFailed:
-				ui.Text(c, locales.TransferFailed(transferErrorText(t.err))).FontSize(11.5).TextColor(theme.Danger).MaxLines(2)
+				text := transferErrorText(t.err)
+				if t.relay != nil {
+					text = relayErrorText(t.err)
+				}
+				ui.Text(c, locales.TransferFailed(text)).FontSize(11.5).TextColor(theme.Danger).MaxLines(2).Tooltip(text)
+			}
+			if t.relay != nil {
+				relayTransferDetail(c, t)
 			}
 		})
 		switch {
@@ -474,7 +523,7 @@ func (a *App) transferRow(c *ui.Context, t *transferJob) {
 			if widgets.IconButton(c, "x", locales.Cancel()).Clicked() {
 				a.cancelTransfer(t)
 			}
-		case !t.zmodem && (t.state == transferFailed || t.state == transferCanceled):
+		case t.relay == nil && !t.zmodem && (t.state == transferFailed || t.state == transferCanceled):
 			if a.canRetryOverSFTP(t) && smallButton(c, locales.RetryOverSftp()).Clicked() {
 				a.retryOverSFTP(t)
 			}

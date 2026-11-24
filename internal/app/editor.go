@@ -35,7 +35,7 @@ func editorSpec(editing bool) WindowSpec {
 	return WindowSpec{
 		Kind:  WindowEditor,
 		Title: title,
-		Width: 680, Height: 600,
+		Width: 680, Height: 700,
 		MinWidth: 600, MinHeight: 440,
 	}
 }
@@ -81,8 +81,10 @@ type connEditor struct {
 	nav widgets.NavState // the page shown
 	// kind is the host's kind, whose pages show: those of SSH, or of
 	// Remote Desktop, rdp (editor_rdp.go).
-	kind config.HostKind
-	rdp  rdpFields
+	kind   config.HostKind
+	rdp    rdpFields
+	telnet config.TelnetConfig
+	serial serialFields
 
 	name, addr, port, notes string
 	auth                    config.AuthKind
@@ -109,6 +111,9 @@ type connEditor struct {
 	readingSecret bool
 	// readingProxySecret is the same of its proxy's password.
 	readingProxySecret bool
+	totpText           string
+	totpChange         totpEditAction
+	totpBusy           bool
 
 	// agentCheck is what the SSH agent's Check found (agent.go).
 	agentCheck agentCheck
@@ -154,7 +159,11 @@ func (a *App) openEditor(h *config.Host, from WindowKind) {
 			ed.passphrase = a.passwords[h.ID]
 		default:
 			ed.auth = config.AuthPassword
-			ed.password = a.passwords[h.ID]
+			if h.Kind == config.KindTelnet {
+				ed.password = a.passwords[telnetPasswordKey(h.ID)]
+			} else if h.Kind != config.KindSerial {
+				ed.password = a.passwords[h.ID]
+			}
 		}
 		ed.remember = h.RemembersPassword()
 		ed.monitor = h.MonitorEnabled()
@@ -163,11 +172,26 @@ func (a *App) openEditor(h *config.Host, from WindowKind) {
 		ed.kind = h.Kind
 	}
 	ed.rdp = a.rdpFieldsOf(h)
+	ed.serial = a.serialFieldsOf(h)
+	if h != nil && h.Telnet != nil {
+		ed.telnet = *h.Telnet
+	}
 	ed.proxy = a.proxyFieldsOf(h)
 	ed.tunnels = newTunnelEditor(h)
 	a.editor = ed
 	a.readEditorSecret(ed, h)
+	if h != nil && !h.IsRDP() {
+		a.readTOTP(h.ID, nil)
+	}
 	spec := editorSpec(h != nil)
+	if ed.kind == config.KindRDP {
+		spec.Height = 600
+	}
+	spec.CloseRequested = func() bool { return !ed.totpBusy }
+	spec.Closed = func() {
+		ed.password, ed.passphrase = "", ""
+		ed.totpText = ""
+	}
 	if from == WindowManager && a.windowOpen(WindowManager) {
 		// A sheet of the manager on macOS, showing its title inside;
 		// on Linux GTK blocks the main window too while it is open, as
@@ -189,6 +213,10 @@ func validTermType(s string) bool {
 // those of the pages of the editor's kind.
 func (ed *connEditor) problems() map[editorField]string {
 	errs := map[editorField]string{}
+	if ed.kind == config.KindSerial {
+		ed.serialProblems(errs)
+		return errs
+	}
 	if strings.TrimSpace(ed.addr) == "" {
 		errs[fieldAddr] = locales.ErrHostRequired()
 	}
@@ -197,6 +225,10 @@ func (ed *connEditor) problems() map[editorField]string {
 	}
 	if ed.kind == config.KindRDP { // no user is the client asking for one
 		ed.rdpProblems(errs)
+		return errs
+	}
+	if ed.kind == config.KindTelnet {
+		ed.telnetProblems(errs)
 		return errs
 	}
 	if strings.TrimSpace(ed.user) == "" {
@@ -217,13 +249,20 @@ func (ed *connEditor) problems() map[editorField]string {
 // and keeps the editor open.
 func (a *App) saveEditor() {
 	ed := a.editor
+	if ed.totpBusy {
+		return
+	}
 	ed.checked = true
 	if errs := ed.problems(); len(errs) > 0 {
 		first, here := "", false
-		for _, f := range slices.Concat([]editorField{fieldAddr, fieldPort, fieldUser, fieldKeyPath, fieldTermType}, proxyFieldOrder, rdpFieldOrder) {
+		for _, f := range slices.Concat([]editorField{fieldAddr, fieldPort, fieldUser, fieldKeyPath, fieldTermType}, telnetFieldOrder, serialFieldOrder, proxyFieldOrder, rdpFieldOrder) {
 			if errs[f] != "" {
-				first = cmp.Or(first, f.page())
-				here = here || f.page() == ed.nav.Page
+				page := f.page()
+				if ed.kind == config.KindTelnet && (f == fieldUser || slices.Contains(telnetFieldOrder, f)) {
+					page = editorTelnetLogin
+				}
+				first = cmp.Or(first, page)
+				here = here || page == ed.nav.Page
 			}
 		}
 		if !here {
@@ -231,30 +270,50 @@ func (a *App) saveEditor() {
 		}
 		return
 	}
+	if ed.kind != config.KindRDP && (ed.totpText != "" || ed.totpChange == totpRemove) {
+		a.confirmTOTPEdit(ed)
+		return
+	}
+	a.saveEditorFields(ed, "")
+}
+
+func (a *App) saveEditorFields(ed *connEditor, newID string) bool {
 	var h *config.Host
 	if ed.id != "" {
 		// Deleted in the manager while the editor was open: not saved back.
 		if h = a.hosts.Host(ed.id); h == nil || h.Deleted() {
 			ed.saveErr = locales.ErrHostDeleted
-			return
+			return false
 		}
 	} else {
-		h = &config.Host{Folder: ed.folder, CreatedAt: time.Now()}
+		h = &config.Host{ID: newID, Folder: ed.folder, CreatedAt: time.Now()}
 		a.hosts.Add(h)
 		ed.id = h.ID
 	}
 	port, _ := strconv.Atoi(strings.TrimSpace(ed.port))
 	h.Name, h.Addr, h.Port, h.Notes = strings.TrimSpace(ed.name), strings.TrimSpace(ed.addr), port, ed.notes
 	wasRDP := h.IsRDP()
+	wasTelnet := h.Kind == config.KindTelnet
+	if !wasTelnet && ed.kind == config.KindTelnet {
+		a.keepLogin(h, "", false, false)
+	}
 	h.Kind = ed.kind
-	if ed.kind == config.KindRDP {
+	switch ed.kind {
+	case config.KindRDP:
 		h.ForwardAgent, h.X11Forward = false, ""
 		a.saveRDP(h, ed)
-	} else {
+	case config.KindTelnet:
+		a.saveTelnet(h, ed)
+	case config.KindSerial:
+		a.saveSerial(h, ed)
+	default:
 		a.saveSSH(h, ed)
-		if wasRDP {
-			a.keepGatewaySecret(h, "", false, false) // it has no gateway now
-		}
+	}
+	if wasRDP && !h.IsRDP() {
+		a.keepGatewaySecret(h, "", false, false)
+	}
+	if wasTelnet && h.Kind != config.KindTelnet {
+		a.forgetTelnetSecret(h.ID)
 	}
 	tree := ed.tree
 	if tree == nil {
@@ -265,10 +324,11 @@ func (a *App) saveEditor() {
 
 	if err := a.saveHosts(a.hosts); err != nil {
 		ed.saveErr = func() string { return locales.ErrSaveFailed(err.Error()) }
-		return
+		return false
 	}
 	ed.saveErr = nil
 	a.closeWindow(WindowEditor)
+	return true
 }
 
 // saveSSH saves the SSH pages into h: how it logs in, its terminal, its
@@ -355,8 +415,13 @@ func (a *App) editorView(c *ui.Context) {
 		{ID: editorProxy, Title: locales.EditorPageProxy, View: func(c *ui.Context) { a.proxyPage(c, ed, errs, input) }},
 		{ID: editorTunnels, Title: locales.EditorPageTunnels, View: func(c *ui.Context) { a.tunnelsPage(c, ed) }},
 	}
-	if ed.kind == config.KindRDP {
+	switch ed.kind {
+	case config.KindRDP:
 		pages = a.rdpPages(ed, errs, input)
+	case config.KindTelnet:
+		pages = a.telnetPages(ed, errs, input)
+	case config.KindSerial:
+		pages = a.serialPages(ed, errs, input)
 	}
 	ui.Column(c).Fill().Children(func() {
 		widgets.NavPages(c, &ed.nav, pages).Grow(1).MinHeight(0)
@@ -366,15 +431,15 @@ func (a *App) editorView(c *ui.Context) {
 			} else {
 				ui.Spacer(c)
 			}
-			if ui.Button(c, locales.Cancel()).Clicked() {
+			if ui.Button(c, locales.Cancel()).Disabled(ed.totpBusy).Clicked() {
 				a.closeWindow(WindowEditor)
 			}
-			if ui.PrimaryButton(c, locales.Ok()).Clicked() {
+			if ui.PrimaryButton(c, locales.Ok()).Disabled(ed.totpBusy).Clicked() {
 				submit = true
 			}
 		})
 	})
-	if submit && a.editor == ed {
+	if submit && a.editor == ed && a.windowOpen(WindowEditor) {
 		a.saveEditor()
 	}
 }
@@ -434,6 +499,7 @@ func (a *App) sshPage(c *ui.Context, ed *connEditor, errs map[editorField]string
 			if ed.auth != config.AuthAgent {
 				a.rememberField(c, &ed.remember, ed.auth == config.AuthKey)
 			}
+			a.totpEditorField(c, ed, input)
 		})
 		ui.Fieldset(c, locales.SectionAdvanced(), func() {
 			ui.Field(c, "", func() {
@@ -462,9 +528,11 @@ func (a *App) agentField(c *ui.Context, ed *connEditor) {
 // terminalPage is the editor's page of the terminal's options.
 func (a *App) terminalPage(c *ui.Context, ed *connEditor, errs map[editorField]string, input func(ui.Element) ui.Element) {
 	ui.Form(c, func() {
-		ui.Field(c, locales.FieldTermType(), func() {
-			input(ui.Autocomplete(c, &ed.termType, termTypes).Placeholder(config.DefaultTermType).Width(240))
-		}).Error(errs[fieldTermType])
+		if ed.kind != config.KindSerial {
+			ui.Field(c, locales.FieldTermType(), func() {
+				input(ui.Autocomplete(c, &ed.termType, termTypes).Placeholder(config.DefaultTermType).Width(240))
+			}).Error(errs[fieldTermType])
+		}
 		ui.Field(c, locales.FieldEncoding(), func() {
 			def := a.settings.TermEncodingName()
 			choiceSelect(c, locales.FieldEncoding(), &ed.encoding, encodingChoices, &def)
@@ -477,7 +545,9 @@ func (a *App) terminalPage(c *ui.Context, ed *connEditor, errs map[editorField]s
 			def := a.settings.TermDeleteKey()
 			choiceSelect(c, locales.FieldDelete(), &ed.delete, deleteChoices, &def)
 		})
-		a.forwardingFields(c, ed)
+		if ed.kind == config.KindSSH {
+			a.forwardingFields(c, ed)
+		}
 	})
 	widgets.Muted(c, locales.TerminalNextConnect()).FontSize(12)
 }

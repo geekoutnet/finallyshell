@@ -4,6 +4,8 @@ import (
 	"runtime"
 	"slices"
 
+	"finallyshell/locales"
+
 	"github.com/egoist/mygo/ui"
 )
 
@@ -88,21 +90,39 @@ func (a *App) openWindow(spec WindowSpec, view func(c *ui.Context)) {
 	spec.Width, spec.Height = max(spec.Width, spec.MinWidth), max(spec.Height, spec.MinHeight)
 	a.windows[spec.Kind] = true
 	kind, title, sheet, ownKeys, closed := spec.Kind, spec.Title, spec.Modal && sheets, spec.OwnKeys, spec.Closed
+	spec.Title = func() string {
+		if a.Locked() {
+			return locales.AppTitle()
+		}
+		return title()
+	}
+	closeRequested := spec.CloseRequested
+	spec.CloseRequested = func() bool {
+		return !a.Locked() && (closeRequested == nil || closeRequested())
+	}
 	a.plat.OpenWindow(spec, func(c *ui.Context) {
 		useTheme(c)
+		if a.lockGate(c, kind) {
+			return
+		}
 		if !ownKeys && (c.Shortcut(0, ui.KeyEscape) || a.closeWindowShortcut(c)) {
 			a.closeWindow(kind)
+			return
 		}
 		if !sheet {
 			view(c)
 			return
 		}
 		ui.Column(c).Fill().Children(func() {
-			ui.Text(c, title()).Bold().TextAlign(ui.Center).Padding(10, 16, 2, 16).Shrink(0)
+			if name := title(); name != "" {
+				ui.Text(c, name).Bold().TextAlign(ui.Center).Padding(10, 16, 2, 16).Shrink(0)
+			}
 			ui.Column(c).Grow(1).MinHeight(0).Children(func() { view(c) })
 		})
 	}, func() {
 		delete(a.windows, kind)
+		delete(a.lock.input, kind)
+		delete(a.totpCopies, kind)
 		if closed != nil {
 			closed()
 		}

@@ -149,7 +149,7 @@ func jumpChoices(hosts *config.Store, id string) []jumpChoice {
 	var out []jumpChoice
 	seen := map[string]int{}
 	for _, h := range hosts.Live() {
-		if h.ID == id || h.IsRDP() {
+		if h.ID == id || !h.IsSSH() {
 			continue
 		}
 		label := h.Target()

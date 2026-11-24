@@ -11,6 +11,7 @@ import (
 	"finallyshell/internal/config"
 	"finallyshell/internal/monitor"
 	"finallyshell/internal/remotefs"
+	"finallyshell/internal/serial"
 	"finallyshell/internal/sshx"
 	"finallyshell/locales"
 
@@ -39,6 +40,7 @@ type Session struct {
 	ID              int64
 	Host            *config.Host // nil for a new tab and a local terminal
 	local           bool         // a local terminal (local.go)
+	deviceKind      config.HostKind
 	status          sessionStatus
 	err             error // why it failed or closed; nil when the user disconnected
 	ip              string
@@ -114,6 +116,7 @@ func (s *Session) label() string {
 // credential store when the app has not read it yet. A password the
 // server refuses opens the prompt (loginFailed).
 func (a *App) connect(s *Session, secret string) {
+	s.deviceKind = config.KindSSH
 	if s.cancel != nil {
 		s.cancel()
 	}
@@ -123,7 +126,7 @@ func (a *App) connect(s *Session, secret string) {
 	s.cancel, s.ctx = cancel, ctx
 	// Through the host's proxy or jump hosts, if any (see proxy.go):
 	// closing the client closes theirs.
-	opts, err := a.dialOptions(s.Host, secret, func(q *sshx.HostKeyQuestion) { a.post(func() { s.hostKeyQ = q }) })
+	opts, err := a.dialOptionsFor(ctx, s.Host, secret, func(q *sshx.HostKeyQuestion) { a.post(func() { s.hostKeyQ = q }) }, true)
 	if err != nil {
 		s.status, s.err = statusFailed, err
 		return
@@ -144,6 +147,9 @@ func (a *App) connect(s *Session, secret string) {
 	panes := s.panes.panes()
 	fail := func(err error) {
 		a.post(func() {
+			if ctx.Err() == nil && s.ctx == ctx {
+				a.alertDialFailed(s, err)
+			}
 			s.status, s.err = statusFailed, err
 			if ctx.Err() == nil {
 				a.loginFailed(s, err)
@@ -218,6 +224,7 @@ func (a *App) connect(s *Session, secret string) {
 			s.status, s.err = statusConnected, nil
 			a.noteConnected(s.Host)
 			a.startTunnels(s, h.Tunnels)
+			a.alertSessionStarted(s, client, ctx)
 		})
 		// The monitor polls with an exec channel; hosts that drop extra
 		// channels turn it off.
@@ -226,6 +233,7 @@ func (a *App) connect(s *Session, secret string) {
 				a.post(func() {
 					if ctx.Err() == nil {
 						s.stats = st
+						a.alertStats(s, st)
 					}
 				})
 			})
@@ -436,6 +444,12 @@ func (s *Session) statusText() string {
 
 // describeError says err in the language the app shows.
 func describeError(err error) string {
+	if errors.Is(err, errTelnetAddress) {
+		return locales.TelnetHostInvalid()
+	}
+	if errors.Is(err, serial.ErrUnsupported) {
+		return locales.SerialUnsupported()
+	}
 	var changed *sshx.HostKeyChangedError
 	var keyFile *sshx.KeyFileError
 	var step *stepError
@@ -466,6 +480,8 @@ func describeError(err error) string {
 		return locales.ErrHostKeyTimeout()
 	case errors.Is(err, sshx.ErrNeedPassphrase):
 		return locales.ErrNeedPassphrase()
+	case errors.Is(err, sshx.ErrVerificationCode):
+		return locales.TotpVerificationFailed()
 	case errors.Is(err, sshx.ErrNoAuth):
 		return locales.ErrNoAuth()
 	case errors.Is(err, x509.IncorrectPasswordError):

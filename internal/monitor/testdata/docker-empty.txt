@@ -1,0 +1,24 @@
+---FINALLYSHELL:tool---
+docker
+---FINALLYSHELL:sudo---
+yes
+---FINALLYSHELL:info---
+{"ID":"b1f6a3c2-1e0d-4f5a-9b7c-2d8e6f4a1c3b","Containers":0,"ContainersRunning":0,"ContainersPaused":0,"ContainersStopped":0,"Images":0,"Driver":"overlay2","LoggingDriver":"json-file","CgroupDriver":"systemd","CgroupVersion":"2","KernelVersion":"6.1.0-18-amd64","OperatingSystem":"Debian GNU/Linux 12 (bookworm)","OSType":"linux","Architecture":"x86_64","NCPU":2,"MemTotal":4105691136,"DockerRootDir":"/var/lib/docker","Name":"web-2","ServerVersion":"27.3.1","Warnings":null}
+---FINALLYSHELL:status---
+0
+---FINALLYSHELL:version---
+{"Client":{"Version":"27.3.1","ApiVersion":"1.47"},"Server":{"Version":"27.3.1","ApiVersion":"1.47","MinAPIVersion":"1.24"}}
+---FINALLYSHELL:inspect---
+---FINALLYSHELL:images---
+---FINALLYSHELL:volumes---
+---FINALLYSHELL:networks---
+{"CreatedAt":"2026-11-01 10:00:00.1 +0000 UTC","Driver":"bridge","ID":"6a62b3f74e33","IPv6":"false","Internal":"false","Labels":"","Name":"bridge","Scope":"local"}
+{"CreatedAt":"2026-11-01 10:00:00.1 +0000 UTC","Driver":"host","ID":"7ccf34f9877d","IPv6":"false","Internal":"false","Labels":"","Name":"host","Scope":"local"}
+{"CreatedAt":"2026-11-01 10:00:00.1 +0000 UTC","Driver":"null","ID":"3b0e4f1a2c5d","IPv6":"false","Internal":"false","Labels":"","Name":"none","Scope":"local"}
+---FINALLYSHELL:stats---
+---FINALLYSHELL:df---
+{"Active":"0","Reclaimable":"0B","Size":"0B","TotalCount":"0","Type":"Images"}
+{"Active":"0","Reclaimable":"0B","Size":"0B","TotalCount":"0","Type":"Containers"}
+{"Active":"0","Reclaimable":"0B","Size":"0B","TotalCount":"0","Type":"Local Volumes"}
+{"Active":"0","Reclaimable":"0B","Size":"0B","TotalCount":"0","Type":"Build Cache"}
+---FINALLYSHELL:end---

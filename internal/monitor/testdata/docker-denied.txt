@@ -1,0 +1,8 @@
+---FINALLYSHELL:tool---
+docker
+---FINALLYSHELL:info---
+{"ID":"","Containers":0,"ContainersRunning":0,"ContainersPaused":0,"ContainersStopped":0,"Images":0,"Driver":"","DriverStatus":null,"ServerVersion":"","ServerErrors":["permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get \"http://%2Fvar%2Frun%2Fdocker.sock/v1.45/info\": dial unix /var/run/docker.sock: connect: permission denied"],"ClientInfo":{"Debug":false,"Version":"26.1.4","Context":"default"}}
+permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Get "http://%2Fvar%2Frun%2Fdocker.sock/v1.45/info": dial unix /var/run/docker.sock: connect: permission denied
+---FINALLYSHELL:status---
+1
+---FINALLYSHELL:end---

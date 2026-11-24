@@ -376,6 +376,11 @@ func (a *App) managerToolbar(c *ui.Context) {
 			}
 		}).Label(locales.ManagerTitle()).Grow(1).MinWidth(0)
 		ui.Checkbox(c, &m.showDeleted, locales.ShowDeleted())
+		if ui.Button(c, "").Label(locales.BackupsTitle()).Tooltip(locales.BackupsTitle()).Children(func() {
+			ui.Icon(c, icons.Get("hard-drive")).FontSize(15).TextColor(theme.TextMuted)
+		}).Clicked() {
+			a.openVersions(WindowManager)
+		}
 	})
 	ui.Row(c).Gap(10).Padding(0, 10, 8, 10).AlignItems(ui.Center).Children(func() {
 		labels, ids := []string{locales.FilterAll()}, []string{""}
@@ -961,6 +966,9 @@ func (a *App) deleteItem(m *managerState, it managerItem) {
 		}
 		title := func() string { return locales.DeleteFolderTitle(f.Name) }
 		m.question = &managerQuestion{title: title, body: body, ok: locales.Delete, yes: func() {
+			if !a.backupBeforeDelete(m) {
+				return
+			}
 			a.hosts.RemoveFolder(f.ID)
 			a.saveFromTree(m)
 		}}
@@ -982,6 +990,9 @@ func (a *App) deleteItem(m *managerState, it managerItem) {
 			return locales.DeleteForeverBody()
 		}
 		m.question = &managerQuestion{title: title, body: body, ok: locales.DeleteForever, yes: func() {
+			if !a.backupBeforeDelete(m) || !a.rememberManagerDeletes(m, []string{h.ID}) {
+				return
+			}
 			a.deleteHostForever(h)
 		}}
 	default:

@@ -15,8 +15,8 @@ import (
 
 // The file on the remote is an Envelope, as JSON: the payload, encrypted
 // with AES-256-GCM under a key that Argon2id derives from the sync
-// password. Only the format and the KDF's parameters are in the clear;
-// the device, the time and everything else are inside the ciphertext.
+// password. New writes may also carry a clear snapshot header, outside
+// the envelope's cryptographic fields.
 
 // EnvelopeFormat is the version of the envelope this build writes.
 const EnvelopeFormat = 1

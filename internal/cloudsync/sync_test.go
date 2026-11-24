@@ -14,7 +14,41 @@ type memRemote struct {
 	puts    int
 	onGet   func() // runs after a read, to change the file in between
 	noMatch bool   // ignore If-Match, as a gist does
+	history map[string][]byte
 }
+
+func (m *memRemote) List(context.Context) ([]Snapshot, error) {
+	var entries []Snapshot
+	for id, data := range m.history {
+		meta, _ := snapshotFromID(id, int64(len(data)))
+		header, _ := decodeSnapshot(data)
+		entries = append(entries, meta.withHeader(header))
+	}
+	SortSnapshots(entries)
+	return entries, nil
+}
+
+func (m *memRemote) GetVersion(_ context.Context, id string) ([]byte, error) {
+	if data := m.history[id]; data != nil {
+		return data, nil
+	}
+	return nil, ErrNotFound
+}
+
+func (m *memRemote) PutVersion(_ context.Context, id string, data []byte) error {
+	if m.history == nil {
+		m.history = map[string][]byte{}
+	}
+	m.history[id] = slices.Clone(data)
+	return nil
+}
+
+func (m *memRemote) DeleteVersion(_ context.Context, id string) error {
+	delete(m.history, id)
+	return nil
+}
+
+func (*memRemote) PinVersion(context.Context, string, bool) error { return nil }
 
 func (m *memRemote) tag() string { return string(rune('0' + m.ver)) }
 

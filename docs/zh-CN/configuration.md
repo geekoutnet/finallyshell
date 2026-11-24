@@ -199,15 +199,22 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `passwords` | `true` 时包括已保存的密码。 | 不包括。 |
 | `auto` | `true` 时自动同步。 | 关闭。 |
 | `interval` | 自动同步的间隔分钟数：5、15、30 或 60。 | 15 |
+| `historyAllDays`、`historyDailyDays`、`historyWeeklyWeeks`、`historyMax` | WebDAV 和 S3 的版本保留时间与目标上限。 | 7 天、30 天、26 周、200 份。 |
+| `localBackupCount`、`localBackupDays` | 本机备份的数量和保存天数上限。 | 50 份、90 天。 |
 
 `settings.json` 的每个键要么同步，要么留在各自的电脑上，两个列表是 `internal/config/sync.go` 里的 `syncedSettings` 和 `localSettings`。留在本机的有：`sidebarWidth`、`monitorPercent`、`terminalPercent`、`treeWidth`、`procListPercent`、`procFieldsPercent`、`netListPercent`、`monitorHidden`、`bottomPanelHidden`、`bottomPanelSide`、`rightPanelWidth`、`monitorSide`、`rightMonitorPercent`、`commandEditorShown`、`commandEditorWidth`、`commandEditorPercent`、`commandEditorNoEnter`、`commandEditorClear`、`termBackground`、`localShell`、`sshAgent`、`downloadDir`、`askDownloadDir`、`sync`、`geoLocations`、`geoLocationsV6`、`geoOnline`、`leftPanelPage` 和 `connectionTreeExpanded`（左侧面板显示哪一页、展开了哪些文件夹，是这台电脑上窗口留下的样子，和窗格大小一样），以及从 VSIX 安装或在编辑器扩展里找到的 `fileIconTheme`。
 
-另有两个文件属于同步，和 `hosts.json` 放在一起：
+同步和备份数据与 `hosts.json` 放在一起：
 
-- `sync-state.json`：上次同步到哪里（`remote`）、什么时候（`at`）、读到的文件是哪台电脑写的（`device`），以及那次同步后的文件（`base`），仍用同步密码加密：下次同步拿它和两边比较；以及那次同步是否包括了本机已保存的密码（`secrets`）：没包括时，下次同步不拿基准里的密码做比较，所以后来再勾上“包括已保存的密码”会收到密码，而不是把它们删掉。删掉这个文件，下次同步会像第一次同步一样保留两边都有的内容。
+- `sync-state.json`：上次同步到哪里（`remote`）、什么时候（`at`）、读到的文件是哪台电脑写的（`device`），以及那次同步后的文件（`base`），仍用同步密码加密：下次同步拿它和两边比较；以及那次同步是否包括了本机已保存的密码（`secrets`）：没包括时，下次同步不拿基准里的密码做比较，所以后来再勾上“包括已保存的密码”会收到密码，而不是把它们删掉。删掉这个文件，下次同步会像第一次同步一样保留两边都有的内容。`restorePaused` 在恢复未完成时阻止自动同步。
 - `hosts.before-sync.json`：上次改动了 `hosts.json` 的同步之前的 `hosts.json`。
+- `backups/`：按时间存放 `hosts.json`、`settings.json`，以及存在时的 `quickcommands.json` 和 `commandeditor.txt`。`backup.json` 记录版本信息；`pinned` 标记阻止自动清理。本机备份是明文文件，不导出系统凭据存储。
+- `sync-log.json`：最近 100 条同步记录，不包含密码或项目名称。
+- `backup-deleted.json`：已知永久删除的连接 ID，合并备份时不会把这些连接加回来。
 
-服务上的文件 `finallyshell-sync.json` 是 JSON：`{"app": "finallyshell", "format": 1, "kdf": "argon2id", "salt": ..., "t": 3, "m": 65536, "p": 4, "cipher": "aes-256-gcm", "nonce": ..., "data": ...}`，二进制字段是 base64。`data` 解密后是 `{"schema": 1, "device": ..., "updatedAt": ..., "folders": [...], "hosts": [...], "settings": {...}, "secrets": {...}}`：folders 和 hosts 就是 `hosts.json` 里的，settings 是 `settings.json` 里同步的键，secrets 是已保存的密码，按它们在凭据存储里的键存放。
+服务上的文件 `finallyshell-sync.json` 是 JSON：`{"app": "finallyshell", "format": 1, "kdf": "argon2id", "salt": ..., "t": 3, "m": 65536, "p": 4, "cipher": "aes-256-gcm", "nonce": ..., "data": ...}`，二进制字段是 base64。新版写入可选的明文 `snapshot` 元数据，旧版仍可打开主文件。`data` 解密后是 `{"schema": 1, "device": ..., "updatedAt": ..., "folders": [...], "hosts": [...], "quickCommands": {...}, "settings": {...}, "secrets": {...}}`：folders 和 hosts 就是 `hosts.json` 里的，settings 是 `settings.json` 里同步的键，secrets 是已保存的密码，按它们在凭据存储里的键存放。
+
+WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使用同名键前缀，并给自定义的主文件键分配独立子前缀。版本名为 `<UTC 时间>-<设备>-<sha8>.json`，固定标记在其后加 `.pin`。Gist 使用主文件的原生修订历史。
 
 ## 命令历史
 

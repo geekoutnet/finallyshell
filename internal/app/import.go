@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"finallyshell/internal/cloudsync"
 	"finallyshell/internal/config"
 	"finallyshell/internal/icons"
 	"finallyshell/internal/importer"
@@ -64,9 +65,10 @@ type importState struct {
 
 	// The source's template (importText.template): saving it, and where
 	// it was saved, or why not.
-	saving  bool
-	saved   string
-	saveErr error
+	saving    bool
+	saved     string
+	saveErr   error
+	backupErr error
 }
 
 // importRow is a connection the window lists.
@@ -271,6 +273,9 @@ func (a *App) importView(c *ui.Context) {
 					}
 				}
 			})
+		}
+		if st.backupErr != nil {
+			ui.Text(c, locales.BackupFailure(st.backupErr.Error())).TextColor(theme.Danger)
 		}
 		ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 			if st.src != nil {
@@ -537,6 +542,12 @@ func (a *App) importChosen(st *importState, statuses []importStatus) {
 	for i, r := range st.rows {
 		if r.checked && !statuses[i].skipped() {
 			entries = append(entries, r.e)
+		}
+	}
+	if len(entries) > 0 {
+		if _, err := a.saveLocalBackup(cloudsync.ReasonImport, "", time.Now()); err != nil {
+			st.backupErr = err
+			return
 		}
 	}
 	added := importer.Import(a.hosts, entries, time.Now())

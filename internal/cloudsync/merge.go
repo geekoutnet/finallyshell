@@ -24,6 +24,8 @@ type Payload struct {
 
 	Folders []json.RawMessage `json:"folders"`
 	Hosts   []json.RawMessage `json:"hosts"`
+	Quick   *QuickCommands    `json:"quickCommands,omitempty"`
+	Note    string            `json:"note,omitempty"`
 	// Settings are the settings that are synced, by their key in
 	// settings.json.
 	Settings map[string]json.RawMessage `json:"settings"`
@@ -32,11 +34,19 @@ type Payload struct {
 	Secrets map[string]string `json:"secrets,omitempty"`
 }
 
+type QuickCommands struct {
+	Groups   []json.RawMessage `json:"groups"`
+	Commands []json.RawMessage `json:"commands"`
+}
+
 // Clone is a copy of p sharing no maps or lists with it.
 func (p *Payload) Clone() *Payload {
 	c := *p
 	c.Folders = slices.Clone(p.Folders)
 	c.Hosts = slices.Clone(p.Hosts)
+	if p.Quick != nil {
+		c.Quick = &QuickCommands{Groups: slices.Clone(p.Quick.Groups), Commands: slices.Clone(p.Quick.Commands)}
+	}
 	c.Settings = maps.Clone(p.Settings)
 	c.Secrets = maps.Clone(p.Secrets)
 	return &c
@@ -46,8 +56,15 @@ func (p *Payload) Clone() *Payload {
 // secrets. The order of folders and hosts, the device and the time do not
 // count.
 func Equal(a, b *Payload) bool {
-	return sameItems(a.Folders, b.Folders) && sameItems(a.Hosts, b.Hosts) &&
+	return sameItems(a.Folders, b.Folders) && sameItems(a.Hosts, b.Hosts) && equalQuick(a.Quick, b.Quick) &&
 		maps.EqualFunc(a.Settings, b.Settings, sameJSON) && maps.Equal(a.Secrets, b.Secrets)
+}
+
+func equalQuick(first, second *QuickCommands) bool {
+	if first == nil || second == nil {
+		return first == second
+	}
+	return slices.EqualFunc(first.Groups, second.Groups, sameJSON) && slices.EqualFunc(first.Commands, second.Commands, sameJSON)
 }
 
 // Merge merges local and remote three ways, against base, the payload
@@ -72,6 +89,8 @@ func Merge(base, local, remote *Payload) (merged *Payload, conflicts int) {
 	conflicts += n
 	m.Hosts, n = mergeItems(base.Hosts, local.Hosts, remote.Hosts)
 	conflicts += n
+	m.Quick, n = mergeQuick(base.Quick, local.Quick, remote.Quick)
+	conflicts += n
 	m.Settings, n = mergeMap(base.Settings, local.Settings, remote.Settings, sameJSON)
 	conflicts += n
 	m.Secrets, n = mergeMap(base.Secrets, local.Secrets, remote.Secrets, func(a, b string) bool { return a == b })
@@ -80,6 +99,58 @@ func Merge(base, local, remote *Payload) (merged *Payload, conflicts int) {
 		m.Secrets = nil
 	}
 	return m, conflicts
+}
+
+func mergeQuick(base, local, remote *QuickCommands) (*QuickCommands, int) {
+	if local == nil {
+		return remote, 0
+	}
+	if remote == nil {
+		return local, 0
+	}
+	if base == nil {
+		base = &QuickCommands{}
+	}
+	groups, groupConflicts := mergeOrderedItems(base.Groups, local.Groups, remote.Groups)
+	commands, commandConflicts := mergeOrderedItems(base.Commands, local.Commands, remote.Commands)
+	return &QuickCommands{Groups: groups, Commands: commands}, groupConflicts + commandConflicts
+}
+
+func mergeOrderedItems(base, local, remote []json.RawMessage) ([]json.RawMessage, int) {
+	commonOrder := func(items []json.RawMessage, other map[string]json.RawMessage) []string {
+		var order []string
+		for _, item := range items {
+			id := idOf(item)
+			if hasKey(other, id) {
+				order = append(order, id)
+			}
+		}
+		return order
+	}
+	if !slices.Equal(commonOrder(local, byID(remote)), commonOrder(remote, byID(local))) {
+		localReordered := !slices.Equal(commonOrder(local, byID(base)), commonOrder(base, byID(local)))
+		remoteReordered := !slices.Equal(commonOrder(remote, byID(base)), commonOrder(base, byID(remote)))
+		if remoteReordered && !localReordered {
+			merged, conflicts := mergeItems(base, local, remote)
+			indices := byID(merged)
+			ordered := make([]json.RawMessage, 0, len(merged))
+			for _, item := range remote {
+				id := idOf(item)
+				if value, ok := indices[id]; ok {
+					ordered = append(ordered, value)
+					delete(indices, id)
+				}
+			}
+			for _, item := range merged {
+				id := idOf(item)
+				if id == "" || hasKey(indices, id) {
+					ordered = append(ordered, item)
+				}
+			}
+			return ordered, conflicts
+		}
+	}
+	return mergeItems(base, local, remote)
 }
 
 // pick is the three-way decision for one item: whether to keep it, and

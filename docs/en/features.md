@@ -2314,12 +2314,12 @@ for it, and it is off until you choose a service:
 | WebDAV | The folder's URL, a user and a password (an app password where the service has them). A missing folder is created. | Jianguoyun (坚果云), Nextcloud, Synology, Box and others. |
 | S3-compatible storage | The endpoint, region (`auto` for Cloudflare R2; `us-east-1` when empty), bucket, file name (`finallyshell-sync.json` when empty), access key ID and secret access key. Requests are path-style and signed with AWS Signature Version 4. | Cloudflare R2 and Backblaze B2 have free tiers; MinIO runs anywhere. |
 
-The service keeps one file. Before it leaves the computer, its content is
+The service keeps a main file and a version history. Before it leaves the computer, its content is
 encrypted with AES-256-GCM, with a key derived by Argon2id (3 passes,
 64 MiB, 4 lanes, a random salt) from the **sync password**, which you
-choose and enter on each computer. The service sees only that the file is
-an encrypted Finallyshell file and the key derivation's parameters; host
-names, addresses and the computer's name are inside the ciphertext. The
+choose and enter on each computer. Host names, addresses, passwords and
+manual backup notes are inside the ciphertext. Version metadata (time,
+device name, app version, item counts and reason) is not encrypted. The
 sync password cannot be recovered. With a wrong one, sync says so and
 changes nothing.
 
@@ -2328,6 +2328,8 @@ What is synced:
 - Folders and connections, deleted ones included (so a delete reaches the
   other computers), but not each host's last connection time, which keeps
   the recent list of each computer its own.
+- Saved quick commands and their groups. The command editor draft and
+  command history stay on this device.
 - Settings that mean the same on another computer: language, appearance,
   the General, Mouse, Shortcuts and Terminal pages, the font, the color
   scheme, the background's fit and opacity, and the file icon theme when
@@ -2349,8 +2351,7 @@ sync with a service (or after the sync password changed) deletes nothing:
 it keeps what either side has. When another computer writes the file
 during a sync, the sync reads it again and merges again (WebDAV and S3 send
 `If-Match`, for the servers that support it; a gist is checked just before
-writing). Before a sync changes
-local connections, `hosts.json` is copied to `hosts.before-sync.json`.
+writing). Before a sync applies received changes, it saves a local backup.
 Changes made while a sync is under way are merged on top of what it
 brought, and synced next; a password saved meanwhile is kept, not
 replaced by the one the sync brought. When the service or its fields
@@ -2366,8 +2367,8 @@ what it did, or why it failed.
 this computer's data to the file without merging, encrypted with the sync
 password entered: the way to start over, or to change the sync password
 (enter the new one, replace, then enter the new one on the other
-computers). Without "Include saved passwords", the file then has no
-passwords.
+computers). If the previous file can still be opened with the current
+password, turning off "Include saved passwords" preserves its passwords.
 
 The sync password and the service's token, password or secret key are kept
 in the system's credential store (see
@@ -2375,8 +2376,37 @@ in the system's credential store (see
 in memory only when the system has none. The other fields are the `sync`
 key of `settings.json` (see [Sync](configuration.md#sync)).
 
-Not supported yet: Google Drive, OneDrive, signing in to GitHub in the
-browser instead of a token, and restoring older versions of the file.
+Not supported yet: Google Drive, OneDrive or signing in to GitHub in a
+browser instead of a token.
+
+#### Backups & versions
+
+Open **Backups & versions** from **Options › Sync** or the connection
+manager beside **Show deleted**. The list combines local backups and server
+versions, with source, time, device, counts, reason, size and pin status.
+The **Sync log** tab shows the latest 100 sync events.
+
+- WebDAV and S3 save encrypted versions before overwriting the main file.
+  By default the app keeps all snapshots for 7 days, one per day up to 30
+  days, one per week up to 26 weeks and one per month afterward, with a
+  target of 200. Pinned snapshots and the newest 10 are exempt. Gist uses
+  native GitHub revisions: the app cannot pin, delete or prune them.
+- Local backups work with sync off. The app saves them before applying
+  received changes, restoring, importing and bulk or folder deletion.
+  Unpinned backups expire at 90 days or when more than 50 are kept.
+  **Back up now** saves a local snapshot and can also make a server version.
+- **Preview** lists added, removed and changed items by name. **Restore**
+  saves the current state, then replaces local data with the selected
+  version, including folders and their assignments. If sync is on it also
+  uploads a new version. If the server update fails, automatic sync stays
+  paused. **Add missing items** leaves existing items and known deletions
+  alone. **Export JSON** writes plaintext and may include passwords.
+  Snapshots made with another password ask for it when opened.
+- Sync pauses before removing more than the greater of 10 or 20% of the
+  live connections on either side. It also checks permanent removal from
+  Deleted and folder subtrees containing more than 10 live connections.
+  Review versions, restore from the server copy, or approve the deletion.
+  Automatic sync never confirms the deletion for you.
 
 ## Keyboard shortcuts
 

@@ -21,10 +21,62 @@ import (
 // memRemote keeps the remote file in memory, as a WebDAV server would,
 // with ETags that count the writes.
 type memRemote struct {
-	mu   sync.Mutex
-	data []byte
-	ver  int
-	puts int
+	mu      sync.Mutex
+	data    []byte
+	ver     int
+	puts    int
+	history map[string][]byte
+	pins    map[string]bool
+}
+
+func (m *memRemote) List(context.Context) ([]cloudsync.Snapshot, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	var entries []cloudsync.Snapshot
+	for id, data := range m.history {
+		entries = append(entries, cloudsync.DescribeRevision(cloudsync.Snapshot{ID: id, Pinned: m.pins[id]}, data))
+	}
+	cloudsync.SortSnapshots(entries)
+	return entries, nil
+}
+
+func (m *memRemote) GetVersion(_ context.Context, id string) ([]byte, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if data := m.history[id]; data != nil {
+		return slices.Clone(data), nil
+	}
+	return nil, cloudsync.ErrNotFound
+}
+
+func (m *memRemote) PutVersion(_ context.Context, id string, data []byte) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if m.history == nil {
+		m.history = map[string][]byte{}
+	}
+	m.history[id] = slices.Clone(data)
+	return nil
+}
+
+func (m *memRemote) DeleteVersion(_ context.Context, id string) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if m.pins[id] {
+		return cloudsync.ErrPinned
+	}
+	delete(m.history, id)
+	return nil
+}
+
+func (m *memRemote) PinVersion(_ context.Context, id string, pin bool) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	if m.pins == nil {
+		m.pins = map[string]bool{}
+	}
+	m.pins[id] = pin
+	return nil
 }
 
 func (m *memRemote) Get(context.Context) ([]byte, cloudsync.Version, error) {

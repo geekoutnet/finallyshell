@@ -1,6 +1,7 @@
 package cloudsync
 
 import (
+	"context"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -10,6 +11,71 @@ import (
 	"time"
 	"unicode/utf8"
 )
+
+const snapshotHeaderLimit = 4096
+
+func snapshotRange(prefix bool) func(*http.Request) {
+	return func(req *http.Request) {
+		if prefix {
+			req.Header.Set("Range", "bytes=0-4095")
+		}
+	}
+}
+
+func historyBody(resp *http.Response, prefix bool, responseError func(string, *http.Response) error) ([]byte, error) {
+	defer resp.Body.Close()
+	switch resp.StatusCode {
+	case http.StatusNotFound, http.StatusGone:
+		return nil, ErrNotFound
+	case http.StatusOK, http.StatusPartialContent:
+		if prefix {
+			return io.ReadAll(io.LimitReader(resp.Body, snapshotHeaderLimit))
+		}
+		if resp.StatusCode == http.StatusOK {
+			return readBody(resp.Body)
+		}
+	}
+	return nil, responseError(http.MethodGet, resp)
+}
+
+func historyDelete(resp *http.Response, responseError func(string, *http.Response) error) error {
+	switch resp.StatusCode {
+	case http.StatusOK, http.StatusNoContent:
+		return nil
+	case http.StatusNotFound, http.StatusGone:
+		return ErrNotFound
+	default:
+		return responseError(http.MethodDelete, resp)
+	}
+}
+
+func historyFiles(files map[string]int64) []Snapshot {
+	versions := make([]Snapshot, 0, len(files))
+	for id, size := range files {
+		if version, ok := snapshotFromID(id, size); ok {
+			_, version.Pinned = files[id+pinSuffix]
+			versions = append(versions, version)
+		}
+	}
+	SortSnapshots(versions)
+	return versions
+}
+
+func hydrateHistory(ctx context.Context, versions []Snapshot, load func(context.Context, string) (Snapshot, error)) ([]Snapshot, error) {
+	var firstErr error
+	for index, version := range versions {
+		header, err := load(ctx, version.ID)
+		if err != nil && firstErr == nil {
+			firstErr = err
+		}
+		versions[index] = version.withHeader(header)
+		if ctx.Err() != nil {
+			break
+		}
+	}
+	SortSnapshots(versions)
+	return versions, firstErr
+}
 
 // maxResponse is the most of a response body the remotes read: the file is
 // a small JSON document, so anything larger is not it.

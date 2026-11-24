@@ -248,6 +248,9 @@ func (a *App) deleteManagerSelection(m *managerState, items []managerItem) {
 		return strings.Join(parts, "\n")
 	}
 	q.yes = func() {
+		if !a.backupBeforeDelete(m) || !a.rememberManagerDeletes(m, deleted) {
+			return
+		}
 		changed := false
 		for _, id := range folders {
 			changed = a.hosts.RemoveFolder(id) || changed

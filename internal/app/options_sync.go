@@ -31,12 +31,18 @@ func (a *App) syncPage(c *ui.Context) {
 	s := a.settings.Sync
 	ui.Column(c).Gap(8).Children(func() {
 		widgets.Muted(c, locales.SyncIntro()).FontSize(12)
+		ui.Row(c).Gap(8).Children(func() {
+			if ui.Button(c, locales.BackupsTitle()).Clicked() {
+				a.openVersions(WindowOptions)
+			}
+			if a.sync.guard != nil && ui.Button(c, locales.BackupReviewDeletion()).Clicked() {
+				a.openSyncGuard()
+			}
+		})
 	})
 	if s.Provider != config.SyncOff {
 		a.loadSyncSecrets()
-		if !a.sync.stateLoaded {
-			a.sync.state, a.sync.stateLoaded = config.LoadSyncState(), true
-		}
+		a.loadSyncState()
 	}
 	ui.Form(c, func() {
 		ui.Field(c, locales.SyncService(), func() {
@@ -44,6 +50,8 @@ func (a *App) syncPage(c *ui.Context) {
 			if choiceSelect(c, locales.SyncService(), &p, syncProviders, nil) {
 				a.changeSettings(func() { a.settings.Sync.Provider = p })
 				a.sync.err, a.sync.done, a.sync.confirmReplace = nil, nil, false
+				a.sync.guard, a.sync.restorePaused = nil, false
+				a.closeWindow(WindowSyncGuard)
 			}
 		})
 		if s.Provider == config.SyncOff {
@@ -78,6 +86,7 @@ func (a *App) syncPage(c *ui.Context) {
 	})
 
 	if s.Provider == config.SyncOff {
+		a.syncRetention(c, s)
 		return
 	}
 	ui.Column(c).Gap(8).Padding(8, 0, 0, 0).Children(func() {
@@ -115,7 +124,7 @@ func (a *App) syncPage(c *ui.Context) {
 	ui.Column(c).Gap(8).Padding(12, 0, 0, 0).Children(func() {
 		ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
 			ready := a.syncReady()
-			if ui.PrimaryButton(c, locales.SyncNow()).Disabled(!ready || a.sync.running).Clicked() {
+			if ui.PrimaryButton(c, locales.SyncNow()).Disabled(!ready || a.sync.running || a.sync.restorePaused).Clicked() {
 				a.startSync(false, c.Now())
 			}
 			a.syncStatus(c, ready)
@@ -138,6 +147,45 @@ func (a *App) syncPage(c *ui.Context) {
 			}
 		})
 	})
+	a.syncRetention(c, s)
+}
+
+func (a *App) syncRetention(c *ui.Context, settings config.SyncSettings) {
+	count, days := settings.LocalRetention()
+	remote := settings.RemoteRetention()
+	ui.Column(c).Gap(8).Padding(14, 0, 0, 0).Children(func() {
+		ui.Text(c, locales.BackupRetention()).Bold()
+		ui.Column(c).Gap(8).Children(func() {
+			ui.Row(c).Gap(16).Children(func() {
+				a.retentionField(c, locales.BackupRetainCount(), count, 1, 2000, func(s *config.SyncSettings, n int) { s.LocalBackupCount = n })
+				a.retentionField(c, locales.BackupRetainDays(), days, 1, 3650, func(s *config.SyncSettings, n int) { s.LocalBackupDays = n })
+			})
+			switch settings.Provider {
+			case config.SyncGist:
+				widgets.Muted(c, locales.BackupGistLimit()).FontSize(12)
+			case config.SyncWebDAV, config.SyncS3:
+				ui.Row(c).Gap(16).Children(func() {
+					a.retentionField(c, locales.BackupRetainAll(), remote.AllDays, 1, remote.DailyDays, func(s *config.SyncSettings, n int) { s.HistoryAllDays = n })
+					a.retentionField(c, locales.BackupRetainDaily(), remote.DailyDays, remote.AllDays, remote.WeeklyWeeks*7, func(s *config.SyncSettings, n int) { s.HistoryDailyDays = n })
+				})
+				ui.Row(c).Gap(16).Children(func() {
+					a.retentionField(c, locales.BackupRetainWeekly(), remote.WeeklyWeeks, (remote.DailyDays+6)/7, 520, func(s *config.SyncSettings, n int) { s.HistoryWeeklyWeeks = n })
+					a.retentionField(c, locales.BackupRetainMax(), remote.Max, 10, 2000, func(s *config.SyncSettings, n int) { s.HistoryMax = n })
+				})
+				widgets.Muted(c, locales.BackupRetentionHint()).FontSize(12)
+			}
+		})
+	})
+}
+
+func (a *App) retentionField(c *ui.Context, label string, current, low, high int, set func(*config.SyncSettings, int)) {
+	ui.Column(c).Gap(4).Width(170).Shrink(1).Children(func() {
+		widgets.Muted(c, label).FontSize(12)
+		value := float64(current)
+		if ui.NumberInput(c, &value, float64(low), float64(high), 1).Label(label).Width(110).Changed() {
+			a.changeSettings(func() { set(&a.settings.Sync, int(value)) })
+		}
+	})
 }
 
 // syncStatus says what sync is doing, did last, or lacks.
@@ -147,6 +195,12 @@ func (a *App) syncStatus(c *ui.Context, ready bool) {
 	switch {
 	case st.running:
 		text = locales.SyncRunning()
+	case st.guard != nil:
+		text, color = locales.BackupGuardTitle(), theme.Danger
+	case st.restorePaused:
+		text, color = locales.BackupRestoreLocalOnly(), theme.Danger
+	case st.done != nil && st.done.HistoryError != nil:
+		text, color = versionError(st.done.HistoryError), theme.Danger
 	case st.err != nil:
 		text, color = syncErrorText(st.err), theme.Danger
 	case !ready && st.loaded:

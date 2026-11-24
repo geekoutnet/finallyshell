@@ -80,6 +80,8 @@ func (s *S3) Put(ctx context.Context, data []byte, prev *Version) (Version, erro
 		hdr := http.Header{"Content-Type": {"application/json"}}
 		if ifMatch != "" {
 			hdr.Set("If-Match", ifMatch)
+		} else if prev == nil {
+			hdr.Set("If-None-Match", "*")
 		}
 		resp, err := s.do(ctx, http.MethodPut, data, hdr)
 		if err != nil {
@@ -115,6 +117,10 @@ func (s *S3) do(ctx context.Context, method string, body []byte, hdr http.Header
 	if err != nil {
 		return nil, err
 	}
+	return s.doURL(ctx, method, u, body, hdr)
+}
+
+func (s *S3) doURL(ctx context.Context, method string, u *url.URL, body []byte, hdr http.Header) (*http.Response, error) {
 	if s.AccessKeyID == "" || s.SecretAccessKey == "" {
 		return nil, fmt.Errorf("%w: no S3 access key", ErrAuth)
 	}
@@ -164,6 +170,24 @@ func (s *S3) region() string {
 // objectURL is the object's path-style URL, its RawPath encoded as
 // Signature Version 4 encodes it.
 func (s *S3) objectURL() (*url.URL, error) {
+	u, err := s.bucketURL()
+	if err != nil {
+		return nil, err
+	}
+	u.Path += "/" + s.objectKey()
+	u.RawPath = awsEscapePath(u.Path)
+	return u, nil
+}
+
+func (s *S3) objectKey() string {
+	key := strings.TrimLeft(s.Key, "/")
+	if key == "" {
+		return FileName
+	}
+	return key
+}
+
+func (s *S3) bucketURL() (*url.URL, error) {
 	ep := strings.TrimRight(strings.TrimSpace(s.Endpoint), "/")
 	if ep == "" {
 		return nil, errors.New("cloudsync: s3: no endpoint")
@@ -181,11 +205,7 @@ func (s *S3) objectURL() (*url.URL, error) {
 	if s.Bucket == "" {
 		return nil, errors.New("cloudsync: s3: no bucket")
 	}
-	key := strings.TrimLeft(s.Key, "/")
-	if key == "" {
-		key = FileName
-	}
-	u.Path = strings.TrimRight(u.Path, "/") + "/" + s.Bucket + "/" + key
+	u.Path = strings.TrimRight(u.Path, "/") + "/" + s.Bucket
 	u.RawPath = awsEscapePath(u.Path)
 	u.RawQuery, u.Fragment = "", ""
 	return u, nil

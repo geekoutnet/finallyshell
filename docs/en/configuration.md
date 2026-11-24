@@ -247,6 +247,8 @@ object of `settings.json`, missing while sync has never been set up:
 | `passwords` | `true` includes saved passwords. | Not included. |
 | `auto` | `true` syncs automatically. | Off. |
 | `interval` | Minutes between automatic syncs: 5, 15, 30 or 60. | 15 |
+| `historyAllDays`, `historyDailyDays`, `historyWeeklyWeeks`, `historyMax` | WebDAV and S3 version retention windows and target limit. | 7 days, 30 days, 26 weeks, 200 versions. |
+| `localBackupCount`, `localBackupDays` | Count and age limits for local backups. | 50 versions, 90 days. |
 
 Each settings key is either synced or kept on each computer; the lists are
 `syncedSettings` and `localSettings` in `internal/config/sync.go`. Kept
@@ -262,7 +264,7 @@ local: `sidebarWidth`, `monitorPercent`, `terminalPercent`, `treeWidth`,
 where this computer's window was left, as the pane sizes are), and a
 `fileIconTheme` installed from a VSIX or found in an editor's extensions.
 
-Two more files belong to sync, next to `hosts.json`:
+Sync and backup data next to `hosts.json`:
 
 - `sync-state.json`: where the last sync synced (`remote`), when (`at`),
   the computer that wrote the file it read (`device`), and the file as it
@@ -272,17 +274,31 @@ Two more files belong to sync, next to `hosts.json`:
   sync does not compare passwords with the base, so turning "Include
   saved passwords" on later receives the passwords rather than deleting
   them. Deleting the file makes the next sync keep what either side has,
-  as a first sync does.
+  as a first sync does. `restorePaused` blocks automatic sync after an
+  incomplete restore.
 - `hosts.before-sync.json`: `hosts.json` as it was before the last sync
   that changed it.
+- `backups/`: timestamped directories with `hosts.json`, `settings.json`,
+  and when present `quickcommands.json` and `commandeditor.txt`. A
+  `backup.json` describes each version; a `pinned` marker exempts it from
+  retention. These are local plaintext files, not credential-store exports.
+- `sync-log.json`: the last 100 sync results, without passwords or item names.
+- `backup-deleted.json`: IDs of known permanent deletions, which a backup
+  merge must not add back.
 
 The file on the service, `finallyshell-sync.json`, is JSON:
 `{"app": "finallyshell", "format": 1, "kdf": "argon2id", "salt": ..., "t": 3, "m": 65536, "p": 4, "cipher": "aes-256-gcm", "nonce": ..., "data": ...}`,
-the binary fields in base64. Decrypted, `data` is
-`{"schema": 1, "device": ..., "updatedAt": ..., "folders": [...], "hosts": [...], "settings": {...}, "secrets": {...}}`,
+the binary fields in base64. New writes have an optional plaintext
+`snapshot` header; older clients can still open the main file. Decrypted,
+`data` is `{"schema": 1, "device": ..., "updatedAt": ..., "folders": [...], "hosts": [...], "quickCommands": {...}, "settings": {...}, "secrets": {...}}`,
 where folders and hosts are those of `hosts.json`, settings the synced
 keys of `settings.json`, and secrets the saved passwords by their key in
 the credential store.
+
+WebDAV stores snapshots in `finallyshell-sync-history/`, beside the main
+file. S3 uses the same prefix and isolates custom main keys in their own
+subprefix. Names are `<UTC time>-<device>-<sha8>.json`; pin markers add
+`.pin` to that name. Gist uses native revisions of the same file.
 
 ## Command history
 

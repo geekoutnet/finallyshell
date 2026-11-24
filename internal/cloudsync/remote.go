@@ -1,8 +1,7 @@
 // Package cloudsync syncs the app's connections and settings through
 // storage the user already has (a GitHub gist, a WebDAV folder, an
-// S3-compatible bucket): one file there, encrypted on the device with a
-// password only the user knows, merged three ways with the local copy and
-// the last one synced.
+// S3-compatible bucket): a versioned file encrypted with the user's sync
+// password, merged three ways with the local copy and the last one synced.
 package cloudsync
 
 import (
@@ -33,6 +32,7 @@ type Version struct {
 
 // Remote is one place the file is kept.
 type Remote interface {
+	History
 	// Get reads the file: ErrNotFound when there is none.
 	Get(ctx context.Context) (data []byte, v Version, err error)
 	// Put writes the file. prev is what Get read, nil when it found

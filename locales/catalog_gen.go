@@ -7614,11 +7614,11 @@ func (msgs Messages) OptionsSync() string {
 	return Catalog.Format(msgs.locale, "optionsSync", nil)
 }
 
-// SyncIntro says "Keep connections and settings the same on your computers, through storage you already have. Everything is encrypted o…"
+// SyncIntro says "Sync connections, settings and saved commands through your own storage. Content is encrypted with your sync password.…"
 // in the language the app shows.
 func SyncIntro() string { return In(i18n.Locale()).SyncIntro() }
 
-// SyncIntro says "Keep connections and settings the same on your computers, through storage you already have. Everything is encrypted o…"
+// SyncIntro says "Sync connections, settings and saved commands through your own storage. Content is encrypted with your sync password.…"
 // in the language of msgs.
 func (msgs Messages) SyncIntro() string {
 	return Catalog.Format(msgs.locale, "syncIntro", nil)
@@ -8102,6 +8102,864 @@ func SyncErrOther(error string) string { return In(i18n.Locale()).SyncErrOther(e
 // in the language of msgs.
 func (msgs Messages) SyncErrOther(error string) string {
 	return Catalog.Format(msgs.locale, "syncErrOther", map[string]any{"error": error})
+}
+
+// BackupsTitle says "Backups & versions"
+// in the language the app shows.
+func BackupsTitle() string { return In(i18n.Locale()).BackupsTitle() }
+
+// BackupsTitle says "Backups & versions"
+// in the language of msgs.
+func (msgs Messages) BackupsTitle() string {
+	return Catalog.Format(msgs.locale, "backupsTitle", nil)
+}
+
+// BackupVersions says "Versions"
+// in the language the app shows.
+func BackupVersions() string { return In(i18n.Locale()).BackupVersions() }
+
+// BackupVersions says "Versions"
+// in the language of msgs.
+func (msgs Messages) BackupVersions() string {
+	return Catalog.Format(msgs.locale, "backupVersions", nil)
+}
+
+// BackupLog says "Sync log"
+// in the language the app shows.
+func BackupLog() string { return In(i18n.Locale()).BackupLog() }
+
+// BackupLog says "Sync log"
+// in the language of msgs.
+func (msgs Messages) BackupLog() string {
+	return Catalog.Format(msgs.locale, "backupLog", nil)
+}
+
+// BackupRefresh says "Refresh"
+// in the language the app shows.
+func BackupRefresh() string { return In(i18n.Locale()).BackupRefresh() }
+
+// BackupRefresh says "Refresh"
+// in the language of msgs.
+func (msgs Messages) BackupRefresh() string {
+	return Catalog.Format(msgs.locale, "backupRefresh", nil)
+}
+
+// BackupNow says "Back up now"
+// in the language the app shows.
+func BackupNow() string { return In(i18n.Locale()).BackupNow() }
+
+// BackupNow says "Back up now"
+// in the language of msgs.
+func (msgs Messages) BackupNow() string {
+	return Catalog.Format(msgs.locale, "backupNow", nil)
+}
+
+// BackupTime says "Time"
+// in the language the app shows.
+func BackupTime() string { return In(i18n.Locale()).BackupTime() }
+
+// BackupTime says "Time"
+// in the language of msgs.
+func (msgs Messages) BackupTime() string {
+	return Catalog.Format(msgs.locale, "backupTime", nil)
+}
+
+// BackupSource says "Source"
+// in the language the app shows.
+func BackupSource() string { return In(i18n.Locale()).BackupSource() }
+
+// BackupSource says "Source"
+// in the language of msgs.
+func (msgs Messages) BackupSource() string {
+	return Catalog.Format(msgs.locale, "backupSource", nil)
+}
+
+// BackupAllSources says "All sources"
+// in the language the app shows.
+func BackupAllSources() string { return In(i18n.Locale()).BackupAllSources() }
+
+// BackupAllSources says "All sources"
+// in the language of msgs.
+func (msgs Messages) BackupAllSources() string {
+	return Catalog.Format(msgs.locale, "backupAllSources", nil)
+}
+
+// BackupDevice says "Device"
+// in the language the app shows.
+func BackupDevice() string { return In(i18n.Locale()).BackupDevice() }
+
+// BackupDevice says "Device"
+// in the language of msgs.
+func (msgs Messages) BackupDevice() string {
+	return Catalog.Format(msgs.locale, "backupDevice", nil)
+}
+
+// BackupCounts says "Live / Deleted / Folders / Cmds"
+// in the language the app shows.
+func BackupCounts() string { return In(i18n.Locale()).BackupCounts() }
+
+// BackupCounts says "Live / Deleted / Folders / Cmds"
+// in the language of msgs.
+func (msgs Messages) BackupCounts() string {
+	return Catalog.Format(msgs.locale, "backupCounts", nil)
+}
+
+// BackupReason says "Reason"
+// in the language the app shows.
+func BackupReason() string { return In(i18n.Locale()).BackupReason() }
+
+// BackupReason says "Reason"
+// in the language of msgs.
+func (msgs Messages) BackupReason() string {
+	return Catalog.Format(msgs.locale, "backupReason", nil)
+}
+
+// BackupSize says "Size"
+// in the language the app shows.
+func BackupSize() string { return In(i18n.Locale()).BackupSize() }
+
+// BackupSize says "Size"
+// in the language of msgs.
+func (msgs Messages) BackupSize() string {
+	return Catalog.Format(msgs.locale, "backupSize", nil)
+}
+
+// BackupPinned says "Pinned"
+// in the language the app shows.
+func BackupPinned() string { return In(i18n.Locale()).BackupPinned() }
+
+// BackupPinned says "Pinned"
+// in the language of msgs.
+func (msgs Messages) BackupPinned() string {
+	return Catalog.Format(msgs.locale, "backupPinned", nil)
+}
+
+// BackupPin says "Pin"
+// in the language the app shows.
+func BackupPin() string { return In(i18n.Locale()).BackupPin() }
+
+// BackupPin says "Pin"
+// in the language of msgs.
+func (msgs Messages) BackupPin() string {
+	return Catalog.Format(msgs.locale, "backupPin", nil)
+}
+
+// BackupUnpin says "Unpin"
+// in the language the app shows.
+func BackupUnpin() string { return In(i18n.Locale()).BackupUnpin() }
+
+// BackupUnpin says "Unpin"
+// in the language of msgs.
+func (msgs Messages) BackupUnpin() string {
+	return Catalog.Format(msgs.locale, "backupUnpin", nil)
+}
+
+// BackupServer says "Server"
+// in the language the app shows.
+func BackupServer() string { return In(i18n.Locale()).BackupServer() }
+
+// BackupServer says "Server"
+// in the language of msgs.
+func (msgs Messages) BackupServer() string {
+	return Catalog.Format(msgs.locale, "backupServer", nil)
+}
+
+// BackupLocal says "This device"
+// in the language the app shows.
+func BackupLocal() string { return In(i18n.Locale()).BackupLocal() }
+
+// BackupLocal says "This device"
+// in the language of msgs.
+func (msgs Messages) BackupLocal() string {
+	return Catalog.Format(msgs.locale, "backupLocal", nil)
+}
+
+// BackupPreview says "Preview"
+// in the language the app shows.
+func BackupPreview() string { return In(i18n.Locale()).BackupPreview() }
+
+// BackupPreview says "Preview"
+// in the language of msgs.
+func (msgs Messages) BackupPreview() string {
+	return Catalog.Format(msgs.locale, "backupPreview", nil)
+}
+
+// BackupPreviewTitle says "Changes from the current state"
+// in the language the app shows.
+func BackupPreviewTitle() string { return In(i18n.Locale()).BackupPreviewTitle() }
+
+// BackupPreviewTitle says "Changes from the current state"
+// in the language of msgs.
+func (msgs Messages) BackupPreviewTitle() string {
+	return Catalog.Format(msgs.locale, "backupPreviewTitle", nil)
+}
+
+// BackupConnections says "Connections"
+// in the language the app shows.
+func BackupConnections() string { return In(i18n.Locale()).BackupConnections() }
+
+// BackupConnections says "Connections"
+// in the language of msgs.
+func (msgs Messages) BackupConnections() string {
+	return Catalog.Format(msgs.locale, "backupConnections", nil)
+}
+
+// BackupFolders says "Folders"
+// in the language the app shows.
+func BackupFolders() string { return In(i18n.Locale()).BackupFolders() }
+
+// BackupFolders says "Folders"
+// in the language of msgs.
+func (msgs Messages) BackupFolders() string {
+	return Catalog.Format(msgs.locale, "backupFolders", nil)
+}
+
+// BackupCommands says "Commands"
+// in the language the app shows.
+func BackupCommands() string { return In(i18n.Locale()).BackupCommands() }
+
+// BackupCommands says "Commands"
+// in the language of msgs.
+func (msgs Messages) BackupCommands() string {
+	return Catalog.Format(msgs.locale, "backupCommands", nil)
+}
+
+// BackupCommandGroups says "Command groups"
+// in the language the app shows.
+func BackupCommandGroups() string { return In(i18n.Locale()).BackupCommandGroups() }
+
+// BackupCommandGroups says "Command groups"
+// in the language of msgs.
+func (msgs Messages) BackupCommandGroups() string {
+	return Catalog.Format(msgs.locale, "backupCommandGroups", nil)
+}
+
+// BackupAdded says "Added"
+// in the language the app shows.
+func BackupAdded() string { return In(i18n.Locale()).BackupAdded() }
+
+// BackupAdded says "Added"
+// in the language of msgs.
+func (msgs Messages) BackupAdded() string {
+	return Catalog.Format(msgs.locale, "backupAdded", nil)
+}
+
+// BackupRemoved says "Removed"
+// in the language the app shows.
+func BackupRemoved() string { return In(i18n.Locale()).BackupRemoved() }
+
+// BackupRemoved says "Removed"
+// in the language of msgs.
+func (msgs Messages) BackupRemoved() string {
+	return Catalog.Format(msgs.locale, "backupRemoved", nil)
+}
+
+// BackupChanged says "Changed"
+// in the language the app shows.
+func BackupChanged() string { return In(i18n.Locale()).BackupChanged() }
+
+// BackupChanged says "Changed"
+// in the language of msgs.
+func (msgs Messages) BackupChanged() string {
+	return Catalog.Format(msgs.locale, "backupChanged", nil)
+}
+
+// BackupDiff says "{group}: {added} added · {removed} removed · {changed} changed"
+// in the language the app shows.
+func BackupDiff(group string, added int, removed int, changed int) string {
+	return In(i18n.Locale()).BackupDiff(group, added, removed, changed)
+}
+
+// BackupDiff says "{group}: {added} added · {removed} removed · {changed} changed"
+// in the language of msgs.
+func (msgs Messages) BackupDiff(group string, added int, removed int, changed int) string {
+	return Catalog.Format(msgs.locale, "backupDiff", map[string]any{"group": group, "added": added, "removed": removed, "changed": changed})
+}
+
+// BackupReasonAuto says "Automatic sync"
+// in the language the app shows.
+func BackupReasonAuto() string { return In(i18n.Locale()).BackupReasonAuto() }
+
+// BackupReasonAuto says "Automatic sync"
+// in the language of msgs.
+func (msgs Messages) BackupReasonAuto() string {
+	return Catalog.Format(msgs.locale, "backupReasonAuto", nil)
+}
+
+// BackupReasonManual says "Manual"
+// in the language the app shows.
+func BackupReasonManual() string { return In(i18n.Locale()).BackupReasonManual() }
+
+// BackupReasonManual says "Manual"
+// in the language of msgs.
+func (msgs Messages) BackupReasonManual() string {
+	return Catalog.Format(msgs.locale, "backupReasonManual", nil)
+}
+
+// BackupReasonPreRestore says "Before restore"
+// in the language the app shows.
+func BackupReasonPreRestore() string { return In(i18n.Locale()).BackupReasonPreRestore() }
+
+// BackupReasonPreRestore says "Before restore"
+// in the language of msgs.
+func (msgs Messages) BackupReasonPreRestore() string {
+	return Catalog.Format(msgs.locale, "backupReasonPreRestore", nil)
+}
+
+// BackupReasonPreSync says "Before sync"
+// in the language the app shows.
+func BackupReasonPreSync() string { return In(i18n.Locale()).BackupReasonPreSync() }
+
+// BackupReasonPreSync says "Before sync"
+// in the language of msgs.
+func (msgs Messages) BackupReasonPreSync() string {
+	return Catalog.Format(msgs.locale, "backupReasonPreSync", nil)
+}
+
+// BackupReasonDelete says "Before deletion"
+// in the language the app shows.
+func BackupReasonDelete() string { return In(i18n.Locale()).BackupReasonDelete() }
+
+// BackupReasonDelete says "Before deletion"
+// in the language of msgs.
+func (msgs Messages) BackupReasonDelete() string {
+	return Catalog.Format(msgs.locale, "backupReasonDelete", nil)
+}
+
+// BackupReasonImport says "Before import"
+// in the language the app shows.
+func BackupReasonImport() string { return In(i18n.Locale()).BackupReasonImport() }
+
+// BackupReasonImport says "Before import"
+// in the language of msgs.
+func (msgs Messages) BackupReasonImport() string {
+	return Catalog.Format(msgs.locale, "backupReasonImport", nil)
+}
+
+// BackupEmpty says "No backups yet. Select Back up now to create one."
+// in the language the app shows.
+func BackupEmpty() string { return In(i18n.Locale()).BackupEmpty() }
+
+// BackupEmpty says "No backups yet. Select Back up now to create one."
+// in the language of msgs.
+func (msgs Messages) BackupEmpty() string {
+	return Catalog.Format(msgs.locale, "backupEmpty", nil)
+}
+
+// BackupChoose says "Select a version to preview or manage it."
+// in the language the app shows.
+func BackupChoose() string { return In(i18n.Locale()).BackupChoose() }
+
+// BackupChoose says "Select a version to preview or manage it."
+// in the language of msgs.
+func (msgs Messages) BackupChoose() string {
+	return Catalog.Format(msgs.locale, "backupChoose", nil)
+}
+
+// BackupRestore says "Restore"
+// in the language the app shows.
+func BackupRestore() string { return In(i18n.Locale()).BackupRestore() }
+
+// BackupRestore says "Restore"
+// in the language of msgs.
+func (msgs Messages) BackupRestore() string {
+	return Catalog.Format(msgs.locale, "backupRestore", nil)
+}
+
+// BackupRestoreConfirm says "Replace this device’s data with this version? A local backup is saved first. If sync is on, the restored data also …"
+// in the language the app shows.
+func BackupRestoreConfirm() string { return In(i18n.Locale()).BackupRestoreConfirm() }
+
+// BackupRestoreConfirm says "Replace this device’s data with this version? A local backup is saved first. If sync is on, the restored data also …"
+// in the language of msgs.
+func (msgs Messages) BackupRestoreConfirm() string {
+	return Catalog.Format(msgs.locale, "backupRestoreConfirm", nil)
+}
+
+// BackupRestoreOfflineConfirm says "Replace this device’s data with this version? A local backup is saved first. Sync is not ready, so this restores on…"
+// in the language the app shows.
+func BackupRestoreOfflineConfirm() string { return In(i18n.Locale()).BackupRestoreOfflineConfirm() }
+
+// BackupRestoreOfflineConfirm says "Replace this device’s data with this version? A local backup is saved first. Sync is not ready, so this restores on…"
+// in the language of msgs.
+func (msgs Messages) BackupRestoreOfflineConfirm() string {
+	return Catalog.Format(msgs.locale, "backupRestoreOfflineConfirm", nil)
+}
+
+// BackupRestored says "Version restored."
+// in the language the app shows.
+func BackupRestored() string { return In(i18n.Locale()).BackupRestored() }
+
+// BackupRestored says "Version restored."
+// in the language of msgs.
+func (msgs Messages) BackupRestored() string {
+	return Catalog.Format(msgs.locale, "backupRestored", nil)
+}
+
+// BackupRestoreLocalOnly says "The restore did not finish on the server. Automatic sync is paused; review the versions and retry the restore."
+// in the language the app shows.
+func BackupRestoreLocalOnly() string { return In(i18n.Locale()).BackupRestoreLocalOnly() }
+
+// BackupRestoreLocalOnly says "The restore did not finish on the server. Automatic sync is paused; review the versions and retry the restore."
+// in the language of msgs.
+func (msgs Messages) BackupRestoreLocalOnly() string {
+	return Catalog.Format(msgs.locale, "backupRestoreLocalOnly", nil)
+}
+
+// BackupMerge says "Add missing items"
+// in the language the app shows.
+func BackupMerge() string { return In(i18n.Locale()).BackupMerge() }
+
+// BackupMerge says "Add missing items"
+// in the language of msgs.
+func (msgs Messages) BackupMerge() string {
+	return Catalog.Format(msgs.locale, "backupMerge", nil)
+}
+
+// BackupNothingToMerge says "There are no missing items to add."
+// in the language the app shows.
+func BackupNothingToMerge() string { return In(i18n.Locale()).BackupNothingToMerge() }
+
+// BackupNothingToMerge says "There are no missing items to add."
+// in the language of msgs.
+func (msgs Messages) BackupNothingToMerge() string {
+	return Catalog.Format(msgs.locale, "backupNothingToMerge", nil)
+}
+
+// BackupMerged says "Added missing items without overwriting existing ones."
+// in the language the app shows.
+func BackupMerged() string { return In(i18n.Locale()).BackupMerged() }
+
+// BackupMerged says "Added missing items without overwriting existing ones."
+// in the language of msgs.
+func (msgs Messages) BackupMerged() string {
+	return Catalog.Format(msgs.locale, "backupMerged", nil)
+}
+
+// BackupExport says "Export JSON"
+// in the language the app shows.
+func BackupExport() string { return In(i18n.Locale()).BackupExport() }
+
+// BackupExport says "Export JSON"
+// in the language of msgs.
+func (msgs Messages) BackupExport() string {
+	return Catalog.Format(msgs.locale, "backupExport", nil)
+}
+
+// BackupExportWarning says "This file is not encrypted. It can contain passwords, commands and connection details. Store it somewhere private."
+// in the language the app shows.
+func BackupExportWarning() string { return In(i18n.Locale()).BackupExportWarning() }
+
+// BackupExportWarning says "This file is not encrypted. It can contain passwords, commands and connection details. Store it somewhere private."
+// in the language of msgs.
+func (msgs Messages) BackupExportWarning() string {
+	return Catalog.Format(msgs.locale, "backupExportWarning", nil)
+}
+
+// BackupExported says "Backup exported as unencrypted JSON."
+// in the language the app shows.
+func BackupExported() string { return In(i18n.Locale()).BackupExported() }
+
+// BackupExported says "Backup exported as unencrypted JSON."
+// in the language of msgs.
+func (msgs Messages) BackupExported() string {
+	return Catalog.Format(msgs.locale, "backupExported", nil)
+}
+
+// BackupDeleteConfirm says "Permanently delete this backup? This does not change your current connections."
+// in the language the app shows.
+func BackupDeleteConfirm() string { return In(i18n.Locale()).BackupDeleteConfirm() }
+
+// BackupDeleteConfirm says "Permanently delete this backup? This does not change your current connections."
+// in the language of msgs.
+func (msgs Messages) BackupDeleteConfirm() string {
+	return Catalog.Format(msgs.locale, "backupDeleteConfirm", nil)
+}
+
+// BackupNote says "Optional note"
+// in the language the app shows.
+func BackupNote() string { return In(i18n.Locale()).BackupNote() }
+
+// BackupNote says "Optional note"
+// in the language of msgs.
+func (msgs Messages) BackupNote() string {
+	return Catalog.Format(msgs.locale, "backupNote", nil)
+}
+
+// BackupNoteTooLong says "Use no more than 200 characters for the note."
+// in the language the app shows.
+func BackupNoteTooLong() string { return In(i18n.Locale()).BackupNoteTooLong() }
+
+// BackupNoteTooLong says "Use no more than 200 characters for the note."
+// in the language of msgs.
+func (msgs Messages) BackupNoteTooLong() string {
+	return Catalog.Format(msgs.locale, "backupNoteTooLong", nil)
+}
+
+// BackupManualBody says "Save a backup on this device. If sync is ready and not paused, also create an encrypted server version."
+// in the language the app shows.
+func BackupManualBody() string { return In(i18n.Locale()).BackupManualBody() }
+
+// BackupManualBody says "Save a backup on this device. If sync is ready and not paused, also create an encrypted server version."
+// in the language of msgs.
+func (msgs Messages) BackupManualBody() string {
+	return Catalog.Format(msgs.locale, "backupManualBody", nil)
+}
+
+// BackupSaved says "Local backup saved."
+// in the language the app shows.
+func BackupSaved() string { return In(i18n.Locale()).BackupSaved() }
+
+// BackupSaved says "Local backup saved."
+// in the language of msgs.
+func (msgs Messages) BackupSaved() string {
+	return Catalog.Format(msgs.locale, "backupSaved", nil)
+}
+
+// BackupOpen says "Open backup"
+// in the language the app shows.
+func BackupOpen() string { return In(i18n.Locale()).BackupOpen() }
+
+// BackupOpen says "Open backup"
+// in the language of msgs.
+func (msgs Messages) BackupOpen() string {
+	return Catalog.Format(msgs.locale, "backupOpen", nil)
+}
+
+// BackupWrongPassword says "This backup needs a different sync password. Enter the password used when it was created."
+// in the language the app shows.
+func BackupWrongPassword() string { return In(i18n.Locale()).BackupWrongPassword() }
+
+// BackupWrongPassword says "This backup needs a different sync password. Enter the password used when it was created."
+// in the language of msgs.
+func (msgs Messages) BackupWrongPassword() string {
+	return Catalog.Format(msgs.locale, "backupWrongPassword", nil)
+}
+
+// BackupPinnedError says "Unpin this backup before deleting it."
+// in the language the app shows.
+func BackupPinnedError() string { return In(i18n.Locale()).BackupPinnedError() }
+
+// BackupPinnedError says "Unpin this backup before deleting it."
+// in the language of msgs.
+func (msgs Messages) BackupPinnedError() string {
+	return Catalog.Format(msgs.locale, "backupPinnedError", nil)
+}
+
+// BackupGistLimit says "GitHub Gist manages its revision history. Server revisions cannot be pinned, deleted or automatically pruned."
+// in the language the app shows.
+func BackupGistLimit() string { return In(i18n.Locale()).BackupGistLimit() }
+
+// BackupGistLimit says "GitHub Gist manages its revision history. Server revisions cannot be pinned, deleted or automatically pruned."
+// in the language of msgs.
+func (msgs Messages) BackupGistLimit() string {
+	return Catalog.Format(msgs.locale, "backupGistLimit", nil)
+}
+
+// BackupServerUnavailable says "Server versions appear once the sync service and credentials are set up."
+// in the language the app shows.
+func BackupServerUnavailable() string { return In(i18n.Locale()).BackupServerUnavailable() }
+
+// BackupServerUnavailable says "Server versions appear once the sync service and credentials are set up."
+// in the language of msgs.
+func (msgs Messages) BackupServerUnavailable() string {
+	return Catalog.Format(msgs.locale, "backupServerUnavailable", nil)
+}
+
+// BackupConflict says "The data or sync destination changed. Refresh and review before trying again."
+// in the language the app shows.
+func BackupConflict() string { return In(i18n.Locale()).BackupConflict() }
+
+// BackupConflict says "The data or sync destination changed. Refresh and review before trying again."
+// in the language of msgs.
+func (msgs Messages) BackupConflict() string {
+	return Catalog.Format(msgs.locale, "backupConflict", nil)
+}
+
+// BackupFailure says "Backup operation failed: {error}"
+// in the language the app shows.
+func BackupFailure(error string) string { return In(i18n.Locale()).BackupFailure(error) }
+
+// BackupFailure says "Backup operation failed: {error}"
+// in the language of msgs.
+func (msgs Messages) BackupFailure(error string) string {
+	return Catalog.Format(msgs.locale, "backupFailure", map[string]any{"error": error})
+}
+
+// BackupGuardTitle says "Sync paused: bulk deletion"
+// in the language the app shows.
+func BackupGuardTitle() string { return In(i18n.Locale()).BackupGuardTitle() }
+
+// BackupGuardTitle says "Sync paused: bulk deletion"
+// in the language of msgs.
+func (msgs Messages) BackupGuardTitle() string {
+	return Catalog.Format(msgs.locale, "backupGuardTitle", nil)
+}
+
+// BackupGuardHosts says "{source}: this sync would remove {removed} of {total} live connections."
+// in the language the app shows.
+func BackupGuardHosts(source string, removed int, total int) string {
+	return In(i18n.Locale()).BackupGuardHosts(source, removed, total)
+}
+
+// BackupGuardHosts says "{source}: this sync would remove {removed} of {total} live connections."
+// in the language of msgs.
+func (msgs Messages) BackupGuardHosts(source string, removed int, total int) string {
+	return Catalog.Format(msgs.locale, "backupGuardHosts", map[string]any{"source": source, "removed": removed, "total": total})
+}
+
+// BackupGuardPermanent says "{source}: this sync would permanently remove {removed} of {total} connections in Deleted."
+// in the language the app shows.
+func BackupGuardPermanent(source string, removed int, total int) string {
+	return In(i18n.Locale()).BackupGuardPermanent(source, removed, total)
+}
+
+// BackupGuardPermanent says "{source}: this sync would permanently remove {removed} of {total} connections in Deleted."
+// in the language of msgs.
+func (msgs Messages) BackupGuardPermanent(source string, removed int, total int) string {
+	return Catalog.Format(msgs.locale, "backupGuardPermanent", map[string]any{"source": source, "removed": removed, "total": total})
+}
+
+// BackupGuardFolders says "{source}: {folders} folders would be removed. The largest affected folder tree contains {hosts} live connections."
+// in the language the app shows.
+func BackupGuardFolders(source string, folders int, hosts int) string {
+	return In(i18n.Locale()).BackupGuardFolders(source, folders, hosts)
+}
+
+// BackupGuardFolders says "{source}: {folders} folders would be removed. The largest affected folder tree contains {hosts} live connections."
+// in the language of msgs.
+func (msgs Messages) BackupGuardFolders(source string, folders int, hosts int) string {
+	return Catalog.Format(msgs.locale, "backupGuardFolders", map[string]any{"source": source, "folders": folders, "hosts": hosts})
+}
+
+// BackupGuardWait says "Automatic sync waits for your decision."
+// in the language the app shows.
+func BackupGuardWait() string { return In(i18n.Locale()).BackupGuardWait() }
+
+// BackupGuardWait says "Automatic sync waits for your decision."
+// in the language of msgs.
+func (msgs Messages) BackupGuardWait() string {
+	return Catalog.Format(msgs.locale, "backupGuardWait", nil)
+}
+
+// BackupReview says "Review versions"
+// in the language the app shows.
+func BackupReview() string { return In(i18n.Locale()).BackupReview() }
+
+// BackupReview says "Review versions"
+// in the language of msgs.
+func (msgs Messages) BackupReview() string {
+	return Catalog.Format(msgs.locale, "backupReview", nil)
+}
+
+// BackupReviewDeletion says "Review paused sync"
+// in the language the app shows.
+func BackupReviewDeletion() string { return In(i18n.Locale()).BackupReviewDeletion() }
+
+// BackupReviewDeletion says "Review paused sync"
+// in the language of msgs.
+func (msgs Messages) BackupReviewDeletion() string {
+	return Catalog.Format(msgs.locale, "backupReviewDeletion", nil)
+}
+
+// BackupKeepServer says "Restore from server copy"
+// in the language the app shows.
+func BackupKeepServer() string { return In(i18n.Locale()).BackupKeepServer() }
+
+// BackupKeepServer says "Restore from server copy"
+// in the language of msgs.
+func (msgs Messages) BackupKeepServer() string {
+	return Catalog.Format(msgs.locale, "backupKeepServer", nil)
+}
+
+// BackupContinue says "Continue sync"
+// in the language the app shows.
+func BackupContinue() string { return In(i18n.Locale()).BackupContinue() }
+
+// BackupContinue says "Continue sync"
+// in the language of msgs.
+func (msgs Messages) BackupContinue() string {
+	return Catalog.Format(msgs.locale, "backupContinue", nil)
+}
+
+// BackupLogEmpty says "No sync events yet."
+// in the language the app shows.
+func BackupLogEmpty() string { return In(i18n.Locale()).BackupLogEmpty() }
+
+// BackupLogEmpty says "No sync events yet."
+// in the language of msgs.
+func (msgs Messages) BackupLogEmpty() string {
+	return Catalog.Format(msgs.locale, "backupLogEmpty", nil)
+}
+
+// BackupLogResult says "Result"
+// in the language the app shows.
+func BackupLogResult() string { return In(i18n.Locale()).BackupLogResult() }
+
+// BackupLogResult says "Result"
+// in the language of msgs.
+func (msgs Messages) BackupLogResult() string {
+	return Catalog.Format(msgs.locale, "backupLogResult", nil)
+}
+
+// BackupLogConflicts says "Conflicts"
+// in the language the app shows.
+func BackupLogConflicts() string { return In(i18n.Locale()).BackupLogConflicts() }
+
+// BackupLogConflicts says "Conflicts"
+// in the language of msgs.
+func (msgs Messages) BackupLogConflicts() string {
+	return Catalog.Format(msgs.locale, "backupLogConflicts", nil)
+}
+
+// BackupLogGuard says "Guard"
+// in the language the app shows.
+func BackupLogGuard() string { return In(i18n.Locale()).BackupLogGuard() }
+
+// BackupLogGuard says "Guard"
+// in the language of msgs.
+func (msgs Messages) BackupLogGuard() string {
+	return Catalog.Format(msgs.locale, "backupLogGuard", nil)
+}
+
+// BackupLogGuarded says "Triggered"
+// in the language the app shows.
+func BackupLogGuarded() string { return In(i18n.Locale()).BackupLogGuarded() }
+
+// BackupLogGuarded says "Triggered"
+// in the language of msgs.
+func (msgs Messages) BackupLogGuarded() string {
+	return Catalog.Format(msgs.locale, "backupLogGuarded", nil)
+}
+
+// BackupLogOK says "Completed"
+// in the language the app shows.
+func BackupLogOK() string { return In(i18n.Locale()).BackupLogOK() }
+
+// BackupLogOK says "Completed"
+// in the language of msgs.
+func (msgs Messages) BackupLogOK() string {
+	return Catalog.Format(msgs.locale, "backupLogOK", nil)
+}
+
+// BackupLogWarning says "History cleanup failed"
+// in the language the app shows.
+func BackupLogWarning() string { return In(i18n.Locale()).BackupLogWarning() }
+
+// BackupLogWarning says "History cleanup failed"
+// in the language of msgs.
+func (msgs Messages) BackupLogWarning() string {
+	return Catalog.Format(msgs.locale, "backupLogWarning", nil)
+}
+
+// BackupLogFailed says "Failed"
+// in the language the app shows.
+func BackupLogFailed() string { return In(i18n.Locale()).BackupLogFailed() }
+
+// BackupLogFailed says "Failed"
+// in the language of msgs.
+func (msgs Messages) BackupLogFailed() string {
+	return Catalog.Format(msgs.locale, "backupLogFailed", nil)
+}
+
+// BackupRetention says "Backup retention"
+// in the language the app shows.
+func BackupRetention() string { return In(i18n.Locale()).BackupRetention() }
+
+// BackupRetention says "Backup retention"
+// in the language of msgs.
+func (msgs Messages) BackupRetention() string {
+	return Catalog.Format(msgs.locale, "backupRetention", nil)
+}
+
+// BackupRetentionLocal says "This device"
+// in the language the app shows.
+func BackupRetentionLocal() string { return In(i18n.Locale()).BackupRetentionLocal() }
+
+// BackupRetentionLocal says "This device"
+// in the language of msgs.
+func (msgs Messages) BackupRetentionLocal() string {
+	return Catalog.Format(msgs.locale, "backupRetentionLocal", nil)
+}
+
+// BackupRetentionServer says "Server"
+// in the language the app shows.
+func BackupRetentionServer() string { return In(i18n.Locale()).BackupRetentionServer() }
+
+// BackupRetentionServer says "Server"
+// in the language of msgs.
+func (msgs Messages) BackupRetentionServer() string {
+	return Catalog.Format(msgs.locale, "backupRetentionServer", nil)
+}
+
+// BackupRetainCount says "Max local backups"
+// in the language the app shows.
+func BackupRetainCount() string { return In(i18n.Locale()).BackupRetainCount() }
+
+// BackupRetainCount says "Max local backups"
+// in the language of msgs.
+func (msgs Messages) BackupRetainCount() string {
+	return Catalog.Format(msgs.locale, "backupRetainCount", nil)
+}
+
+// BackupRetainDays says "Max local age (days)"
+// in the language the app shows.
+func BackupRetainDays() string { return In(i18n.Locale()).BackupRetainDays() }
+
+// BackupRetainDays says "Max local age (days)"
+// in the language of msgs.
+func (msgs Messages) BackupRetainDays() string {
+	return Catalog.Format(msgs.locale, "backupRetainDays", nil)
+}
+
+// BackupRetainAll says "Keep all (days)"
+// in the language the app shows.
+func BackupRetainAll() string { return In(i18n.Locale()).BackupRetainAll() }
+
+// BackupRetainAll says "Keep all (days)"
+// in the language of msgs.
+func (msgs Messages) BackupRetainAll() string {
+	return Catalog.Format(msgs.locale, "backupRetainAll", nil)
+}
+
+// BackupRetainDaily says "Keep daily (days)"
+// in the language the app shows.
+func BackupRetainDaily() string { return In(i18n.Locale()).BackupRetainDaily() }
+
+// BackupRetainDaily says "Keep daily (days)"
+// in the language of msgs.
+func (msgs Messages) BackupRetainDaily() string {
+	return Catalog.Format(msgs.locale, "backupRetainDaily", nil)
+}
+
+// BackupRetainWeekly says "Keep weekly (weeks)"
+// in the language the app shows.
+func BackupRetainWeekly() string { return In(i18n.Locale()).BackupRetainWeekly() }
+
+// BackupRetainWeekly says "Keep weekly (weeks)"
+// in the language of msgs.
+func (msgs Messages) BackupRetainWeekly() string {
+	return Catalog.Format(msgs.locale, "backupRetainWeekly", nil)
+}
+
+// BackupRetainMax says "Target server limit"
+// in the language the app shows.
+func BackupRetainMax() string { return In(i18n.Locale()).BackupRetainMax() }
+
+// BackupRetainMax says "Target server limit"
+// in the language of msgs.
+func (msgs Messages) BackupRetainMax() string {
+	return Catalog.Format(msgs.locale, "backupRetainMax", nil)
+}
+
+// BackupRetentionHint says "Keep one per month after weekly retention. Pinned backups and the newest 10 server versions are never pruned."
+// in the language the app shows.
+func BackupRetentionHint() string { return In(i18n.Locale()).BackupRetentionHint() }
+
+// BackupRetentionHint says "Keep one per month after weekly retention. Pinned backups and the newest 10 server versions are never pruned."
+// in the language of msgs.
+func (msgs Messages) BackupRetentionHint() string {
+	return Catalog.Format(msgs.locale, "backupRetentionHint", nil)
 }
 
 // TabNetwork says "Network"

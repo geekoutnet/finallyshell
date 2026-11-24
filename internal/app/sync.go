@@ -24,6 +24,7 @@ import (
 	"finallyshell/internal/config"
 	"finallyshell/locales"
 
+	"github.com/egoist/mygo"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -73,7 +74,17 @@ type syncState struct {
 	// again: something changed here during the last sync that it did
 	// not carry, as a password saved meanwhile; automatic sync syncs
 	// again at its next check.
-	again bool
+	again         bool
+	guard         *cloudsync.DeletionGuard
+	guardRun      syncOptions
+	backups       *versionsState
+	restorePaused bool
+}
+
+type syncOptions struct {
+	force, keepServer, manualVersion       bool
+	approval, expectedServer, reason, note string
+	priorGuard                             *cloudsync.DeletionGuard
 }
 
 // syncRun is what a sync started with, for syncDone.
@@ -86,7 +97,8 @@ type syncRun struct {
 	snapshot *cloudsync.Payload
 	secrets  map[string]string
 	// gistID is the gist the sync found or made, "" for another service.
-	gistID string
+	gistID  string
+	options syncOptions
 }
 
 // syncRemote makes the remote of the settings, with the provider's
@@ -136,6 +148,9 @@ func (a *App) loadSyncSecrets() {
 	done := func() {
 		if pending--; pending == 0 {
 			st.loading, st.loaded = false, true
+			if st.backups != nil {
+				a.refreshVersions(st.backups)
+			}
 			a.redraw()
 		}
 	}
@@ -185,17 +200,30 @@ func (a *App) keepSyncSecret(key, v string) {
 // and hosts, each without the time it last connected, which stays on this
 // device, and the settings that are synced.
 func (a *App) localPayload() *cloudsync.Payload {
-	p := &cloudsync.Payload{Schema: cloudsync.PayloadSchema, Settings: config.SyncedSettings(a.settings)}
-	for _, f := range a.hosts.Folders {
+	return backupPayload(a.hosts, a.settings, a.quick())
+}
+
+func backupPayload(hosts *config.Store, settings config.Settings, quick *config.QuickCommands) *cloudsync.Payload {
+	p := &cloudsync.Payload{Schema: cloudsync.PayloadSchema, Settings: config.SyncedSettings(settings)}
+	for _, f := range hosts.Folders {
 		if b, err := json.Marshal(f); err == nil {
 			p.Folders = append(p.Folders, b)
 		}
 	}
-	for _, h := range a.hosts.Hosts {
+	for _, h := range hosts.Hosts {
 		c := h.Clone()
 		c.LastConnectedAt = time.Time{}
 		if b, err := json.Marshal(c); err == nil {
 			p.Hosts = append(p.Hosts, b)
+		}
+	}
+	if quick != nil {
+		data, err := json.Marshal(quick)
+		if err == nil {
+			p.Quick = &cloudsync.QuickCommands{}
+			if json.Unmarshal(data, p.Quick) != nil {
+				p.Quick = nil
+			}
 		}
 	}
 	return p
@@ -224,7 +252,8 @@ func (a *App) syncTick(c *ui.Context) {
 		return
 	}
 	a.loadSyncSecrets()
-	if st.running || !st.loaded {
+	a.loadSyncState()
+	if st.running || st.guard != nil || st.restorePaused || !st.loaded {
 		return
 	}
 	now := c.Now()
@@ -243,15 +272,27 @@ func (a *App) syncTick(c *ui.Context) {
 		due = true
 	}
 	if due {
-		a.startSync(false, now)
+		a.startSyncWith(syncOptions{reason: cloudsync.ReasonAuto}, now)
 	}
 }
 
 // startSync syncs now, the frame's time; with force, it replaces the
 // remote file with this device's payload.
 func (a *App) startSync(force bool, now time.Time) {
+	if a.sync.guard != nil && !force {
+		a.openSyncGuard()
+		return
+	}
+	a.startSyncWith(syncOptions{force: force, reason: cloudsync.ReasonManual}, now)
+}
+
+func (a *App) startSyncWith(options syncOptions, now time.Time) {
 	st := &a.sync
 	if st.running || !a.syncReady() {
+		return
+	}
+	a.loadSyncState()
+	if st.restorePaused && !options.force {
 		return
 	}
 	s := a.settings.Sync
@@ -260,15 +301,15 @@ func (a *App) startSync(force bool, now time.Time) {
 		st.err = err
 		return
 	}
-	if !st.stateLoaded {
-		st.state, st.stateLoaded = config.LoadSyncState(), true
-	}
 	st.running, st.err, st.lastTry = true, nil, now
 	st.confirmReplace, st.again = false, false
+	st.guard = nil
 	snapshot := a.localPayload()
 	req := cloudsync.Request{
-		Remote: remote, Password: st.password, Local: snapshot, Force: force,
-		Device: deviceName(),
+		Remote: remote, Password: st.password, Local: snapshot, Force: options.force,
+		Device: deviceName(), AppVersion: mygo.App.Version(), Reason: options.reason, Note: options.note,
+		Retention: s.RemoteRetention(), Approval: options.approval, KeepServer: options.keepServer,
+		ManualVersion: options.manualVersion, ExpectedServer: options.expectedServer,
 	}
 	if st.state.Remote == s.Remote() {
 		req.Base, req.BaseSecrets = st.state.Base, st.state.Secrets
@@ -282,16 +323,20 @@ func (a *App) startSync(force bool, now time.Time) {
 			ctx, cancel := context.WithTimeout(context.Background(), syncTimeout)
 			defer cancel()
 			res, err := cloudsync.Sync(ctx, req)
-			run := syncRun{start: s, snapshot: snapshot, secrets: secrets}
+			run := syncRun{start: s, snapshot: snapshot, secrets: secrets, options: options}
 			if g, ok := remote.(*cloudsync.Gist); ok {
 				run.gistID = g.ID
 			}
 			a.post(func() { a.syncDone(res, err, run) })
 		}()
 	}
-	if !s.Passwords || a.secretsUnavailable() {
+	a.readSyncSecrets(s.Passwords, run)
+	a.redraw()
+}
+
+func (a *App) readSyncSecrets(enabled bool, run func(map[string]string)) {
+	if !enabled || a.secretsUnavailable() {
 		run(nil)
-		a.redraw()
 		return
 	}
 	// The saved passwords, read in one job of the queue. If any read
@@ -319,7 +364,6 @@ func (a *App) startSync(force bool, now time.Time) {
 			run(secrets)
 		})
 	})
-	a.redraw()
 }
 
 // syncDone applies what a sync brought.
@@ -336,11 +380,36 @@ func (a *App) syncDone(res *cloudsync.Result, err error, run syncRun) {
 	}
 	if err != nil {
 		st.err = err
+		if errors.As(err, &st.guard) {
+			run.options.priorGuard = nil
+			st.guardRun = run.options
+			a.recordSync(run.options.reason, "paused", nil, true)
+			a.notify(locales.BackupGuardTitle())
+			a.openSyncGuard()
+		} else {
+			if run.options.priorGuard != nil {
+				st.guard = run.options.priorGuard
+			}
+			a.recordSync(run.options.reason, "failed", nil, false)
+		}
+		if run.options.manualVersion && st.backups != nil {
+			st.backups.err = err
+		}
 		return
+	}
+	failApply := func(err error) {
+		st.err = err
+		if run.options.priorGuard != nil {
+			st.guard = run.options.priorGuard
+		}
+		a.recordSync(run.options.reason, "failed", res, run.options.priorGuard != nil)
 	}
 	if s.Provider == config.SyncGist && run.gistID != "" && s.GistID != run.gistID {
 		s.GistID = run.gistID
-		a.saveSettings(a.settings)
+		if err := a.saveSettings(a.settings); err != nil {
+			failApply(err)
+			return
+		}
 	}
 	snapshot := run.snapshot
 	merged := res.Merged
@@ -352,32 +421,87 @@ func (a *App) syncDone(res *cloudsync.Result, err error, run syncRun) {
 			m, _ := cloudsync.Merge(snapshot, current, merged)
 			m.Secrets = merged.Secrets
 			merged = m
+			if impact := cloudsync.Deletions(current, merged); impact.Risky() {
+				st.guard = &cloudsync.DeletionGuard{Local: impact}
+				st.guardRun = run.options
+				st.err = st.guard
+				a.recordSync(run.options.reason, "paused", res, true)
+				a.notify(locales.BackupGuardTitle())
+				a.openSyncGuard()
+				return
+			}
 			st.nextCheck = time.Time{}
 		}
-		a.applyPayload(merged)
+	}
+	if res.Changed || run.secrets != nil && !sameSyncSecrets(run.secrets, res.Merged.Secrets) {
+		reason := cloudsync.ReasonPreSync
+		if run.options.keepServer {
+			reason = cloudsync.ReasonPreRestore
+		}
+		if _, err := a.saveLocalBackup(reason, "", time.Now()); err != nil {
+			failApply(err)
+			return
+		}
+	}
+	if res.Changed {
+		kept := make(map[string]bool, len(merged.Hosts))
+		for _, raw := range merged.Hosts {
+			var host struct {
+				ID string `json:"id"`
+			}
+			if json.Unmarshal(raw, &host) == nil {
+				kept[host.ID] = true
+			}
+		}
+		var deleted []string
+		for _, host := range a.hosts.Hosts {
+			if !kept[host.ID] && !run.options.keepServer {
+				deleted = append(deleted, host.ID)
+			}
+		}
+		if err := config.RememberPermanentDeletes(deleted); err != nil {
+			failApply(err)
+			return
+		}
+		if err := a.applyPayload(merged); err != nil {
+			failApply(err)
+			return
+		}
 	}
 	if run.secrets != nil {
 		a.applySyncedSecrets(run.secrets, res.Merged.Secrets)
 	}
 	st.err, st.done = nil, res
-	st.state = config.SyncState{
+	nextState := config.SyncState{
 		Remote: s.Remote(), Base: res.Envelope, At: time.Now(), Device: res.RemoteDevice,
 		Secrets: run.secrets != nil,
 	}
 	if res.Uploaded {
-		st.state.Device = deviceName()
+		nextState.Device = deviceName()
 	}
-	config.SaveSyncState(st.state) // best effort: without it, the next sync merges without a base
+	if err := config.SaveSyncState(nextState); err != nil {
+		failApply(err)
+		return
+	}
+	st.state, st.restorePaused = nextState, false
 	// What the remote now has: automatic sync syncs again when this
 	// device's payload differs, as when it changed during this sync.
 	st.synced = res.Merged.Clone()
 	st.synced.Secrets = nil
+	result := "ok"
+	if res.HistoryError != nil {
+		result = "history-warning"
+	}
+	a.recordSync(run.options.reason, result, res, run.options.priorGuard != nil)
+	if st.backups != nil && (res.Uploaded || res.Changed) {
+		a.refreshVersions(st.backups)
+	}
 }
 
 // applyPayload makes this device's folders, hosts and synced settings
 // those of p. Hosts keep the time they last connected here, and their
 // Host values, which sessions point at. hosts.json is copied first.
-func (a *App) applyPayload(p *cloudsync.Payload) {
+func (a *App) applyPayload(p *cloudsync.Payload) error {
 	local := a.localPayload()
 	if !sameList(local.Folders, p.Folders) || !sameList(local.Hosts, p.Hosts) {
 		config.BackupHostsBeforeSync(a.hosts)
@@ -398,10 +522,19 @@ func (a *App) applyPayload(p *cloudsync.Payload) {
 			kept[h.ID] = true
 			if old := a.hosts.Host(h.ID); old != nil {
 				h.LastConnectedAt = old.LastConnectedAt
-				*old = *h
-				h = old
 			}
 			hosts = append(hosts, h)
+		}
+		next := *a.hosts
+		next.Folders, next.Hosts = folders, hosts
+		if err := a.saveHosts(&next); err != nil {
+			return err
+		}
+		for index, host := range hosts {
+			if old := a.hosts.Host(host.ID); old != nil {
+				*old = *host
+				hosts[index] = old
+			}
 		}
 		for _, h := range a.hosts.Hosts {
 			if !kept[h.ID] {
@@ -409,12 +542,14 @@ func (a *App) applyPayload(p *cloudsync.Payload) {
 			}
 		}
 		a.hosts.Folders, a.hosts.Hosts = folders, hosts
-		a.saveHosts(a.hosts)
 	}
 	if !cloudsync.Equal(&cloudsync.Payload{Settings: local.Settings}, &cloudsync.Payload{Settings: p.Settings}) {
 		before := a.settings
-		a.settings = config.WithSyncedSettings(a.settings, p.Settings)
-		a.saveSettings(a.settings)
+		next := config.WithSyncedSettings(a.settings, p.Settings)
+		if err := a.saveSettings(next); err != nil {
+			return err
+		}
+		a.settings = next
 		if a.settings.Language != before.Language {
 			a.plat.SetLocale(a.settings.Language)
 		}
@@ -424,6 +559,24 @@ func (a *App) applyPayload(p *cloudsync.Payload) {
 		a.applyTerminalSettings()
 		a.applyAgentIcons()
 	}
+	if p.Quick != nil && !sameQuickPayload(local.Quick, p.Quick) {
+		data, err := json.Marshal(p.Quick)
+		if err != nil {
+			return err
+		}
+		quick, err := config.ParseQuickCommands(data)
+		if err != nil {
+			return err
+		}
+		if a.quickUI.noSave {
+			return a.quickUI.loadErr
+		}
+		if err := config.SaveQuickCommands(quick); err != nil {
+			return err
+		}
+		a.quickUI.store = quick
+	}
+	return nil
 }
 
 // sameList says whether two lists hold the same objects in any order.

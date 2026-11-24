@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 	"strings"
 	"time"
+
+	"finallyshell/internal/cloudsync"
 )
 
 // SyncProvider is where connections and settings are synced
@@ -49,7 +51,28 @@ type SyncSettings struct {
 	Auto bool `json:"auto,omitempty"`
 	// Interval is how many minutes apart automatic syncs look for others'
 	// changes: 0 for DefaultSyncInterval.
-	Interval int `json:"interval,omitempty"`
+	Interval           int `json:"interval,omitempty"`
+	HistoryAllDays     int `json:"historyAllDays,omitempty"`
+	HistoryDailyDays   int `json:"historyDailyDays,omitempty"`
+	HistoryWeeklyWeeks int `json:"historyWeeklyWeeks,omitempty"`
+	HistoryMax         int `json:"historyMax,omitempty"`
+	LocalBackupCount   int `json:"localBackupCount,omitempty"`
+	LocalBackupDays    int `json:"localBackupDays,omitempty"`
+}
+
+func (s SyncSettings) RemoteRetention() cloudsync.Retention {
+	return (cloudsync.Retention{AllDays: s.HistoryAllDays, DailyDays: s.HistoryDailyDays, WeeklyWeeks: s.HistoryWeeklyWeeks, Max: s.HistoryMax}).Defaults()
+}
+
+func (s SyncSettings) LocalRetention() (count, days int) {
+	count, days = s.LocalBackupCount, s.LocalBackupDays
+	if count <= 0 {
+		count = 50
+	}
+	if days <= 0 {
+		days = 90
+	}
+	return count, days
 }
 
 // DefaultSyncInterval is the minutes between automatic syncs when
@@ -190,7 +213,8 @@ type SyncState struct {
 	Device string    `json:"device,omitempty"`
 	// Secrets says whether this device included its saved passwords in
 	// that sync, so that Base's passwords are its own.
-	Secrets bool `json:"secrets,omitempty"`
+	Secrets       bool `json:"secrets,omitempty"`
+	RestorePaused bool `json:"restorePaused,omitempty"`
 }
 
 func syncStatePath() string { return filepath.Join(Dir(), "sync-state.json") }

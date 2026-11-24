@@ -14324,6 +14324,958 @@ func (msgs Messages) DockerCopyJSON() string {
 	return Catalog.Format(msgs.locale, "dockerCopyJSON", nil)
 }
 
+// DockerImgFilter says "Filter images"
+// in the language the app shows.
+func DockerImgFilter() string { return In(i18n.Locale()).DockerImgFilter() }
+
+// DockerImgFilter says "Filter images"
+// in the language of msgs.
+func (msgs Messages) DockerImgFilter() string {
+	return Catalog.Format(msgs.locale, "dockerImgFilter", nil)
+}
+
+// DockerImgReference says "Repository:tag"
+// in the language the app shows.
+func DockerImgReference() string { return In(i18n.Locale()).DockerImgReference() }
+
+// DockerImgReference says "Repository:tag"
+// in the language of msgs.
+func (msgs Messages) DockerImgReference() string {
+	return Catalog.Format(msgs.locale, "dockerImgReference", nil)
+}
+
+// DockerImgReferenceShort says "Image"
+// in the language the app shows.
+func DockerImgReferenceShort() string { return In(i18n.Locale()).DockerImgReferenceShort() }
+
+// DockerImgReferenceShort says "Image"
+// in the language of msgs.
+func (msgs Messages) DockerImgReferenceShort() string {
+	return Catalog.Format(msgs.locale, "dockerImgReferenceShort", nil)
+}
+
+// DockerImgPlatform says "Platform"
+// in the language the app shows.
+func DockerImgPlatform() string { return In(i18n.Locale()).DockerImgPlatform() }
+
+// DockerImgPlatform says "Platform"
+// in the language of msgs.
+func (msgs Messages) DockerImgPlatform() string {
+	return Catalog.Format(msgs.locale, "dockerImgPlatform", nil)
+}
+
+// DockerImgUsed says "Used by"
+// in the language the app shows.
+func DockerImgUsed() string { return In(i18n.Locale()).DockerImgUsed() }
+
+// DockerImgUsed says "Used by"
+// in the language of msgs.
+func (msgs Messages) DockerImgUsed() string {
+	return Catalog.Format(msgs.locale, "dockerImgUsed", nil)
+}
+
+// DockerImgUsedShort says "Used"
+// in the language the app shows.
+func DockerImgUsedShort() string { return In(i18n.Locale()).DockerImgUsedShort() }
+
+// DockerImgUsedShort says "Used"
+// in the language of msgs.
+func (msgs Messages) DockerImgUsedShort() string {
+	return Catalog.Format(msgs.locale, "dockerImgUsedShort", nil)
+}
+
+// DockerImgNoUsers says "No containers use this image"
+// in the language the app shows.
+func DockerImgNoUsers() string { return In(i18n.Locale()).DockerImgNoUsers() }
+
+// DockerImgNoUsers says "No containers use this image"
+// in the language of msgs.
+func (msgs Messages) DockerImgNoUsers() string {
+	return Catalog.Format(msgs.locale, "dockerImgNoUsers", nil)
+}
+
+// DockerImgUsageUnknown says "Complete container usage is unavailable. Refresh the Docker tab before proceeding."
+// in the language the app shows.
+func DockerImgUsageUnknown() string { return In(i18n.Locale()).DockerImgUsageUnknown() }
+
+// DockerImgUsageUnknown says "Complete container usage is unavailable. Refresh the Docker tab before proceeding."
+// in the language of msgs.
+func (msgs Messages) DockerImgUsageUnknown() string {
+	return Catalog.Format(msgs.locale, "dockerImgUsageUnknown", nil)
+}
+
+// DockerImgUntagged says "Untagged"
+// in the language the app shows.
+func DockerImgUntagged() string { return In(i18n.Locale()).DockerImgUntagged() }
+
+// DockerImgUntagged says "Untagged"
+// in the language of msgs.
+func (msgs Messages) DockerImgUntagged() string {
+	return Catalog.Format(msgs.locale, "dockerImgUntagged", nil)
+}
+
+// DockerImgDangling says "Dangling"
+// in the language the app shows.
+func DockerImgDangling() string { return In(i18n.Locale()).DockerImgDangling() }
+
+// DockerImgDangling says "Dangling"
+// in the language of msgs.
+func (msgs Messages) DockerImgDangling() string {
+	return Catalog.Format(msgs.locale, "dockerImgDangling", nil)
+}
+
+// DockerImgDanglingUnknown says "The server did not report which images are dangling. Refresh to try again."
+// in the language the app shows.
+func DockerImgDanglingUnknown() string { return In(i18n.Locale()).DockerImgDanglingUnknown() }
+
+// DockerImgDanglingUnknown says "The server did not report which images are dangling. Refresh to try again."
+// in the language of msgs.
+func (msgs Messages) DockerImgDanglingUnknown() string {
+	return Catalog.Format(msgs.locale, "dockerImgDanglingUnknown", nil)
+}
+
+// DockerImgDanglingOnly says "Dangling only"
+// in the language the app shows.
+func DockerImgDanglingOnly() string { return In(i18n.Locale()).DockerImgDanglingOnly() }
+
+// DockerImgDanglingOnly says "Dangling only"
+// in the language of msgs.
+func (msgs Messages) DockerImgDanglingOnly() string {
+	return Catalog.Format(msgs.locale, "dockerImgDanglingOnly", nil)
+}
+
+// DockerImgUnusedOnly says "Unused only"
+// in the language the app shows.
+func DockerImgUnusedOnly() string { return In(i18n.Locale()).DockerImgUnusedOnly() }
+
+// DockerImgUnusedOnly says "Unused only"
+// in the language of msgs.
+func (msgs Messages) DockerImgUnusedOnly() string {
+	return Catalog.Format(msgs.locale, "dockerImgUnusedOnly", nil)
+}
+
+// DockerImgAgo says "{age} ago"
+// in the language the app shows.
+func DockerImgAgo(age string) string { return In(i18n.Locale()).DockerImgAgo(age) }
+
+// DockerImgAgo says "{age} ago"
+// in the language of msgs.
+func (msgs Messages) DockerImgAgo(age string) string {
+	return Catalog.Format(msgs.locale, "dockerImgAgo", map[string]any{"age": age})
+}
+
+// DockerImgCount says "{shown}/{total, plural, one {# row} other {# rows}} · {size}"
+// in the language the app shows.
+func DockerImgCount(shown int, total int, size string) string {
+	return In(i18n.Locale()).DockerImgCount(shown, total, size)
+}
+
+// DockerImgCount says "{shown}/{total, plural, one {# row} other {# rows}} · {size}"
+// in the language of msgs.
+func (msgs Messages) DockerImgCount(shown int, total int, size string) string {
+	return Catalog.Format(msgs.locale, "dockerImgCount", map[string]any{"shown": shown, "total": total, "size": size})
+}
+
+// DockerImgSelected says "{count, plural, one {# selected image} other {# selected images}}"
+// in the language the app shows.
+func DockerImgSelected(count int) string { return In(i18n.Locale()).DockerImgSelected(count) }
+
+// DockerImgSelected says "{count, plural, one {# selected image} other {# selected images}}"
+// in the language of msgs.
+func (msgs Messages) DockerImgSelected(count int) string {
+	return Catalog.Format(msgs.locale, "dockerImgSelected", map[string]any{"count": count})
+}
+
+// DockerImgReading says "Reading images…"
+// in the language the app shows.
+func DockerImgReading() string { return In(i18n.Locale()).DockerImgReading() }
+
+// DockerImgReading says "Reading images…"
+// in the language of msgs.
+func (msgs Messages) DockerImgReading() string {
+	return Catalog.Format(msgs.locale, "dockerImgReading", nil)
+}
+
+// DockerImgEmpty says "No images on this server."
+// in the language the app shows.
+func DockerImgEmpty() string { return In(i18n.Locale()).DockerImgEmpty() }
+
+// DockerImgEmpty says "No images on this server."
+// in the language of msgs.
+func (msgs Messages) DockerImgEmpty() string {
+	return Catalog.Format(msgs.locale, "dockerImgEmpty", nil)
+}
+
+// DockerImgNoMatch says "No images match the filters."
+// in the language the app shows.
+func DockerImgNoMatch() string { return In(i18n.Locale()).DockerImgNoMatch() }
+
+// DockerImgNoMatch says "No images match the filters."
+// in the language of msgs.
+func (msgs Messages) DockerImgNoMatch() string {
+	return Catalog.Format(msgs.locale, "dockerImgNoMatch", nil)
+}
+
+// DockerImgListError says "Could not read image data: {error}"
+// in the language the app shows.
+func DockerImgListError(error string) string { return In(i18n.Locale()).DockerImgListError(error) }
+
+// DockerImgListError says "Could not read image data: {error}"
+// in the language of msgs.
+func (msgs Messages) DockerImgListError(error string) string {
+	return Catalog.Format(msgs.locale, "dockerImgListError", map[string]any{"error": error})
+}
+
+// DockerImgListNotReady says "Wait for a successful image refresh."
+// in the language the app shows.
+func DockerImgListNotReady() string { return In(i18n.Locale()).DockerImgListNotReady() }
+
+// DockerImgListNotReady says "Wait for a successful image refresh."
+// in the language of msgs.
+func (msgs Messages) DockerImgListNotReady() string {
+	return Catalog.Format(msgs.locale, "dockerImgListNotReady", nil)
+}
+
+// DockerImgUnavailable says "The image or server connection is no longer available."
+// in the language the app shows.
+func DockerImgUnavailable() string { return In(i18n.Locale()).DockerImgUnavailable() }
+
+// DockerImgUnavailable says "The image or server connection is no longer available."
+// in the language of msgs.
+func (msgs Messages) DockerImgUnavailable() string {
+	return Catalog.Format(msgs.locale, "dockerImgUnavailable", nil)
+}
+
+// DockerImgBusy says "Wait for the current Docker operation to finish."
+// in the language the app shows.
+func DockerImgBusy() string { return In(i18n.Locale()).DockerImgBusy() }
+
+// DockerImgBusy says "Wait for the current Docker operation to finish."
+// in the language of msgs.
+func (msgs Messages) DockerImgBusy() string {
+	return Catalog.Format(msgs.locale, "dockerImgBusy", nil)
+}
+
+// DockerImgHistory says "Layer history"
+// in the language the app shows.
+func DockerImgHistory() string { return In(i18n.Locale()).DockerImgHistory() }
+
+// DockerImgHistory says "Layer history"
+// in the language of msgs.
+func (msgs Messages) DockerImgHistory() string {
+	return Catalog.Format(msgs.locale, "dockerImgHistory", nil)
+}
+
+// DockerImgPull says "Pull"
+// in the language the app shows.
+func DockerImgPull() string { return In(i18n.Locale()).DockerImgPull() }
+
+// DockerImgPull says "Pull"
+// in the language of msgs.
+func (msgs Messages) DockerImgPull() string {
+	return Catalog.Format(msgs.locale, "dockerImgPull", nil)
+}
+
+// DockerImgBuild says "Build"
+// in the language the app shows.
+func DockerImgBuild() string { return In(i18n.Locale()).DockerImgBuild() }
+
+// DockerImgBuild says "Build"
+// in the language of msgs.
+func (msgs Messages) DockerImgBuild() string {
+	return Catalog.Format(msgs.locale, "dockerImgBuild", nil)
+}
+
+// DockerImgLoadImport says "Load / Import"
+// in the language the app shows.
+func DockerImgLoadImport() string { return In(i18n.Locale()).DockerImgLoadImport() }
+
+// DockerImgLoadImport says "Load / Import"
+// in the language of msgs.
+func (msgs Messages) DockerImgLoadImport() string {
+	return Catalog.Format(msgs.locale, "dockerImgLoadImport", nil)
+}
+
+// DockerImgLoad says "Load image"
+// in the language the app shows.
+func DockerImgLoad() string { return In(i18n.Locale()).DockerImgLoad() }
+
+// DockerImgLoad says "Load image"
+// in the language of msgs.
+func (msgs Messages) DockerImgLoad() string {
+	return Catalog.Format(msgs.locale, "dockerImgLoad", nil)
+}
+
+// DockerImgImport says "Import filesystem"
+// in the language the app shows.
+func DockerImgImport() string { return In(i18n.Locale()).DockerImgImport() }
+
+// DockerImgImport says "Import filesystem"
+// in the language of msgs.
+func (msgs Messages) DockerImgImport() string {
+	return Catalog.Format(msgs.locale, "dockerImgImport", nil)
+}
+
+// DockerImgPrune says "Prune"
+// in the language the app shows.
+func DockerImgPrune() string { return In(i18n.Locale()).DockerImgPrune() }
+
+// DockerImgPrune says "Prune"
+// in the language of msgs.
+func (msgs Messages) DockerImgPrune() string {
+	return Catalog.Format(msgs.locale, "dockerImgPrune", nil)
+}
+
+// DockerImgTag says "Tag image"
+// in the language the app shows.
+func DockerImgTag() string { return In(i18n.Locale()).DockerImgTag() }
+
+// DockerImgTag says "Tag image"
+// in the language of msgs.
+func (msgs Messages) DockerImgTag() string {
+	return Catalog.Format(msgs.locale, "dockerImgTag", nil)
+}
+
+// DockerImgPush says "Push image"
+// in the language the app shows.
+func DockerImgPush() string { return In(i18n.Locale()).DockerImgPush() }
+
+// DockerImgPush says "Push image"
+// in the language of msgs.
+func (msgs Messages) DockerImgPush() string {
+	return Catalog.Format(msgs.locale, "dockerImgPush", nil)
+}
+
+// DockerImgRemove says "Remove image"
+// in the language the app shows.
+func DockerImgRemove() string { return In(i18n.Locale()).DockerImgRemove() }
+
+// DockerImgRemove says "Remove image"
+// in the language of msgs.
+func (msgs Messages) DockerImgRemove() string {
+	return Catalog.Format(msgs.locale, "dockerImgRemove", nil)
+}
+
+// DockerImgRemoveMany says "Remove images"
+// in the language the app shows.
+func DockerImgRemoveMany() string { return In(i18n.Locale()).DockerImgRemoveMany() }
+
+// DockerImgRemoveMany says "Remove images"
+// in the language of msgs.
+func (msgs Messages) DockerImgRemoveMany() string {
+	return Catalog.Format(msgs.locale, "dockerImgRemoveMany", nil)
+}
+
+// DockerImgSave says "Save on server"
+// in the language the app shows.
+func DockerImgSave() string { return In(i18n.Locale()).DockerImgSave() }
+
+// DockerImgSave says "Save on server"
+// in the language of msgs.
+func (msgs Messages) DockerImgSave() string {
+	return Catalog.Format(msgs.locale, "dockerImgSave", nil)
+}
+
+// DockerImgRun says "Run a container…"
+// in the language the app shows.
+func DockerImgRun() string { return In(i18n.Locale()).DockerImgRun() }
+
+// DockerImgRun says "Run a container…"
+// in the language of msgs.
+func (msgs Messages) DockerImgRun() string {
+	return Catalog.Format(msgs.locale, "dockerImgRun", nil)
+}
+
+// DockerImgTagFirst says "Add a repository and tag first."
+// in the language the app shows.
+func DockerImgTagFirst() string { return In(i18n.Locale()).DockerImgTagFirst() }
+
+// DockerImgTagFirst says "Add a repository and tag first."
+// in the language of msgs.
+func (msgs Messages) DockerImgTagFirst() string {
+	return Catalog.Format(msgs.locale, "dockerImgTagFirst", nil)
+}
+
+// DockerImgUsedReason says "Containers use this image. Review them before using force remove."
+// in the language the app shows.
+func DockerImgUsedReason() string { return In(i18n.Locale()).DockerImgUsedReason() }
+
+// DockerImgUsedReason says "Containers use this image. Review them before using force remove."
+// in the language of msgs.
+func (msgs Messages) DockerImgUsedReason() string {
+	return Catalog.Format(msgs.locale, "dockerImgUsedReason", nil)
+}
+
+// DockerImgPodmanForce says "Podman force removal can delete dependent containers and is disabled here."
+// in the language the app shows.
+func DockerImgPodmanForce() string { return In(i18n.Locale()).DockerImgPodmanForce() }
+
+// DockerImgPodmanForce says "Podman force removal can delete dependent containers and is disabled here."
+// in the language of msgs.
+func (msgs Messages) DockerImgPodmanForce() string {
+	return Catalog.Format(msgs.locale, "dockerImgPodmanForce", nil)
+}
+
+// DockerImgForceRequired says "Check Force remove to continue."
+// in the language the app shows.
+func DockerImgForceRequired() string { return In(i18n.Locale()).DockerImgForceRequired() }
+
+// DockerImgForceRequired says "Check Force remove to continue."
+// in the language of msgs.
+func (msgs Messages) DockerImgForceRequired() string {
+	return Catalog.Format(msgs.locale, "dockerImgForceRequired", nil)
+}
+
+// DockerImgInvalidRef says "Enter a valid image reference. For tags, use repository:tag; for all tags, enter a repository without a tag or digest."
+// in the language the app shows.
+func DockerImgInvalidRef() string { return In(i18n.Locale()).DockerImgInvalidRef() }
+
+// DockerImgInvalidRef says "Enter a valid image reference. For tags, use repository:tag; for all tags, enter a repository without a tag or digest."
+// in the language of msgs.
+func (msgs Messages) DockerImgInvalidRef() string {
+	return Catalog.Format(msgs.locale, "dockerImgInvalidRef", nil)
+}
+
+// DockerImgInvalidPlatform says "Use a platform such as linux/amd64 or linux/arm64/v8."
+// in the language the app shows.
+func DockerImgInvalidPlatform() string { return In(i18n.Locale()).DockerImgInvalidPlatform() }
+
+// DockerImgInvalidPlatform says "Use a platform such as linux/amd64 or linux/arm64/v8."
+// in the language of msgs.
+func (msgs Messages) DockerImgInvalidPlatform() string {
+	return Catalog.Format(msgs.locale, "dockerImgInvalidPlatform", nil)
+}
+
+// DockerImgInvalidPath says "Enter an absolute server path without control characters."
+// in the language the app shows.
+func DockerImgInvalidPath() string { return In(i18n.Locale()).DockerImgInvalidPath() }
+
+// DockerImgInvalidPath says "Enter an absolute server path without control characters."
+// in the language of msgs.
+func (msgs Messages) DockerImgInvalidPath() string {
+	return Catalog.Format(msgs.locale, "dockerImgInvalidPath", nil)
+}
+
+// DockerImgInvalidArg says "Use NAME=value for each build argument."
+// in the language the app shows.
+func DockerImgInvalidArg() string { return In(i18n.Locale()).DockerImgInvalidArg() }
+
+// DockerImgInvalidArg says "Use NAME=value for each build argument."
+// in the language of msgs.
+func (msgs Messages) DockerImgInvalidArg() string {
+	return Catalog.Format(msgs.locale, "dockerImgInvalidArg", nil)
+}
+
+// DockerImgInvalidTarget says "Enter a valid Dockerfile stage name."
+// in the language the app shows.
+func DockerImgInvalidTarget() string { return In(i18n.Locale()).DockerImgInvalidTarget() }
+
+// DockerImgInvalidTarget says "Enter a valid Dockerfile stage name."
+// in the language of msgs.
+func (msgs Messages) DockerImgInvalidTarget() string {
+	return Catalog.Format(msgs.locale, "dockerImgInvalidTarget", nil)
+}
+
+// DockerImgAllTags says "Pull all tags"
+// in the language the app shows.
+func DockerImgAllTags() string { return In(i18n.Locale()).DockerImgAllTags() }
+
+// DockerImgAllTags says "Pull all tags"
+// in the language of msgs.
+func (msgs Messages) DockerImgAllTags() string {
+	return Catalog.Format(msgs.locale, "dockerImgAllTags", nil)
+}
+
+// DockerImgSearch says "Suggest public Docker Hub images (sends the search term to Docker Hub)"
+// in the language the app shows.
+func DockerImgSearch() string { return In(i18n.Locale()).DockerImgSearch() }
+
+// DockerImgSearch says "Suggest public Docker Hub images (sends the search term to Docker Hub)"
+// in the language of msgs.
+func (msgs Messages) DockerImgSearch() string {
+	return Catalog.Format(msgs.locale, "dockerImgSearch", nil)
+}
+
+// DockerImgPodmanSearch says "Docker Hub suggestions are unavailable with Podman."
+// in the language the app shows.
+func DockerImgPodmanSearch() string { return In(i18n.Locale()).DockerImgPodmanSearch() }
+
+// DockerImgPodmanSearch says "Docker Hub suggestions are unavailable with Podman."
+// in the language of msgs.
+func (msgs Messages) DockerImgPodmanSearch() string {
+	return Catalog.Format(msgs.locale, "dockerImgPodmanSearch", nil)
+}
+
+// DockerImgPodmanPull says "With Podman, include the registry in the image reference, for example docker.io/library/alpine:latest."
+// in the language the app shows.
+func DockerImgPodmanPull() string { return In(i18n.Locale()).DockerImgPodmanPull() }
+
+// DockerImgPodmanPull says "With Podman, include the registry in the image reference, for example docker.io/library/alpine:latest."
+// in the language of msgs.
+func (msgs Messages) DockerImgPodmanPull() string {
+	return Catalog.Format(msgs.locale, "dockerImgPodmanPull", nil)
+}
+
+// DockerImgContext says "Build context on server"
+// in the language the app shows.
+func DockerImgContext() string { return In(i18n.Locale()).DockerImgContext() }
+
+// DockerImgContext says "Build context on server"
+// in the language of msgs.
+func (msgs Messages) DockerImgContext() string {
+	return Catalog.Format(msgs.locale, "dockerImgContext", nil)
+}
+
+// DockerImgDockerfile says "Dockerfile on server (optional)"
+// in the language the app shows.
+func DockerImgDockerfile() string { return In(i18n.Locale()).DockerImgDockerfile() }
+
+// DockerImgDockerfile says "Dockerfile on server (optional)"
+// in the language of msgs.
+func (msgs Messages) DockerImgDockerfile() string {
+	return Catalog.Format(msgs.locale, "dockerImgDockerfile", nil)
+}
+
+// DockerImgDockerfileDefault says "Defaults to Dockerfile in the context directory"
+// in the language the app shows.
+func DockerImgDockerfileDefault() string { return In(i18n.Locale()).DockerImgDockerfileDefault() }
+
+// DockerImgDockerfileDefault says "Defaults to Dockerfile in the context directory"
+// in the language of msgs.
+func (msgs Messages) DockerImgDockerfileDefault() string {
+	return Catalog.Format(msgs.locale, "dockerImgDockerfileDefault", nil)
+}
+
+// DockerImgBuildTags says "Tags"
+// in the language the app shows.
+func DockerImgBuildTags() string { return In(i18n.Locale()).DockerImgBuildTags() }
+
+// DockerImgBuildTags says "Tags"
+// in the language of msgs.
+func (msgs Messages) DockerImgBuildTags() string {
+	return Catalog.Format(msgs.locale, "dockerImgBuildTags", nil)
+}
+
+// DockerImgBuildArgs says "Build arguments"
+// in the language the app shows.
+func DockerImgBuildArgs() string { return In(i18n.Locale()).DockerImgBuildArgs() }
+
+// DockerImgBuildArgs says "Build arguments"
+// in the language of msgs.
+func (msgs Messages) DockerImgBuildArgs() string {
+	return Catalog.Format(msgs.locale, "dockerImgBuildArgs", nil)
+}
+
+// DockerImgAddTag says "Add tag"
+// in the language the app shows.
+func DockerImgAddTag() string { return In(i18n.Locale()).DockerImgAddTag() }
+
+// DockerImgAddTag says "Add tag"
+// in the language of msgs.
+func (msgs Messages) DockerImgAddTag() string {
+	return Catalog.Format(msgs.locale, "dockerImgAddTag", nil)
+}
+
+// DockerImgAddArg says "Add argument"
+// in the language the app shows.
+func DockerImgAddArg() string { return In(i18n.Locale()).DockerImgAddArg() }
+
+// DockerImgAddArg says "Add argument"
+// in the language of msgs.
+func (msgs Messages) DockerImgAddArg() string {
+	return Catalog.Format(msgs.locale, "dockerImgAddArg", nil)
+}
+
+// DockerImgRemoveField says "Remove field"
+// in the language the app shows.
+func DockerImgRemoveField() string { return In(i18n.Locale()).DockerImgRemoveField() }
+
+// DockerImgRemoveField says "Remove field"
+// in the language of msgs.
+func (msgs Messages) DockerImgRemoveField() string {
+	return Catalog.Format(msgs.locale, "dockerImgRemoveField", nil)
+}
+
+// DockerImgBuildSecrets says "Only build trusted Dockerfiles. Do not put passwords or tokens in build arguments."
+// in the language the app shows.
+func DockerImgBuildSecrets() string { return In(i18n.Locale()).DockerImgBuildSecrets() }
+
+// DockerImgBuildSecrets says "Only build trusted Dockerfiles. Do not put passwords or tokens in build arguments."
+// in the language of msgs.
+func (msgs Messages) DockerImgBuildSecrets() string {
+	return Catalog.Format(msgs.locale, "dockerImgBuildSecrets", nil)
+}
+
+// DockerImgTarget says "Target stage (optional)"
+// in the language the app shows.
+func DockerImgTarget() string { return In(i18n.Locale()).DockerImgTarget() }
+
+// DockerImgTarget says "Target stage (optional)"
+// in the language of msgs.
+func (msgs Messages) DockerImgTarget() string {
+	return Catalog.Format(msgs.locale, "dockerImgTarget", nil)
+}
+
+// DockerImgNoCache says "Do not use the build cache"
+// in the language the app shows.
+func DockerImgNoCache() string { return In(i18n.Locale()).DockerImgNoCache() }
+
+// DockerImgNoCache says "Do not use the build cache"
+// in the language of msgs.
+func (msgs Messages) DockerImgNoCache() string {
+	return Catalog.Format(msgs.locale, "dockerImgNoCache", nil)
+}
+
+// DockerImgBuildPull says "Always pull base images"
+// in the language the app shows.
+func DockerImgBuildPull() string { return In(i18n.Locale()).DockerImgBuildPull() }
+
+// DockerImgBuildPull says "Always pull base images"
+// in the language of msgs.
+func (msgs Messages) DockerImgBuildPull() string {
+	return Catalog.Format(msgs.locale, "dockerImgBuildPull", nil)
+}
+
+// DockerImgArchivePath says "Archive path on server"
+// in the language the app shows.
+func DockerImgArchivePath() string { return In(i18n.Locale()).DockerImgArchivePath() }
+
+// DockerImgArchivePath says "Archive path on server"
+// in the language of msgs.
+func (msgs Messages) DockerImgArchivePath() string {
+	return Catalog.Format(msgs.locale, "dockerImgArchivePath", nil)
+}
+
+// DockerImgChooseArchive says "Upload local archive…"
+// in the language the app shows.
+func DockerImgChooseArchive() string { return In(i18n.Locale()).DockerImgChooseArchive() }
+
+// DockerImgChooseArchive says "Upload local archive…"
+// in the language of msgs.
+func (msgs Messages) DockerImgChooseArchive() string {
+	return Catalog.Format(msgs.locale, "dockerImgChooseArchive", nil)
+}
+
+// DockerImgInvalidArchive says "Choose a .tar, .tar.gz or .tgz archive."
+// in the language the app shows.
+func DockerImgInvalidArchive() string { return In(i18n.Locale()).DockerImgInvalidArchive() }
+
+// DockerImgInvalidArchive says "Choose a .tar, .tar.gz or .tgz archive."
+// in the language of msgs.
+func (msgs Messages) DockerImgInvalidArchive() string {
+	return Catalog.Format(msgs.locale, "dockerImgInvalidArchive", nil)
+}
+
+// DockerImgNoSFTP says "Local upload requires an active SFTP connection."
+// in the language the app shows.
+func DockerImgNoSFTP() string { return In(i18n.Locale()).DockerImgNoSFTP() }
+
+// DockerImgNoSFTP says "Local upload requires an active SFTP connection."
+// in the language of msgs.
+func (msgs Messages) DockerImgNoSFTP() string {
+	return Catalog.Format(msgs.locale, "dockerImgNoSFTP", nil)
+}
+
+// DockerImgUseServer says "Use server path"
+// in the language the app shows.
+func DockerImgUseServer() string { return In(i18n.Locale()).DockerImgUseServer() }
+
+// DockerImgUseServer says "Use server path"
+// in the language of msgs.
+func (msgs Messages) DockerImgUseServer() string {
+	return Catalog.Format(msgs.locale, "dockerImgUseServer", nil)
+}
+
+// DockerImgUploaded says "Uploaded:"
+// in the language the app shows.
+func DockerImgUploaded() string { return In(i18n.Locale()).DockerImgUploaded() }
+
+// DockerImgUploaded says "Uploaded:"
+// in the language of msgs.
+func (msgs Messages) DockerImgUploaded() string {
+	return Catalog.Format(msgs.locale, "dockerImgUploaded", nil)
+}
+
+// DockerImgImportMode says "Import a root filesystem instead of loading an image archive"
+// in the language the app shows.
+func DockerImgImportMode() string { return In(i18n.Locale()).DockerImgImportMode() }
+
+// DockerImgImportMode says "Import a root filesystem instead of loading an image archive"
+// in the language of msgs.
+func (msgs Messages) DockerImgImportMode() string {
+	return Catalog.Format(msgs.locale, "dockerImgImportMode", nil)
+}
+
+// DockerImgArchiveHint says "Load restores an image archive and its tags. Import creates a new image from a filesystem archive. Either can replace…"
+// in the language the app shows.
+func DockerImgArchiveHint() string { return In(i18n.Locale()).DockerImgArchiveHint() }
+
+// DockerImgArchiveHint says "Load restores an image archive and its tags. Import creates a new image from a filesystem archive. Either can replace…"
+// in the language of msgs.
+func (msgs Messages) DockerImgArchiveHint() string {
+	return Catalog.Format(msgs.locale, "dockerImgArchiveHint", nil)
+}
+
+// DockerImgPruneAll says "Include all unused images"
+// in the language the app shows.
+func DockerImgPruneAll() string { return In(i18n.Locale()).DockerImgPruneAll() }
+
+// DockerImgPruneAll says "Include all unused images"
+// in the language of msgs.
+func (msgs Messages) DockerImgPruneAll() string {
+	return Catalog.Format(msgs.locale, "dockerImgPruneAll", nil)
+}
+
+// DockerImgPruneDangling says "Permanently delete dangling images that no container uses."
+// in the language the app shows.
+func DockerImgPruneDangling() string { return In(i18n.Locale()).DockerImgPruneDangling() }
+
+// DockerImgPruneDangling says "Permanently delete dangling images that no container uses."
+// in the language of msgs.
+func (msgs Messages) DockerImgPruneDangling() string {
+	return Catalog.Format(msgs.locale, "dockerImgPruneDangling", nil)
+}
+
+// DockerImgPruneWarning says "Permanently delete all images not used by a container, including tagged images. Redeployments may need to pull or reb…"
+// in the language the app shows.
+func DockerImgPruneWarning() string { return In(i18n.Locale()).DockerImgPruneWarning() }
+
+// DockerImgPruneWarning says "Permanently delete all images not used by a container, including tagged images. Redeployments may need to pull or reb…"
+// in the language of msgs.
+func (msgs Messages) DockerImgPruneWarning() string {
+	return Catalog.Format(msgs.locale, "dockerImgPruneWarning", nil)
+}
+
+// DockerImgPruneEmpty says "No images are expected to be removed."
+// in the language the app shows.
+func DockerImgPruneEmpty() string { return In(i18n.Locale()).DockerImgPruneEmpty() }
+
+// DockerImgPruneEmpty says "No images are expected to be removed."
+// in the language of msgs.
+func (msgs Messages) DockerImgPruneEmpty() string {
+	return Catalog.Format(msgs.locale, "dockerImgPruneEmpty", nil)
+}
+
+// DockerImgPruneChanged says "The cleanup candidates could not be verified. Refresh and review them before retrying."
+// in the language the app shows.
+func DockerImgPruneChanged() string { return In(i18n.Locale()).DockerImgPruneChanged() }
+
+// DockerImgPruneChanged says "The cleanup candidates could not be verified. Refresh and review them before retrying."
+// in the language of msgs.
+func (msgs Messages) DockerImgPruneChanged() string {
+	return Catalog.Format(msgs.locale, "dockerImgPruneChanged", nil)
+}
+
+// DockerImgEstimate says "Estimated image size: {size}"
+// in the language the app shows.
+func DockerImgEstimate(size string) string { return In(i18n.Locale()).DockerImgEstimate(size) }
+
+// DockerImgEstimate says "Estimated image size: {size}"
+// in the language of msgs.
+func (msgs Messages) DockerImgEstimate(size string) string {
+	return Catalog.Format(msgs.locale, "dockerImgEstimate", map[string]any{"size": size})
+}
+
+// DockerImgEstimateNote says "Preview from the last refresh. Shared layers, build cache and concurrent engine changes affect what is removed and th…"
+// in the language the app shows.
+func DockerImgEstimateNote() string { return In(i18n.Locale()).DockerImgEstimateNote() }
+
+// DockerImgEstimateNote says "Preview from the last refresh. Shared layers, build cache and concurrent engine changes affect what is removed and th…"
+// in the language of msgs.
+func (msgs Messages) DockerImgEstimateNote() string {
+	return Catalog.Format(msgs.locale, "dockerImgEstimateNote", nil)
+}
+
+// DockerImgNewTag says "New repository:tag"
+// in the language the app shows.
+func DockerImgNewTag() string { return In(i18n.Locale()).DockerImgNewTag() }
+
+// DockerImgNewTag says "New repository:tag"
+// in the language of msgs.
+func (msgs Messages) DockerImgNewTag() string {
+	return Catalog.Format(msgs.locale, "dockerImgNewTag", nil)
+}
+
+// DockerImgTagWarning says "If the destination already exists, this can move its tag to this image."
+// in the language the app shows.
+func DockerImgTagWarning() string { return In(i18n.Locale()).DockerImgTagWarning() }
+
+// DockerImgTagWarning says "If the destination already exists, this can move its tag to this image."
+// in the language of msgs.
+func (msgs Messages) DockerImgTagWarning() string {
+	return Catalog.Format(msgs.locale, "dockerImgTagWarning", nil)
+}
+
+// DockerImgPushWarning says "Upload this tag and its layers to the registry named by the reference. A matching remote tag may be replaced."
+// in the language the app shows.
+func DockerImgPushWarning() string { return In(i18n.Locale()).DockerImgPushWarning() }
+
+// DockerImgPushWarning says "Upload this tag and its layers to the registry named by the reference. A matching remote tag may be replaced."
+// in the language of msgs.
+func (msgs Messages) DockerImgPushWarning() string {
+	return Catalog.Format(msgs.locale, "dockerImgPushWarning", nil)
+}
+
+// DockerImgRemoveWarning says "A selected tag is removed by name. Removing the last tag may delete the image and unshared layers. Selecting an untag…"
+// in the language the app shows.
+func DockerImgRemoveWarning() string { return In(i18n.Locale()).DockerImgRemoveWarning() }
+
+// DockerImgRemoveWarning says "A selected tag is removed by name. Removing the last tag may delete the image and unshared layers. Selecting an untag…"
+// in the language of msgs.
+func (msgs Messages) DockerImgRemoveWarning() string {
+	return Catalog.Format(msgs.locale, "dockerImgRemoveWarning", nil)
+}
+
+// DockerImgForceWarning says "Force removal can remove a tag or image still needed by existing containers. You may not be able to recreate those co…"
+// in the language the app shows.
+func DockerImgForceWarning() string { return In(i18n.Locale()).DockerImgForceWarning() }
+
+// DockerImgForceWarning says "Force removal can remove a tag or image still needed by existing containers. You may not be able to recreate those co…"
+// in the language of msgs.
+func (msgs Messages) DockerImgForceWarning() string {
+	return Catalog.Format(msgs.locale, "dockerImgForceWarning", nil)
+}
+
+// DockerImgGzip says "Compress with gzip"
+// in the language the app shows.
+func DockerImgGzip() string { return In(i18n.Locale()).DockerImgGzip() }
+
+// DockerImgGzip says "Compress with gzip"
+// in the language of msgs.
+func (msgs Messages) DockerImgGzip() string {
+	return Catalog.Format(msgs.locale, "dockerImgGzip", nil)
+}
+
+// DockerImgSaveHint says "Writes a private archive on the server. Existing paths are never overwritten."
+// in the language the app shows.
+func DockerImgSaveHint() string { return In(i18n.Locale()).DockerImgSaveHint() }
+
+// DockerImgSaveHint says "Writes a private archive on the server. Existing paths are never overwritten."
+// in the language of msgs.
+func (msgs Messages) DockerImgSaveHint() string {
+	return Catalog.Format(msgs.locale, "dockerImgSaveHint", nil)
+}
+
+// DockerImgStop says "Stop operation"
+// in the language the app shows.
+func DockerImgStop() string { return In(i18n.Locale()).DockerImgStop() }
+
+// DockerImgStop says "Stop operation"
+// in the language of msgs.
+func (msgs Messages) DockerImgStop() string {
+	return Catalog.Format(msgs.locale, "dockerImgStop", nil)
+}
+
+// DockerImgStopping says "Stopping…"
+// in the language the app shows.
+func DockerImgStopping() string { return In(i18n.Locale()).DockerImgStopping() }
+
+// DockerImgStopping says "Stopping…"
+// in the language of msgs.
+func (msgs Messages) DockerImgStopping() string {
+	return Catalog.Format(msgs.locale, "dockerImgStopping", nil)
+}
+
+// DockerImgStopped says "Operation canceled. The engine may have applied part of the change."
+// in the language the app shows.
+func DockerImgStopped() string { return In(i18n.Locale()).DockerImgStopped() }
+
+// DockerImgStopped says "Operation canceled. The engine may have applied part of the change."
+// in the language of msgs.
+func (msgs Messages) DockerImgStopped() string {
+	return Catalog.Format(msgs.locale, "dockerImgStopped", nil)
+}
+
+// DockerImgPushAuth says "The registry denied this push. Check your permissions and sign in under Docker › System before retrying."
+// in the language the app shows.
+func DockerImgPushAuth() string { return In(i18n.Locale()).DockerImgPushAuth() }
+
+// DockerImgPushAuth says "The registry denied this push. Check your permissions and sign in under Docker › System before retrying."
+// in the language of msgs.
+func (msgs Messages) DockerImgPushAuth() string {
+	return Catalog.Format(msgs.locale, "dockerImgPushAuth", nil)
+}
+
+// DockerImgRaw says "Raw JSON"
+// in the language the app shows.
+func DockerImgRaw() string { return In(i18n.Locale()).DockerImgRaw() }
+
+// DockerImgRaw says "Raw JSON"
+// in the language of msgs.
+func (msgs Messages) DockerImgRaw() string {
+	return Catalog.Format(msgs.locale, "dockerImgRaw", nil)
+}
+
+// DockerImgDigests says "Digests"
+// in the language the app shows.
+func DockerImgDigests() string { return In(i18n.Locale()).DockerImgDigests() }
+
+// DockerImgDigests says "Digests"
+// in the language of msgs.
+func (msgs Messages) DockerImgDigests() string {
+	return Catalog.Format(msgs.locale, "dockerImgDigests", nil)
+}
+
+// DockerImgAuthor says "Author"
+// in the language the app shows.
+func DockerImgAuthor() string { return In(i18n.Locale()).DockerImgAuthor() }
+
+// DockerImgAuthor says "Author"
+// in the language of msgs.
+func (msgs Messages) DockerImgAuthor() string {
+	return Catalog.Format(msgs.locale, "dockerImgAuthor", nil)
+}
+
+// DockerImgLayers says "Layers"
+// in the language the app shows.
+func DockerImgLayers() string { return In(i18n.Locale()).DockerImgLayers() }
+
+// DockerImgLayers says "Layers"
+// in the language of msgs.
+func (msgs Messages) DockerImgLayers() string {
+	return Catalog.Format(msgs.locale, "dockerImgLayers", nil)
+}
+
+// DockerImgConfig says "Image configuration"
+// in the language the app shows.
+func DockerImgConfig() string { return In(i18n.Locale()).DockerImgConfig() }
+
+// DockerImgConfig says "Image configuration"
+// in the language of msgs.
+func (msgs Messages) DockerImgConfig() string {
+	return Catalog.Format(msgs.locale, "dockerImgConfig", nil)
+}
+
+// DockerImgLayer says "Layer {index}"
+// in the language the app shows.
+func DockerImgLayer(index int) string { return In(i18n.Locale()).DockerImgLayer(index) }
+
+// DockerImgLayer says "Layer {index}"
+// in the language of msgs.
+func (msgs Messages) DockerImgLayer(index int) string {
+	return Catalog.Format(msgs.locale, "dockerImgLayer", map[string]any{"index": index})
+}
+
+// DockerImgCreatedBy says "Created by"
+// in the language the app shows.
+func DockerImgCreatedBy() string { return In(i18n.Locale()).DockerImgCreatedBy() }
+
+// DockerImgCreatedBy says "Created by"
+// in the language of msgs.
+func (msgs Messages) DockerImgCreatedBy() string {
+	return Catalog.Format(msgs.locale, "dockerImgCreatedBy", nil)
+}
+
+// DockerImgComment says "Comment"
+// in the language the app shows.
+func DockerImgComment() string { return In(i18n.Locale()).DockerImgComment() }
+
+// DockerImgComment says "Comment"
+// in the language of msgs.
+func (msgs Messages) DockerImgComment() string {
+	return Catalog.Format(msgs.locale, "dockerImgComment", nil)
+}
+
 // DockerSecGeneral says "General"
 // in the language the app shows.
 func DockerSecGeneral() string { return In(i18n.Locale()).DockerSecGeneral() }

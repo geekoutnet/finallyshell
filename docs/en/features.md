@@ -1098,6 +1098,16 @@ Filter and sort containers, group by Compose project, and show or hide stopped c
 
 **Live stats** samples CPU, memory, network rates, disk I/O, and PIDs every two seconds while open. **Container files** requires a running, unpaused container with suitable shell utilities. Browse, rename, create directories, and delete entries there. Copy files or folders between the container and an absolute path on the SSH server; use the SSH file panel for transfers between the server and your computer. The row menu can also commit a container to an image or export its filesystem as a tar on the server, excluding mounted volumes. Both can include sensitive data.
 
+### Docker tab › Images
+
+The Images section lists local Docker or Podman images, including untagged images, with one row per tag. Sort any column, search references, IDs, platforms or container names, or filter to dangling or unused images. Hover over the creation time for the exact date and over the usage count for the container names. The displayed total counts each image once, not each tag; images can share layers. Select multiple rows with Ctrl/Cmd or Shift to remove them together.
+
+Use the row menu or the selected-image actions for details (including copyable fields and raw JSON), layer history, tagging, pushing, removal or saving a TAR or gzip archive on the server. Saving never overwrites an existing path and requires `mktemp` and `ln -T` on the server, plus `gzip` for compression. The run action takes you to Containers. Normal removal is disabled for images held by containers; on Docker, force removal requires a separate warning and checkbox. Podman force removal is unavailable because it can delete dependent containers. Removing an image does not also prune its parent images; use Prune explicitly for cleanup.
+
+Pull accepts a platform and optionally all tags. Public Docker Hub suggestions are opt-in and unavailable with Podman. Build uses a server-side context and Dockerfile, supports multiple tags and build arguments, and offers a target stage, platform, cache bypass and updated base images. Only build trusted Dockerfiles and never put credentials in build arguments. Load restores an image archive and Import creates a new image from a root filesystem archive. Use a server path or upload a local TAR/TAR.GZ over SFTP into a private temporary directory, cleaned up after the operation when the connection allows it.
+
+Long operations stream engine output and can be stopped; stopping does not undo completed work. If the registry denies a push, check permissions and sign in under System. Prune defaults to dangling images and shows a list and size estimate before you confirm. Including all unused images can also remove tagged images. The client checks that the candidates and container list still match just before cleanup. This check and cleanup are not atomic: the engine decides what is eligible at execution time and reports the actual reclaimed space.
+
 <a id="terminal-section"></a>
 
 ## Terminal

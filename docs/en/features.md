@@ -1784,6 +1784,12 @@ save with "permission denied".
 
 The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.
 
+### System tab › Services, logs and scheduled jobs
+
+- **Services:** Filter and sort units by state or startup policy. Select one or more rows and use **Actions** or the context menu. Details show status, the unit file and properties. Editing a drop-in backs up the existing `override.conf`, saves the replacement and reloads systemd; it does not restart the service. OpenRC and SysV service lists, when available, are read-only.
+- **Logs:** Follow the system journal, a unit journal or an absolute remote file path. Filter the journal by priority and time, or filter received lines by literal text or a regular expression. Pause freezes the display while up to 20,000 recent lines (and at most 24 MiB of text) buffer. A hidden viewer closes its SSH stream. Copy or save the filtered view; local export refuses to overwrite an existing file. Recently entered paths stay on this computer, not in the connection sync.
+- **Scheduled jobs:** Switch between your crontab, another user's crontab, system cron files and systemd timers. Personal crontab edits preserve unrelated lines and back up the existing crontab in the writing user's home (root's home when elevated). Disabling a job comments it out without deleting it. The next three times are estimates using the server's current UTC offset, not future daylight-saving changes or `CRON_TZ` settings. System cron files are edited separately with a backup; timers are read-only. **Run once now** shows command output and does not reproduce the cron environment or support `%` input syntax.
+
 ## Tunnels tab
 
 The "Tunnels" tab at the bottom right lists the tunnels of the current

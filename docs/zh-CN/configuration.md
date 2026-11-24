@@ -29,6 +29,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `hosts.v1.json` | 迁移第 1 版的 `hosts.json` 时保留的原文件。 |
 | `hosts.json.broken-<日期-时间>` | 读不出来的 `hosts.json` 的副本。 |
 | `settings.json` | 选项（见下面）。 |
+| `log-paths/<连接哈希>.json` | 每个连接最近输入的最多 12 个远程日志路径，仅存本机，不保存日志内容。旧版本以 `.bak-YYYYMMDDHHMMSS` 为后缀。 |
 | `known_hosts` | 信任过的主机指纹。 |
 | `background-<时间>.<扩展名>` | 终端背景图片的副本。 |
 | `icon-themes/` | 从 VSIX 文件安装的文件图标主题，存成 `<发布者>.<名称>.vsix`。 |

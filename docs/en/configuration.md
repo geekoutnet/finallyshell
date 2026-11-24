@@ -36,6 +36,7 @@ instead.
 | `hosts.v1.json` | The original file, kept when a version 1 `hosts.json` is migrated. |
 | `hosts.json.broken-<date-time>` | A copy of a `hosts.json` that could not be read. |
 | `settings.json` | The options (see below). |
+| `log-paths/<host-hash>.json` | Up to 12 recently entered remote log paths per connection; local only. No log contents are stored here. Previous versions use the `.bak-YYYYMMDDHHMMSS` suffix. |
 | `known_hosts` | Host keys you have trusted. |
 | `background-<time>.<extension>` | The copy of the terminal background image. |
 | `icon-themes/` | File icon themes installed from VSIX files, as `<publisher>.<name>.vsix`. |

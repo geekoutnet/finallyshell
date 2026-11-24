@@ -3776,6 +3776,1446 @@ func (msgs Messages) ErrTunnelStopped(error string) string {
 	return Catalog.Format(msgs.locale, "errTunnelStopped", map[string]any{"error": error})
 }
 
+// SvcFilter says "Filter services"
+// in the language the app shows.
+func SvcFilter() string { return In(i18n.Locale()).SvcFilter() }
+
+// SvcFilter says "Filter services"
+// in the language of msgs.
+func (msgs Messages) SvcFilter() string {
+	return Catalog.Format(msgs.locale, "svcFilter", nil)
+}
+
+// SvcState says "State"
+// in the language the app shows.
+func SvcState() string { return In(i18n.Locale()).SvcState() }
+
+// SvcState says "State"
+// in the language of msgs.
+func (msgs Messages) SvcState() string {
+	return Catalog.Format(msgs.locale, "svcState", nil)
+}
+
+// SvcAll says "All"
+// in the language the app shows.
+func SvcAll() string { return In(i18n.Locale()).SvcAll() }
+
+// SvcAll says "All"
+// in the language of msgs.
+func (msgs Messages) SvcAll() string {
+	return Catalog.Format(msgs.locale, "svcAll", nil)
+}
+
+// SvcRunning says "Running"
+// in the language the app shows.
+func SvcRunning() string { return In(i18n.Locale()).SvcRunning() }
+
+// SvcRunning says "Running"
+// in the language of msgs.
+func (msgs Messages) SvcRunning() string {
+	return Catalog.Format(msgs.locale, "svcRunning", nil)
+}
+
+// SvcFailed says "Failed"
+// in the language the app shows.
+func SvcFailed() string { return In(i18n.Locale()).SvcFailed() }
+
+// SvcFailed says "Failed"
+// in the language of msgs.
+func (msgs Messages) SvcFailed() string {
+	return Catalog.Format(msgs.locale, "svcFailed", nil)
+}
+
+// SvcInactive says "Inactive"
+// in the language the app shows.
+func SvcInactive() string { return In(i18n.Locale()).SvcInactive() }
+
+// SvcInactive says "Inactive"
+// in the language of msgs.
+func (msgs Messages) SvcInactive() string {
+	return Catalog.Format(msgs.locale, "svcInactive", nil)
+}
+
+// SvcEnabled says "Enabled"
+// in the language the app shows.
+func SvcEnabled() string { return In(i18n.Locale()).SvcEnabled() }
+
+// SvcEnabled says "Enabled"
+// in the language of msgs.
+func (msgs Messages) SvcEnabled() string {
+	return Catalog.Format(msgs.locale, "svcEnabled", nil)
+}
+
+// SvcFailedCount says "{count, plural, one {# failed} other {# failed}}"
+// in the language the app shows.
+func SvcFailedCount(count int) string { return In(i18n.Locale()).SvcFailedCount(count) }
+
+// SvcFailedCount says "{count, plural, one {# failed} other {# failed}}"
+// in the language of msgs.
+func (msgs Messages) SvcFailedCount(count int) string {
+	return Catalog.Format(msgs.locale, "svcFailedCount", map[string]any{"count": count})
+}
+
+// SvcActions says "Actions"
+// in the language the app shows.
+func SvcActions() string { return In(i18n.Locale()).SvcActions() }
+
+// SvcActions says "Actions"
+// in the language of msgs.
+func (msgs Messages) SvcActions() string {
+	return Catalog.Format(msgs.locale, "svcActions", nil)
+}
+
+// SvcReading says "Reading services…"
+// in the language the app shows.
+func SvcReading() string { return In(i18n.Locale()).SvcReading() }
+
+// SvcReading says "Reading services…"
+// in the language of msgs.
+func (msgs Messages) SvcReading() string {
+	return Catalog.Format(msgs.locale, "svcReading", nil)
+}
+
+// SvcReadFailed says "Could not read all service states: {detail}"
+// in the language the app shows.
+func SvcReadFailed(detail string) string { return In(i18n.Locale()).SvcReadFailed(detail) }
+
+// SvcReadFailed says "Could not read all service states: {detail}"
+// in the language of msgs.
+func (msgs Messages) SvcReadFailed(detail string) string {
+	return Catalog.Format(msgs.locale, "svcReadFailed", map[string]any{"detail": detail})
+}
+
+// SvcUnavailable says "No usable systemd, OpenRC, or SysV service manager found."
+// in the language the app shows.
+func SvcUnavailable() string { return In(i18n.Locale()).SvcUnavailable() }
+
+// SvcUnavailable says "No usable systemd, OpenRC, or SysV service manager found."
+// in the language of msgs.
+func (msgs Messages) SvcUnavailable() string {
+	return Catalog.Format(msgs.locale, "svcUnavailable", nil)
+}
+
+// SvcLegacy says "Non-systemd services are read-only."
+// in the language the app shows.
+func SvcLegacy() string { return In(i18n.Locale()).SvcLegacy() }
+
+// SvcLegacy says "Non-systemd services are read-only."
+// in the language of msgs.
+func (msgs Messages) SvcLegacy() string {
+	return Catalog.Format(msgs.locale, "svcLegacy", nil)
+}
+
+// SvcEmpty says "No matching services."
+// in the language the app shows.
+func SvcEmpty() string { return In(i18n.Locale()).SvcEmpty() }
+
+// SvcEmpty says "No matching services."
+// in the language of msgs.
+func (msgs Messages) SvcEmpty() string {
+	return Catalog.Format(msgs.locale, "svcEmpty", nil)
+}
+
+// SvcName says "Unit"
+// in the language the app shows.
+func SvcName() string { return In(i18n.Locale()).SvcName() }
+
+// SvcName says "Unit"
+// in the language of msgs.
+func (msgs Messages) SvcName() string {
+	return Catalog.Format(msgs.locale, "svcName", nil)
+}
+
+// SvcStartup says "Startup"
+// in the language the app shows.
+func SvcStartup() string { return In(i18n.Locale()).SvcStartup() }
+
+// SvcStartup says "Startup"
+// in the language of msgs.
+func (msgs Messages) SvcStartup() string {
+	return Catalog.Format(msgs.locale, "svcStartup", nil)
+}
+
+// SvcDescription says "Description"
+// in the language the app shows.
+func SvcDescription() string { return In(i18n.Locale()).SvcDescription() }
+
+// SvcDescription says "Description"
+// in the language of msgs.
+func (msgs Messages) SvcDescription() string {
+	return Catalog.Format(msgs.locale, "svcDescription", nil)
+}
+
+// SvcLoad says "Load"
+// in the language the app shows.
+func SvcLoad() string { return In(i18n.Locale()).SvcLoad() }
+
+// SvcLoad says "Load"
+// in the language of msgs.
+func (msgs Messages) SvcLoad() string {
+	return Catalog.Format(msgs.locale, "svcLoad", nil)
+}
+
+// SvcMemory says "Memory"
+// in the language the app shows.
+func SvcMemory() string { return In(i18n.Locale()).SvcMemory() }
+
+// SvcMemory says "Memory"
+// in the language of msgs.
+func (msgs Messages) SvcMemory() string {
+	return Catalog.Format(msgs.locale, "svcMemory", nil)
+}
+
+// SvcSelect says "Select one or more services first."
+// in the language the app shows.
+func SvcSelect() string { return In(i18n.Locale()).SvcSelect() }
+
+// SvcSelect says "Select one or more services first."
+// in the language of msgs.
+func (msgs Messages) SvcSelect() string {
+	return Catalog.Format(msgs.locale, "svcSelect", nil)
+}
+
+// SvcSelectOne says "Select exactly one row."
+// in the language the app shows.
+func SvcSelectOne() string { return In(i18n.Locale()).SvcSelectOne() }
+
+// SvcSelectOne says "Select exactly one row."
+// in the language of msgs.
+func (msgs Messages) SvcSelectOne() string {
+	return Catalog.Format(msgs.locale, "svcSelectOne", nil)
+}
+
+// SvcWrongState says "Unavailable in the current state."
+// in the language the app shows.
+func SvcWrongState() string { return In(i18n.Locale()).SvcWrongState() }
+
+// SvcWrongState says "Unavailable in the current state."
+// in the language of msgs.
+func (msgs Messages) SvcWrongState() string {
+	return Catalog.Format(msgs.locale, "svcWrongState", nil)
+}
+
+// SvcActionUnavailable says "Not available for {unit} in its current state."
+// in the language the app shows.
+func SvcActionUnavailable(unit string) string { return In(i18n.Locale()).SvcActionUnavailable(unit) }
+
+// SvcActionUnavailable says "Not available for {unit} in its current state."
+// in the language of msgs.
+func (msgs Messages) SvcActionUnavailable(unit string) string {
+	return Catalog.Format(msgs.locale, "svcActionUnavailable", map[string]any{"unit": unit})
+}
+
+// SvcDetails says "Unit details"
+// in the language the app shows.
+func SvcDetails() string { return In(i18n.Locale()).SvcDetails() }
+
+// SvcDetails says "Unit details"
+// in the language of msgs.
+func (msgs Messages) SvcDetails() string {
+	return Catalog.Format(msgs.locale, "svcDetails", nil)
+}
+
+// SvcUnitFile says "Unit file"
+// in the language the app shows.
+func SvcUnitFile() string { return In(i18n.Locale()).SvcUnitFile() }
+
+// SvcUnitFile says "Unit file"
+// in the language of msgs.
+func (msgs Messages) SvcUnitFile() string {
+	return Catalog.Format(msgs.locale, "svcUnitFile", nil)
+}
+
+// SvcProperties says "Properties"
+// in the language the app shows.
+func SvcProperties() string { return In(i18n.Locale()).SvcProperties() }
+
+// SvcProperties says "Properties"
+// in the language of msgs.
+func (msgs Messages) SvcProperties() string {
+	return Catalog.Format(msgs.locale, "svcProperties", nil)
+}
+
+// SvcJournal says "Follow unit journal"
+// in the language the app shows.
+func SvcJournal() string { return In(i18n.Locale()).SvcJournal() }
+
+// SvcJournal says "Follow unit journal"
+// in the language of msgs.
+func (msgs Messages) SvcJournal() string {
+	return Catalog.Format(msgs.locale, "svcJournal", nil)
+}
+
+// SvcEdit says "Edit override"
+// in the language the app shows.
+func SvcEdit() string { return In(i18n.Locale()).SvcEdit() }
+
+// SvcEdit says "Edit override"
+// in the language of msgs.
+func (msgs Messages) SvcEdit() string {
+	return Catalog.Format(msgs.locale, "svcEdit", nil)
+}
+
+// SvcOverrideNote says "Save this drop-in and reload systemd’s configuration. An existing override is backed up first. The service is not r…"
+// in the language the app shows.
+func SvcOverrideNote() string { return In(i18n.Locale()).SvcOverrideNote() }
+
+// SvcOverrideNote says "Save this drop-in and reload systemd’s configuration. An existing override is backed up first. The service is not r…"
+// in the language of msgs.
+func (msgs Messages) SvcOverrideNote() string {
+	return Catalog.Format(msgs.locale, "svcOverrideNote", nil)
+}
+
+// SvcStart says "Start"
+// in the language the app shows.
+func SvcStart() string { return In(i18n.Locale()).SvcStart() }
+
+// SvcStart says "Start"
+// in the language of msgs.
+func (msgs Messages) SvcStart() string {
+	return Catalog.Format(msgs.locale, "svcStart", nil)
+}
+
+// SvcStartNote says "Start the selected services now. This does not enable them at boot."
+// in the language the app shows.
+func SvcStartNote() string { return In(i18n.Locale()).SvcStartNote() }
+
+// SvcStartNote says "Start the selected services now. This does not enable them at boot."
+// in the language of msgs.
+func (msgs Messages) SvcStartNote() string {
+	return Catalog.Format(msgs.locale, "svcStartNote", nil)
+}
+
+// SvcStop says "Stop"
+// in the language the app shows.
+func SvcStop() string { return In(i18n.Locale()).SvcStop() }
+
+// SvcStop says "Stop"
+// in the language of msgs.
+func (msgs Messages) SvcStop() string {
+	return Catalog.Format(msgs.locale, "svcStop", nil)
+}
+
+// SvcStopNote says "Stop the selected services now. Active connections or dependent workloads may be interrupted."
+// in the language the app shows.
+func SvcStopNote() string { return In(i18n.Locale()).SvcStopNote() }
+
+// SvcStopNote says "Stop the selected services now. Active connections or dependent workloads may be interrupted."
+// in the language of msgs.
+func (msgs Messages) SvcStopNote() string {
+	return Catalog.Format(msgs.locale, "svcStopNote", nil)
+}
+
+// SvcRestart says "Restart"
+// in the language the app shows.
+func SvcRestart() string { return In(i18n.Locale()).SvcRestart() }
+
+// SvcRestart says "Restart"
+// in the language of msgs.
+func (msgs Messages) SvcRestart() string {
+	return Catalog.Format(msgs.locale, "svcRestart", nil)
+}
+
+// SvcRestartNote says "Stop and start the selected services. Active connections may be interrupted, including this SSH session."
+// in the language the app shows.
+func SvcRestartNote() string { return In(i18n.Locale()).SvcRestartNote() }
+
+// SvcRestartNote says "Stop and start the selected services. Active connections may be interrupted, including this SSH session."
+// in the language of msgs.
+func (msgs Messages) SvcRestartNote() string {
+	return Catalog.Format(msgs.locale, "svcRestartNote", nil)
+}
+
+// SvcReload says "Reload"
+// in the language the app shows.
+func SvcReload() string { return In(i18n.Locale()).SvcReload() }
+
+// SvcReload says "Reload"
+// in the language of msgs.
+func (msgs Messages) SvcReload() string {
+	return Catalog.Format(msgs.locale, "svcReload", nil)
+}
+
+// SvcReloadNote says "Ask the selected services to reload their configuration without restarting them."
+// in the language the app shows.
+func SvcReloadNote() string { return In(i18n.Locale()).SvcReloadNote() }
+
+// SvcReloadNote says "Ask the selected services to reload their configuration without restarting them."
+// in the language of msgs.
+func (msgs Messages) SvcReloadNote() string {
+	return Catalog.Format(msgs.locale, "svcReloadNote", nil)
+}
+
+// SvcEnable says "Enable"
+// in the language the app shows.
+func SvcEnable() string { return In(i18n.Locale()).SvcEnable() }
+
+// SvcEnable says "Enable"
+// in the language of msgs.
+func (msgs Messages) SvcEnable() string {
+	return Catalog.Format(msgs.locale, "svcEnable", nil)
+}
+
+// SvcEnableNote says "Enable the selected services for automatic startup; do not start them now."
+// in the language the app shows.
+func SvcEnableNote() string { return In(i18n.Locale()).SvcEnableNote() }
+
+// SvcEnableNote says "Enable the selected services for automatic startup; do not start them now."
+// in the language of msgs.
+func (msgs Messages) SvcEnableNote() string {
+	return Catalog.Format(msgs.locale, "svcEnableNote", nil)
+}
+
+// SvcDisable says "Disable"
+// in the language the app shows.
+func SvcDisable() string { return In(i18n.Locale()).SvcDisable() }
+
+// SvcDisable says "Disable"
+// in the language of msgs.
+func (msgs Messages) SvcDisable() string {
+	return Catalog.Format(msgs.locale, "svcDisable", nil)
+}
+
+// SvcDisableNote says "Remove automatic startup for the selected services; do not stop them now."
+// in the language the app shows.
+func SvcDisableNote() string { return In(i18n.Locale()).SvcDisableNote() }
+
+// SvcDisableNote says "Remove automatic startup for the selected services; do not stop them now."
+// in the language of msgs.
+func (msgs Messages) SvcDisableNote() string {
+	return Catalog.Format(msgs.locale, "svcDisableNote", nil)
+}
+
+// SvcEnableNow says "Enable and start"
+// in the language the app shows.
+func SvcEnableNow() string { return In(i18n.Locale()).SvcEnableNow() }
+
+// SvcEnableNow says "Enable and start"
+// in the language of msgs.
+func (msgs Messages) SvcEnableNow() string {
+	return Catalog.Format(msgs.locale, "svcEnableNow", nil)
+}
+
+// SvcEnableNowNote says "Enable automatic startup and start the selected services now."
+// in the language the app shows.
+func SvcEnableNowNote() string { return In(i18n.Locale()).SvcEnableNowNote() }
+
+// SvcEnableNowNote says "Enable automatic startup and start the selected services now."
+// in the language of msgs.
+func (msgs Messages) SvcEnableNowNote() string {
+	return Catalog.Format(msgs.locale, "svcEnableNowNote", nil)
+}
+
+// SvcMask says "Mask"
+// in the language the app shows.
+func SvcMask() string { return In(i18n.Locale()).SvcMask() }
+
+// SvcMask says "Mask"
+// in the language of msgs.
+func (msgs Messages) SvcMask() string {
+	return Catalog.Format(msgs.locale, "svcMask", nil)
+}
+
+// SvcMaskNote says "Warning: block all future starts of these services, including manual starts and activation by dependencies. This can …"
+// in the language the app shows.
+func SvcMaskNote() string { return In(i18n.Locale()).SvcMaskNote() }
+
+// SvcMaskNote says "Warning: block all future starts of these services, including manual starts and activation by dependencies. This can …"
+// in the language of msgs.
+func (msgs Messages) SvcMaskNote() string {
+	return Catalog.Format(msgs.locale, "svcMaskNote", nil)
+}
+
+// SvcUnmask says "Unmask"
+// in the language the app shows.
+func SvcUnmask() string { return In(i18n.Locale()).SvcUnmask() }
+
+// SvcUnmask says "Unmask"
+// in the language of msgs.
+func (msgs Messages) SvcUnmask() string {
+	return Catalog.Format(msgs.locale, "svcUnmask", nil)
+}
+
+// SvcUnmaskNote says "Remove the block on future starts. This does not start or enable the selected services."
+// in the language the app shows.
+func SvcUnmaskNote() string { return In(i18n.Locale()).SvcUnmaskNote() }
+
+// SvcUnmaskNote says "Remove the block on future starts. This does not start or enable the selected services."
+// in the language of msgs.
+func (msgs Messages) SvcUnmaskNote() string {
+	return Catalog.Format(msgs.locale, "svcUnmaskNote", nil)
+}
+
+// SvcReset says "Reset failed state"
+// in the language the app shows.
+func SvcReset() string { return In(i18n.Locale()).SvcReset() }
+
+// SvcReset says "Reset failed state"
+// in the language of msgs.
+func (msgs Messages) SvcReset() string {
+	return Catalog.Format(msgs.locale, "svcReset", nil)
+}
+
+// SvcResetNote says "Clear the failed state and restart counters. This does not fix or restart a service."
+// in the language the app shows.
+func SvcResetNote() string { return In(i18n.Locale()).SvcResetNote() }
+
+// SvcResetNote says "Clear the failed state and restart counters. This does not fix or restart a service."
+// in the language of msgs.
+func (msgs Messages) SvcResetNote() string {
+	return Catalog.Format(msgs.locale, "svcResetNote", nil)
+}
+
+// SvcCancelled says "Cancelled."
+// in the language the app shows.
+func SvcCancelled() string { return In(i18n.Locale()).SvcCancelled() }
+
+// SvcCancelled says "Cancelled."
+// in the language of msgs.
+func (msgs Messages) SvcCancelled() string {
+	return Catalog.Format(msgs.locale, "svcCancelled", nil)
+}
+
+// SvcWorking says "Working…"
+// in the language the app shows.
+func SvcWorking() string { return In(i18n.Locale()).SvcWorking() }
+
+// SvcWorking says "Working…"
+// in the language of msgs.
+func (msgs Messages) SvcWorking() string {
+	return Catalog.Format(msgs.locale, "svcWorking", nil)
+}
+
+// SvcOutput says "Command output"
+// in the language the app shows.
+func SvcOutput() string { return In(i18n.Locale()).SvcOutput() }
+
+// SvcOutput says "Command output"
+// in the language of msgs.
+func (msgs Messages) SvcOutput() string {
+	return Catalog.Format(msgs.locale, "svcOutput", nil)
+}
+
+// SvcConfirm says "Confirm"
+// in the language the app shows.
+func SvcConfirm() string { return In(i18n.Locale()).SvcConfirm() }
+
+// SvcConfirm says "Confirm"
+// in the language of msgs.
+func (msgs Messages) SvcConfirm() string {
+	return Catalog.Format(msgs.locale, "svcConfirm", nil)
+}
+
+// SvcDone says "Completed."
+// in the language the app shows.
+func SvcDone() string { return In(i18n.Locale()).SvcDone() }
+
+// SvcDone says "Completed."
+// in the language of msgs.
+func (msgs Messages) SvcDone() string {
+	return Catalog.Format(msgs.locale, "svcDone", nil)
+}
+
+// SvcCannotEdit says "This file is not a supported editable text file, is protected, or exceeds 256 KiB."
+// in the language the app shows.
+func SvcCannotEdit() string { return In(i18n.Locale()).SvcCannotEdit() }
+
+// SvcCannotEdit says "This file is not a supported editable text file, is protected, or exceeds 256 KiB."
+// in the language of msgs.
+func (msgs Messages) SvcCannotEdit() string {
+	return Catalog.Format(msgs.locale, "svcCannotEdit", nil)
+}
+
+// LogvSource says "Log source"
+// in the language the app shows.
+func LogvSource() string { return In(i18n.Locale()).LogvSource() }
+
+// LogvSource says "Log source"
+// in the language of msgs.
+func (msgs Messages) LogvSource() string {
+	return Catalog.Format(msgs.locale, "logvSource", nil)
+}
+
+// LogvJournal says "System journal"
+// in the language the app shows.
+func LogvJournal() string { return In(i18n.Locale()).LogvJournal() }
+
+// LogvJournal says "System journal"
+// in the language of msgs.
+func (msgs Messages) LogvJournal() string {
+	return Catalog.Format(msgs.locale, "logvJournal", nil)
+}
+
+// LogvUnit says "Unit journal"
+// in the language the app shows.
+func LogvUnit() string { return In(i18n.Locale()).LogvUnit() }
+
+// LogvUnit says "Unit journal"
+// in the language of msgs.
+func (msgs Messages) LogvUnit() string {
+	return Catalog.Format(msgs.locale, "logvUnit", nil)
+}
+
+// LogvFile says "Log file"
+// in the language the app shows.
+func LogvFile() string { return In(i18n.Locale()).LogvFile() }
+
+// LogvFile says "Log file"
+// in the language of msgs.
+func (msgs Messages) LogvFile() string {
+	return Catalog.Format(msgs.locale, "logvFile", nil)
+}
+
+// LogvPath says "Remote log file path"
+// in the language the app shows.
+func LogvPath() string { return In(i18n.Locale()).LogvPath() }
+
+// LogvPath says "Remote log file path"
+// in the language of msgs.
+func (msgs Messages) LogvPath() string {
+	return Catalog.Format(msgs.locale, "logvPath", nil)
+}
+
+// LogvPriority says "Journal priority"
+// in the language the app shows.
+func LogvPriority() string { return In(i18n.Locale()).LogvPriority() }
+
+// LogvPriority says "Journal priority"
+// in the language of msgs.
+func (msgs Messages) LogvPriority() string {
+	return Catalog.Format(msgs.locale, "logvPriority", nil)
+}
+
+// LogvErr says "Error or higher"
+// in the language the app shows.
+func LogvErr() string { return In(i18n.Locale()).LogvErr() }
+
+// LogvErr says "Error or higher"
+// in the language of msgs.
+func (msgs Messages) LogvErr() string {
+	return Catalog.Format(msgs.locale, "logvErr", nil)
+}
+
+// LogvWarn says "Warning or higher"
+// in the language the app shows.
+func LogvWarn() string { return In(i18n.Locale()).LogvWarn() }
+
+// LogvWarn says "Warning or higher"
+// in the language of msgs.
+func (msgs Messages) LogvWarn() string {
+	return Catalog.Format(msgs.locale, "logvWarn", nil)
+}
+
+// LogvInfo says "Info or higher"
+// in the language the app shows.
+func LogvInfo() string { return In(i18n.Locale()).LogvInfo() }
+
+// LogvInfo says "Info or higher"
+// in the language of msgs.
+func (msgs Messages) LogvInfo() string {
+	return Catalog.Format(msgs.locale, "logvInfo", nil)
+}
+
+// LogvSince says "Journal time range"
+// in the language the app shows.
+func LogvSince() string { return In(i18n.Locale()).LogvSince() }
+
+// LogvSince says "Journal time range"
+// in the language of msgs.
+func (msgs Messages) LogvSince() string {
+	return Catalog.Format(msgs.locale, "logvSince", nil)
+}
+
+// LogvRecent says "Recent lines"
+// in the language the app shows.
+func LogvRecent() string { return In(i18n.Locale()).LogvRecent() }
+
+// LogvRecent says "Recent lines"
+// in the language of msgs.
+func (msgs Messages) LogvRecent() string {
+	return Catalog.Format(msgs.locale, "logvRecent", nil)
+}
+
+// LogvTenMin says "Last 10 min"
+// in the language the app shows.
+func LogvTenMin() string { return In(i18n.Locale()).LogvTenMin() }
+
+// LogvTenMin says "Last 10 min"
+// in the language of msgs.
+func (msgs Messages) LogvTenMin() string {
+	return Catalog.Format(msgs.locale, "logvTenMin", nil)
+}
+
+// LogvHour says "Last hour"
+// in the language the app shows.
+func LogvHour() string { return In(i18n.Locale()).LogvHour() }
+
+// LogvHour says "Last hour"
+// in the language of msgs.
+func (msgs Messages) LogvHour() string {
+	return Catalog.Format(msgs.locale, "logvHour", nil)
+}
+
+// LogvToday says "Today"
+// in the language the app shows.
+func LogvToday() string { return In(i18n.Locale()).LogvToday() }
+
+// LogvToday says "Today"
+// in the language of msgs.
+func (msgs Messages) LogvToday() string {
+	return Catalog.Format(msgs.locale, "logvToday", nil)
+}
+
+// LogvBoot says "This boot"
+// in the language the app shows.
+func LogvBoot() string { return In(i18n.Locale()).LogvBoot() }
+
+// LogvBoot says "This boot"
+// in the language of msgs.
+func (msgs Messages) LogvBoot() string {
+	return Catalog.Format(msgs.locale, "logvBoot", nil)
+}
+
+// LogvFollow says "Follow"
+// in the language the app shows.
+func LogvFollow() string { return In(i18n.Locale()).LogvFollow() }
+
+// LogvFollow says "Follow"
+// in the language of msgs.
+func (msgs Messages) LogvFollow() string {
+	return Catalog.Format(msgs.locale, "logvFollow", nil)
+}
+
+// LogvCommon says "Log sources…"
+// in the language the app shows.
+func LogvCommon() string { return In(i18n.Locale()).LogvCommon() }
+
+// LogvCommon says "Log sources…"
+// in the language of msgs.
+func (msgs Messages) LogvCommon() string {
+	return Catalog.Format(msgs.locale, "logvCommon", nil)
+}
+
+// LogvDocker says "Docker daemon journal"
+// in the language the app shows.
+func LogvDocker() string { return In(i18n.Locale()).LogvDocker() }
+
+// LogvDocker says "Docker daemon journal"
+// in the language of msgs.
+func (msgs Messages) LogvDocker() string {
+	return Catalog.Format(msgs.locale, "logvDocker", nil)
+}
+
+// LogvFilter says "Filter log lines"
+// in the language the app shows.
+func LogvFilter() string { return In(i18n.Locale()).LogvFilter() }
+
+// LogvFilter says "Filter log lines"
+// in the language of msgs.
+func (msgs Messages) LogvFilter() string {
+	return Catalog.Format(msgs.locale, "logvFilter", nil)
+}
+
+// LogvPause says "Pause"
+// in the language the app shows.
+func LogvPause() string { return In(i18n.Locale()).LogvPause() }
+
+// LogvPause says "Pause"
+// in the language of msgs.
+func (msgs Messages) LogvPause() string {
+	return Catalog.Format(msgs.locale, "logvPause", nil)
+}
+
+// LogvResume says "Resume"
+// in the language the app shows.
+func LogvResume() string { return In(i18n.Locale()).LogvResume() }
+
+// LogvResume says "Resume"
+// in the language of msgs.
+func (msgs Messages) LogvResume() string {
+	return Catalog.Format(msgs.locale, "logvResume", nil)
+}
+
+// LogvBottom says "Bottom"
+// in the language the app shows.
+func LogvBottom() string { return In(i18n.Locale()).LogvBottom() }
+
+// LogvBottom says "Bottom"
+// in the language of msgs.
+func (msgs Messages) LogvBottom() string {
+	return Catalog.Format(msgs.locale, "logvBottom", nil)
+}
+
+// LogvOptions says "Log options"
+// in the language the app shows.
+func LogvOptions() string { return In(i18n.Locale()).LogvOptions() }
+
+// LogvOptions says "Log options"
+// in the language of msgs.
+func (msgs Messages) LogvOptions() string {
+	return Catalog.Format(msgs.locale, "logvOptions", nil)
+}
+
+// LogvRegex says "Regular expression"
+// in the language the app shows.
+func LogvRegex() string { return In(i18n.Locale()).LogvRegex() }
+
+// LogvRegex says "Regular expression"
+// in the language of msgs.
+func (msgs Messages) LogvRegex() string {
+	return Catalog.Format(msgs.locale, "logvRegex", nil)
+}
+
+// LogvCase says "Match case"
+// in the language the app shows.
+func LogvCase() string { return In(i18n.Locale()).LogvCase() }
+
+// LogvCase says "Match case"
+// in the language of msgs.
+func (msgs Messages) LogvCase() string {
+	return Catalog.Format(msgs.locale, "logvCase", nil)
+}
+
+// LogvWrap says "Wrap lines"
+// in the language the app shows.
+func LogvWrap() string { return In(i18n.Locale()).LogvWrap() }
+
+// LogvWrap says "Wrap lines"
+// in the language of msgs.
+func (msgs Messages) LogvWrap() string {
+	return Catalog.Format(msgs.locale, "logvWrap", nil)
+}
+
+// LogvKeywords says "Highlight keywords"
+// in the language the app shows.
+func LogvKeywords() string { return In(i18n.Locale()).LogvKeywords() }
+
+// LogvKeywords says "Highlight keywords"
+// in the language of msgs.
+func (msgs Messages) LogvKeywords() string {
+	return Catalog.Format(msgs.locale, "logvKeywords", nil)
+}
+
+// LogvKeywordHint says "Separate keywords with commas"
+// in the language the app shows.
+func LogvKeywordHint() string { return In(i18n.Locale()).LogvKeywordHint() }
+
+// LogvKeywordHint says "Separate keywords with commas"
+// in the language of msgs.
+func (msgs Messages) LogvKeywordHint() string {
+	return Catalog.Format(msgs.locale, "logvKeywordHint", nil)
+}
+
+// LogvCopyPicked says "Copy selected lines"
+// in the language the app shows.
+func LogvCopyPicked() string { return In(i18n.Locale()).LogvCopyPicked() }
+
+// LogvCopyPicked says "Copy selected lines"
+// in the language of msgs.
+func (msgs Messages) LogvCopyPicked() string {
+	return Catalog.Format(msgs.locale, "logvCopyPicked", nil)
+}
+
+// LogvCopyAll says "Copy all visible lines"
+// in the language the app shows.
+func LogvCopyAll() string { return In(i18n.Locale()).LogvCopyAll() }
+
+// LogvCopyAll says "Copy all visible lines"
+// in the language of msgs.
+func (msgs Messages) LogvCopyAll() string {
+	return Catalog.Format(msgs.locale, "logvCopyAll", nil)
+}
+
+// LogvSave says "Save visible logs locally"
+// in the language the app shows.
+func LogvSave() string { return In(i18n.Locale()).LogvSave() }
+
+// LogvSave says "Save visible logs locally"
+// in the language of msgs.
+func (msgs Messages) LogvSave() string {
+	return Catalog.Format(msgs.locale, "logvSave", nil)
+}
+
+// LogvClear says "Clear viewer"
+// in the language the app shows.
+func LogvClear() string { return In(i18n.Locale()).LogvClear() }
+
+// LogvClear says "Clear viewer"
+// in the language of msgs.
+func (msgs Messages) LogvClear() string {
+	return Catalog.Format(msgs.locale, "logvClear", nil)
+}
+
+// LogvEnded says "The log stream ended. Select Follow to reconnect."
+// in the language the app shows.
+func LogvEnded() string { return In(i18n.Locale()).LogvEnded() }
+
+// LogvEnded says "The log stream ended. Select Follow to reconnect."
+// in the language of msgs.
+func (msgs Messages) LogvEnded() string {
+	return Catalog.Format(msgs.locale, "logvEnded", nil)
+}
+
+// LogvWaiting says "Waiting for log lines…"
+// in the language the app shows.
+func LogvWaiting() string { return In(i18n.Locale()).LogvWaiting() }
+
+// LogvWaiting says "Waiting for log lines…"
+// in the language of msgs.
+func (msgs Messages) LogvWaiting() string {
+	return Catalog.Format(msgs.locale, "logvWaiting", nil)
+}
+
+// LogvPaused says "Paused; new lines are buffered."
+// in the language the app shows.
+func LogvPaused() string { return In(i18n.Locale()).LogvPaused() }
+
+// LogvPaused says "Paused; new lines are buffered."
+// in the language of msgs.
+func (msgs Messages) LogvPaused() string {
+	return Catalog.Format(msgs.locale, "logvPaused", nil)
+}
+
+// LogvNoMatches says "No lines match the filter."
+// in the language the app shows.
+func LogvNoMatches() string { return In(i18n.Locale()).LogvNoMatches() }
+
+// LogvNoMatches says "No lines match the filter."
+// in the language of msgs.
+func (msgs Messages) LogvNoMatches() string {
+	return Catalog.Format(msgs.locale, "logvNoMatches", nil)
+}
+
+// LogvInvalidRegex says "Invalid regular expression."
+// in the language the app shows.
+func LogvInvalidRegex() string { return In(i18n.Locale()).LogvInvalidRegex() }
+
+// LogvInvalidRegex says "Invalid regular expression."
+// in the language of msgs.
+func (msgs Messages) LogvInvalidRegex() string {
+	return Catalog.Format(msgs.locale, "logvInvalidRegex", nil)
+}
+
+// CronMine says "My crontab"
+// in the language the app shows.
+func CronMine() string { return In(i18n.Locale()).CronMine() }
+
+// CronMine says "My crontab"
+// in the language of msgs.
+func (msgs Messages) CronMine() string {
+	return Catalog.Format(msgs.locale, "cronMine", nil)
+}
+
+// CronRoot says "Root crontab"
+// in the language the app shows.
+func CronRoot() string { return In(i18n.Locale()).CronRoot() }
+
+// CronRoot says "Root crontab"
+// in the language of msgs.
+func (msgs Messages) CronRoot() string {
+	return Catalog.Format(msgs.locale, "cronRoot", nil)
+}
+
+// CronTimers says "Systemd timers"
+// in the language the app shows.
+func CronTimers() string { return In(i18n.Locale()).CronTimers() }
+
+// CronTimers says "Systemd timers"
+// in the language of msgs.
+func (msgs Messages) CronTimers() string {
+	return Catalog.Format(msgs.locale, "cronTimers", nil)
+}
+
+// CronSource says "Schedule source"
+// in the language the app shows.
+func CronSource() string { return In(i18n.Locale()).CronSource() }
+
+// CronSource says "Schedule source"
+// in the language of msgs.
+func (msgs Messages) CronSource() string {
+	return Catalog.Format(msgs.locale, "cronSource", nil)
+}
+
+// CronBrowse says "Sources and users…"
+// in the language the app shows.
+func CronBrowse() string { return In(i18n.Locale()).CronBrowse() }
+
+// CronBrowse says "Sources and users…"
+// in the language of msgs.
+func (msgs Messages) CronBrowse() string {
+	return Catalog.Format(msgs.locale, "cronBrowse", nil)
+}
+
+// CronReading says "Reading schedules…"
+// in the language the app shows.
+func CronReading() string { return In(i18n.Locale()).CronReading() }
+
+// CronReading says "Reading schedules…"
+// in the language of msgs.
+func (msgs Messages) CronReading() string {
+	return Catalog.Format(msgs.locale, "cronReading", nil)
+}
+
+// CronFilter says "Filter jobs"
+// in the language the app shows.
+func CronFilter() string { return In(i18n.Locale()).CronFilter() }
+
+// CronFilter says "Filter jobs"
+// in the language of msgs.
+func (msgs Messages) CronFilter() string {
+	return Catalog.Format(msgs.locale, "cronFilter", nil)
+}
+
+// CronAdd says "Add job"
+// in the language the app shows.
+func CronAdd() string { return In(i18n.Locale()).CronAdd() }
+
+// CronAdd says "Add job"
+// in the language of msgs.
+func (msgs Messages) CronAdd() string {
+	return Catalog.Format(msgs.locale, "cronAdd", nil)
+}
+
+// CronEdit says "Edit job"
+// in the language the app shows.
+func CronEdit() string { return In(i18n.Locale()).CronEdit() }
+
+// CronEdit says "Edit job"
+// in the language of msgs.
+func (msgs Messages) CronEdit() string {
+	return Catalog.Format(msgs.locale, "cronEdit", nil)
+}
+
+// CronDetails says "Job details"
+// in the language the app shows.
+func CronDetails() string { return In(i18n.Locale()).CronDetails() }
+
+// CronDetails says "Job details"
+// in the language of msgs.
+func (msgs Messages) CronDetails() string {
+	return Catalog.Format(msgs.locale, "cronDetails", nil)
+}
+
+// CronEditFile says "Edit system file"
+// in the language the app shows.
+func CronEditFile() string { return In(i18n.Locale()).CronEditFile() }
+
+// CronEditFile says "Edit system file"
+// in the language of msgs.
+func (msgs Messages) CronEditFile() string {
+	return Catalog.Format(msgs.locale, "cronEditFile", nil)
+}
+
+// CronEditFileNote says "Back up and replace this system cron file. The cron daemon may pick up the new schedule immediately."
+// in the language the app shows.
+func CronEditFileNote() string { return In(i18n.Locale()).CronEditFileNote() }
+
+// CronEditFileNote says "Back up and replace this system cron file. The cron daemon may pick up the new schedule immediately."
+// in the language of msgs.
+func (msgs Messages) CronEditFileNote() string {
+	return Catalog.Format(msgs.locale, "cronEditFileNote", nil)
+}
+
+// CronEmpty says "No matching scheduled jobs."
+// in the language the app shows.
+func CronEmpty() string { return In(i18n.Locale()).CronEmpty() }
+
+// CronEmpty says "No matching scheduled jobs."
+// in the language of msgs.
+func (msgs Messages) CronEmpty() string {
+	return Catalog.Format(msgs.locale, "cronEmpty", nil)
+}
+
+// CronSchedule says "Schedule"
+// in the language the app shows.
+func CronSchedule() string { return In(i18n.Locale()).CronSchedule() }
+
+// CronSchedule says "Schedule"
+// in the language of msgs.
+func (msgs Messages) CronSchedule() string {
+	return Catalog.Format(msgs.locale, "cronSchedule", nil)
+}
+
+// CronCommand says "Command"
+// in the language the app shows.
+func CronCommand() string { return In(i18n.Locale()).CronCommand() }
+
+// CronCommand says "Command"
+// in the language of msgs.
+func (msgs Messages) CronCommand() string {
+	return Catalog.Format(msgs.locale, "cronCommand", nil)
+}
+
+// CronMeaning says "Meaning"
+// in the language the app shows.
+func CronMeaning() string { return In(i18n.Locale()).CronMeaning() }
+
+// CronMeaning says "Meaning"
+// in the language of msgs.
+func (msgs Messages) CronMeaning() string {
+	return Catalog.Format(msgs.locale, "cronMeaning", nil)
+}
+
+// CronNext says "Next runs (server time)"
+// in the language the app shows.
+func CronNext() string { return In(i18n.Locale()).CronNext() }
+
+// CronNext says "Next runs (server time)"
+// in the language of msgs.
+func (msgs Messages) CronNext() string {
+	return Catalog.Format(msgs.locale, "cronNext", nil)
+}
+
+// CronUser says "User"
+// in the language the app shows.
+func CronUser() string { return In(i18n.Locale()).CronUser() }
+
+// CronUser says "User"
+// in the language of msgs.
+func (msgs Messages) CronUser() string {
+	return Catalog.Format(msgs.locale, "cronUser", nil)
+}
+
+// CronUserName says "User: {name}"
+// in the language the app shows.
+func CronUserName(name string) string { return In(i18n.Locale()).CronUserName(name) }
+
+// CronUserName says "User: {name}"
+// in the language of msgs.
+func (msgs Messages) CronUserName(name string) string {
+	return Catalog.Format(msgs.locale, "cronUserName", map[string]any{"name": name})
+}
+
+// CronDisabled says "Disabled"
+// in the language the app shows.
+func CronDisabled() string { return In(i18n.Locale()).CronDisabled() }
+
+// CronDisabled says "Disabled"
+// in the language of msgs.
+func (msgs Messages) CronDisabled() string {
+	return Catalog.Format(msgs.locale, "cronDisabled", nil)
+}
+
+// CronReboot says "At boot"
+// in the language the app shows.
+func CronReboot() string { return In(i18n.Locale()).CronReboot() }
+
+// CronReboot says "At boot"
+// in the language of msgs.
+func (msgs Messages) CronReboot() string {
+	return Catalog.Format(msgs.locale, "cronReboot", nil)
+}
+
+// CronYearly says "Yearly"
+// in the language the app shows.
+func CronYearly() string { return In(i18n.Locale()).CronYearly() }
+
+// CronYearly says "Yearly"
+// in the language of msgs.
+func (msgs Messages) CronYearly() string {
+	return Catalog.Format(msgs.locale, "cronYearly", nil)
+}
+
+// CronMonthly says "Monthly"
+// in the language the app shows.
+func CronMonthly() string { return In(i18n.Locale()).CronMonthly() }
+
+// CronMonthly says "Monthly"
+// in the language of msgs.
+func (msgs Messages) CronMonthly() string {
+	return Catalog.Format(msgs.locale, "cronMonthly", nil)
+}
+
+// CronWeekly says "Weekly"
+// in the language the app shows.
+func CronWeekly() string { return In(i18n.Locale()).CronWeekly() }
+
+// CronWeekly says "Weekly"
+// in the language of msgs.
+func (msgs Messages) CronWeekly() string {
+	return Catalog.Format(msgs.locale, "cronWeekly", nil)
+}
+
+// CronHourly says "Hourly"
+// in the language the app shows.
+func CronHourly() string { return In(i18n.Locale()).CronHourly() }
+
+// CronHourly says "Hourly"
+// in the language of msgs.
+func (msgs Messages) CronHourly() string {
+	return Catalog.Format(msgs.locale, "cronHourly", nil)
+}
+
+// CronDaily says "Daily at {time}"
+// in the language the app shows.
+func CronDaily(time_ string) string { return In(i18n.Locale()).CronDaily(time_) }
+
+// CronDaily says "Daily at {time}"
+// in the language of msgs.
+func (msgs Messages) CronDaily(time_ string) string {
+	return Catalog.Format(msgs.locale, "cronDaily", map[string]any{"time": time_})
+}
+
+// CronEveryMinutes says "{count, plural, one {Every minute} other {Every # minutes}}"
+// in the language the app shows.
+func CronEveryMinutes(count int) string { return In(i18n.Locale()).CronEveryMinutes(count) }
+
+// CronEveryMinutes says "{count, plural, one {Every minute} other {Every # minutes}}"
+// in the language of msgs.
+func (msgs Messages) CronEveryMinutes(count int) string {
+	return Catalog.Format(msgs.locale, "cronEveryMinutes", map[string]any{"count": count})
+}
+
+// CronCustom says "Custom schedule"
+// in the language the app shows.
+func CronCustom() string { return In(i18n.Locale()).CronCustom() }
+
+// CronCustom says "Custom schedule"
+// in the language of msgs.
+func (msgs Messages) CronCustom() string {
+	return Catalog.Format(msgs.locale, "cronCustom", nil)
+}
+
+// CronInvalid says "Unsupported or invalid schedule"
+// in the language the app shows.
+func CronInvalid() string { return In(i18n.Locale()).CronInvalid() }
+
+// CronInvalid says "Unsupported or invalid schedule"
+// in the language of msgs.
+func (msgs Messages) CronInvalid() string {
+	return Catalog.Format(msgs.locale, "cronInvalid", nil)
+}
+
+// CronNoZone says "Server UTC offset unavailable"
+// in the language the app shows.
+func CronNoZone() string { return In(i18n.Locale()).CronNoZone() }
+
+// CronNoZone says "Server UTC offset unavailable"
+// in the language of msgs.
+func (msgs Messages) CronNoZone() string {
+	return Catalog.Format(msgs.locale, "cronNoZone", nil)
+}
+
+// CronNoRuns says "No runs in the next 12 years"
+// in the language the app shows.
+func CronNoRuns() string { return In(i18n.Locale()).CronNoRuns() }
+
+// CronNoRuns says "No runs in the next 12 years"
+// in the language of msgs.
+func (msgs Messages) CronNoRuns() string {
+	return Catalog.Format(msgs.locale, "cronNoRuns", nil)
+}
+
+// CronReadOnly says "This source is read-only in the job list."
+// in the language the app shows.
+func CronReadOnly() string { return In(i18n.Locale()).CronReadOnly() }
+
+// CronReadOnly says "This source is read-only in the job list."
+// in the language of msgs.
+func (msgs Messages) CronReadOnly() string {
+	return Catalog.Format(msgs.locale, "cronReadOnly", nil)
+}
+
+// CronPick says "Select one or more jobs first."
+// in the language the app shows.
+func CronPick() string { return In(i18n.Locale()).CronPick() }
+
+// CronPick says "Select one or more jobs first."
+// in the language of msgs.
+func (msgs Messages) CronPick() string {
+	return Catalog.Format(msgs.locale, "cronPick", nil)
+}
+
+// CronRun says "Run once now"
+// in the language the app shows.
+func CronRun() string { return In(i18n.Locale()).CronRun() }
+
+// CronRun says "Run once now"
+// in the language of msgs.
+func (msgs Messages) CronRun() string {
+	return Catalog.Format(msgs.locale, "cronRun", nil)
+}
+
+// CronRunUnsupported says "This command uses cron input syntax or may contain credentials."
+// in the language the app shows.
+func CronRunUnsupported() string { return In(i18n.Locale()).CronRunUnsupported() }
+
+// CronRunUnsupported says "This command uses cron input syntax or may contain credentials."
+// in the language of msgs.
+func (msgs Messages) CronRunUnsupported() string {
+	return Catalog.Format(msgs.locale, "cronRunUnsupported", nil)
+}
+
+// CronRunNote says "Run this command once as the listed user and show its output. The working directory and environment may differ from c…"
+// in the language the app shows.
+func CronRunNote() string { return In(i18n.Locale()).CronRunNote() }
+
+// CronRunNote says "Run this command once as the listed user and show its output. The working directory and environment may differ from c…"
+// in the language of msgs.
+func (msgs Messages) CronRunNote() string {
+	return Catalog.Format(msgs.locale, "cronRunNote", nil)
+}
+
+// CronRemove says "Remove jobs"
+// in the language the app shows.
+func CronRemove() string { return In(i18n.Locale()).CronRemove() }
+
+// CronRemove says "Remove jobs"
+// in the language of msgs.
+func (msgs Messages) CronRemove() string {
+	return Catalog.Format(msgs.locale, "cronRemove", nil)
+}
+
+// CronRemoveNote says "Back up the crontab and remove the listed jobs. They will no longer run on schedule."
+// in the language the app shows.
+func CronRemoveNote() string { return In(i18n.Locale()).CronRemoveNote() }
+
+// CronRemoveNote says "Back up the crontab and remove the listed jobs. They will no longer run on schedule."
+// in the language of msgs.
+func (msgs Messages) CronRemoveNote() string {
+	return Catalog.Format(msgs.locale, "cronRemoveNote", nil)
+}
+
+// CronToggleNote says "Back up the crontab and change whether the listed jobs run on schedule."
+// in the language the app shows.
+func CronToggleNote() string { return In(i18n.Locale()).CronToggleNote() }
+
+// CronToggleNote says "Back up the crontab and change whether the listed jobs run on schedule."
+// in the language of msgs.
+func (msgs Messages) CronToggleNote() string {
+	return Catalog.Format(msgs.locale, "cronToggleNote", nil)
+}
+
+// CronWriteNote says "Back up any existing crontab, then install the updated schedule. Changes apply to future runs."
+// in the language the app shows.
+func CronWriteNote() string { return In(i18n.Locale()).CronWriteNote() }
+
+// CronWriteNote says "Back up any existing crontab, then install the updated schedule. Changes apply to future runs."
+// in the language of msgs.
+func (msgs Messages) CronWriteNote() string {
+	return Catalog.Format(msgs.locale, "cronWriteNote", nil)
+}
+
+// CronPreset says "Schedule preset"
+// in the language the app shows.
+func CronPreset() string { return In(i18n.Locale()).CronPreset() }
+
+// CronPreset says "Schedule preset"
+// in the language of msgs.
+func (msgs Messages) CronPreset() string {
+	return Catalog.Format(msgs.locale, "cronPreset", nil)
+}
+
+// CronFields says "Use five fields"
+// in the language the app shows.
+func CronFields() string { return In(i18n.Locale()).CronFields() }
+
+// CronFields says "Use five fields"
+// in the language of msgs.
+func (msgs Messages) CronFields() string {
+	return Catalog.Format(msgs.locale, "cronFields", nil)
+}
+
+// CronMinute says "Minute"
+// in the language the app shows.
+func CronMinute() string { return In(i18n.Locale()).CronMinute() }
+
+// CronMinute says "Minute"
+// in the language of msgs.
+func (msgs Messages) CronMinute() string {
+	return Catalog.Format(msgs.locale, "cronMinute", nil)
+}
+
+// CronHour says "Hour"
+// in the language the app shows.
+func CronHour() string { return In(i18n.Locale()).CronHour() }
+
+// CronHour says "Hour"
+// in the language of msgs.
+func (msgs Messages) CronHour() string {
+	return Catalog.Format(msgs.locale, "cronHour", nil)
+}
+
+// CronDay says "Day of month"
+// in the language the app shows.
+func CronDay() string { return In(i18n.Locale()).CronDay() }
+
+// CronDay says "Day of month"
+// in the language of msgs.
+func (msgs Messages) CronDay() string {
+	return Catalog.Format(msgs.locale, "cronDay", nil)
+}
+
+// CronMonth says "Month"
+// in the language the app shows.
+func CronMonth() string { return In(i18n.Locale()).CronMonth() }
+
+// CronMonth says "Month"
+// in the language of msgs.
+func (msgs Messages) CronMonth() string {
+	return Catalog.Format(msgs.locale, "cronMonth", nil)
+}
+
+// CronWeekday says "Day of week"
+// in the language the app shows.
+func CronWeekday() string { return In(i18n.Locale()).CronWeekday() }
+
+// CronWeekday says "Day of week"
+// in the language of msgs.
+func (msgs Messages) CronWeekday() string {
+	return Catalog.Format(msgs.locale, "cronWeekday", nil)
+}
+
+// CronPreview says "Next runs: {runs}"
+// in the language the app shows.
+func CronPreview(runs string) string { return In(i18n.Locale()).CronPreview(runs) }
+
+// CronPreview says "Next runs: {runs}"
+// in the language of msgs.
+func (msgs Messages) CronPreview(runs string) string {
+	return Catalog.Format(msgs.locale, "cronPreview", map[string]any{"runs": runs})
+}
+
+// CronComment says "Comment (optional)"
+// in the language the app shows.
+func CronComment() string { return In(i18n.Locale()).CronComment() }
+
+// CronComment says "Comment (optional)"
+// in the language of msgs.
+func (msgs Messages) CronComment() string {
+	return Catalog.Format(msgs.locale, "cronComment", nil)
+}
+
+// CronLogPath says "Append output to remote file (optional)"
+// in the language the app shows.
+func CronLogPath() string { return In(i18n.Locale()).CronLogPath() }
+
+// CronLogPath says "Append output to remote file (optional)"
+// in the language of msgs.
+func (msgs Messages) CronLogPath() string {
+	return Catalog.Format(msgs.locale, "cronLogPath", nil)
+}
+
+// CronRedacted says "The existing command may contain credentials. Enter a replacement without secrets to edit this job."
+// in the language the app shows.
+func CronRedacted() string { return In(i18n.Locale()).CronRedacted() }
+
+// CronRedacted says "The existing command may contain credentials. Enter a replacement without secrets to edit this job."
+// in the language of msgs.
+func (msgs Messages) CronRedacted() string {
+	return Catalog.Format(msgs.locale, "cronRedacted", nil)
+}
+
+// CronInvalidEdit says "Check the schedule, command, and absolute log path. Do not enter credentials here."
+// in the language the app shows.
+func CronInvalidEdit() string { return In(i18n.Locale()).CronInvalidEdit() }
+
+// CronInvalidEdit says "Check the schedule, command, and absolute log path. Do not enter credentials here."
+// in the language of msgs.
+func (msgs Messages) CronInvalidEdit() string {
+	return Catalog.Format(msgs.locale, "cronInvalidEdit", nil)
+}
+
 // KeySeqDEL says "ASCII DEL (^?)"
 // in the language the app shows.
 func KeySeqDEL() string { return In(i18n.Locale()).KeySeqDEL() }

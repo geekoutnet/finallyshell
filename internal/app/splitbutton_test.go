@@ -52,9 +52,9 @@ func TestSplitButton(t *testing.T) {
 		t.Error("the Split button is not after History")
 	}
 
-	// The same items as the row's menu, with their keys, drawn in the
-	// window.
-	want := []string{locales.SplitRight(), locales.SplitDown(), "-", locales.ZoomPane(), locales.EqualizePanes(), locales.MovePane(), locales.ClosePane()}
+	// Recording the session, then the same items as the row's menu,
+	// with their keys, drawn in the window.
+	want := []string{locales.RecStart(), locales.RecOpenFolder(), "-", locales.SplitRight(), locales.SplitDown(), "-", locales.ZoomPane(), locales.EqualizePanes(), locales.MovePane(), locales.ClosePane()}
 	if menu := splitMenu(t, tt); !slices.Equal(menu, want) {
 		t.Fatalf("menu %q, want %q", menu, want)
 	}

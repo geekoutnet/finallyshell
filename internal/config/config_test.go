@@ -197,6 +197,8 @@ func fullHost() *Host {
 		NoRememberPassword: true,
 		CreatedAt:          time.Date(2026, 10, 1, 8, 0, 0, 0, time.UTC),
 		MonitorIfaces:      []string{"eth0", "wg0"},
+		ForwardAgent:       true,
+		X11Forward:         "trusted",
 		Kind:               KindRDP,
 		RDP:                fullRDP(),
 	}

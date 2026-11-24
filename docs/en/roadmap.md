@@ -35,82 +35,50 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 | v2.0.10 | Select several or all connections in the manager and delete them at once |
 | v2.0.11 | Sync backups: versions kept on the server, local snapshots, preview, restore, mass-deletion guard |
 | v2.0.12 | The Overview's Memory card: physical memory, swap, virtual memory; drop caches and compact memory |
+| v2.0.13 | The Docker tab: containers (create, edit by recreating, batch actions, usage charts, files in a container), images (pull, build, push, prune), Compose (deploy, take down, edit compose files, new projects), networks, volumes, system (disk use, cleanup, events, registries, daemon config); shared escalation: root, passwordless sudo, sudo password, su, and a message only when all fail |
 
 ## In progress
 
-### Docker tab
+### First batch of extensions
 
-A "Docker" tab in the bottom panel, opened from a button on the Overview's Docker card. A segmented row switches between six sections, built in parallel by four Codex agents, each changing only its own files:
+Based on `feature/ext-base` (the Docker tab, escalation, the System tab skeleton), five Codex agents work in parallel, each on its own files:
 
-| Section | What | Files |
+| What | Scope | Branch |
 |---|---|---|
-| Containers | New container form (ports, volumes, environment, networks, resource limits, with the matching `docker run`); edit by recreating safely with rollback; duplicate; batch start, stop and remove; live usage charts; browse files in a container, upload and download; commit to an image, export | `dockerpage_containers.go`, `docker*.go` |
-| Images | Pull (progress, platform, search suggestions); build; tag; push; save and load; layers; prune; images in use can't be removed by default | `dockerpage_images.go` |
-| Compose | Projects and their services; deploy, stop, pull, recreate, down (strong warning when removing volumes); edit compose.yaml and .env with a backup before saving; new project | `dockerpage_compose.go` |
-| Networks, volumes, system | Create and remove networks, connect and disconnect containers; create and prune volumes; engine info, disk use, cleanup by type; live events; registry login (password on stdin only); registry mirrors and restarting Docker | `dockerpage_resources.go` |
+| Run on many hosts with results | Pick hosts (not necessarily connected), run in parallel with a concurrency limit and a timeout; a table of each host's status, exit code, duration and output, retry the failed, export CSV; optionally as root; the last 20 runs kept. An untrusted host key fails the host, never accepted silently | `feature/bulk-exec` |
+| Services, logs, scheduled jobs | System tab: start/stop/enable systemd services, their logs and unit files, edit through an override; follow journalctl and log files with filter and highlights; add/edit/remove/enable crontab entries, schedules in words with the next runs; systemd timers read-only | `feature/server-services` |
+| Disk, updates, security, firewall | System tab: folder sizes level by level and the largest files, system folders cannot be deleted; apt / dnf updates with security updates apart and a reboot note; SSH brute-force attempts, logins, fail2ban; ufw / firewalld rules, the rule allowing the current SSH port cannot be removed | `feature/server-ops` |
+| SSH keys and forwarding | Generate, import, delete keys; deploy the public key and switch to key login, optionally turn off password login (only after the key login worked and `sshd -t` passes); agent and X11 forwarding per host | `feature/ssh-keys` |
+| ZMODEM, highlighting, recording | `rz` / `sz` in the terminal with progress in the Transfers tab; keyword highlighting (never in full-screen programs such as vim or top); session recordings as asciicast and plain text | `feature/terminal-stream` |
 
-Left out of DPanel: users and permissions (the client has one user), several Docker environments (each SSH connection is one host already), the app store, sites with reverse proxy and certificates (beyond Docker management).
+One follow-up: the Docker tab's actions move to the escalation layer. Today a server that wants a sudo password only shows "Permission denied"; afterwards it shows a "Use root / sudo" button.
 
-### Escalation
+### System tab
 
-One shared escalation layer used by every feature that needs root. Each session tries in order, remembers what worked, and forgets on disconnect:
-
-1. The login is root: run as is.
-2. `sudo -n` works (passwordless sudo): run with it.
-3. sudo wants a password: try the server's login password once; a wrong one is not retried, so sudo does not lock the account.
-4. Ask for the sudo password in a dialog, with "Remember" to keep it in the system credential store.
-5. The user is not in sudoers or there is no sudo: the same dialog switches to the root password and escalates with `su` (through a pseudo-terminal).
-6. Nothing works or the user cancels: say that root is needed and give copyable commands to grant it, such as `usermod -aG sudo <user>` (Debian/Ubuntu) or `usermod -aG wheel <user>` (RHEL/CentOS).
-
-Free memory uses it first; the Docker actions switch to it once the Docker tab merges, and new features use it from the start.
+A "System" tab in the bottom panel, with a row of sections: Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall, Websites. One file per section (`internal/app/serverpage_*.go`); what needs root goes through escalation.
 
 ## Next
 
-Starts after the Docker tab is merged and released, one Codex agent per group.
+Starts after the first batch is merged and released, one Codex agent per group:
 
-### Run on many hosts with results
-
-- Pick several hosts from the connection list (not necessarily connected) and run a command or a script on them in parallel, with a concurrency limit and a timeout.
-- A table of each host's status, exit code, duration and the start of its output; the whole output on click; retry the failed ones; export to CSV or text.
-- Optionally as root (through escalation); changing commands ask first, with the number of hosts.
-- Unlike "Send to" several sessions, which types the command into terminals, this collects the results.
-
-### Services, logs and scheduled jobs
-
-- **Services (systemd)**: every service with its running, failed and enabled state; start, stop, restart, reload, enable, disable; its journalctl log and unit file. Systems without systemd are told so.
-- **Log viewer**: follow any log file and journalctl; filter, highlight keywords, pause, errors only; common logs (nginx, syslog, auth.log) in one click.
-- **Scheduled jobs (crontab)**: by user; add, edit, remove, enable and disable (commented out); `*/5 * * * *` shown as "every 5 minutes" with the next runs; a backup before saving.
-
-### Disk, updates, security and firewall
-
-- **Disk usage**: folder sizes level by level like ncdu, to find big files and logs; removal asks first.
-- **System updates**: how many packages can be updated, security updates apart; update in one click with live output; a note when a reboot is needed. apt and dnf/yum.
-- **Security**: failed SSH logins and their source IPs (with location), logged-in users, recent logins, fail2ban state and bans.
-- **Firewall**: ufw / firewalld port rules, add and remove; the rule allowing the current SSH port can't be removed, so the user can't lock themselves out.
+| What | Scope |
+|---|---|
+| Websites and certificates | The System tab's Websites: sites, domains, ports and certificates from `nginx -T`; config edits backed up, reloaded only when `nginx -t` passes, restorable; new site templates; certificate expiry checked from the server and from this computer; certbot renewals |
+| Server-to-server transfers, alerts | Send files from the file panel to another server: directly when A can reach B with a key, else relayed through this computer without touching its disk; system notifications when a server goes down, CPU / memory / disk / load cross a threshold or a service fails, with cooldown and dedup |
+| App lock, two-factor | A master password lock (only an Argon2id verifier is kept), idle lock, lock now; a TOTP secret per host answers verification code prompts |
+| Database client | A new Database tab: MySQL / MariaDB, PostgreSQL and Redis through the SSH connection (no local port); browse databases and tables, paged data, structure, an SQL editor, confirmations for dangerous statements, read-only mode, CSV / JSON export |
+| Telnet and serial | New connection kinds: Telnet (option negotiation, window size, automatic login) and serial ports (baud, parity, flow control); importers no longer skip them |
 
 ## Candidates
 
-The owner can pick any of these for a next batch.
-
-| Feature | Notes |
-|---|---|
-| SSH key manager | Generate ed25519 keys, deploy the public key, switch a connection to key login; optionally turn off password login on the server after checking the key works |
-| ZMODEM (rz/sz) | `rz` and `sz` in the terminal. The terminal's stream goes through `termenc.Wrap`, where ZMODEM can be detected: feasible |
-| Terminal keyword highlighting | error, warning, IPs, URLs and such, with custom rules |
-| Session recording | Save a session as a local log or a replayable recording |
-| Server-to-server transfer | Files from A straight to B, not through this computer |
-| Alerts | System notifications when a server goes down or CPU, memory or disk cross a threshold (while the app runs) |
-| Database client | MySQL, Redis, PostgreSQL through an SSH tunnel: browse tables, run queries; the largest piece of work |
-| Certificates and sites | SSL certificate expiry checks; Nginx sites, config test, reload |
-| App lock | A master password on start and after being away |
-| Two-factor | Fill in TOTP codes |
-| Other protocols and forwarding | Telnet, serial, Mosh, X11 forwarding, SSH agent forwarding |
+The first batch and the next one hold every candidate listed before. Add new ideas here.
 
 ## Not planned
 
 - Users and permissions: the client is for one person.
 - An app store, one-click websites: costly to maintain and far from an SSH client.
 - Anything resident on the server: every feature works over SSH alone.
+- Mosh: there is no Mosh client library for Go; its UDP state synchronization protocol and crypto would have to be written from scratch, a high risk for little gain. SSH keepalives and reconnecting cover poor networks instead.
 
 ## How it is built
 

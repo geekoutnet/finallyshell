@@ -1092,6 +1092,24 @@ cancel, the app shows commands your administrator can copy to grant sudo
 access. Operating-system restrictions such as locked root accounts or
 read-only memory controls still apply.
 
+### Docker tab › Containers
+
+Filter and sort containers, group by Compose project, and show or hide stopped containers. Select rows using checkboxes, Ctrl/Command-click, or Shift-click, then use the selection menu for lifecycle actions or live stats. Double-click a row for details, or use its menu for logs, a shell, published ports, and more. Removal and other destructive operations show what they affect before proceeding.
+
+**New container** configures the image, command, ports, mounts, environment, network, and resource limits. The run-command preview masks environment and log-option values. **Duplicate container** copies settings without reusing published ports or a static IP; mounts may still share data. **Edit container** replaces a standalone Docker container, retaining settings not shown by the form and attempting to restore the original if the replacement fails. It requires the Docker Unix socket and `curl`; edit Compose services in their Compose file instead. Replacement does not keep changes in the writable layer.
+
+**Live stats** samples CPU, memory, network rates, disk I/O, and PIDs every two seconds while open. **Container files** requires a running, unpaused container with suitable shell utilities. Browse, rename, create directories, and delete entries there. Copy files or folders between the container and an absolute path on the SSH server; use the SSH file panel for transfers between the server and your computer. The row menu can also commit a container to an image or export its filesystem as a tar on the server, excluding mounted volumes. Both can include sensitive data.
+
+### Docker tab › Images
+
+The Images section lists local Docker or Podman images, including untagged images, with one row per tag. Sort any column, search references, IDs, platforms or container names, or filter to dangling or unused images. Hover over the creation time for the exact date and over the usage count for the container names. The displayed total counts each image once, not each tag; images can share layers. Select multiple rows with Ctrl/Cmd or Shift to remove them together.
+
+Use the row menu or the selected-image actions for details (including copyable fields and raw JSON), layer history, tagging, pushing, removal or saving a TAR or gzip archive on the server. Saving never overwrites an existing path and requires `mktemp` and `ln -T` on the server, plus `gzip` for compression. The run action takes you to Containers. Normal removal is disabled for images held by containers; on Docker, force removal requires a separate warning and checkbox. Podman force removal is unavailable because it can delete dependent containers. Removing an image does not also prune its parent images; use Prune explicitly for cleanup.
+
+Pull accepts a platform and optionally all tags. Public Docker Hub suggestions are opt-in and unavailable with Podman. Build uses a server-side context and Dockerfile, supports multiple tags and build arguments, and offers a target stage, platform, cache bypass and updated base images. Only build trusted Dockerfiles and never put credentials in build arguments. Load restores an image archive and Import creates a new image from a root filesystem archive. Use a server path or upload a local TAR/TAR.GZ over SFTP into a private temporary directory, cleaned up after the operation when the connection allows it.
+
+Long operations stream engine output and can be stopped; stopping does not undo completed work. If the registry denies a push, check permissions and sign in under System. Prune defaults to dangling images and shows a list and size estimate before you confirm. Including all unused images can also remove tagged images. The client checks that the candidates and container list still match just before cleanup. This check and cleanup are not atomic: the engine decides what is eligible at execution time and reports the actual reclaimed space.
+
 ### Docker tab › Compose
 
 Select **Compose** in the Docker tab to inspect projects and their service
@@ -1120,23 +1138,12 @@ found by project label when available. **Delete project** can also
 remove an app-created directory after you type its project name; everything
 under that path, including bind-mounted data stored there, will be lost.
 
-### Docker tab › Containers
+### Docker tab › Networks, volumes and system
 
-Filter and sort containers, group by Compose project, and show or hide stopped containers. Select rows using checkboxes, Ctrl/Command-click, or Shift-click, then use the selection menu for lifecycle actions or live stats. Double-click a row for details, or use its menu for logs, a shell, published ports, and more. Removal and other destructive operations show what they affect before proceeding.
-
-**New container** configures the image, command, ports, mounts, environment, network, and resource limits. The run-command preview masks environment and log-option values. **Duplicate container** copies settings without reusing published ports or a static IP; mounts may still share data. **Edit container** replaces a standalone Docker container, retaining settings not shown by the form and attempting to restore the original if the replacement fails. It requires the Docker Unix socket and `curl`; edit Compose services in their Compose file instead. Replacement does not keep changes in the writable layer.
-
-**Live stats** samples CPU, memory, network rates, disk I/O, and PIDs every two seconds while open. **Container files** requires a running, unpaused container with suitable shell utilities. Browse, rename, create directories, and delete entries there. Copy files or folders between the container and an absolute path on the SSH server; use the SSH file panel for transfers between the server and your computer. The row menu can also commit a container to an image or export its filesystem as a tar on the server, excluding mounted volumes. Both can include sensitive data.
-
-### Docker tab › Images
-
-The Images section lists local Docker or Podman images, including untagged images, with one row per tag. Sort any column, search references, IDs, platforms or container names, or filter to dangling or unused images. Hover over the creation time for the exact date and over the usage count for the container names. The displayed total counts each image once, not each tag; images can share layers. Select multiple rows with Ctrl/Cmd or Shift to remove them together.
-
-Use the row menu or the selected-image actions for details (including copyable fields and raw JSON), layer history, tagging, pushing, removal or saving a TAR or gzip archive on the server. Saving never overwrites an existing path and requires `mktemp` and `ln -T` on the server, plus `gzip` for compression. The run action takes you to Containers. Normal removal is disabled for images held by containers; on Docker, force removal requires a separate warning and checkbox. Podman force removal is unavailable because it can delete dependent containers. Removing an image does not also prune its parent images; use Prune explicitly for cleanup.
-
-Pull accepts a platform and optionally all tags. Public Docker Hub suggestions are opt-in and unavailable with Podman. Build uses a server-side context and Dockerfile, supports multiple tags and build arguments, and offers a target stage, platform, cache bypass and updated base images. Only build trusted Dockerfiles and never put credentials in build arguments. Load restores an image archive and Import creates a new image from a root filesystem archive. Use a server path or upload a local TAR/TAR.GZ over SFTP into a private temporary directory, cleaned up after the operation when the connection allows it.
-
-Long operations stream engine output and can be stopped; stopping does not undo completed work. If the registry denies a push, check permissions and sign in under System. Prune defaults to dangling images and shows a list and size estimate before you confirm. Including all unused images can also remove tagged images. The client checks that the candidates and container list still match just before cleanup. This check and cleanup are not atomic: the engine decides what is eligible at execution time and reports the actual reclaimed space.
+- **Networks:** Filter or sort the list, open details to see IP ranges and connected containers, and create networks with IPv4/IPv6, driver options and labels. From the row menu you can connect or disconnect a container, copy network values, or remove selected networks. Pruning in this section removes only the listed unused local networks; built-in, ingress and attached networks are protected.
+- **Volumes:** Show only unused volumes, inspect their labels, options and referencing containers, or measure sizes on demand. Browse local-engine mountpoints in Files if the SSH user has SFTP access. Removal and pruning permanently delete data; the app rechecks the volume’s identity before removal. On Docker 23 or later (API 1.42+), pruning in this section targets the displayed unused anonymous volumes by default; explicitly opt in to include named volumes.
+- **System:** Inspect engine information and disk usage, stream and filter recent events, or choose cleanup categories with estimates. Cleanup runs each confirmed step in order and streams the output. Network and volume removal is limited to the named resources. Container, image and build cache pruning applies to all resources the engine considers eligible at execution time. Stopping the wait does not undo changes.
+- **Registries and daemon:** Registry management uses the SSH user’s Docker configuration and shows only registry keys and helper names, not credentials. Login requires a configured credential helper; the password goes over standard input. The daemon editor is for a recognized Linux Docker system service using the default socket and configuration path. Saving requires Python 3 to validate the file against the running service’s flags and backs up any existing file. Restarting needs separate confirmation. Root or non-interactive sudo is required to write or restart. Podman does not expose Docker-specific operations such as daemon editing, registry management, or volume pruning.
 
 <a id="terminal-section"></a>
 

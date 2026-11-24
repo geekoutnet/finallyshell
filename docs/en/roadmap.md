@@ -37,24 +37,15 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 | v2.0.12 | The Overview's Memory card: physical memory, swap, virtual memory; drop caches and compact memory |
 | v2.0.13 | The Docker tab: containers (create, edit by recreating, batch actions, usage charts, files in a container), images (pull, build, push, prune), Compose (deploy, take down, edit compose files, new projects), networks, volumes, system (disk use, cleanup, events, registries, daemon config); shared escalation: root, passwordless sudo, sudo password, su, and a message only when all fail |
 | v2.0.14 | Run on many hosts with results; the System tab: services, logs, scheduled jobs, disk usage, updates, security, firewall; SSH key manager, key deployment, turning off password login, agent and X11 forwarding; ZMODEM (rz/sz), terminal keyword highlighting, session recording; the Docker tab escalates when needed; hosts made in a row on Windows no longer share an ID and crash the UI |
+| v2.0.15 | The System tab's websites and certificates (Nginx sites, a refused config put back at once, certificate expiry, certbot); server-to-server transfers; alerts; app lock; SSH verification codes filled in; the Database tab (MySQL / MariaDB, PostgreSQL, Redis); Telnet and serial connections |
 
 ## In progress
 
-### Second batch of extensions
-
-Based on `feature/ext-1` (everything of the first batch), five Codex agents work in parallel:
-
-| What | Scope | Branch |
-|---|---|---|
-| Websites and certificates | The System tab's Websites: sites, domains, ports and certificates from `nginx -T`; config edits backed up, reloaded only when `nginx -t` passes, restorable; new site templates; certificate expiry checked from the server and from this computer; certbot renewals | `feature/server-sites` |
-| Server-to-server transfers, alerts | Send files from the file panel to another server: directly when A can reach B with a key, else relayed through this computer without touching its disk; system notifications when a server goes down, CPU / memory / disk / load cross a threshold or a service fails, with cooldown and dedup | `feature/relay-alerts` |
-| App lock, two-factor | A master password lock (only an Argon2id verifier is kept), idle lock, lock now; a TOTP secret per host answers verification code prompts | `feature/lock-totp` |
-| Database client | A new Database tab: MySQL / MariaDB, PostgreSQL and Redis through the SSH connection (no local port); browse databases and tables, paged data, structure, an SQL editor, confirmations for dangerous statements, read-only mode, CSV / JSON export | `feature/db-client` |
-| Telnet and serial | New connection kinds: Telnet (option negotiation, window size, automatic login) and serial ports (baud, parity, flow control); importers no longer skip them | `feature/telnet-serial` |
+Nothing.
 
 ## Next
 
-Nothing yet. Once the second batch is done, every feature the roadmap listed is built.
+Nothing yet. Every feature the roadmap listed is built; add new ideas to Candidates.
 
 ## Candidates
 

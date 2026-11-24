@@ -1,9 +1,20 @@
 package app
 
 import (
+	"finallyshell/internal/config"
+	"finallyshell/locales"
+
 	"github.com/egoist/mygo/ui"
 	"github.com/egoist/mygo/ui/editor"
 )
+
+func (a *App) openBulkPalette(hosts []*config.Host) {
+	a.showBulkPalette([]bulkPaletteAction{
+		{locales.BulkOpen(), func() { a.openBulkExec(hosts, "") }},
+		{locales.ManagerTitle(), a.openManager},
+		{locales.Options(), a.openOptions},
+	})
+}
 
 // The app has a light and a dark look, and shows the one of the system's
 // appearance, or the one the user chose in Options › General, which

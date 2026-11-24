@@ -10736,6 +10736,836 @@ func (msgs Messages) SendToAll() string {
 	return Catalog.Format(msgs.locale, "sendToAll", nil)
 }
 
+// BulkTitle says "Run on hosts"
+// in the language the app shows.
+func BulkTitle() string { return In(i18n.Locale()).BulkTitle() }
+
+// BulkTitle says "Run on hosts"
+// in the language of msgs.
+func (msgs Messages) BulkTitle() string {
+	return Catalog.Format(msgs.locale, "bulkTitle", nil)
+}
+
+// BulkOpen says "Run on hosts with results…"
+// in the language the app shows.
+func BulkOpen() string { return In(i18n.Locale()).BulkOpen() }
+
+// BulkOpen says "Run on hosts with results…"
+// in the language of msgs.
+func (msgs Messages) BulkOpen() string {
+	return Catalog.Format(msgs.locale, "bulkOpen", nil)
+}
+
+// BulkSetup says "Setup"
+// in the language the app shows.
+func BulkSetup() string { return In(i18n.Locale()).BulkSetup() }
+
+// BulkSetup says "Setup"
+// in the language of msgs.
+func (msgs Messages) BulkSetup() string {
+	return Catalog.Format(msgs.locale, "bulkSetup", nil)
+}
+
+// BulkResults says "Results"
+// in the language the app shows.
+func BulkResults() string { return In(i18n.Locale()).BulkResults() }
+
+// BulkResults says "Results"
+// in the language of msgs.
+func (msgs Messages) BulkResults() string {
+	return Catalog.Format(msgs.locale, "bulkResults", nil)
+}
+
+// BulkHistory says "History"
+// in the language the app shows.
+func BulkHistory() string { return In(i18n.Locale()).BulkHistory() }
+
+// BulkHistory says "History"
+// in the language of msgs.
+func (msgs Messages) BulkHistory() string {
+	return Catalog.Format(msgs.locale, "bulkHistory", nil)
+}
+
+// BulkTargets says "Target hosts"
+// in the language the app shows.
+func BulkTargets() string { return In(i18n.Locale()).BulkTargets() }
+
+// BulkTargets says "Target hosts"
+// in the language of msgs.
+func (msgs Messages) BulkTargets() string {
+	return Catalog.Format(msgs.locale, "bulkTargets", nil)
+}
+
+// BulkSelected says "{count, plural, one {# host selected} other {# hosts selected}}"
+// in the language the app shows.
+func BulkSelected(count int) string { return In(i18n.Locale()).BulkSelected(count) }
+
+// BulkSelected says "{count, plural, one {# host selected} other {# hosts selected}}"
+// in the language of msgs.
+func (msgs Messages) BulkSelected(count int) string {
+	return Catalog.Format(msgs.locale, "bulkSelected", map[string]any{"count": count})
+}
+
+// BulkSearch says "Search hosts and folders"
+// in the language the app shows.
+func BulkSearch() string { return In(i18n.Locale()).BulkSearch() }
+
+// BulkSearch says "Search hosts and folders"
+// in the language of msgs.
+func (msgs Messages) BulkSearch() string {
+	return Catalog.Format(msgs.locale, "bulkSearch", nil)
+}
+
+// BulkSearchShort says "Search"
+// in the language the app shows.
+func BulkSearchShort() string { return In(i18n.Locale()).BulkSearchShort() }
+
+// BulkSearchShort says "Search"
+// in the language of msgs.
+func (msgs Messages) BulkSearchShort() string {
+	return Catalog.Format(msgs.locale, "bulkSearchShort", nil)
+}
+
+// BulkSelectMatches says "Select matching hosts"
+// in the language the app shows.
+func BulkSelectMatches() string { return In(i18n.Locale()).BulkSelectMatches() }
+
+// BulkSelectMatches says "Select matching hosts"
+// in the language of msgs.
+func (msgs Messages) BulkSelectMatches() string {
+	return Catalog.Format(msgs.locale, "bulkSelectMatches", nil)
+}
+
+// BulkToggleFolder says "Expand or collapse {name}"
+// in the language the app shows.
+func BulkToggleFolder(name string) string { return In(i18n.Locale()).BulkToggleFolder(name) }
+
+// BulkToggleFolder says "Expand or collapse {name}"
+// in the language of msgs.
+func (msgs Messages) BulkToggleFolder(name string) string {
+	return Catalog.Format(msgs.locale, "bulkToggleFolder", map[string]any{"name": name})
+}
+
+// BulkSSHOnly says "Only SSH hosts are supported."
+// in the language the app shows.
+func BulkSSHOnly() string { return In(i18n.Locale()).BulkSSHOnly() }
+
+// BulkSSHOnly says "Only SSH hosts are supported."
+// in the language of msgs.
+func (msgs Messages) BulkSSHOnly() string {
+	return Catalog.Format(msgs.locale, "bulkSSHOnly", nil)
+}
+
+// BulkNoTargets says "Select at least one SSH host."
+// in the language the app shows.
+func BulkNoTargets() string { return In(i18n.Locale()).BulkNoTargets() }
+
+// BulkNoTargets says "Select at least one SSH host."
+// in the language of msgs.
+func (msgs Messages) BulkNoTargets() string {
+	return Catalog.Format(msgs.locale, "bulkNoTargets", nil)
+}
+
+// BulkNoMatches says "No matching hosts."
+// in the language the app shows.
+func BulkNoMatches() string { return In(i18n.Locale()).BulkNoMatches() }
+
+// BulkNoMatches says "No matching hosts."
+// in the language of msgs.
+func (msgs Messages) BulkNoMatches() string {
+	return Catalog.Format(msgs.locale, "bulkNoMatches", nil)
+}
+
+// BulkScript says "Shell script"
+// in the language the app shows.
+func BulkScript() string { return In(i18n.Locale()).BulkScript() }
+
+// BulkScript says "Shell script"
+// in the language of msgs.
+func (msgs Messages) BulkScript() string {
+	return Catalog.Format(msgs.locale, "bulkScript", nil)
+}
+
+// BulkScriptHint says "Enter POSIX shell commands, one per line."
+// in the language the app shows.
+func BulkScriptHint() string { return In(i18n.Locale()).BulkScriptHint() }
+
+// BulkScriptHint says "Enter POSIX shell commands, one per line."
+// in the language of msgs.
+func (msgs Messages) BulkScriptHint() string {
+	return Catalog.Format(msgs.locale, "bulkScriptHint", nil)
+}
+
+// BulkLoadScript says "Saved scripts"
+// in the language the app shows.
+func BulkLoadScript() string { return In(i18n.Locale()).BulkLoadScript() }
+
+// BulkLoadScript says "Saved scripts"
+// in the language of msgs.
+func (msgs Messages) BulkLoadScript() string {
+	return Catalog.Format(msgs.locale, "bulkLoadScript", nil)
+}
+
+// BulkNoScripts says "Save a quick command in the Commands tab first."
+// in the language the app shows.
+func BulkNoScripts() string { return In(i18n.Locale()).BulkNoScripts() }
+
+// BulkNoScripts says "Save a quick command in the Commands tab first."
+// in the language of msgs.
+func (msgs Messages) BulkNoScripts() string {
+	return Catalog.Format(msgs.locale, "bulkNoScripts", nil)
+}
+
+// BulkRoot says "Run as root"
+// in the language the app shows.
+func BulkRoot() string { return In(i18n.Locale()).BulkRoot() }
+
+// BulkRoot says "Run as root"
+// in the language of msgs.
+func (msgs Messages) BulkRoot() string {
+	return Catalog.Format(msgs.locale, "bulkRoot", nil)
+}
+
+// BulkUsePasswordAll says "Use this password for other hosts in this run"
+// in the language the app shows.
+func BulkUsePasswordAll() string { return In(i18n.Locale()).BulkUsePasswordAll() }
+
+// BulkUsePasswordAll says "Use this password for other hosts in this run"
+// in the language of msgs.
+func (msgs Messages) BulkUsePasswordAll() string {
+	return Catalog.Format(msgs.locale, "bulkUsePasswordAll", nil)
+}
+
+// BulkTimeoutInput says "Timeout (seconds)"
+// in the language the app shows.
+func BulkTimeoutInput() string { return In(i18n.Locale()).BulkTimeoutInput() }
+
+// BulkTimeoutInput says "Timeout (seconds)"
+// in the language of msgs.
+func (msgs Messages) BulkTimeoutInput() string {
+	return Catalog.Format(msgs.locale, "bulkTimeoutInput", nil)
+}
+
+// BulkConcurrency says "Concurrency (1–50)"
+// in the language the app shows.
+func BulkConcurrency() string { return In(i18n.Locale()).BulkConcurrency() }
+
+// BulkConcurrency says "Concurrency (1–50)"
+// in the language of msgs.
+func (msgs Messages) BulkConcurrency() string {
+	return Catalog.Format(msgs.locale, "bulkConcurrency", nil)
+}
+
+// BulkStop says "Stop scheduling on first failure"
+// in the language the app shows.
+func BulkStop() string { return In(i18n.Locale()).BulkStop() }
+
+// BulkStop says "Stop scheduling on first failure"
+// in the language of msgs.
+func (msgs Messages) BulkStop() string {
+	return Catalog.Format(msgs.locale, "bulkStop", nil)
+}
+
+// BulkKeepScript says "Save script in local history"
+// in the language the app shows.
+func BulkKeepScript() string { return In(i18n.Locale()).BulkKeepScript() }
+
+// BulkKeepScript says "Save script in local history"
+// in the language of msgs.
+func (msgs Messages) BulkKeepScript() string {
+	return Catalog.Format(msgs.locale, "bulkKeepScript", nil)
+}
+
+// BulkNoSecrets says "Do not put passwords or keys in scripts, or print secrets to output."
+// in the language the app shows.
+func BulkNoSecrets() string { return In(i18n.Locale()).BulkNoSecrets() }
+
+// BulkNoSecrets says "Do not put passwords or keys in scripts, or print secrets to output."
+// in the language of msgs.
+func (msgs Messages) BulkNoSecrets() string {
+	return Catalog.Format(msgs.locale, "bulkNoSecrets", nil)
+}
+
+// BulkScriptSecret says "The script appears to contain a credential. Remove it before running."
+// in the language the app shows.
+func BulkScriptSecret() string { return In(i18n.Locale()).BulkScriptSecret() }
+
+// BulkScriptSecret says "The script appears to contain a credential. Remove it before running."
+// in the language of msgs.
+func (msgs Messages) BulkScriptSecret() string {
+	return Catalog.Format(msgs.locale, "bulkScriptSecret", nil)
+}
+
+// BulkScriptInvalid says "Enter a script of at most 256 KiB, without NUL characters."
+// in the language the app shows.
+func BulkScriptInvalid() string { return In(i18n.Locale()).BulkScriptInvalid() }
+
+// BulkScriptInvalid says "Enter a script of at most 256 KiB, without NUL characters."
+// in the language of msgs.
+func (msgs Messages) BulkScriptInvalid() string {
+	return Catalog.Format(msgs.locale, "bulkScriptInvalid", nil)
+}
+
+// BulkLimitsInvalid says "Use a timeout of 1–86,400 seconds and concurrency of 1–50."
+// in the language the app shows.
+func BulkLimitsInvalid() string { return In(i18n.Locale()).BulkLimitsInvalid() }
+
+// BulkLimitsInvalid says "Use a timeout of 1–86,400 seconds and concurrency of 1–50."
+// in the language of msgs.
+func (msgs Messages) BulkLimitsInvalid() string {
+	return Catalog.Format(msgs.locale, "bulkLimitsInvalid", nil)
+}
+
+// BulkRun says "Run…"
+// in the language the app shows.
+func BulkRun() string { return In(i18n.Locale()).BulkRun() }
+
+// BulkRun says "Run…"
+// in the language of msgs.
+func (msgs Messages) BulkRun() string {
+	return Catalog.Format(msgs.locale, "bulkRun", nil)
+}
+
+// BulkRunNow says "Run script"
+// in the language the app shows.
+func BulkRunNow() string { return In(i18n.Locale()).BulkRunNow() }
+
+// BulkRunNow says "Run script"
+// in the language of msgs.
+func (msgs Messages) BulkRunNow() string {
+	return Catalog.Format(msgs.locale, "bulkRunNow", nil)
+}
+
+// BulkConfirm says "{count, plural, one {Run on # host?} other {Run on # hosts?}}"
+// in the language the app shows.
+func BulkConfirm(count int) string { return In(i18n.Locale()).BulkConfirm(count) }
+
+// BulkConfirm says "{count, plural, one {Run on # host?} other {Run on # hosts?}}"
+// in the language of msgs.
+func (msgs Messages) BulkConfirm(count int) string {
+	return Catalog.Format(msgs.locale, "bulkConfirm", map[string]any{"count": count})
+}
+
+// BulkConfirmNote says "This runs the script on the listed hosts. Back up any files the script overwrites. Changes are not undone on failure,…"
+// in the language the app shows.
+func BulkConfirmNote() string { return In(i18n.Locale()).BulkConfirmNote() }
+
+// BulkConfirmNote says "This runs the script on the listed hosts. Back up any files the script overwrites. Changes are not undone on failure,…"
+// in the language of msgs.
+func (msgs Messages) BulkConfirmNote() string {
+	return Catalog.Format(msgs.locale, "bulkConfirmNote", nil)
+}
+
+// BulkConfirmRoot says "The script runs as root and can change or destroy system files and data."
+// in the language the app shows.
+func BulkConfirmRoot() string { return In(i18n.Locale()).BulkConfirmRoot() }
+
+// BulkConfirmRoot says "The script runs as root and can change or destroy system files and data."
+// in the language of msgs.
+func (msgs Messages) BulkConfirmRoot() string {
+	return Catalog.Format(msgs.locale, "bulkConfirmRoot", nil)
+}
+
+// BulkRunningNote says "Cancelling closes SSH execution channels. Remote processes can continue, and changes are not undone."
+// in the language the app shows.
+func BulkRunningNote() string { return In(i18n.Locale()).BulkRunningNote() }
+
+// BulkRunningNote says "Cancelling closes SSH execution channels. Remote processes can continue, and changes are not undone."
+// in the language of msgs.
+func (msgs Messages) BulkRunningNote() string {
+	return Catalog.Format(msgs.locale, "bulkRunningNote", nil)
+}
+
+// BulkCloseRunning says "Cancel this run and close the window?"
+// in the language the app shows.
+func BulkCloseRunning() string { return In(i18n.Locale()).BulkCloseRunning() }
+
+// BulkCloseRunning says "Cancel this run and close the window?"
+// in the language of msgs.
+func (msgs Messages) BulkCloseRunning() string {
+	return Catalog.Format(msgs.locale, "bulkCloseRunning", nil)
+}
+
+// BulkCloseNow says "Cancel run and close"
+// in the language the app shows.
+func BulkCloseNow() string { return In(i18n.Locale()).BulkCloseNow() }
+
+// BulkCloseNow says "Cancel run and close"
+// in the language of msgs.
+func (msgs Messages) BulkCloseNow() string {
+	return Catalog.Format(msgs.locale, "bulkCloseNow", nil)
+}
+
+// BulkRetryFailed says "Retry failed"
+// in the language the app shows.
+func BulkRetryFailed() string { return In(i18n.Locale()).BulkRetryFailed() }
+
+// BulkRetryFailed says "Retry failed"
+// in the language of msgs.
+func (msgs Messages) BulkRetryFailed() string {
+	return Catalog.Format(msgs.locale, "bulkRetryFailed", nil)
+}
+
+// BulkRetrySelected says "Retry selected"
+// in the language the app shows.
+func BulkRetrySelected() string { return In(i18n.Locale()).BulkRetrySelected() }
+
+// BulkRetrySelected says "Retry selected"
+// in the language of msgs.
+func (msgs Messages) BulkRetrySelected() string {
+	return Catalog.Format(msgs.locale, "bulkRetrySelected", nil)
+}
+
+// BulkNoFailed says "No failed or timed-out hosts."
+// in the language the app shows.
+func BulkNoFailed() string { return In(i18n.Locale()).BulkNoFailed() }
+
+// BulkNoFailed says "No failed or timed-out hosts."
+// in the language of msgs.
+func (msgs Messages) BulkNoFailed() string {
+	return Catalog.Format(msgs.locale, "bulkNoFailed", nil)
+}
+
+// BulkNotFinished says "Wait for the run to finish."
+// in the language the app shows.
+func BulkNotFinished() string { return In(i18n.Locale()).BulkNotFinished() }
+
+// BulkNotFinished says "Wait for the run to finish."
+// in the language of msgs.
+func (msgs Messages) BulkNotFinished() string {
+	return Catalog.Format(msgs.locale, "bulkNotFinished", nil)
+}
+
+// BulkCancelAll says "Cancel all"
+// in the language the app shows.
+func BulkCancelAll() string { return In(i18n.Locale()).BulkCancelAll() }
+
+// BulkCancelAll says "Cancel all"
+// in the language of msgs.
+func (msgs Messages) BulkCancelAll() string {
+	return Catalog.Format(msgs.locale, "bulkCancelAll", nil)
+}
+
+// BulkCopyAll says "Copy all"
+// in the language the app shows.
+func BulkCopyAll() string { return In(i18n.Locale()).BulkCopyAll() }
+
+// BulkCopyAll says "Copy all"
+// in the language of msgs.
+func (msgs Messages) BulkCopyAll() string {
+	return Catalog.Format(msgs.locale, "bulkCopyAll", nil)
+}
+
+// BulkCopyOutput says "Copy output"
+// in the language the app shows.
+func BulkCopyOutput() string { return In(i18n.Locale()).BulkCopyOutput() }
+
+// BulkCopyOutput says "Copy output"
+// in the language of msgs.
+func (msgs Messages) BulkCopyOutput() string {
+	return Catalog.Format(msgs.locale, "bulkCopyOutput", nil)
+}
+
+// BulkExport says "Export…"
+// in the language the app shows.
+func BulkExport() string { return In(i18n.Locale()).BulkExport() }
+
+// BulkExport says "Export…"
+// in the language of msgs.
+func (msgs Messages) BulkExport() string {
+	return Catalog.Format(msgs.locale, "bulkExport", nil)
+}
+
+// BulkExportCSV says "CSV spreadsheet…"
+// in the language the app shows.
+func BulkExportCSV() string { return In(i18n.Locale()).BulkExportCSV() }
+
+// BulkExportCSV says "CSV spreadsheet…"
+// in the language of msgs.
+func (msgs Messages) BulkExportCSV() string {
+	return Catalog.Format(msgs.locale, "bulkExportCSV", nil)
+}
+
+// BulkExportText says "Plain text report…"
+// in the language the app shows.
+func BulkExportText() string { return In(i18n.Locale()).BulkExportText() }
+
+// BulkExportText says "Plain text report…"
+// in the language of msgs.
+func (msgs Messages) BulkExportText() string {
+	return Catalog.Format(msgs.locale, "bulkExportText", nil)
+}
+
+// BulkExportReplace says "Replace this file?"
+// in the language the app shows.
+func BulkExportReplace() string { return In(i18n.Locale()).BulkExportReplace() }
+
+// BulkExportReplace says "Replace this file?"
+// in the language of msgs.
+func (msgs Messages) BulkExportReplace() string {
+	return Catalog.Format(msgs.locale, "bulkExportReplace", nil)
+}
+
+// BulkExportBackup says "The existing file will be backed up before the report replaces it."
+// in the language the app shows.
+func BulkExportBackup() string { return In(i18n.Locale()).BulkExportBackup() }
+
+// BulkExportBackup says "The existing file will be backed up before the report replaces it."
+// in the language of msgs.
+func (msgs Messages) BulkExportBackup() string {
+	return Catalog.Format(msgs.locale, "bulkExportBackup", nil)
+}
+
+// BulkExportChanged says "The destination changed. Choose it again."
+// in the language the app shows.
+func BulkExportChanged() string { return In(i18n.Locale()).BulkExportChanged() }
+
+// BulkExportChanged says "The destination changed. Choose it again."
+// in the language of msgs.
+func (msgs Messages) BulkExportChanged() string {
+	return Catalog.Format(msgs.locale, "bulkExportChanged", nil)
+}
+
+// BulkExportInvalid says "Choose a regular file outside the run history folder."
+// in the language the app shows.
+func BulkExportInvalid() string { return In(i18n.Locale()).BulkExportInvalid() }
+
+// BulkExportInvalid says "Choose a regular file outside the run history folder."
+// in the language of msgs.
+func (msgs Messages) BulkExportInvalid() string {
+	return Catalog.Format(msgs.locale, "bulkExportInvalid", nil)
+}
+
+// BulkExportDone says "Report exported."
+// in the language the app shows.
+func BulkExportDone() string { return In(i18n.Locale()).BulkExportDone() }
+
+// BulkExportDone says "Report exported."
+// in the language of msgs.
+func (msgs Messages) BulkExportDone() string {
+	return Catalog.Format(msgs.locale, "bulkExportDone", nil)
+}
+
+// BulkWorking says "Running in progress"
+// in the language the app shows.
+func BulkWorking() string { return In(i18n.Locale()).BulkWorking() }
+
+// BulkWorking says "Running in progress"
+// in the language of msgs.
+func (msgs Messages) BulkWorking() string {
+	return Catalog.Format(msgs.locale, "bulkWorking", nil)
+}
+
+// BulkNoResults says "Run a script to see per-host results here."
+// in the language the app shows.
+func BulkNoResults() string { return In(i18n.Locale()).BulkNoResults() }
+
+// BulkNoResults says "Run a script to see per-host results here."
+// in the language of msgs.
+func (msgs Messages) BulkNoResults() string {
+	return Catalog.Format(msgs.locale, "bulkNoResults", nil)
+}
+
+// BulkNoResultMatches says "No results match this status."
+// in the language the app shows.
+func BulkNoResultMatches() string { return In(i18n.Locale()).BulkNoResultMatches() }
+
+// BulkNoResultMatches says "No results match this status."
+// in the language of msgs.
+func (msgs Messages) BulkNoResultMatches() string {
+	return Catalog.Format(msgs.locale, "bulkNoResultMatches", nil)
+}
+
+// BulkNoOutput says "No output was captured."
+// in the language the app shows.
+func BulkNoOutput() string { return In(i18n.Locale()).BulkNoOutput() }
+
+// BulkNoOutput says "No output was captured."
+// in the language of msgs.
+func (msgs Messages) BulkNoOutput() string {
+	return Catalog.Format(msgs.locale, "bulkNoOutput", nil)
+}
+
+// BulkViewOutput says "View output"
+// in the language the app shows.
+func BulkViewOutput() string { return In(i18n.Locale()).BulkViewOutput() }
+
+// BulkViewOutput says "View output"
+// in the language of msgs.
+func (msgs Messages) BulkViewOutput() string {
+	return Catalog.Format(msgs.locale, "bulkViewOutput", nil)
+}
+
+// BulkStatus says "Status"
+// in the language the app shows.
+func BulkStatus() string { return In(i18n.Locale()).BulkStatus() }
+
+// BulkStatus says "Status"
+// in the language of msgs.
+func (msgs Messages) BulkStatus() string {
+	return Catalog.Format(msgs.locale, "bulkStatus", nil)
+}
+
+// BulkHost says "Host"
+// in the language the app shows.
+func BulkHost() string { return In(i18n.Locale()).BulkHost() }
+
+// BulkHost says "Host"
+// in the language of msgs.
+func (msgs Messages) BulkHost() string {
+	return Catalog.Format(msgs.locale, "bulkHost", nil)
+}
+
+// BulkExit says "Exit code"
+// in the language the app shows.
+func BulkExit() string { return In(i18n.Locale()).BulkExit() }
+
+// BulkExit says "Exit code"
+// in the language of msgs.
+func (msgs Messages) BulkExit() string {
+	return Catalog.Format(msgs.locale, "bulkExit", nil)
+}
+
+// BulkExitShort says "Exit"
+// in the language the app shows.
+func BulkExitShort() string { return In(i18n.Locale()).BulkExitShort() }
+
+// BulkExitShort says "Exit"
+// in the language of msgs.
+func (msgs Messages) BulkExitShort() string {
+	return Catalog.Format(msgs.locale, "bulkExitShort", nil)
+}
+
+// BulkDuration says "Duration"
+// in the language the app shows.
+func BulkDuration() string { return In(i18n.Locale()).BulkDuration() }
+
+// BulkDuration says "Duration"
+// in the language of msgs.
+func (msgs Messages) BulkDuration() string {
+	return Catalog.Format(msgs.locale, "bulkDuration", nil)
+}
+
+// BulkOutput says "Output"
+// in the language the app shows.
+func BulkOutput() string { return In(i18n.Locale()).BulkOutput() }
+
+// BulkOutput says "Output"
+// in the language of msgs.
+func (msgs Messages) BulkOutput() string {
+	return Catalog.Format(msgs.locale, "bulkOutput", nil)
+}
+
+// BulkStdout says "Standard output"
+// in the language the app shows.
+func BulkStdout() string { return In(i18n.Locale()).BulkStdout() }
+
+// BulkStdout says "Standard output"
+// in the language of msgs.
+func (msgs Messages) BulkStdout() string {
+	return Catalog.Format(msgs.locale, "bulkStdout", nil)
+}
+
+// BulkStderr says "Standard error"
+// in the language the app shows.
+func BulkStderr() string { return In(i18n.Locale()).BulkStderr() }
+
+// BulkStderr says "Standard error"
+// in the language of msgs.
+func (msgs Messages) BulkStderr() string {
+	return Catalog.Format(msgs.locale, "bulkStderr", nil)
+}
+
+// BulkTruncated says "Output truncated (up to 1 MiB per host)."
+// in the language the app shows.
+func BulkTruncated() string { return In(i18n.Locale()).BulkTruncated() }
+
+// BulkTruncated says "Output truncated (up to 1 MiB per host)."
+// in the language of msgs.
+func (msgs Messages) BulkTruncated() string {
+	return Catalog.Format(msgs.locale, "bulkTruncated", nil)
+}
+
+// BulkWaiting says "Waiting"
+// in the language the app shows.
+func BulkWaiting() string { return In(i18n.Locale()).BulkWaiting() }
+
+// BulkWaiting says "Waiting"
+// in the language of msgs.
+func (msgs Messages) BulkWaiting() string {
+	return Catalog.Format(msgs.locale, "bulkWaiting", nil)
+}
+
+// BulkConnecting says "Connecting"
+// in the language the app shows.
+func BulkConnecting() string { return In(i18n.Locale()).BulkConnecting() }
+
+// BulkConnecting says "Connecting"
+// in the language of msgs.
+func (msgs Messages) BulkConnecting() string {
+	return Catalog.Format(msgs.locale, "bulkConnecting", nil)
+}
+
+// BulkRunning says "Running"
+// in the language the app shows.
+func BulkRunning() string { return In(i18n.Locale()).BulkRunning() }
+
+// BulkRunning says "Running"
+// in the language of msgs.
+func (msgs Messages) BulkRunning() string {
+	return Catalog.Format(msgs.locale, "bulkRunning", nil)
+}
+
+// BulkOK says "OK"
+// in the language the app shows.
+func BulkOK() string { return In(i18n.Locale()).BulkOK() }
+
+// BulkOK says "OK"
+// in the language of msgs.
+func (msgs Messages) BulkOK() string {
+	return Catalog.Format(msgs.locale, "bulkOK", nil)
+}
+
+// BulkFailed says "Failed"
+// in the language the app shows.
+func BulkFailed() string { return In(i18n.Locale()).BulkFailed() }
+
+// BulkFailed says "Failed"
+// in the language of msgs.
+func (msgs Messages) BulkFailed() string {
+	return Catalog.Format(msgs.locale, "bulkFailed", nil)
+}
+
+// BulkTimeout says "Timed out"
+// in the language the app shows.
+func BulkTimeout() string { return In(i18n.Locale()).BulkTimeout() }
+
+// BulkTimeout says "Timed out"
+// in the language of msgs.
+func (msgs Messages) BulkTimeout() string {
+	return Catalog.Format(msgs.locale, "bulkTimeout", nil)
+}
+
+// BulkCancelled says "Cancelled"
+// in the language the app shows.
+func BulkCancelled() string { return In(i18n.Locale()).BulkCancelled() }
+
+// BulkCancelled says "Cancelled"
+// in the language of msgs.
+func (msgs Messages) BulkCancelled() string {
+	return Catalog.Format(msgs.locale, "bulkCancelled", nil)
+}
+
+// BulkSkipped says "Skipped"
+// in the language the app shows.
+func BulkSkipped() string { return In(i18n.Locale()).BulkSkipped() }
+
+// BulkSkipped says "Skipped"
+// in the language of msgs.
+func (msgs Messages) BulkSkipped() string {
+	return Catalog.Format(msgs.locale, "bulkSkipped", nil)
+}
+
+// BulkHostKey says "Host key not trusted. Connect once interactively and verify the host key."
+// in the language the app shows.
+func BulkHostKey() string { return In(i18n.Locale()).BulkHostKey() }
+
+// BulkHostKey says "Host key not trusted. Connect once interactively and verify the host key."
+// in the language of msgs.
+func (msgs Messages) BulkHostKey() string {
+	return Catalog.Format(msgs.locale, "bulkHostKey", nil)
+}
+
+// BulkAddressInvalid says "The SSH destination or proxy address is invalid."
+// in the language the app shows.
+func BulkAddressInvalid() string { return In(i18n.Locale()).BulkAddressInvalid() }
+
+// BulkAddressInvalid says "The SSH destination or proxy address is invalid."
+// in the language of msgs.
+func (msgs Messages) BulkAddressInvalid() string {
+	return Catalog.Format(msgs.locale, "bulkAddressInvalid", nil)
+}
+
+// BulkTargetChanged says "The saved target changed or is no longer available."
+// in the language the app shows.
+func BulkTargetChanged() string { return In(i18n.Locale()).BulkTargetChanged() }
+
+// BulkTargetChanged says "The saved target changed or is no longer available."
+// in the language of msgs.
+func (msgs Messages) BulkTargetChanged() string {
+	return Catalog.Format(msgs.locale, "bulkTargetChanged", nil)
+}
+
+// BulkNoHistory says "No previous runs."
+// in the language the app shows.
+func BulkNoHistory() string { return In(i18n.Locale()).BulkNoHistory() }
+
+// BulkNoHistory says "No previous runs."
+// in the language of msgs.
+func (msgs Messages) BulkNoHistory() string {
+	return Catalog.Format(msgs.locale, "bulkNoHistory", nil)
+}
+
+// BulkRestore says "Load into setup"
+// in the language the app shows.
+func BulkRestore() string { return In(i18n.Locale()).BulkRestore() }
+
+// BulkRestore says "Load into setup"
+// in the language of msgs.
+func (msgs Messages) BulkRestore() string {
+	return Catalog.Format(msgs.locale, "bulkRestore", nil)
+}
+
+// BulkScriptNotSaved says "Script was not saved."
+// in the language the app shows.
+func BulkScriptNotSaved() string { return In(i18n.Locale()).BulkScriptNotSaved() }
+
+// BulkScriptNotSaved says "Script was not saved."
+// in the language of msgs.
+func (msgs Messages) BulkScriptNotSaved() string {
+	return Catalog.Format(msgs.locale, "bulkScriptNotSaved", nil)
+}
+
+// BulkHistoryTargets says "{count, plural, one {# target} other {# targets}}"
+// in the language the app shows.
+func BulkHistoryTargets(count int) string { return In(i18n.Locale()).BulkHistoryTargets(count) }
+
+// BulkHistoryTargets says "{count, plural, one {# target} other {# targets}}"
+// in the language of msgs.
+func (msgs Messages) BulkHistoryTargets(count int) string {
+	return Catalog.Format(msgs.locale, "bulkHistoryTargets", map[string]any{"count": count})
+}
+
+// BulkHistoryMissing says "{count, plural, one {# original target is no longer available.} other {# original targets are no longer available.}}"
+// in the language the app shows.
+func BulkHistoryMissing(count int) string { return In(i18n.Locale()).BulkHistoryMissing(count) }
+
+// BulkHistoryMissing says "{count, plural, one {# original target is no longer available.} other {# original targets are no longer available.}}"
+// in the language of msgs.
+func (msgs Messages) BulkHistoryMissing(count int) string {
+	return Catalog.Format(msgs.locale, "bulkHistoryMissing", map[string]any{"count": count})
+}
+
+// BulkHistoryError says "Could not read or save run history: {detail}"
+// in the language the app shows.
+func BulkHistoryError(detail string) string { return In(i18n.Locale()).BulkHistoryError(detail) }
+
+// BulkHistoryError says "Could not read or save run history: {detail}"
+// in the language of msgs.
+func (msgs Messages) BulkHistoryError(detail string) string {
+	return Catalog.Format(msgs.locale, "bulkHistoryError", map[string]any{"detail": detail})
+}
+
+// BulkCommandPalette says "Command palette"
+// in the language the app shows.
+func BulkCommandPalette() string { return In(i18n.Locale()).BulkCommandPalette() }
+
+// BulkCommandPalette says "Command palette"
+// in the language of msgs.
+func (msgs Messages) BulkCommandPalette() string {
+	return Catalog.Format(msgs.locale, "bulkCommandPalette", nil)
+}
+
 // SendToChoose says "Choose sessions…"
 // in the language the app shows.
 func SendToChoose() string { return In(i18n.Locale()).SendToChoose() }

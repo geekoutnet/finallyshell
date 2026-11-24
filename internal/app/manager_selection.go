@@ -144,6 +144,10 @@ func (a *App) managerSelectionTools(c *ui.Context, m *managerState, later *[]fun
 	}
 	ui.Toolbar(c, func() {
 		ui.Text(c, locales.ManagerSelectedCount(count)).TextColor(theme.TextMuted).SingleLine().Shrink(0)
+		hosts := a.bulkManagerHosts(m, items)
+		if ui.Button(c, locales.BulkTitle()).Disabled(len(hosts) == 0).Tooltip(bulkReason(len(hosts) == 0, locales.BulkNoTargets())).Clicked() {
+			*later = append(*later, func() { a.openBulkExec(hosts, "") })
+		}
 		button := ui.Button(c, "").Label(label).KeepFocus().Border(1, theme.Border).Children(func() {
 			ui.Icon(c, icons.Get("trash-2")).FontSize(14).TextColor(theme.TextMuted)
 			ui.Text(c, label).SingleLine()
@@ -162,6 +166,7 @@ func (a *App) allManagerItemsDeleted(items []managerItem) bool {
 }
 
 func (a *App) managerSelectionMenu(menu *ui.Menu, m *managerState, items []managerItem, later *[]func()) {
+	a.bulkManagerItem(menu, m, items, later)
 	label := locales.ManagerDeleteSelected(len(items))
 	if a.allManagerItemsDeleted(items) {
 		label = locales.ManagerDeleteForeverCount(len(items))

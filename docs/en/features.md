@@ -1784,6 +1784,13 @@ save with "permission denied".
 
 The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.
 
+### System tab › Disk, updates, security and firewall
+
+- **Disk** lists mount usage and scans one filesystem at a time. Enter an absolute path or open a mount; double-click a directory to scan it, or switch to **Largest files** for up to 100 files over 50 MiB. Scans have a timeout, can be canceled and are cached until refresh or disconnect. Right-click to open Files, copy a path or delete selected items that are not protected. Turn off **Scan as root** to operate as the login user inside directories that ordinary users can modify. An emptied `.log` file is backed up next to the original. Cleanup offers APT and DNF caches, archived system journals with a size limit, and matching rotated logs; visible sizes are estimates, not guaranteed savings.
+- **Updates** shows the OS, kernel, latest available package versions, security updates and reboot requirements when supported. Refresh indexes or upgrade all, security or selected packages on APT, DNF and YUM. Zypper, APK and Pacman show the locally available index read-only. Package operations stream output and cannot be canceled from the app once confirmed; keep SSH connected until they finish. Confirming **Reboot server** schedules a restart in one minute.
+- **Security** groups recent SSH failures by source IP, username or day, and lists successful logins, present and past sessions, recent sudo users, and selected effective SSH settings. IP locations use the existing lookup settings. Fail2ban lists active jails and their banned IPs, supports confirmed bans and unbans, and does not ban the current SSH source.
+- **Firewall** shows UFW numbered rules, Firewalld zones and listening ports. It protects the configured SSH port, the actual connection port and other SSH ports it can verify. UFW adds a source-specific SSH allow rule before enabling; unknown or potentially unsafe rule changes are refused. Firewalld changes only the chosen port or service in the live and persistent configurations, without reloading unrelated runtime rules. Rich rules, nftables and iptables are read-only. Existing firewall configuration files are backed up beside the originals before changes.
+
 ## Tunnels tab
 
 The "Tunnels" tab at the bottom right lists the tunnels of the current

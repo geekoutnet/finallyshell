@@ -92,9 +92,13 @@ func (a *App) serverPageOf(c *ui.Context, s *Session) {
 	ui.Row(c).FillWidth().Padding(6, 10).Gap(10).AlignItems(ui.Center).BorderWidth(0, 0, 1, 0).BorderColor(colors.line).Children(func() {
 		ui.Icon(c, icons.Get("server")).FontSize(14).TextColor(theme.Accent).Shrink(0)
 		ui.Text(c, s.label()).Bold().SingleLine().Shrink(1).MinWidth(40).MaxWidth(200)
-		ui.ScrollHorizontal(c).Grow(1).MinWidth(0).Scrollbars(false).Children(func() {
-			ui.Segmented(c, &page.section, serverSectionNames()...).Label(locales.TabSystem())
-		})
+		if a.opsNarrow() {
+			serverCompactSections(c, &page.section)
+		} else {
+			ui.ScrollHorizontal(c).Grow(1).MinWidth(0).Scrollbars(false).Children(func() {
+				ui.Segmented(c, &page.section, serverSectionNames()...).Label(locales.TabSystem())
+			})
+		}
 		if widgets.IconButton(c, "refresh-cw", locales.ServerRefresh()).Shrink(0).Clicked() {
 			a.refreshServerSection(s)
 		}

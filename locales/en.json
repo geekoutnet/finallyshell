@@ -1302,6 +1302,7 @@
   "siteAccess": "Nginx and certificate access",
   "siteActions": "Site actions",
   "siteApplyFailed": "Nginx configuration not applied",
+  "siteAutoRestored": "nginx rejected the change, so the previous file was put back. Your edits are still in the editor.",
   "siteBackup": "Backup: {file}",
   "siteBackupIncluded": "An include pattern would load the backup as configuration.",
   "siteBusy": "Wait for the current operation or refresh.",

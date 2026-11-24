@@ -10198,6 +10198,16 @@ func (msgs Messages) SiteApplyFailed() string {
 	return Catalog.Format(msgs.locale, "siteApplyFailed", nil)
 }
 
+// SiteAutoRestored says "nginx rejected the change, so the previous file was put back. Your edits are still in the editor."
+// in the language the app shows.
+func SiteAutoRestored() string { return In(i18n.Locale()).SiteAutoRestored() }
+
+// SiteAutoRestored says "nginx rejected the change, so the previous file was put back. Your edits are still in the editor."
+// in the language of msgs.
+func (msgs Messages) SiteAutoRestored() string {
+	return Catalog.Format(msgs.locale, "siteAutoRestored", nil)
+}
+
 // SiteBackup says "Backup: {file}"
 // in the language the app shows.
 func SiteBackup(file string) string { return In(i18n.Locale()).SiteBackup(file) }

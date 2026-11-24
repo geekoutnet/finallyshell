@@ -44,8 +44,14 @@ func (a *App) siteEditor(s *Session, file string, applied bool) {
 }
 
 func (a *App) siteEditBody(s *Session, dialog *systemDialog, file, original string, applied bool) {
+	a.siteEditBodyText(s, dialog, file, original, original, applied)
+}
+
+// siteEditBodyText is the editor of file, whose content on the server is
+// original, showing text: the user's edits again after a save that nginx
+// refused and that was undone.
+func (a *App) siteEditBodyText(s *Session, dialog *systemDialog, file, original, text string, applied bool) {
 	page := &s.server.sites
-	text := original
 	var editor func(*ui.Context, float32)
 	editor = func(c *ui.Context, height float32) {
 		ui.TextArea(c, &text).Label(locales.SiteConfig()).Font("monospace").FillWidth().Height(min(350, height/2)).AutoFocus()
@@ -67,14 +73,27 @@ func (a *App) siteEditBody(s *Session, dialog *systemDialog, file, original stri
 			reload := applied && page.status.State == "active"
 			dialog.body, dialog.consequence = nil, locales.SiteSaveWarning(change.Backup)+" "+siteApplyHint(reload)
 			dialog.back = func() { dialog.body, dialog.consequence, dialog.confirm = editor, "", nil }
-			dialog.confirm = func() { a.siteWriteConfig(s, dialog, change, script, text, reload, false) }
+			attempted := text
+			dialog.confirm = func() {
+				a.siteWriteConfig(s, dialog, change, script, attempted, reload, false, func() {
+					a.siteEditBodyText(s, dialog, file, original, attempted, applied)
+				})
+			}
 		}
 	}
 	dialog.body = editor
 }
 
-func (a *App) siteWriteConfig(s *Session, dialog *systemDialog, change monitor.NginxChange, script, text string, reload, restore bool) {
+// siteWriteConfig writes change (or restores its backup, for restore) and
+// tests the configuration, reloading nginx when reload. A change nginx
+// refuses is undone at once, so that the file on disk never stays broken
+// for the next start of nginx; edit then shows the user's text again.
+func (a *App) siteWriteConfig(s *Session, dialog *systemDialog, change monitor.NginxChange, script, text string, reload, restore bool, edit func()) {
 	page := &s.server.sites
+	var undo string
+	if !restore {
+		undo, _ = change.RestoreCommand(page.inventory.NginxTree, time.Now())
+	}
 	test, _ := monitor.NginxActionCommand("test", page.status.Unit, page.inventory.Main)
 	apply, _ := monitor.NginxActionCommand("reload", page.status.Unit, page.inventory.Main)
 	if reload && !restore {
@@ -108,6 +127,11 @@ func (a *App) siteWriteConfig(s *Session, dialog *systemDialog, change monitor.N
 		} else {
 			out = ""
 		}
+		undone := false
+		if err != nil && written && !restore && undo != "" {
+			back, _, undoErr := run(ctx, undo, nil, nil)
+			undone = undoErr == nil && strings.TrimSpace(back) == "finallyshell-written"
+		}
 		a.post(func() {
 			if !systemReady(s, dialog.client) {
 				return
@@ -125,6 +149,16 @@ func (a *App) siteWriteConfig(s *Session, dialog *systemDialog, change monitor.N
 				page.recovery = nil
 				dialog.output += "\n" + strings.TrimSpace(siteClean(stderr))
 				dialog.done = true
+				a.refreshServerSites(s)
+				return
+			}
+			if undone {
+				page.recovery = nil
+				dialog.output += "\n" + locales.SiteAutoRestored()
+				if edit != nil && page.dialog == dialog {
+					dialog.title = locales.SiteApplyFailed()
+					edit()
+				}
 				a.refreshServerSites(s)
 				return
 			}
@@ -163,7 +197,7 @@ func (a *App) siteOfferRestore(s *Session, dialog *systemDialog, change monitor.
 			dialog.back = func() {
 				dialog.target, dialog.body, dialog.confirm, dialog.consequence = previousTarget, previous, nil, ""
 			}
-			dialog.confirm = func() { a.siteWriteConfig(s, dialog, change, script, "", false, true) }
+			dialog.confirm = func() { a.siteWriteConfig(s, dialog, change, script, "", false, true, nil) }
 			dialog.body = nil
 		}
 	}

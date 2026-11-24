@@ -65,6 +65,7 @@ type sitesFixture struct {
 	refresh  atomic.Int32
 	probes   atomic.Int32
 	failTest atomic.Bool
+	failUndo atomic.Bool // the automatic restore after a refused change fails
 	enabled  atomic.Bool
 	cert     monitor.Certificate
 }
@@ -121,7 +122,10 @@ func (fake *sitesFixture) privilege(_ context.Context, request monitor.Privilege
 			input, _ = io.ReadAll(request.Stdin)
 		}
 		fake.calls <- systemFakeCall{script, string(input)}
-		if strings.Contains(script, "finallyshell-written") {
+		if strings.Contains(script, "Backup changed; refusing restore") && fake.failUndo.Load() {
+			result.Stderr = "Backup changed; refusing restore\n"
+			return result, systemFakeExit(1)
+		} else if strings.Contains(script, "finallyshell-written") {
 			result.Stdout = "finallyshell-written\n"
 		} else if strings.Contains(script, "'set' '--' 'preview.conf'") && strings.Contains(script, "; 'add_link';") {
 			fake.enabled.Store(true)
@@ -234,18 +238,45 @@ func sitesEditFailure(t *testing.T, a *App, platform *fakePlatform, tester *ui.T
 	if write.input != bad || test.command != expected || !strings.Contains(write.command, "'ln' '-T'") || strings.Contains(write.command, bad) {
 		t.Fatalf("wrong write or validation: input %q, test %q", write.input, test.command)
 	}
-	platform.until(t, "failed configuration test", func() bool { return page.recovery != nil && !page.dialog.busy })
-	tester.Frame()
-	if !strings.Contains(page.dialog.failure, "invalid listen port") || !strings.Contains(page.dialog.output, page.recovery.Backup) {
-		t.Fatal("failed test output or backup path missing")
+	// The refused change is undone at once from its backup.
+	if undo := systemNext(t, platform, fake.calls); !strings.Contains(undo.command, "Backup changed; refusing restore") {
+		t.Fatalf("no automatic restore after the failed test: %q", undo.command)
 	}
+	if fake.failUndo.Load() {
+		platform.until(t, "failed configuration test", func() bool { return page.recovery != nil && !page.dialog.busy })
+		tester.Frame()
+		if !strings.Contains(page.dialog.failure, "invalid listen port") || !strings.Contains(page.dialog.output, page.recovery.Backup) {
+			t.Fatal("failed test output or backup path missing")
+		}
+		return
+	}
+	platform.until(t, "refused change undone", func() bool {
+		return !page.dialog.busy && page.recovery == nil && strings.Contains(page.dialog.output, locales.SiteAutoRestored())
+	})
+	tester.Frame()
+	if !strings.Contains(page.dialog.failure, "invalid listen port") || page.dialog.body == nil || page.dialog.done {
+		t.Fatalf("after the automatic restore: failure %q, editor %v, done %v", page.dialog.failure, page.dialog.body != nil, page.dialog.done)
+	}
+	if field, ok := tester.AccessByRole(ui.RoleTextField, locales.SiteConfig()); !ok || !strings.Contains(field.Value, "listen invalid") {
+		t.Fatalf("the editor lost the user's edits: %+v", field)
+	}
+}
+
+// A change nginx refuses is put back at once, so that the next start of
+// nginx does not fail, and the editor shows the user's text again.
+func TestSitesEditorUndoesRefusedChange(t *testing.T) {
+	a, platform, tester, s, fake := sitesTestApp(t)
+	sitesEditFailure(t, a, platform, tester, s, fake)
+	saveShot(t, tester, "sites-editor-undone.png")
 }
 
 func TestSitesEditorRestoreAndServiceConfirmation(t *testing.T) {
 	a, platform, tester, s, fake := sitesTestApp(t)
 	page := &s.server.sites
+	fake.failUndo.Store(true) // the manual restore is the way left
 	sitesEditFailure(t, a, platform, tester, s, fake)
 	fake.failTest.Store(false)
+	fake.failUndo.Store(false)
 	systemClick(t, tester, locales.SiteRestore())
 	systemClick(t, tester, locales.Cancel())
 	sitesNoCall(t, fake)

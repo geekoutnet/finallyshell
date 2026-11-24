@@ -1009,6 +1009,7 @@
   "siteAccess": "Nginx 和证书访问权限",
   "siteActions": "网站操作",
   "siteApplyFailed": "Nginx 配置未生效",
+  "siteAutoRestored": "nginx 未通过检查，已自动恢复原文件。你的修改仍保留在编辑器里。",
   "siteBackup": "备份：{file}",
   "siteBackupIncluded": "备份文件会被 include 通配规则作为配置加载。",
   "siteBusy": "请等待当前操作或刷新完成。",

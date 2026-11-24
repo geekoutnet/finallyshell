@@ -11514,6 +11514,106 @@ func (msgs Messages) TabDocker() string {
 	return Catalog.Format(msgs.locale, "tabDocker", nil)
 }
 
+// TabSystem says "System"
+// in the language the app shows.
+func TabSystem() string { return In(i18n.Locale()).TabSystem() }
+
+// TabSystem says "System"
+// in the language of msgs.
+func (msgs Messages) TabSystem() string {
+	return Catalog.Format(msgs.locale, "tabSystem", nil)
+}
+
+// ServerServices says "Services"
+// in the language the app shows.
+func ServerServices() string { return In(i18n.Locale()).ServerServices() }
+
+// ServerServices says "Services"
+// in the language of msgs.
+func (msgs Messages) ServerServices() string {
+	return Catalog.Format(msgs.locale, "serverServices", nil)
+}
+
+// ServerLogs says "Logs"
+// in the language the app shows.
+func ServerLogs() string { return In(i18n.Locale()).ServerLogs() }
+
+// ServerLogs says "Logs"
+// in the language of msgs.
+func (msgs Messages) ServerLogs() string {
+	return Catalog.Format(msgs.locale, "serverLogs", nil)
+}
+
+// ServerCron says "Scheduled jobs"
+// in the language the app shows.
+func ServerCron() string { return In(i18n.Locale()).ServerCron() }
+
+// ServerCron says "Scheduled jobs"
+// in the language of msgs.
+func (msgs Messages) ServerCron() string {
+	return Catalog.Format(msgs.locale, "serverCron", nil)
+}
+
+// ServerDisk says "Disk"
+// in the language the app shows.
+func ServerDisk() string { return In(i18n.Locale()).ServerDisk() }
+
+// ServerDisk says "Disk"
+// in the language of msgs.
+func (msgs Messages) ServerDisk() string {
+	return Catalog.Format(msgs.locale, "serverDisk", nil)
+}
+
+// ServerUpdates says "Updates"
+// in the language the app shows.
+func ServerUpdates() string { return In(i18n.Locale()).ServerUpdates() }
+
+// ServerUpdates says "Updates"
+// in the language of msgs.
+func (msgs Messages) ServerUpdates() string {
+	return Catalog.Format(msgs.locale, "serverUpdates", nil)
+}
+
+// ServerSecurity says "Security"
+// in the language the app shows.
+func ServerSecurity() string { return In(i18n.Locale()).ServerSecurity() }
+
+// ServerSecurity says "Security"
+// in the language of msgs.
+func (msgs Messages) ServerSecurity() string {
+	return Catalog.Format(msgs.locale, "serverSecurity", nil)
+}
+
+// ServerFirewall says "Firewall"
+// in the language the app shows.
+func ServerFirewall() string { return In(i18n.Locale()).ServerFirewall() }
+
+// ServerFirewall says "Firewall"
+// in the language of msgs.
+func (msgs Messages) ServerFirewall() string {
+	return Catalog.Format(msgs.locale, "serverFirewall", nil)
+}
+
+// ServerSites says "Websites"
+// in the language the app shows.
+func ServerSites() string { return In(i18n.Locale()).ServerSites() }
+
+// ServerSites says "Websites"
+// in the language of msgs.
+func (msgs Messages) ServerSites() string {
+	return Catalog.Format(msgs.locale, "serverSites", nil)
+}
+
+// ServerRefresh says "Read again"
+// in the language the app shows.
+func ServerRefresh() string { return In(i18n.Locale()).ServerRefresh() }
+
+// ServerRefresh says "Read again"
+// in the language of msgs.
+func (msgs Messages) ServerRefresh() string {
+	return Catalog.Format(msgs.locale, "serverRefresh", nil)
+}
+
 // DockerPageCompose says "Compose"
 // in the language the app shows.
 func DockerPageCompose() string { return In(i18n.Locale()).DockerPageCompose() }

@@ -1780,6 +1780,10 @@ file is saved through another connected session to the same host.
 Not supported: saving with sudo. A file without write permission fails to
 save with "permission denied".
 
+## System tab
+
+The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.
+
 ## Tunnels tab
 
 The "Tunnels" tab at the bottom right lists the tunnels of the current

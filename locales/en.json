@@ -1865,5 +1865,357 @@
       }
     }
   },
-  "connInfoRDPAddress": "Address"
+  "connInfoRDPAddress": "Address",
+  "dockerTitle": "Docker",
+  "dockerRefresh": "Read Docker again",
+  "dockerReading": "Reading Docker…",
+  "dockerDenied": "Permission denied on the Docker socket. Add the user to the docker group, or log in as root.",
+  "@dockerDenied": {
+    "description": "The user may not use the Docker socket, also not with sudo -n."
+  },
+  "dockerDown": "The Docker daemon is not running.",
+  "dockerFailed": "Could not read Docker: {error}",
+  "@dockerFailed": {
+    "placeholders": {
+      "error": {
+      }
+    }
+  },
+  "dockerVersion": "Version",
+  "dockerVersionAPI": "{version} (API {api})",
+  "@dockerVersionAPI": {
+    "placeholders": {
+      "version": {
+      },
+      "api": {
+      }
+    }
+  },
+  "dockerViaSudo": "read with sudo",
+  "@dockerViaSudo": {
+    "description": "Docker was read with sudo -n, as the user may not use its socket."
+  },
+  "dockerContainers": "Containers",
+  "dockerContainerCounts": "{total}: {running} running, {paused} paused, {stopped} stopped",
+  "@dockerContainerCounts": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      },
+      "running": {
+        "type": "int"
+      },
+      "paused": {
+        "type": "int"
+      },
+      "stopped": {
+        "type": "int"
+      }
+    }
+  },
+  "dockerImages": "Images",
+  "dockerVolumes": "Volumes",
+  "dockerNetworks": "Networks",
+  "dockerBuildCache": "Build cache",
+  "dockerStorage": "Storage",
+  "dockerCgroup": "Cgroup",
+  "dockerLogging": "Logging",
+  "dockerResources": "Resources",
+  "dockerCPUsMem": "{cpus, plural, one {# CPU} other {# CPUs}}, {mem}",
+  "@dockerCPUsMem": {
+    "description": "The CPUs and memory Docker sees.",
+    "placeholders": {
+      "cpus": {
+        "type": "int"
+      },
+      "mem": {
+      }
+    }
+  },
+  "dockerDiskUsage": "Disk usage",
+  "dockerDiskLine": "{size}, {reclaimable} reclaimable",
+  "@dockerDiskLine": {
+    "description": "A line of docker system df: the size, and what can be removed.",
+    "placeholders": {
+      "size": {
+      },
+      "reclaimable": {
+      }
+    }
+  },
+  "dockerWarnings": "{count, plural, one {# warning} other {# warnings}}",
+  "@dockerWarnings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dockerCount": "{count, plural, one {# container} other {# containers}}, {running} running",
+  "@dockerCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "running": {
+        "type": "int"
+      }
+    }
+  },
+  "dockerCountFiltered": "{shown} of {count}",
+  "@dockerCountFiltered": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dockerFilter": "Filter containers",
+  "dockerGroupByProject": "Group by Compose project",
+  "dockerOther": "Other containers",
+  "@dockerOther": {
+    "description": "The containers that are in no Compose project of several containers."
+  },
+  "dockerNoContainers": "No containers",
+  "dockerNoMatch": "No container matches the filter",
+  "dockerSortBy": "Sort by {column}",
+  "@dockerSortBy": {
+    "placeholders": {
+      "column": {
+      }
+    }
+  },
+  "dockerColName": "Name",
+  "dockerColImage": "Image",
+  "dockerColStatus": "Status",
+  "dockerColPorts": "Ports",
+  "dockerColIP": "IP",
+  "dockerColMemory": "Memory",
+  "dockerUp": "Up {time}",
+  "@dockerUp": {
+    "description": "A running container, and how long it has run: Up 3 days.",
+    "placeholders": {
+      "time": {
+      }
+    }
+  },
+  "dockerUpHealth": "Up {time} ({health})",
+  "@dockerUpHealth": {
+    "placeholders": {
+      "time": {
+      },
+      "health": {
+      }
+    }
+  },
+  "dockerExited": "Exited ({code}) {time} ago",
+  "@dockerExited": {
+    "placeholders": {
+      "code": {
+        "type": "int"
+      },
+      "time": {
+      }
+    }
+  },
+  "dockerExitedCode": "Exited ({code})",
+  "@dockerExitedCode": {
+    "placeholders": {
+      "code": {
+        "type": "int"
+      }
+    }
+  },
+  "dockerPaused": "Paused",
+  "dockerRestarting": "Restarting",
+  "dockerCreated": "Created",
+  "dockerDead": "Dead",
+  "dockerRemoving": "Removing",
+  "dockerHealthy": "healthy",
+  "dockerUnhealthy": "unhealthy",
+  "dockerStarting": "starting",
+  "@dockerStarting": {
+    "description": "A health check that has not passed yet."
+  },
+  "dockerOOMKilled": "out of memory",
+  "@dockerOOMKilled": {
+    "description": "A container the kernel killed for its memory limit."
+  },
+  "durSeconds": "{n, plural, one {# second} other {# seconds}}",
+  "@durSeconds": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "durMinutes": "{n, plural, one {# minute} other {# minutes}}",
+  "@durMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "durHours": "{n, plural, one {# hour} other {# hours}}",
+  "@durHours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "durDays": "{n, plural, one {# day} other {# days}}",
+  "@durDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "durWeeks": "{n, plural, one {# week} other {# weeks}}",
+  "@durWeeks": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "durMonths": "{n, plural, one {# month} other {# months}}",
+  "@durMonths": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "durYears": "{n, plural, one {# year} other {# years}}",
+  "@durYears": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "dockerCopyJSON": "Copy as JSON",
+  "@dockerCopyJSON": {
+    "description": "Copies the container's docker inspect output."
+  },
+  "dockerSecGeneral": "General",
+  "dockerSecNetwork": "Network",
+  "dockerSecPorts": "Ports",
+  "dockerSecMounts": "Mounts",
+  "dockerSecResources": "Resources",
+  "dockerSecEnv": "Environment",
+  "dockerSecLabels": "Labels",
+  "dockerSecLogging": "Logging",
+  "dockerID": "ID",
+  "dockerFullID": "Full ID",
+  "dockerImage": "Image",
+  "dockerImageID": "Image ID",
+  "dockerCreatedAt": "Created",
+  "dockerStartedAt": "Started",
+  "dockerFinishedAt": "Finished",
+  "dockerStatus": "Status",
+  "dockerHealth": "Health",
+  "dockerHealthValue": "{status}, {count, plural, one {# failure in a row} other {# failures in a row}}",
+  "@dockerHealthValue": {
+    "placeholders": {
+      "status": {
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dockerLastCheck": "Last check",
+  "dockerRestartPolicy": "Restart policy",
+  "dockerRestartRetries": "{policy} (at most {count, plural, one {# time} other {# times}})",
+  "@dockerRestartRetries": {
+    "placeholders": {
+      "policy": {
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dockerRestarts": "Restarts",
+  "dockerAutoRemove": "Removed when it stops",
+  "dockerCommand": "Command",
+  "dockerEntrypoint": "Entrypoint",
+  "dockerWorkDir": "Working folder",
+  "dockerUser": "User",
+  "dockerHostname": "Hostname",
+  "dockerPrivileged": "Privileged",
+  "dockerReadOnly": "Read-only root",
+  "dockerCapAdd": "Added capabilities",
+  "dockerPID": "PID",
+  "dockerYes": "Yes",
+  "dockerNo": "No",
+  "dockerProject": "Compose project",
+  "dockerService": "Compose service",
+  "dockerComposeDir": "Compose folder",
+  "dockerComposeFiles": "Compose files",
+  "dockerNetworkMode": "Network mode",
+  "dockerIPv4": "IPv4 address",
+  "dockerGateway": "Gateway",
+  "dockerIPv6": "IPv6 address",
+  "dockerIPv6Gateway": "IPv6 gateway",
+  "dockerMAC": "MAC address",
+  "dockerAliases": "Aliases",
+  "dockerNotPublished": "Exposed, not published",
+  "@dockerNotPublished": {
+    "description": "A port the image exposes that is not published on the host."
+  },
+  "dockerNone": "None",
+  "dockerReadWrite": "read-write",
+  "dockerReadOnlyMount": "read-only",
+  "dockerCPULimit": "CPU limit",
+  "dockerCPUs": "{n} CPUs",
+  "@dockerCPUs": {
+    "description": "A CPU limit: 1.5 CPUs.",
+    "placeholders": {
+      "n": {
+      }
+    }
+  },
+  "dockerCPUShares": "CPU shares",
+  "dockerCPUSet": "CPUs allowed",
+  "dockerMemLimit": "Memory limit",
+  "dockerMemSwap": "Memory and swap limit",
+  "dockerMemReservation": "Memory reservation",
+  "dockerPidsLimit": "Process limit",
+  "dockerUnlimited": "Unlimited",
+  "dockerCPUUsage": "CPU usage",
+  "dockerMemUsage": "Memory usage",
+  "dockerNetIO": "Network I/O",
+  "dockerNetIOValue": "{rx} received, {tx} sent",
+  "@dockerNetIOValue": {
+    "placeholders": {
+      "rx": {
+      },
+      "tx": {
+      }
+    }
+  },
+  "dockerBlockIO": "Disk I/O",
+  "dockerBlockIOValue": "{read} read, {written} written",
+  "@dockerBlockIOValue": {
+    "placeholders": {
+      "read": {
+      },
+      "written": {
+      }
+    }
+  },
+  "dockerProcesses": "Processes",
+  "dockerShowValues": "Show values",
+  "dockerHideValues": "Hide values",
+  "dockerLogDriver": "Driver",
+  "dockerSize": "Size",
+  "dockerReclaimable": "Reclaimable"
 }

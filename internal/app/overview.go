@@ -34,6 +34,8 @@ type overviewState struct {
 	cancel  context.CancelFunc
 	// allAddrs shows the addresses of virtual interfaces too.
 	allAddrs bool
+	// docker is the Docker cards (docker.go).
+	docker dockerState
 }
 
 // readOverview reads s's system info for the tab, dropping a read under
@@ -141,6 +143,7 @@ func (a *App) overviewPage(c *ui.Context, s *Session) {
 	if !ov.loading && (!ov.read && ov.err == nil || ov.client != s.client) {
 		a.readOverview(s) // first shown, or connected again since
 	}
+	a.keepDockerRead(s)
 	st := &s.stats
 	switch {
 	case ov.read && ov.info.KernelOS != "" && ov.info.KernelOS != "Linux":
@@ -168,6 +171,9 @@ func (a *App) overviewPage(c *ui.Context, s *Session) {
 			a.overviewHeader(c, s)
 			overviewGauges(c, s, width-2*pad, height > 0 && height < 380)
 			a.overviewCards(c, s, width-2*pad)
+			if ov.docker.shown() && ov.docker.d.State == monitor.DockerOK && (ov.docker.read || len(ov.docker.d.Containers) > 0) {
+				a.dockerContainers(c, s, width-2*pad)
+			}
 		})
 	})
 }
@@ -215,6 +221,9 @@ func (a *App) overviewHeader(c *ui.Context, s *Session) {
 				ui.Box(c).Size(24, 24).Center().Children(func() { ui.Spinner(c).Label(locales.ReadingServerInfo()) })
 			} else if widgets.IconButton(c, "refresh-cw", locales.Refresh()).Clicked() {
 				a.readOverview(s)
+				if !ov.docker.loading {
+					a.readDockerOf(s)
+				}
 			}
 		})
 	})
@@ -391,6 +400,9 @@ func (a *App) overviewCards(c *ui.Context, s *Session, width float32) {
 		{"system", head + 8*line, func() { overviewSystem(c, s) }},
 		{"addrs", head + line*float32(max(shownAddrs, 1)+1), func() { overviewAddrs(c, ov) }},
 		{"procs", head + line*float32(len(st.Procs)+1), func() { overviewProcs(c, st, a.openProcesses) }},
+	}
+	if ov.docker.shown() {
+		cards = append(cards, overviewCardSpec{"docker", dockerCardHeight(&ov.docker), func() { a.dockerCard(c, s) }})
 	}
 	const minCard, gap = 300, 12
 	cols := 1

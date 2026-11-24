@@ -11359,3 +11359,1343 @@ func ConnInfoRDPAddress() string { return In(i18n.Locale()).ConnInfoRDPAddress()
 func (msgs Messages) ConnInfoRDPAddress() string {
 	return Catalog.Format(msgs.locale, "connInfoRDPAddress", nil)
 }
+
+// DockerTitle says "Docker"
+// in the language the app shows.
+func DockerTitle() string { return In(i18n.Locale()).DockerTitle() }
+
+// DockerTitle says "Docker"
+// in the language of msgs.
+func (msgs Messages) DockerTitle() string {
+	return Catalog.Format(msgs.locale, "dockerTitle", nil)
+}
+
+// DockerRefresh says "Read Docker again"
+// in the language the app shows.
+func DockerRefresh() string { return In(i18n.Locale()).DockerRefresh() }
+
+// DockerRefresh says "Read Docker again"
+// in the language of msgs.
+func (msgs Messages) DockerRefresh() string {
+	return Catalog.Format(msgs.locale, "dockerRefresh", nil)
+}
+
+// DockerReading says "Reading Docker…"
+// in the language the app shows.
+func DockerReading() string { return In(i18n.Locale()).DockerReading() }
+
+// DockerReading says "Reading Docker…"
+// in the language of msgs.
+func (msgs Messages) DockerReading() string {
+	return Catalog.Format(msgs.locale, "dockerReading", nil)
+}
+
+// DockerDenied says "Permission denied on the Docker socket. Add the user to the docker group, or log in as root."
+// in the language the app shows.
+//
+// The user may not use the Docker socket, also not with sudo -n.
+func DockerDenied() string { return In(i18n.Locale()).DockerDenied() }
+
+// DockerDenied says "Permission denied on the Docker socket. Add the user to the docker group, or log in as root."
+// in the language of msgs.
+//
+// The user may not use the Docker socket, also not with sudo -n.
+func (msgs Messages) DockerDenied() string {
+	return Catalog.Format(msgs.locale, "dockerDenied", nil)
+}
+
+// DockerDown says "The Docker daemon is not running."
+// in the language the app shows.
+func DockerDown() string { return In(i18n.Locale()).DockerDown() }
+
+// DockerDown says "The Docker daemon is not running."
+// in the language of msgs.
+func (msgs Messages) DockerDown() string {
+	return Catalog.Format(msgs.locale, "dockerDown", nil)
+}
+
+// DockerFailed says "Could not read Docker: {error}"
+// in the language the app shows.
+func DockerFailed(error string) string { return In(i18n.Locale()).DockerFailed(error) }
+
+// DockerFailed says "Could not read Docker: {error}"
+// in the language of msgs.
+func (msgs Messages) DockerFailed(error string) string {
+	return Catalog.Format(msgs.locale, "dockerFailed", map[string]any{"error": error})
+}
+
+// DockerVersion says "Version"
+// in the language the app shows.
+func DockerVersion() string { return In(i18n.Locale()).DockerVersion() }
+
+// DockerVersion says "Version"
+// in the language of msgs.
+func (msgs Messages) DockerVersion() string {
+	return Catalog.Format(msgs.locale, "dockerVersion", nil)
+}
+
+// DockerVersionAPI says "{version} (API {api})"
+// in the language the app shows.
+func DockerVersionAPI(version string, api string) string {
+	return In(i18n.Locale()).DockerVersionAPI(version, api)
+}
+
+// DockerVersionAPI says "{version} (API {api})"
+// in the language of msgs.
+func (msgs Messages) DockerVersionAPI(version string, api string) string {
+	return Catalog.Format(msgs.locale, "dockerVersionAPI", map[string]any{"version": version, "api": api})
+}
+
+// DockerViaSudo says "read with sudo"
+// in the language the app shows.
+//
+// Docker was read with sudo -n, as the user may not use its socket.
+func DockerViaSudo() string { return In(i18n.Locale()).DockerViaSudo() }
+
+// DockerViaSudo says "read with sudo"
+// in the language of msgs.
+//
+// Docker was read with sudo -n, as the user may not use its socket.
+func (msgs Messages) DockerViaSudo() string {
+	return Catalog.Format(msgs.locale, "dockerViaSudo", nil)
+}
+
+// DockerContainers says "Containers"
+// in the language the app shows.
+func DockerContainers() string { return In(i18n.Locale()).DockerContainers() }
+
+// DockerContainers says "Containers"
+// in the language of msgs.
+func (msgs Messages) DockerContainers() string {
+	return Catalog.Format(msgs.locale, "dockerContainers", nil)
+}
+
+// DockerContainerCounts says "{total}: {running} running, {paused} paused, {stopped} stopped"
+// in the language the app shows.
+func DockerContainerCounts(total int, running int, paused int, stopped int) string {
+	return In(i18n.Locale()).DockerContainerCounts(total, running, paused, stopped)
+}
+
+// DockerContainerCounts says "{total}: {running} running, {paused} paused, {stopped} stopped"
+// in the language of msgs.
+func (msgs Messages) DockerContainerCounts(total int, running int, paused int, stopped int) string {
+	return Catalog.Format(msgs.locale, "dockerContainerCounts", map[string]any{"total": total, "running": running, "paused": paused, "stopped": stopped})
+}
+
+// DockerImages says "Images"
+// in the language the app shows.
+func DockerImages() string { return In(i18n.Locale()).DockerImages() }
+
+// DockerImages says "Images"
+// in the language of msgs.
+func (msgs Messages) DockerImages() string {
+	return Catalog.Format(msgs.locale, "dockerImages", nil)
+}
+
+// DockerVolumes says "Volumes"
+// in the language the app shows.
+func DockerVolumes() string { return In(i18n.Locale()).DockerVolumes() }
+
+// DockerVolumes says "Volumes"
+// in the language of msgs.
+func (msgs Messages) DockerVolumes() string {
+	return Catalog.Format(msgs.locale, "dockerVolumes", nil)
+}
+
+// DockerNetworks says "Networks"
+// in the language the app shows.
+func DockerNetworks() string { return In(i18n.Locale()).DockerNetworks() }
+
+// DockerNetworks says "Networks"
+// in the language of msgs.
+func (msgs Messages) DockerNetworks() string {
+	return Catalog.Format(msgs.locale, "dockerNetworks", nil)
+}
+
+// DockerBuildCache says "Build cache"
+// in the language the app shows.
+func DockerBuildCache() string { return In(i18n.Locale()).DockerBuildCache() }
+
+// DockerBuildCache says "Build cache"
+// in the language of msgs.
+func (msgs Messages) DockerBuildCache() string {
+	return Catalog.Format(msgs.locale, "dockerBuildCache", nil)
+}
+
+// DockerStorage says "Storage"
+// in the language the app shows.
+func DockerStorage() string { return In(i18n.Locale()).DockerStorage() }
+
+// DockerStorage says "Storage"
+// in the language of msgs.
+func (msgs Messages) DockerStorage() string {
+	return Catalog.Format(msgs.locale, "dockerStorage", nil)
+}
+
+// DockerCgroup says "Cgroup"
+// in the language the app shows.
+func DockerCgroup() string { return In(i18n.Locale()).DockerCgroup() }
+
+// DockerCgroup says "Cgroup"
+// in the language of msgs.
+func (msgs Messages) DockerCgroup() string {
+	return Catalog.Format(msgs.locale, "dockerCgroup", nil)
+}
+
+// DockerLogging says "Logging"
+// in the language the app shows.
+func DockerLogging() string { return In(i18n.Locale()).DockerLogging() }
+
+// DockerLogging says "Logging"
+// in the language of msgs.
+func (msgs Messages) DockerLogging() string {
+	return Catalog.Format(msgs.locale, "dockerLogging", nil)
+}
+
+// DockerResources says "Resources"
+// in the language the app shows.
+func DockerResources() string { return In(i18n.Locale()).DockerResources() }
+
+// DockerResources says "Resources"
+// in the language of msgs.
+func (msgs Messages) DockerResources() string {
+	return Catalog.Format(msgs.locale, "dockerResources", nil)
+}
+
+// DockerCPUsMem says "{cpus, plural, one {# CPU} other {# CPUs}}, {mem}"
+// in the language the app shows.
+//
+// The CPUs and memory Docker sees.
+func DockerCPUsMem(cpus int, mem string) string { return In(i18n.Locale()).DockerCPUsMem(cpus, mem) }
+
+// DockerCPUsMem says "{cpus, plural, one {# CPU} other {# CPUs}}, {mem}"
+// in the language of msgs.
+//
+// The CPUs and memory Docker sees.
+func (msgs Messages) DockerCPUsMem(cpus int, mem string) string {
+	return Catalog.Format(msgs.locale, "dockerCPUsMem", map[string]any{"cpus": cpus, "mem": mem})
+}
+
+// DockerDiskUsage says "Disk usage"
+// in the language the app shows.
+func DockerDiskUsage() string { return In(i18n.Locale()).DockerDiskUsage() }
+
+// DockerDiskUsage says "Disk usage"
+// in the language of msgs.
+func (msgs Messages) DockerDiskUsage() string {
+	return Catalog.Format(msgs.locale, "dockerDiskUsage", nil)
+}
+
+// DockerDiskLine says "{size}, {reclaimable} reclaimable"
+// in the language the app shows.
+//
+// A line of docker system df: the size, and what can be removed.
+func DockerDiskLine(size string, reclaimable string) string {
+	return In(i18n.Locale()).DockerDiskLine(size, reclaimable)
+}
+
+// DockerDiskLine says "{size}, {reclaimable} reclaimable"
+// in the language of msgs.
+//
+// A line of docker system df: the size, and what can be removed.
+func (msgs Messages) DockerDiskLine(size string, reclaimable string) string {
+	return Catalog.Format(msgs.locale, "dockerDiskLine", map[string]any{"size": size, "reclaimable": reclaimable})
+}
+
+// DockerWarnings says "{count, plural, one {# warning} other {# warnings}}"
+// in the language the app shows.
+func DockerWarnings(count int) string { return In(i18n.Locale()).DockerWarnings(count) }
+
+// DockerWarnings says "{count, plural, one {# warning} other {# warnings}}"
+// in the language of msgs.
+func (msgs Messages) DockerWarnings(count int) string {
+	return Catalog.Format(msgs.locale, "dockerWarnings", map[string]any{"count": count})
+}
+
+// DockerCount says "{count, plural, one {# container} other {# containers}}, {running} running"
+// in the language the app shows.
+func DockerCount(count int, running int) string { return In(i18n.Locale()).DockerCount(count, running) }
+
+// DockerCount says "{count, plural, one {# container} other {# containers}}, {running} running"
+// in the language of msgs.
+func (msgs Messages) DockerCount(count int, running int) string {
+	return Catalog.Format(msgs.locale, "dockerCount", map[string]any{"count": count, "running": running})
+}
+
+// DockerCountFiltered says "{shown} of {count}"
+// in the language the app shows.
+func DockerCountFiltered(shown int, count int) string {
+	return In(i18n.Locale()).DockerCountFiltered(shown, count)
+}
+
+// DockerCountFiltered says "{shown} of {count}"
+// in the language of msgs.
+func (msgs Messages) DockerCountFiltered(shown int, count int) string {
+	return Catalog.Format(msgs.locale, "dockerCountFiltered", map[string]any{"shown": shown, "count": count})
+}
+
+// DockerFilter says "Filter containers"
+// in the language the app shows.
+func DockerFilter() string { return In(i18n.Locale()).DockerFilter() }
+
+// DockerFilter says "Filter containers"
+// in the language of msgs.
+func (msgs Messages) DockerFilter() string {
+	return Catalog.Format(msgs.locale, "dockerFilter", nil)
+}
+
+// DockerGroupByProject says "Group by Compose project"
+// in the language the app shows.
+func DockerGroupByProject() string { return In(i18n.Locale()).DockerGroupByProject() }
+
+// DockerGroupByProject says "Group by Compose project"
+// in the language of msgs.
+func (msgs Messages) DockerGroupByProject() string {
+	return Catalog.Format(msgs.locale, "dockerGroupByProject", nil)
+}
+
+// DockerOther says "Other containers"
+// in the language the app shows.
+//
+// The containers that are in no Compose project of several containers.
+func DockerOther() string { return In(i18n.Locale()).DockerOther() }
+
+// DockerOther says "Other containers"
+// in the language of msgs.
+//
+// The containers that are in no Compose project of several containers.
+func (msgs Messages) DockerOther() string {
+	return Catalog.Format(msgs.locale, "dockerOther", nil)
+}
+
+// DockerNoContainers says "No containers"
+// in the language the app shows.
+func DockerNoContainers() string { return In(i18n.Locale()).DockerNoContainers() }
+
+// DockerNoContainers says "No containers"
+// in the language of msgs.
+func (msgs Messages) DockerNoContainers() string {
+	return Catalog.Format(msgs.locale, "dockerNoContainers", nil)
+}
+
+// DockerNoMatch says "No container matches the filter"
+// in the language the app shows.
+func DockerNoMatch() string { return In(i18n.Locale()).DockerNoMatch() }
+
+// DockerNoMatch says "No container matches the filter"
+// in the language of msgs.
+func (msgs Messages) DockerNoMatch() string {
+	return Catalog.Format(msgs.locale, "dockerNoMatch", nil)
+}
+
+// DockerSortBy says "Sort by {column}"
+// in the language the app shows.
+func DockerSortBy(column string) string { return In(i18n.Locale()).DockerSortBy(column) }
+
+// DockerSortBy says "Sort by {column}"
+// in the language of msgs.
+func (msgs Messages) DockerSortBy(column string) string {
+	return Catalog.Format(msgs.locale, "dockerSortBy", map[string]any{"column": column})
+}
+
+// DockerColName says "Name"
+// in the language the app shows.
+func DockerColName() string { return In(i18n.Locale()).DockerColName() }
+
+// DockerColName says "Name"
+// in the language of msgs.
+func (msgs Messages) DockerColName() string {
+	return Catalog.Format(msgs.locale, "dockerColName", nil)
+}
+
+// DockerColImage says "Image"
+// in the language the app shows.
+func DockerColImage() string { return In(i18n.Locale()).DockerColImage() }
+
+// DockerColImage says "Image"
+// in the language of msgs.
+func (msgs Messages) DockerColImage() string {
+	return Catalog.Format(msgs.locale, "dockerColImage", nil)
+}
+
+// DockerColStatus says "Status"
+// in the language the app shows.
+func DockerColStatus() string { return In(i18n.Locale()).DockerColStatus() }
+
+// DockerColStatus says "Status"
+// in the language of msgs.
+func (msgs Messages) DockerColStatus() string {
+	return Catalog.Format(msgs.locale, "dockerColStatus", nil)
+}
+
+// DockerColPorts says "Ports"
+// in the language the app shows.
+func DockerColPorts() string { return In(i18n.Locale()).DockerColPorts() }
+
+// DockerColPorts says "Ports"
+// in the language of msgs.
+func (msgs Messages) DockerColPorts() string {
+	return Catalog.Format(msgs.locale, "dockerColPorts", nil)
+}
+
+// DockerColIP says "IP"
+// in the language the app shows.
+func DockerColIP() string { return In(i18n.Locale()).DockerColIP() }
+
+// DockerColIP says "IP"
+// in the language of msgs.
+func (msgs Messages) DockerColIP() string {
+	return Catalog.Format(msgs.locale, "dockerColIP", nil)
+}
+
+// DockerColMemory says "Memory"
+// in the language the app shows.
+func DockerColMemory() string { return In(i18n.Locale()).DockerColMemory() }
+
+// DockerColMemory says "Memory"
+// in the language of msgs.
+func (msgs Messages) DockerColMemory() string {
+	return Catalog.Format(msgs.locale, "dockerColMemory", nil)
+}
+
+// DockerUp says "Up {time}"
+// in the language the app shows.
+//
+// A running container, and how long it has run: Up 3 days.
+func DockerUp(time_ string) string { return In(i18n.Locale()).DockerUp(time_) }
+
+// DockerUp says "Up {time}"
+// in the language of msgs.
+//
+// A running container, and how long it has run: Up 3 days.
+func (msgs Messages) DockerUp(time_ string) string {
+	return Catalog.Format(msgs.locale, "dockerUp", map[string]any{"time": time_})
+}
+
+// DockerUpHealth says "Up {time} ({health})"
+// in the language the app shows.
+func DockerUpHealth(time_ string, health string) string {
+	return In(i18n.Locale()).DockerUpHealth(time_, health)
+}
+
+// DockerUpHealth says "Up {time} ({health})"
+// in the language of msgs.
+func (msgs Messages) DockerUpHealth(time_ string, health string) string {
+	return Catalog.Format(msgs.locale, "dockerUpHealth", map[string]any{"time": time_, "health": health})
+}
+
+// DockerExited says "Exited ({code}) {time} ago"
+// in the language the app shows.
+func DockerExited(code int, time_ string) string { return In(i18n.Locale()).DockerExited(code, time_) }
+
+// DockerExited says "Exited ({code}) {time} ago"
+// in the language of msgs.
+func (msgs Messages) DockerExited(code int, time_ string) string {
+	return Catalog.Format(msgs.locale, "dockerExited", map[string]any{"code": code, "time": time_})
+}
+
+// DockerExitedCode says "Exited ({code})"
+// in the language the app shows.
+func DockerExitedCode(code int) string { return In(i18n.Locale()).DockerExitedCode(code) }
+
+// DockerExitedCode says "Exited ({code})"
+// in the language of msgs.
+func (msgs Messages) DockerExitedCode(code int) string {
+	return Catalog.Format(msgs.locale, "dockerExitedCode", map[string]any{"code": code})
+}
+
+// DockerPaused says "Paused"
+// in the language the app shows.
+func DockerPaused() string { return In(i18n.Locale()).DockerPaused() }
+
+// DockerPaused says "Paused"
+// in the language of msgs.
+func (msgs Messages) DockerPaused() string {
+	return Catalog.Format(msgs.locale, "dockerPaused", nil)
+}
+
+// DockerRestarting says "Restarting"
+// in the language the app shows.
+func DockerRestarting() string { return In(i18n.Locale()).DockerRestarting() }
+
+// DockerRestarting says "Restarting"
+// in the language of msgs.
+func (msgs Messages) DockerRestarting() string {
+	return Catalog.Format(msgs.locale, "dockerRestarting", nil)
+}
+
+// DockerCreated says "Created"
+// in the language the app shows.
+func DockerCreated() string { return In(i18n.Locale()).DockerCreated() }
+
+// DockerCreated says "Created"
+// in the language of msgs.
+func (msgs Messages) DockerCreated() string {
+	return Catalog.Format(msgs.locale, "dockerCreated", nil)
+}
+
+// DockerDead says "Dead"
+// in the language the app shows.
+func DockerDead() string { return In(i18n.Locale()).DockerDead() }
+
+// DockerDead says "Dead"
+// in the language of msgs.
+func (msgs Messages) DockerDead() string {
+	return Catalog.Format(msgs.locale, "dockerDead", nil)
+}
+
+// DockerRemoving says "Removing"
+// in the language the app shows.
+func DockerRemoving() string { return In(i18n.Locale()).DockerRemoving() }
+
+// DockerRemoving says "Removing"
+// in the language of msgs.
+func (msgs Messages) DockerRemoving() string {
+	return Catalog.Format(msgs.locale, "dockerRemoving", nil)
+}
+
+// DockerHealthy says "healthy"
+// in the language the app shows.
+func DockerHealthy() string { return In(i18n.Locale()).DockerHealthy() }
+
+// DockerHealthy says "healthy"
+// in the language of msgs.
+func (msgs Messages) DockerHealthy() string {
+	return Catalog.Format(msgs.locale, "dockerHealthy", nil)
+}
+
+// DockerUnhealthy says "unhealthy"
+// in the language the app shows.
+func DockerUnhealthy() string { return In(i18n.Locale()).DockerUnhealthy() }
+
+// DockerUnhealthy says "unhealthy"
+// in the language of msgs.
+func (msgs Messages) DockerUnhealthy() string {
+	return Catalog.Format(msgs.locale, "dockerUnhealthy", nil)
+}
+
+// DockerStarting says "starting"
+// in the language the app shows.
+//
+// A health check that has not passed yet.
+func DockerStarting() string { return In(i18n.Locale()).DockerStarting() }
+
+// DockerStarting says "starting"
+// in the language of msgs.
+//
+// A health check that has not passed yet.
+func (msgs Messages) DockerStarting() string {
+	return Catalog.Format(msgs.locale, "dockerStarting", nil)
+}
+
+// DockerOOMKilled says "out of memory"
+// in the language the app shows.
+//
+// A container the kernel killed for its memory limit.
+func DockerOOMKilled() string { return In(i18n.Locale()).DockerOOMKilled() }
+
+// DockerOOMKilled says "out of memory"
+// in the language of msgs.
+//
+// A container the kernel killed for its memory limit.
+func (msgs Messages) DockerOOMKilled() string {
+	return Catalog.Format(msgs.locale, "dockerOOMKilled", nil)
+}
+
+// DurSeconds says "{n, plural, one {# second} other {# seconds}}"
+// in the language the app shows.
+func DurSeconds(n int) string { return In(i18n.Locale()).DurSeconds(n) }
+
+// DurSeconds says "{n, plural, one {# second} other {# seconds}}"
+// in the language of msgs.
+func (msgs Messages) DurSeconds(n int) string {
+	return Catalog.Format(msgs.locale, "durSeconds", map[string]any{"n": n})
+}
+
+// DurMinutes says "{n, plural, one {# minute} other {# minutes}}"
+// in the language the app shows.
+func DurMinutes(n int) string { return In(i18n.Locale()).DurMinutes(n) }
+
+// DurMinutes says "{n, plural, one {# minute} other {# minutes}}"
+// in the language of msgs.
+func (msgs Messages) DurMinutes(n int) string {
+	return Catalog.Format(msgs.locale, "durMinutes", map[string]any{"n": n})
+}
+
+// DurHours says "{n, plural, one {# hour} other {# hours}}"
+// in the language the app shows.
+func DurHours(n int) string { return In(i18n.Locale()).DurHours(n) }
+
+// DurHours says "{n, plural, one {# hour} other {# hours}}"
+// in the language of msgs.
+func (msgs Messages) DurHours(n int) string {
+	return Catalog.Format(msgs.locale, "durHours", map[string]any{"n": n})
+}
+
+// DurDays says "{n, plural, one {# day} other {# days}}"
+// in the language the app shows.
+func DurDays(n int) string { return In(i18n.Locale()).DurDays(n) }
+
+// DurDays says "{n, plural, one {# day} other {# days}}"
+// in the language of msgs.
+func (msgs Messages) DurDays(n int) string {
+	return Catalog.Format(msgs.locale, "durDays", map[string]any{"n": n})
+}
+
+// DurWeeks says "{n, plural, one {# week} other {# weeks}}"
+// in the language the app shows.
+func DurWeeks(n int) string { return In(i18n.Locale()).DurWeeks(n) }
+
+// DurWeeks says "{n, plural, one {# week} other {# weeks}}"
+// in the language of msgs.
+func (msgs Messages) DurWeeks(n int) string {
+	return Catalog.Format(msgs.locale, "durWeeks", map[string]any{"n": n})
+}
+
+// DurMonths says "{n, plural, one {# month} other {# months}}"
+// in the language the app shows.
+func DurMonths(n int) string { return In(i18n.Locale()).DurMonths(n) }
+
+// DurMonths says "{n, plural, one {# month} other {# months}}"
+// in the language of msgs.
+func (msgs Messages) DurMonths(n int) string {
+	return Catalog.Format(msgs.locale, "durMonths", map[string]any{"n": n})
+}
+
+// DurYears says "{n, plural, one {# year} other {# years}}"
+// in the language the app shows.
+func DurYears(n int) string { return In(i18n.Locale()).DurYears(n) }
+
+// DurYears says "{n, plural, one {# year} other {# years}}"
+// in the language of msgs.
+func (msgs Messages) DurYears(n int) string {
+	return Catalog.Format(msgs.locale, "durYears", map[string]any{"n": n})
+}
+
+// DockerCopyJSON says "Copy as JSON"
+// in the language the app shows.
+//
+// Copies the container's docker inspect output.
+func DockerCopyJSON() string { return In(i18n.Locale()).DockerCopyJSON() }
+
+// DockerCopyJSON says "Copy as JSON"
+// in the language of msgs.
+//
+// Copies the container's docker inspect output.
+func (msgs Messages) DockerCopyJSON() string {
+	return Catalog.Format(msgs.locale, "dockerCopyJSON", nil)
+}
+
+// DockerSecGeneral says "General"
+// in the language the app shows.
+func DockerSecGeneral() string { return In(i18n.Locale()).DockerSecGeneral() }
+
+// DockerSecGeneral says "General"
+// in the language of msgs.
+func (msgs Messages) DockerSecGeneral() string {
+	return Catalog.Format(msgs.locale, "dockerSecGeneral", nil)
+}
+
+// DockerSecNetwork says "Network"
+// in the language the app shows.
+func DockerSecNetwork() string { return In(i18n.Locale()).DockerSecNetwork() }
+
+// DockerSecNetwork says "Network"
+// in the language of msgs.
+func (msgs Messages) DockerSecNetwork() string {
+	return Catalog.Format(msgs.locale, "dockerSecNetwork", nil)
+}
+
+// DockerSecPorts says "Ports"
+// in the language the app shows.
+func DockerSecPorts() string { return In(i18n.Locale()).DockerSecPorts() }
+
+// DockerSecPorts says "Ports"
+// in the language of msgs.
+func (msgs Messages) DockerSecPorts() string {
+	return Catalog.Format(msgs.locale, "dockerSecPorts", nil)
+}
+
+// DockerSecMounts says "Mounts"
+// in the language the app shows.
+func DockerSecMounts() string { return In(i18n.Locale()).DockerSecMounts() }
+
+// DockerSecMounts says "Mounts"
+// in the language of msgs.
+func (msgs Messages) DockerSecMounts() string {
+	return Catalog.Format(msgs.locale, "dockerSecMounts", nil)
+}
+
+// DockerSecResources says "Resources"
+// in the language the app shows.
+func DockerSecResources() string { return In(i18n.Locale()).DockerSecResources() }
+
+// DockerSecResources says "Resources"
+// in the language of msgs.
+func (msgs Messages) DockerSecResources() string {
+	return Catalog.Format(msgs.locale, "dockerSecResources", nil)
+}
+
+// DockerSecEnv says "Environment"
+// in the language the app shows.
+func DockerSecEnv() string { return In(i18n.Locale()).DockerSecEnv() }
+
+// DockerSecEnv says "Environment"
+// in the language of msgs.
+func (msgs Messages) DockerSecEnv() string {
+	return Catalog.Format(msgs.locale, "dockerSecEnv", nil)
+}
+
+// DockerSecLabels says "Labels"
+// in the language the app shows.
+func DockerSecLabels() string { return In(i18n.Locale()).DockerSecLabels() }
+
+// DockerSecLabels says "Labels"
+// in the language of msgs.
+func (msgs Messages) DockerSecLabels() string {
+	return Catalog.Format(msgs.locale, "dockerSecLabels", nil)
+}
+
+// DockerSecLogging says "Logging"
+// in the language the app shows.
+func DockerSecLogging() string { return In(i18n.Locale()).DockerSecLogging() }
+
+// DockerSecLogging says "Logging"
+// in the language of msgs.
+func (msgs Messages) DockerSecLogging() string {
+	return Catalog.Format(msgs.locale, "dockerSecLogging", nil)
+}
+
+// DockerID says "ID"
+// in the language the app shows.
+func DockerID() string { return In(i18n.Locale()).DockerID() }
+
+// DockerID says "ID"
+// in the language of msgs.
+func (msgs Messages) DockerID() string {
+	return Catalog.Format(msgs.locale, "dockerID", nil)
+}
+
+// DockerFullID says "Full ID"
+// in the language the app shows.
+func DockerFullID() string { return In(i18n.Locale()).DockerFullID() }
+
+// DockerFullID says "Full ID"
+// in the language of msgs.
+func (msgs Messages) DockerFullID() string {
+	return Catalog.Format(msgs.locale, "dockerFullID", nil)
+}
+
+// DockerImage says "Image"
+// in the language the app shows.
+func DockerImage() string { return In(i18n.Locale()).DockerImage() }
+
+// DockerImage says "Image"
+// in the language of msgs.
+func (msgs Messages) DockerImage() string {
+	return Catalog.Format(msgs.locale, "dockerImage", nil)
+}
+
+// DockerImageID says "Image ID"
+// in the language the app shows.
+func DockerImageID() string { return In(i18n.Locale()).DockerImageID() }
+
+// DockerImageID says "Image ID"
+// in the language of msgs.
+func (msgs Messages) DockerImageID() string {
+	return Catalog.Format(msgs.locale, "dockerImageID", nil)
+}
+
+// DockerCreatedAt says "Created"
+// in the language the app shows.
+func DockerCreatedAt() string { return In(i18n.Locale()).DockerCreatedAt() }
+
+// DockerCreatedAt says "Created"
+// in the language of msgs.
+func (msgs Messages) DockerCreatedAt() string {
+	return Catalog.Format(msgs.locale, "dockerCreatedAt", nil)
+}
+
+// DockerStartedAt says "Started"
+// in the language the app shows.
+func DockerStartedAt() string { return In(i18n.Locale()).DockerStartedAt() }
+
+// DockerStartedAt says "Started"
+// in the language of msgs.
+func (msgs Messages) DockerStartedAt() string {
+	return Catalog.Format(msgs.locale, "dockerStartedAt", nil)
+}
+
+// DockerFinishedAt says "Finished"
+// in the language the app shows.
+func DockerFinishedAt() string { return In(i18n.Locale()).DockerFinishedAt() }
+
+// DockerFinishedAt says "Finished"
+// in the language of msgs.
+func (msgs Messages) DockerFinishedAt() string {
+	return Catalog.Format(msgs.locale, "dockerFinishedAt", nil)
+}
+
+// DockerStatus says "Status"
+// in the language the app shows.
+func DockerStatus() string { return In(i18n.Locale()).DockerStatus() }
+
+// DockerStatus says "Status"
+// in the language of msgs.
+func (msgs Messages) DockerStatus() string {
+	return Catalog.Format(msgs.locale, "dockerStatus", nil)
+}
+
+// DockerHealth says "Health"
+// in the language the app shows.
+func DockerHealth() string { return In(i18n.Locale()).DockerHealth() }
+
+// DockerHealth says "Health"
+// in the language of msgs.
+func (msgs Messages) DockerHealth() string {
+	return Catalog.Format(msgs.locale, "dockerHealth", nil)
+}
+
+// DockerHealthValue says "{status}, {count, plural, one {# failure in a row} other {# failures in a row}}"
+// in the language the app shows.
+func DockerHealthValue(status string, count int) string {
+	return In(i18n.Locale()).DockerHealthValue(status, count)
+}
+
+// DockerHealthValue says "{status}, {count, plural, one {# failure in a row} other {# failures in a row}}"
+// in the language of msgs.
+func (msgs Messages) DockerHealthValue(status string, count int) string {
+	return Catalog.Format(msgs.locale, "dockerHealthValue", map[string]any{"status": status, "count": count})
+}
+
+// DockerLastCheck says "Last check"
+// in the language the app shows.
+func DockerLastCheck() string { return In(i18n.Locale()).DockerLastCheck() }
+
+// DockerLastCheck says "Last check"
+// in the language of msgs.
+func (msgs Messages) DockerLastCheck() string {
+	return Catalog.Format(msgs.locale, "dockerLastCheck", nil)
+}
+
+// DockerRestartPolicy says "Restart policy"
+// in the language the app shows.
+func DockerRestartPolicy() string { return In(i18n.Locale()).DockerRestartPolicy() }
+
+// DockerRestartPolicy says "Restart policy"
+// in the language of msgs.
+func (msgs Messages) DockerRestartPolicy() string {
+	return Catalog.Format(msgs.locale, "dockerRestartPolicy", nil)
+}
+
+// DockerRestartRetries says "{policy} (at most {count, plural, one {# time} other {# times}})"
+// in the language the app shows.
+func DockerRestartRetries(policy string, count int) string {
+	return In(i18n.Locale()).DockerRestartRetries(policy, count)
+}
+
+// DockerRestartRetries says "{policy} (at most {count, plural, one {# time} other {# times}})"
+// in the language of msgs.
+func (msgs Messages) DockerRestartRetries(policy string, count int) string {
+	return Catalog.Format(msgs.locale, "dockerRestartRetries", map[string]any{"policy": policy, "count": count})
+}
+
+// DockerRestarts says "Restarts"
+// in the language the app shows.
+func DockerRestarts() string { return In(i18n.Locale()).DockerRestarts() }
+
+// DockerRestarts says "Restarts"
+// in the language of msgs.
+func (msgs Messages) DockerRestarts() string {
+	return Catalog.Format(msgs.locale, "dockerRestarts", nil)
+}
+
+// DockerAutoRemove says "Removed when it stops"
+// in the language the app shows.
+func DockerAutoRemove() string { return In(i18n.Locale()).DockerAutoRemove() }
+
+// DockerAutoRemove says "Removed when it stops"
+// in the language of msgs.
+func (msgs Messages) DockerAutoRemove() string {
+	return Catalog.Format(msgs.locale, "dockerAutoRemove", nil)
+}
+
+// DockerCommand says "Command"
+// in the language the app shows.
+func DockerCommand() string { return In(i18n.Locale()).DockerCommand() }
+
+// DockerCommand says "Command"
+// in the language of msgs.
+func (msgs Messages) DockerCommand() string {
+	return Catalog.Format(msgs.locale, "dockerCommand", nil)
+}
+
+// DockerEntrypoint says "Entrypoint"
+// in the language the app shows.
+func DockerEntrypoint() string { return In(i18n.Locale()).DockerEntrypoint() }
+
+// DockerEntrypoint says "Entrypoint"
+// in the language of msgs.
+func (msgs Messages) DockerEntrypoint() string {
+	return Catalog.Format(msgs.locale, "dockerEntrypoint", nil)
+}
+
+// DockerWorkDir says "Working folder"
+// in the language the app shows.
+func DockerWorkDir() string { return In(i18n.Locale()).DockerWorkDir() }
+
+// DockerWorkDir says "Working folder"
+// in the language of msgs.
+func (msgs Messages) DockerWorkDir() string {
+	return Catalog.Format(msgs.locale, "dockerWorkDir", nil)
+}
+
+// DockerUser says "User"
+// in the language the app shows.
+func DockerUser() string { return In(i18n.Locale()).DockerUser() }
+
+// DockerUser says "User"
+// in the language of msgs.
+func (msgs Messages) DockerUser() string {
+	return Catalog.Format(msgs.locale, "dockerUser", nil)
+}
+
+// DockerHostname says "Hostname"
+// in the language the app shows.
+func DockerHostname() string { return In(i18n.Locale()).DockerHostname() }
+
+// DockerHostname says "Hostname"
+// in the language of msgs.
+func (msgs Messages) DockerHostname() string {
+	return Catalog.Format(msgs.locale, "dockerHostname", nil)
+}
+
+// DockerPrivileged says "Privileged"
+// in the language the app shows.
+func DockerPrivileged() string { return In(i18n.Locale()).DockerPrivileged() }
+
+// DockerPrivileged says "Privileged"
+// in the language of msgs.
+func (msgs Messages) DockerPrivileged() string {
+	return Catalog.Format(msgs.locale, "dockerPrivileged", nil)
+}
+
+// DockerReadOnly says "Read-only root"
+// in the language the app shows.
+func DockerReadOnly() string { return In(i18n.Locale()).DockerReadOnly() }
+
+// DockerReadOnly says "Read-only root"
+// in the language of msgs.
+func (msgs Messages) DockerReadOnly() string {
+	return Catalog.Format(msgs.locale, "dockerReadOnly", nil)
+}
+
+// DockerCapAdd says "Added capabilities"
+// in the language the app shows.
+func DockerCapAdd() string { return In(i18n.Locale()).DockerCapAdd() }
+
+// DockerCapAdd says "Added capabilities"
+// in the language of msgs.
+func (msgs Messages) DockerCapAdd() string {
+	return Catalog.Format(msgs.locale, "dockerCapAdd", nil)
+}
+
+// DockerPID says "PID"
+// in the language the app shows.
+func DockerPID() string { return In(i18n.Locale()).DockerPID() }
+
+// DockerPID says "PID"
+// in the language of msgs.
+func (msgs Messages) DockerPID() string {
+	return Catalog.Format(msgs.locale, "dockerPID", nil)
+}
+
+// DockerYes says "Yes"
+// in the language the app shows.
+func DockerYes() string { return In(i18n.Locale()).DockerYes() }
+
+// DockerYes says "Yes"
+// in the language of msgs.
+func (msgs Messages) DockerYes() string {
+	return Catalog.Format(msgs.locale, "dockerYes", nil)
+}
+
+// DockerNo says "No"
+// in the language the app shows.
+func DockerNo() string { return In(i18n.Locale()).DockerNo() }
+
+// DockerNo says "No"
+// in the language of msgs.
+func (msgs Messages) DockerNo() string {
+	return Catalog.Format(msgs.locale, "dockerNo", nil)
+}
+
+// DockerProject says "Compose project"
+// in the language the app shows.
+func DockerProject() string { return In(i18n.Locale()).DockerProject() }
+
+// DockerProject says "Compose project"
+// in the language of msgs.
+func (msgs Messages) DockerProject() string {
+	return Catalog.Format(msgs.locale, "dockerProject", nil)
+}
+
+// DockerService says "Compose service"
+// in the language the app shows.
+func DockerService() string { return In(i18n.Locale()).DockerService() }
+
+// DockerService says "Compose service"
+// in the language of msgs.
+func (msgs Messages) DockerService() string {
+	return Catalog.Format(msgs.locale, "dockerService", nil)
+}
+
+// DockerComposeDir says "Compose folder"
+// in the language the app shows.
+func DockerComposeDir() string { return In(i18n.Locale()).DockerComposeDir() }
+
+// DockerComposeDir says "Compose folder"
+// in the language of msgs.
+func (msgs Messages) DockerComposeDir() string {
+	return Catalog.Format(msgs.locale, "dockerComposeDir", nil)
+}
+
+// DockerComposeFiles says "Compose files"
+// in the language the app shows.
+func DockerComposeFiles() string { return In(i18n.Locale()).DockerComposeFiles() }
+
+// DockerComposeFiles says "Compose files"
+// in the language of msgs.
+func (msgs Messages) DockerComposeFiles() string {
+	return Catalog.Format(msgs.locale, "dockerComposeFiles", nil)
+}
+
+// DockerNetworkMode says "Network mode"
+// in the language the app shows.
+func DockerNetworkMode() string { return In(i18n.Locale()).DockerNetworkMode() }
+
+// DockerNetworkMode says "Network mode"
+// in the language of msgs.
+func (msgs Messages) DockerNetworkMode() string {
+	return Catalog.Format(msgs.locale, "dockerNetworkMode", nil)
+}
+
+// DockerIPv4 says "IPv4 address"
+// in the language the app shows.
+func DockerIPv4() string { return In(i18n.Locale()).DockerIPv4() }
+
+// DockerIPv4 says "IPv4 address"
+// in the language of msgs.
+func (msgs Messages) DockerIPv4() string {
+	return Catalog.Format(msgs.locale, "dockerIPv4", nil)
+}
+
+// DockerGateway says "Gateway"
+// in the language the app shows.
+func DockerGateway() string { return In(i18n.Locale()).DockerGateway() }
+
+// DockerGateway says "Gateway"
+// in the language of msgs.
+func (msgs Messages) DockerGateway() string {
+	return Catalog.Format(msgs.locale, "dockerGateway", nil)
+}
+
+// DockerIPv6 says "IPv6 address"
+// in the language the app shows.
+func DockerIPv6() string { return In(i18n.Locale()).DockerIPv6() }
+
+// DockerIPv6 says "IPv6 address"
+// in the language of msgs.
+func (msgs Messages) DockerIPv6() string {
+	return Catalog.Format(msgs.locale, "dockerIPv6", nil)
+}
+
+// DockerIPv6Gateway says "IPv6 gateway"
+// in the language the app shows.
+func DockerIPv6Gateway() string { return In(i18n.Locale()).DockerIPv6Gateway() }
+
+// DockerIPv6Gateway says "IPv6 gateway"
+// in the language of msgs.
+func (msgs Messages) DockerIPv6Gateway() string {
+	return Catalog.Format(msgs.locale, "dockerIPv6Gateway", nil)
+}
+
+// DockerMAC says "MAC address"
+// in the language the app shows.
+func DockerMAC() string { return In(i18n.Locale()).DockerMAC() }
+
+// DockerMAC says "MAC address"
+// in the language of msgs.
+func (msgs Messages) DockerMAC() string {
+	return Catalog.Format(msgs.locale, "dockerMAC", nil)
+}
+
+// DockerAliases says "Aliases"
+// in the language the app shows.
+func DockerAliases() string { return In(i18n.Locale()).DockerAliases() }
+
+// DockerAliases says "Aliases"
+// in the language of msgs.
+func (msgs Messages) DockerAliases() string {
+	return Catalog.Format(msgs.locale, "dockerAliases", nil)
+}
+
+// DockerNotPublished says "Exposed, not published"
+// in the language the app shows.
+//
+// A port the image exposes that is not published on the host.
+func DockerNotPublished() string { return In(i18n.Locale()).DockerNotPublished() }
+
+// DockerNotPublished says "Exposed, not published"
+// in the language of msgs.
+//
+// A port the image exposes that is not published on the host.
+func (msgs Messages) DockerNotPublished() string {
+	return Catalog.Format(msgs.locale, "dockerNotPublished", nil)
+}
+
+// DockerNone says "None"
+// in the language the app shows.
+func DockerNone() string { return In(i18n.Locale()).DockerNone() }
+
+// DockerNone says "None"
+// in the language of msgs.
+func (msgs Messages) DockerNone() string {
+	return Catalog.Format(msgs.locale, "dockerNone", nil)
+}
+
+// DockerReadWrite says "read-write"
+// in the language the app shows.
+func DockerReadWrite() string { return In(i18n.Locale()).DockerReadWrite() }
+
+// DockerReadWrite says "read-write"
+// in the language of msgs.
+func (msgs Messages) DockerReadWrite() string {
+	return Catalog.Format(msgs.locale, "dockerReadWrite", nil)
+}
+
+// DockerReadOnlyMount says "read-only"
+// in the language the app shows.
+func DockerReadOnlyMount() string { return In(i18n.Locale()).DockerReadOnlyMount() }
+
+// DockerReadOnlyMount says "read-only"
+// in the language of msgs.
+func (msgs Messages) DockerReadOnlyMount() string {
+	return Catalog.Format(msgs.locale, "dockerReadOnlyMount", nil)
+}
+
+// DockerCPULimit says "CPU limit"
+// in the language the app shows.
+func DockerCPULimit() string { return In(i18n.Locale()).DockerCPULimit() }
+
+// DockerCPULimit says "CPU limit"
+// in the language of msgs.
+func (msgs Messages) DockerCPULimit() string {
+	return Catalog.Format(msgs.locale, "dockerCPULimit", nil)
+}
+
+// DockerCPUs says "{n} CPUs"
+// in the language the app shows.
+//
+// A CPU limit: 1.5 CPUs.
+func DockerCPUs(n string) string { return In(i18n.Locale()).DockerCPUs(n) }
+
+// DockerCPUs says "{n} CPUs"
+// in the language of msgs.
+//
+// A CPU limit: 1.5 CPUs.
+func (msgs Messages) DockerCPUs(n string) string {
+	return Catalog.Format(msgs.locale, "dockerCPUs", map[string]any{"n": n})
+}
+
+// DockerCPUShares says "CPU shares"
+// in the language the app shows.
+func DockerCPUShares() string { return In(i18n.Locale()).DockerCPUShares() }
+
+// DockerCPUShares says "CPU shares"
+// in the language of msgs.
+func (msgs Messages) DockerCPUShares() string {
+	return Catalog.Format(msgs.locale, "dockerCPUShares", nil)
+}
+
+// DockerCPUSet says "CPUs allowed"
+// in the language the app shows.
+func DockerCPUSet() string { return In(i18n.Locale()).DockerCPUSet() }
+
+// DockerCPUSet says "CPUs allowed"
+// in the language of msgs.
+func (msgs Messages) DockerCPUSet() string {
+	return Catalog.Format(msgs.locale, "dockerCPUSet", nil)
+}
+
+// DockerMemLimit says "Memory limit"
+// in the language the app shows.
+func DockerMemLimit() string { return In(i18n.Locale()).DockerMemLimit() }
+
+// DockerMemLimit says "Memory limit"
+// in the language of msgs.
+func (msgs Messages) DockerMemLimit() string {
+	return Catalog.Format(msgs.locale, "dockerMemLimit", nil)
+}
+
+// DockerMemSwap says "Memory and swap limit"
+// in the language the app shows.
+func DockerMemSwap() string { return In(i18n.Locale()).DockerMemSwap() }
+
+// DockerMemSwap says "Memory and swap limit"
+// in the language of msgs.
+func (msgs Messages) DockerMemSwap() string {
+	return Catalog.Format(msgs.locale, "dockerMemSwap", nil)
+}
+
+// DockerMemReservation says "Memory reservation"
+// in the language the app shows.
+func DockerMemReservation() string { return In(i18n.Locale()).DockerMemReservation() }
+
+// DockerMemReservation says "Memory reservation"
+// in the language of msgs.
+func (msgs Messages) DockerMemReservation() string {
+	return Catalog.Format(msgs.locale, "dockerMemReservation", nil)
+}
+
+// DockerPidsLimit says "Process limit"
+// in the language the app shows.
+func DockerPidsLimit() string { return In(i18n.Locale()).DockerPidsLimit() }
+
+// DockerPidsLimit says "Process limit"
+// in the language of msgs.
+func (msgs Messages) DockerPidsLimit() string {
+	return Catalog.Format(msgs.locale, "dockerPidsLimit", nil)
+}
+
+// DockerUnlimited says "Unlimited"
+// in the language the app shows.
+func DockerUnlimited() string { return In(i18n.Locale()).DockerUnlimited() }
+
+// DockerUnlimited says "Unlimited"
+// in the language of msgs.
+func (msgs Messages) DockerUnlimited() string {
+	return Catalog.Format(msgs.locale, "dockerUnlimited", nil)
+}
+
+// DockerCPUUsage says "CPU usage"
+// in the language the app shows.
+func DockerCPUUsage() string { return In(i18n.Locale()).DockerCPUUsage() }
+
+// DockerCPUUsage says "CPU usage"
+// in the language of msgs.
+func (msgs Messages) DockerCPUUsage() string {
+	return Catalog.Format(msgs.locale, "dockerCPUUsage", nil)
+}
+
+// DockerMemUsage says "Memory usage"
+// in the language the app shows.
+func DockerMemUsage() string { return In(i18n.Locale()).DockerMemUsage() }
+
+// DockerMemUsage says "Memory usage"
+// in the language of msgs.
+func (msgs Messages) DockerMemUsage() string {
+	return Catalog.Format(msgs.locale, "dockerMemUsage", nil)
+}
+
+// DockerNetIO says "Network I/O"
+// in the language the app shows.
+func DockerNetIO() string { return In(i18n.Locale()).DockerNetIO() }
+
+// DockerNetIO says "Network I/O"
+// in the language of msgs.
+func (msgs Messages) DockerNetIO() string {
+	return Catalog.Format(msgs.locale, "dockerNetIO", nil)
+}
+
+// DockerNetIOValue says "{rx} received, {tx} sent"
+// in the language the app shows.
+func DockerNetIOValue(rx string, tx string) string { return In(i18n.Locale()).DockerNetIOValue(rx, tx) }
+
+// DockerNetIOValue says "{rx} received, {tx} sent"
+// in the language of msgs.
+func (msgs Messages) DockerNetIOValue(rx string, tx string) string {
+	return Catalog.Format(msgs.locale, "dockerNetIOValue", map[string]any{"rx": rx, "tx": tx})
+}
+
+// DockerBlockIO says "Disk I/O"
+// in the language the app shows.
+func DockerBlockIO() string { return In(i18n.Locale()).DockerBlockIO() }
+
+// DockerBlockIO says "Disk I/O"
+// in the language of msgs.
+func (msgs Messages) DockerBlockIO() string {
+	return Catalog.Format(msgs.locale, "dockerBlockIO", nil)
+}
+
+// DockerBlockIOValue says "{read} read, {written} written"
+// in the language the app shows.
+func DockerBlockIOValue(read string, written string) string {
+	return In(i18n.Locale()).DockerBlockIOValue(read, written)
+}
+
+// DockerBlockIOValue says "{read} read, {written} written"
+// in the language of msgs.
+func (msgs Messages) DockerBlockIOValue(read string, written string) string {
+	return Catalog.Format(msgs.locale, "dockerBlockIOValue", map[string]any{"read": read, "written": written})
+}
+
+// DockerProcesses says "Processes"
+// in the language the app shows.
+func DockerProcesses() string { return In(i18n.Locale()).DockerProcesses() }
+
+// DockerProcesses says "Processes"
+// in the language of msgs.
+func (msgs Messages) DockerProcesses() string {
+	return Catalog.Format(msgs.locale, "dockerProcesses", nil)
+}
+
+// DockerShowValues says "Show values"
+// in the language the app shows.
+func DockerShowValues() string { return In(i18n.Locale()).DockerShowValues() }
+
+// DockerShowValues says "Show values"
+// in the language of msgs.
+func (msgs Messages) DockerShowValues() string {
+	return Catalog.Format(msgs.locale, "dockerShowValues", nil)
+}
+
+// DockerHideValues says "Hide values"
+// in the language the app shows.
+func DockerHideValues() string { return In(i18n.Locale()).DockerHideValues() }
+
+// DockerHideValues says "Hide values"
+// in the language of msgs.
+func (msgs Messages) DockerHideValues() string {
+	return Catalog.Format(msgs.locale, "dockerHideValues", nil)
+}
+
+// DockerLogDriver says "Driver"
+// in the language the app shows.
+func DockerLogDriver() string { return In(i18n.Locale()).DockerLogDriver() }
+
+// DockerLogDriver says "Driver"
+// in the language of msgs.
+func (msgs Messages) DockerLogDriver() string {
+	return Catalog.Format(msgs.locale, "dockerLogDriver", nil)
+}
+
+// DockerSize says "Size"
+// in the language the app shows.
+func DockerSize() string { return In(i18n.Locale()).DockerSize() }
+
+// DockerSize says "Size"
+// in the language of msgs.
+func (msgs Messages) DockerSize() string {
+	return Catalog.Format(msgs.locale, "dockerSize", nil)
+}
+
+// DockerReclaimable says "Reclaimable"
+// in the language the app shows.
+func DockerReclaimable() string { return In(i18n.Locale()).DockerReclaimable() }
+
+// DockerReclaimable says "Reclaimable"
+// in the language of msgs.
+func (msgs Messages) DockerReclaimable() string {
+	return Catalog.Format(msgs.locale, "dockerReclaimable", nil)
+}

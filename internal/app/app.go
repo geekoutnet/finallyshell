@@ -250,6 +250,13 @@ type App struct {
 	// The System info popover, and what reads it (readSysInfo when nil).
 	sysInfo     sysInfoPopover
 	readSysInfo sysInfoReader
+	// What reads the Overview tab's Docker cards (readDocker when nil),
+	// and the container whose details show (docker_dialog.go).
+	readDocker dockerReader
+	ctrDlg     *containerDialog
+	// frame counts the main window's frames, which tells a tab shown
+	// again from one shown in every frame.
+	frame uint64
 
 	// keepAliveUnit is how long a second of the keepalive setting is: a
 	// second when 0, shorter in tests (session.go).
@@ -336,6 +343,7 @@ func (a *App) current() *Session {
 // View builds the window.
 func (a *App) View(c *ui.Context) {
 	defer a.stopUnseenPolls()
+	a.frame++
 	useTheme(c)
 	a.showNotices(c)
 	a.writePendingCopy(c)

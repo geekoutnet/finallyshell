@@ -1,0 +1,880 @@
+package app
+
+import (
+	"cmp"
+	"context"
+	"errors"
+	"fmt"
+	"slices"
+	"strconv"
+	"strings"
+	"time"
+
+	"finallyshell/internal/icons"
+	"finallyshell/internal/monitor"
+	"finallyshell/internal/widgets"
+	"finallyshell/locales"
+
+	"github.com/egoist/mygo/ui"
+	"golang.org/x/crypto/ssh"
+)
+
+// The Overview tab's Docker cards: when the server has Docker (or
+// Podman), a card of the engine and its disk use among the other cards,
+// and below them, across the width, the containers, grouped by Compose
+// project, which a filter and the headers sort. A click on a container
+// opens its details (docker_dialog.go). It is one read, as the system
+// info is: when the tab first shows the connection, on Refresh, and when
+// the tab shows again after dockerStale; docker stats is too heavy to
+// poll.
+
+// dockerTimeout is how long the Docker read waits for the server.
+const dockerTimeout = 45 * time.Second
+
+// dockerStale is how old the Docker data may be when the tab shows
+// again before it is read again.
+const dockerStale = 30 * time.Second
+
+// dockerReader reads a server's Docker over client.
+type dockerReader func(ctx context.Context, client *ssh.Client) (monitor.Docker, error)
+
+// readDocker reads the Docker cards, unless App.readDocker stands in for
+// it, as in tests.
+func readDocker(ctx context.Context, client *ssh.Client) (monitor.Docker, error) {
+	if client == nil {
+		return monitor.Docker{}, errNoClient
+	}
+	return monitor.ReadDocker(ctx, client)
+}
+
+// The columns the containers sort by.
+const (
+	ctrSortName = iota
+	ctrSortStatus
+	ctrSortCPU
+	ctrSortMemory
+)
+
+// dockerState is a session's Docker cards.
+type dockerState struct {
+	d       monitor.Docker
+	read    bool      // d holds what a read found
+	at      time.Time // when
+	client  *ssh.Client
+	loading bool
+	err     error
+	gen     int // counts the reads; a result of an older one is dropped
+	cancel  context.CancelFunc
+	frame   uint64 // the last frame of the main window that showed the cards
+
+	filter string
+	sortBy int
+	desc   bool // the other way from the column's own
+	flat   bool // not grouped by project
+	closed map[string]bool
+}
+
+// shown tells whether the server has Docker, so that the cards show.
+func (ds *dockerState) shown() bool { return ds.d.Tool != "" }
+
+// readDockerOf reads s's Docker on a goroutine, dropping a read under
+// way; what was read before stays until the new one is done, and when it
+// fails.
+func (a *App) readDockerOf(s *Session) {
+	ds := &s.overview.docker
+	if ds.cancel != nil {
+		ds.cancel()
+	}
+	ds.gen++
+	gen, client := ds.gen, s.client
+	ds.loading, ds.client = true, client
+	read := a.readDocker
+	if read == nil {
+		read = readDocker
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), dockerTimeout)
+	ds.cancel = cancel
+	go func() {
+		d, err := read(ctx, client)
+		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
+			err = context.DeadlineExceeded
+		}
+		cancel()
+		a.post(func() {
+			if ds.gen != gen {
+				return
+			}
+			ds.loading, ds.cancel, ds.err = false, nil, err
+			switch {
+			case err == nil:
+				ds.d, ds.read, ds.at = d, true, time.Now()
+			case !ds.read:
+				ds.d = d // what the output had: whether Docker is there
+			}
+		})
+	}()
+}
+
+// keepDockerRead reads s's Docker when the tab first shows the
+// connection, and again when it shows after a while hidden and the data
+// is older than dockerStale.
+func (a *App) keepDockerRead(s *Session) {
+	ds := &s.overview.docker
+	again := ds.frame+1 < a.frame
+	ds.frame = a.frame
+	if ds.loading {
+		return
+	}
+	if ds.client != s.client || !ds.read && ds.err == nil || again && time.Since(ds.at) > dockerStale {
+		a.readDockerOf(s)
+	}
+}
+
+// dockerName is the engine's name, as the cards title it.
+func dockerName(d *monitor.Docker) string {
+	if d.Tool == "podman" {
+		return "Podman"
+	}
+	return locales.DockerTitle()
+}
+
+// dockerCardHeight is an estimate of the summary card's height, for
+// overviewCards to place it.
+func dockerCardHeight(ds *dockerState) float32 {
+	const head, line = 52, 22
+	if ds.d.State != monitor.DockerOK {
+		return head + 3*line
+	}
+	return head + line*float32(9+len(ds.d.Disk)+min(len(ds.d.Warnings), 1))
+}
+
+// dockerCard is the engine: its version, its counts and its disk use; or
+// why it could not be read.
+func (a *App) dockerCard(c *ui.Context, s *Session) {
+	ds := &s.overview.docker
+	d := &ds.d
+	overviewCard(c, "container", dockerName(d), func() {
+		if ds.loading {
+			ui.Box(c).Size(24, 24).Center().Children(func() { ui.Spinner(c).Label(locales.DockerReading()) })
+		} else if widgets.IconButton(c, "refresh-cw", locales.DockerRefresh()).Clicked() {
+			a.readDockerOf(s)
+		}
+	}, func() {
+		if ds.err != nil {
+			ui.Text(c, locales.DockerFailed(describeSysInfoError(ds.err))).FontSize(12).TextColor(theme.Danger)
+		}
+		if !ds.read && ds.err != nil {
+			return
+		}
+		switch d.State {
+		case monitor.DockerDenied:
+			dockerProblem(c, locales.DockerDenied(), d.Error)
+			return
+		case monitor.DockerDown:
+			dockerProblem(c, locales.DockerDown(), d.Error)
+			return
+		case monitor.DockerFailed:
+			dockerProblem(c, locales.DockerFailed(d.Error), "")
+			return
+		}
+		ui.Column(c).FillWidth().Children(func() {
+			for i, r := range dockerSummary(d) {
+				copyRow(c.Key(i), r.label, r.value, 86, true)
+			}
+		})
+		if len(d.Disk) > 0 {
+			ui.Row(c).Gap(10).Padding(4, 4, 0, 4).Children(func() {
+				widgets.Muted(c, locales.DockerDiskUsage()).FontSize(12).Bold().Width(86).Shrink(0).SingleLine()
+				widgets.Muted(c, locales.DockerSize()).FontSize(12).Width(64).Shrink(0).TextAlign(ui.End).SingleLine()
+				widgets.Muted(c, locales.DockerReclaimable()).FontSize(12).Grow(1).MinWidth(0).TextAlign(ui.End).SingleLine()
+			})
+			ui.Column(c).FillWidth().Children(func() {
+				for i, u := range d.Disk {
+					dockerDiskRow(c.Key(i), u)
+				}
+			})
+		}
+		if n := len(d.Warnings); n > 0 {
+			all := strings.Join(d.Warnings, "\n")
+			ui.Row(c).Gap(6).AlignItems(ui.Center).Tooltip(all).Children(func() {
+				ui.Icon(c, icons.Get("triangle-alert")).FontSize(12).TextColor(colors.gaugeBusy)
+				widgets.Muted(c, locales.DockerWarnings(n)).FontSize(12).SingleLine()
+			})
+		}
+	})
+}
+
+// dockerDiskRow is a line of docker system df: what, its size and what
+// can be removed; a click copies it.
+func dockerDiskRow(c *ui.Context, u monitor.DockerDiskUsage) {
+	label := diskTypeLabel(u.Type)
+	line := label + ": " + locales.DockerDiskLine(u.Size, orDash(u.Reclaimable))
+	row := ui.Row(c).Gap(10).Padding(2, 4).Radius(4).AlignItems(ui.Center).FillWidth().
+		Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(line).Tooltip(locales.Copy())
+	if row.Hovered() {
+		row.Background(theme.Text.Alpha(0.06))
+	}
+	if row.Clicked() {
+		c.WriteClipboard(line)
+		c.Toast(locales.CopiedText(label))
+	}
+	row.Children(func() {
+		widgets.Muted(c, label).Width(86).Shrink(0).SingleLine()
+		ui.Text(c, u.Size).Width(64).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
+		widgets.Muted(c, orDash(u.Reclaimable)).Grow(1).MinWidth(0).TextAlign(ui.End).SingleLine().Tooltip(u.Reclaimable).FontFeatures("tnum")
+	})
+}
+
+// dockerProblem says why the engine could not be read, with what it
+// said in small letters.
+func dockerProblem(c *ui.Context, text, detail string) {
+	ui.Row(c).Gap(8).AlignItems(ui.Start).Children(func() {
+		ui.Icon(c, icons.Get("triangle-alert")).FontSize(14).TextColor(colors.gaugeBusy).Margin(2, 0, 0, 0)
+		ui.Text(c, text).Grow(1).MinWidth(0)
+	})
+	if detail != "" {
+		widgets.Muted(c, detail).FontSize(12).MaxLines(3).Selectable()
+	}
+}
+
+// labelValue is a line of a card or of the details: what, and its value.
+type labelValue struct{ label, value string }
+
+// dockerSummary is the summary card's lines.
+func dockerSummary(d *monitor.Docker) []labelValue {
+	version := orDash(d.Version)
+	if d.APIVersion != "" && d.APIVersion != d.Version {
+		version = locales.DockerVersionAPI(version, d.APIVersion)
+	}
+	if d.Sudo {
+		version += ", " + locales.DockerViaSudo()
+	}
+	join := func(parts ...string) string {
+		var kept []string
+		for _, p := range parts {
+			if p != "" {
+				kept = append(kept, p)
+			}
+		}
+		return orDash(strings.Join(kept, ", "))
+	}
+	cgroup := d.CgroupDriver
+	if v := strings.TrimPrefix(d.CgroupVersion, "v"); v != "" {
+		cgroup = join(cgroup, "v"+v)
+	}
+	res := "-"
+	if d.CPUs > 0 {
+		res = locales.DockerCPUsMem(d.CPUs, formatSize(int64(d.MemTotal)))
+	}
+	return []labelValue{
+		{locales.DockerVersion(), version},
+		{locales.DockerContainers(), locales.DockerContainerCounts(d.NumContainers, d.Running, d.Paused, d.Stopped)},
+		{locales.DockerImages(), strconv.Itoa(max(d.NumImages, len(d.Images)))},
+		{locales.DockerVolumes(), strconv.Itoa(len(d.Volumes))},
+		{locales.DockerNetworks(), strconv.Itoa(len(d.Networks))},
+		{locales.DockerStorage(), join(d.StorageDriver, d.RootDir)},
+		{locales.DockerCgroup(), orDash(cgroup)},
+		{locales.DockerLogging(), orDash(d.LoggingDriver)},
+		{locales.DockerResources(), res},
+	}
+}
+
+// diskTypeLabel is the name of a line of docker system df.
+func diskTypeLabel(t string) string {
+	switch t {
+	case "Images":
+		return locales.DockerImages()
+	case "Containers":
+		return locales.DockerContainers()
+	case "Local Volumes":
+		return locales.DockerVolumes()
+	case "Build Cache":
+		return locales.DockerBuildCache()
+	}
+	return t
+}
+
+// copyRow is a line of a label and its value; a click copies the value.
+// wrap lets a long value take several lines; else it is cut short, and
+// its tooltip has it whole. The value is not selectable text, which
+// would take the click.
+func copyRow(c *ui.Context, label, value string, labelWidth float32, wrap bool) {
+	copyRowAs(c, label, value, value, labelWidth, wrap)
+}
+
+// copyRowAs is copyRow showing shown, and copying value.
+func copyRowAs(c *ui.Context, label, shown, value string, labelWidth float32, wrap bool) {
+	row := ui.Row(c).Gap(10).Padding(2, 4).Radius(4).AlignItems(ui.Start).FillWidth().
+		Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(label + ": " + shown)
+	if row.Hovered() {
+		row.Background(theme.Text.Alpha(0.06))
+	}
+	if row.Clicked() {
+		c.WriteClipboard(value)
+		c.Toast(locales.CopiedText(label))
+	}
+	row.Children(func() {
+		widgets.Muted(c, label).Width(labelWidth).Shrink(0).SingleLine().Tooltip(label)
+		t := ui.Text(c, shown).Grow(1).MinWidth(0)
+		if !wrap {
+			t.SingleLine().Tooltip(shown)
+		}
+	})
+}
+
+// ctrColor is the color of a container's dot: green when it runs and is
+// not unhealthy, amber for a passing state, red for a failure, gray when
+// it stopped as asked.
+func ctrColor(ct *monitor.Container) ui.Color {
+	switch ct.Status {
+	case "running":
+		switch ct.Health {
+		case "unhealthy":
+			return colors.gaugeHigh
+		case "starting":
+			return colors.gaugeBusy
+		}
+		return colors.gaugeOK
+	case "paused", "restarting", "removing":
+		return colors.gaugeBusy
+	case "created":
+		return theme.TextMuted
+	case "exited":
+		if ct.ExitCode == 0 && !ct.OOMKilled {
+			return theme.TextMuted
+		}
+	}
+	return colors.gaugeHigh
+}
+
+// ctrRank orders the states for sorting by status: running first.
+func ctrRank(ct *monitor.Container) int {
+	switch ct.Status {
+	case "running":
+		if ct.Health == "unhealthy" {
+			return 1
+		}
+		return 0
+	case "restarting":
+		return 2
+	case "paused":
+		return 3
+	case "created":
+		return 4
+	case "exited":
+		return 5
+	}
+	return 6
+}
+
+// healthText is a health check's status in words.
+func healthText(h string) string {
+	switch h {
+	case "healthy":
+		return locales.DockerHealthy()
+	case "unhealthy":
+		return locales.DockerUnhealthy()
+	case "starting":
+		return locales.DockerStarting()
+	}
+	return h
+}
+
+// ctrStatusText is a container's state as docker ps says it: Up 3 days
+// (healthy), Exited (137) 5 hours ago.
+func ctrStatusText(ct *monitor.Container, now time.Time) string {
+	switch ct.Status {
+	case "running":
+		up := "-"
+		if !ct.StartedAt.IsZero() {
+			up = humanDuration(now.Sub(ct.StartedAt))
+		}
+		if ct.Health != "" {
+			return locales.DockerUpHealth(up, healthText(ct.Health))
+		}
+		return locales.DockerUp(up)
+	case "exited":
+		text := locales.DockerExitedCode(ct.ExitCode)
+		if !ct.FinishedAt.IsZero() {
+			text = locales.DockerExited(ct.ExitCode, humanDuration(now.Sub(ct.FinishedAt)))
+		}
+		if ct.OOMKilled {
+			text += ", " + locales.DockerOOMKilled()
+		}
+		return text
+	case "paused":
+		return locales.DockerPaused()
+	case "restarting":
+		return locales.DockerRestarting()
+	case "created":
+		return locales.DockerCreated()
+	case "dead":
+		return locales.DockerDead()
+	case "removing":
+		return locales.DockerRemoving()
+	}
+	return ct.Status
+}
+
+// humanDuration is d in its largest unit, as docker writes it: 3 days,
+// 5 hours.
+func humanDuration(d time.Duration) string {
+	d = max(d, 0)
+	switch h := d.Hours(); {
+	case d < time.Minute:
+		return locales.DurSeconds(int(d.Seconds()))
+	case d < time.Hour:
+		return locales.DurMinutes(int(d.Minutes()))
+	case h < 48:
+		return locales.DurHours(int(h))
+	case h < 24*14:
+		return locales.DurDays(int(h / 24))
+	case h < 24*60:
+		return locales.DurWeeks(int(h / 24 / 7))
+	case h < 24*365*2:
+		return locales.DurMonths(int(h / 24 / 30))
+	default:
+		return locales.DurYears(int(h / 24 / 365))
+	}
+}
+
+// hostAddr is a host address and port: [::1]:5353 for IPv6.
+func hostAddr(ip string, port string) string {
+	switch {
+	case ip == "":
+		return port
+	case strings.Contains(ip, ":"):
+		return "[" + ip + "]:" + port
+	}
+	return ip + ":" + port
+}
+
+// portTexts are a container's published ports as docker ps writes them,
+// 0.0.0.0:8080→80/tcp, consecutive ports as a range:
+// 0.0.0.0:8000-8002→8000-8002/tcp.
+func portTexts(ports []monitor.PortBinding) []string {
+	var out []string
+	for i := 0; i < len(ports); {
+		p := ports[i]
+		j := i + 1
+		for j < len(ports) {
+			q, prev := ports[j], ports[j-1]
+			if q.Port != prev.Port+1 || q.HostPort != prev.HostPort+1 || q.HostIP != p.HostIP || q.Proto != p.Proto || q.AlsoIPv6 != p.AlsoIPv6 {
+				break
+			}
+			j++
+		}
+		last := ports[j-1]
+		host, ctr := strconv.Itoa(p.HostPort), strconv.Itoa(p.Port)
+		if j-i > 1 {
+			host += "-" + strconv.Itoa(last.HostPort)
+			ctr += "-" + strconv.Itoa(last.Port)
+		}
+		out = append(out, hostAddr(p.HostIP, host)+"→"+ctr+"/"+p.Proto)
+		i = j
+	}
+	return out
+}
+
+// ctrIPs are a container's addresses, one for each network that gave it
+// one; "host" on the host's network.
+func ctrIPs(ct *monitor.Container) []string {
+	var ips []string
+	for _, n := range ct.Networks {
+		if n.IP != "" {
+			ips = append(ips, n.IP)
+		}
+		if n.IPv6 != "" {
+			ips = append(ips, n.IPv6)
+		}
+	}
+	if len(ips) == 0 && ct.NetworkMode == "host" {
+		return []string{"host"}
+	}
+	return ips
+}
+
+// firstAndMore is the first of list, and "+2" for two more: "-" for none.
+func firstAndMore(list []string) string {
+	switch len(list) {
+	case 0:
+		return "-"
+	case 1:
+		return list[0]
+	}
+	return list[0] + "  +" + strconv.Itoa(len(list)-1)
+}
+
+func ctrCPUText(ct *monitor.Container) string {
+	if ct.Stats == nil {
+		return "-"
+	}
+	return fmt.Sprintf("%.1f%%", ct.Stats.CPU)
+}
+
+// ctrMemText is a container's memory, with its limit when it has one.
+func ctrMemText(ct *monitor.Container) string {
+	if ct.Stats == nil {
+		return "-"
+	}
+	used := formatBytes(float64(ct.Stats.MemUsed))
+	if ct.Memory > 0 {
+		return used + " / " + formatBytes(float64(ct.Memory))
+	}
+	return used
+}
+
+// ctrMatches tells whether a container shows for the filter q, in lower
+// case: by its name, image, project, service, status, ID, addresses or
+// ports.
+func ctrMatches(ct *monitor.Container, q string, now time.Time) bool {
+	if q == "" {
+		return true
+	}
+	hay := []string{ct.Name, ct.Image, ct.Project, ct.Service, ct.Status, ctrStatusText(ct, now), ct.NetworkMode}
+	if len(ct.ID) >= 12 {
+		hay = append(hay, ct.ID[:12])
+	}
+	hay = append(hay, ctrIPs(ct)...)
+	hay = append(hay, portTexts(ct.Ports)...)
+	for _, h := range hay {
+		if strings.Contains(strings.ToLower(h), q) {
+			return true
+		}
+	}
+	return false
+}
+
+// ctrCompare orders two containers by the column sortBy, the busiest
+// first for CPU and memory, then by name.
+func ctrCompare(sortBy int, desc bool) func(a, b *monitor.Container) int {
+	cpu := func(ct *monitor.Container) float64 {
+		if ct.Stats == nil {
+			return -1
+		}
+		return ct.Stats.CPU
+	}
+	mem := func(ct *monitor.Container) int64 {
+		if ct.Stats == nil {
+			return -1
+		}
+		return int64(ct.Stats.MemUsed)
+	}
+	return func(a, b *monitor.Container) int {
+		r := 0
+		switch sortBy {
+		case ctrSortStatus:
+			r = cmp.Compare(ctrRank(a), ctrRank(b))
+		case ctrSortCPU:
+			r = cmp.Compare(cpu(b), cpu(a))
+		case ctrSortMemory:
+			r = cmp.Compare(mem(b), mem(a))
+		}
+		if r == 0 {
+			r = strings.Compare(strings.ToLower(a.Name), strings.ToLower(b.Name))
+		}
+		if desc {
+			r = -r
+		}
+		return r
+	}
+}
+
+// ctrGroup is a Compose project of several containers, as the card
+// shows it, or with project "" the other containers.
+type ctrGroup struct {
+	project string
+	list    []*monitor.Container
+}
+
+// ctrGroups are the containers that show for the filter, sorted: the
+// projects of more than one container, then the others; all in one group
+// when flat.
+func (ds *dockerState) ctrGroups(now time.Time) (groups []ctrGroup, shown int) {
+	q := strings.ToLower(strings.TrimSpace(ds.filter))
+	size := map[string]int{}
+	for i := range ds.d.Containers {
+		if p := ds.d.Containers[i].Project; p != "" {
+			size[p]++
+		}
+	}
+	byProject := map[string]*ctrGroup{}
+	rest := &ctrGroup{}
+	for i := range ds.d.Containers {
+		ct := &ds.d.Containers[i]
+		if !ctrMatches(ct, q, now) {
+			continue
+		}
+		shown++
+		g := rest
+		if !ds.flat && size[ct.Project] > 1 {
+			if g = byProject[ct.Project]; g == nil {
+				g = &ctrGroup{project: ct.Project}
+				byProject[ct.Project] = g
+			}
+		}
+		g.list = append(g.list, ct)
+	}
+	order := ctrCompare(ds.sortBy, ds.desc)
+	for _, g := range byProject {
+		slices.SortFunc(g.list, order)
+		groups = append(groups, *g)
+	}
+	slices.SortFunc(groups, func(a, b ctrGroup) int {
+		if ds.sortBy == ctrSortName {
+			r := strings.Compare(strings.ToLower(a.project), strings.ToLower(b.project))
+			if ds.desc {
+				r = -r
+			}
+			return r
+		}
+		return order(a.list[0], b.list[0])
+	})
+	slices.SortFunc(rest.list, order)
+	if len(rest.list) > 0 {
+		groups = append(groups, *rest)
+	}
+	return groups, shown
+}
+
+// ctrColumns are the columns of the containers that fit in width.
+type ctrColumns struct{ image, status, ports, ip bool }
+
+func ctrColumnsFor(width float32) ctrColumns {
+	return ctrColumns{status: width >= 520, ip: width >= 640, ports: width >= 780, image: width >= 920}
+}
+
+// The widths of the containers' columns besides the name and the image,
+// which share what is left.
+const (
+	ctrDotW    = 22
+	ctrStatusW = 168
+	ctrPortsW  = 172
+	ctrIPW     = 118
+	ctrCPUW    = 56
+	ctrMemW    = 108
+)
+
+// dockerContainers is the card of the containers, across the width.
+func (a *App) dockerContainers(c *ui.Context, s *Session, width float32) {
+	ds := &s.overview.docker
+	d := &ds.d
+	now := time.Now()
+	groups, shown := ds.ctrGroups(now)
+	cols := ctrColumnsFor(width - 24)
+	ui.Column(c).FillWidth().Background(colors.card).Border(1, colors.line).Radius(8).Padding(8, 12, 12, 12).Gap(8).Children(func() {
+		ui.Row(c).Gap(8).AlignItems(ui.Center).FillWidth().Wrap().Children(func() {
+			ui.Row(c).Gap(7).AlignItems(ui.Center).Grow(1).MinWidth(180).Height(26).Children(func() {
+				ui.Icon(c, icons.Get("container")).FontSize(14).TextColor(theme.Accent)
+				ui.Text(c, locales.DockerContainers()).Bold().SingleLine().Shrink(0)
+				count := locales.DockerCount(len(d.Containers), runningCount(d.Containers))
+				if shown != len(d.Containers) {
+					count = locales.DockerCountFiltered(shown, len(d.Containers))
+				}
+				widgets.Muted(c, count).FontSize(12).SingleLine().Shrink(1).MinWidth(0)
+			})
+			ui.Row(c).Gap(6).AlignItems(ui.Center).Shrink(1).MinWidth(0).Children(func() {
+				ui.SearchField(c, &ds.filter).Placeholder(locales.DockerFilter()).Label(locales.DockerFilter()).Width(240).Shrink(1).MinWidth(120)
+				if widgets.ToggleIconButton(c, "layout-grid", locales.DockerGroupByProject(), !ds.flat).Clicked() {
+					ds.flat = !ds.flat
+				}
+			})
+		})
+		if len(d.Containers) == 0 {
+			widgets.Muted(c, locales.DockerNoContainers())
+			return
+		}
+		ui.Column(c).FillWidth().Children(func() {
+			a.ctrHeader(c, ds, cols)
+			if shown == 0 {
+				widgets.Muted(c, locales.DockerNoMatch()).Padding(8, 4)
+			}
+			for _, g := range groups {
+				key := "project:" + g.project
+				if g.project == "" {
+					key = "other"
+				}
+				ui.Column(c.Key(key)).FillWidth().Children(func() {
+					a.ctrGroupView(c, s, g, len(groups) > 1, cols, now)
+				})
+			}
+		})
+	})
+}
+
+func runningCount(list []monitor.Container) int {
+	n := 0
+	for i := range list {
+		if list[i].Status == "running" {
+			n++
+		}
+	}
+	return n
+}
+
+// ctrHeader is the containers' column headers; a click on Name, Status,
+// CPU or Memory sorts by it, a second the other way.
+func (a *App) ctrHeader(c *ui.Context, ds *dockerState, cols ctrColumns) {
+	head := func(title string, by int, width float32, end bool) {
+		label := title
+		if ds.sortBy == by {
+			// Names and states sort up, CPU and memory the busiest first.
+			if up := by == ctrSortName || by == ctrSortStatus; up != ds.desc {
+				label += " ↑"
+			} else {
+				label += " ↓"
+			}
+		}
+		t := widgets.Muted(c, label).FontSize(12).SingleLine().Cursor(ui.CursorPointer).
+			Role(ui.RoleButton).Label(locales.DockerSortBy(title))
+		if ds.sortBy == by {
+			t.TextColor(theme.Text)
+		}
+		if width > 0 {
+			t.Width(width).Shrink(0)
+		} else {
+			t.Grow(2).Basis(0).MinWidth(0)
+		}
+		if end {
+			t.TextAlign(ui.End)
+		}
+		if t.Clicked() {
+			if ds.sortBy == by {
+				ds.desc = !ds.desc
+			} else {
+				ds.sortBy, ds.desc = by, false
+			}
+		}
+	}
+	plain := func(title string, width float32) {
+		t := widgets.Muted(c, title).FontSize(12).SingleLine()
+		if width > 0 {
+			t.Width(width).Shrink(0)
+		} else {
+			t.Grow(1).Basis(0).MinWidth(0)
+		}
+	}
+	ui.Row(c).Gap(10).Padding(2, 6, 4, 6).AlignItems(ui.Center).FillWidth().BorderWidth(0, 0, 1, 0).BorderColor(colors.line).Children(func() {
+		ui.Box(c).Width(ctrDotW).Shrink(0)
+		head(locales.DockerColName(), ctrSortName, 0, false)
+		if cols.image {
+			plain(locales.DockerColImage(), 0)
+		}
+		if cols.status {
+			head(locales.DockerColStatus(), ctrSortStatus, ctrStatusW, false)
+		}
+		if cols.ports {
+			plain(locales.DockerColPorts(), ctrPortsW)
+		}
+		if cols.ip {
+			plain(locales.DockerColIP(), ctrIPW)
+		}
+		head(locales.Cpu(), ctrSortCPU, ctrCPUW, true)
+		head(locales.DockerColMemory(), ctrSortMemory, ctrMemW, true)
+	})
+}
+
+// ctrGroupView is a group of containers: a project's, under its header,
+// which a click opens and closes, or the others, under a header of their
+// own when there are projects above them.
+func (a *App) ctrGroupView(c *ui.Context, s *Session, g ctrGroup, headed bool, cols ctrColumns, now time.Time) {
+	ds := &s.overview.docker
+	open := g.project == "" || !ds.closed[g.project]
+	if g.project != "" {
+		title := g.project
+		row := ui.Row(c).Gap(6).Padding(5, 6).Margin(4, 0, 0, 0).Radius(4).AlignItems(ui.Center).FillWidth().
+			Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(title).Expanded(open)
+		if row.Hovered() {
+			row.Background(theme.Text.Alpha(0.06))
+		}
+		if row.Clicked() {
+			if ds.closed == nil {
+				ds.closed = map[string]bool{}
+			}
+			ds.closed[g.project] = open
+			open = !open
+		}
+		row.Children(func() {
+			icon := "chevron-right"
+			if open {
+				icon = "chevron-down"
+			}
+			ui.Icon(c, icons.Get(icon)).FontSize(13).TextColor(theme.TextMuted)
+			ui.Icon(c, icons.Get("layout-grid")).FontSize(12).TextColor(theme.Accent)
+			ui.Text(c, title).Bold().SingleLine().Shrink(1).MinWidth(0).Tooltip(locales.DockerProject() + ": " + title)
+			running := 0
+			var cpu float64
+			var mem uint64
+			for _, ct := range g.list {
+				if ct.Status == "running" {
+					running++
+				}
+				if ct.Stats != nil {
+					cpu += ct.Stats.CPU
+					mem += ct.Stats.MemUsed
+				}
+			}
+			widgets.Muted(c, locales.DockerCount(len(g.list), running)).FontSize(12).SingleLine().Grow(1).MinWidth(0)
+			widgets.Muted(c, fmt.Sprintf("%.1f%%", cpu)).FontSize(12).Width(ctrCPUW).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
+			widgets.Muted(c, formatBytes(float64(mem))).FontSize(12).Width(ctrMemW).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
+		})
+	} else if headed {
+		widgets.Muted(c, locales.DockerOther()).FontSize(12).Bold().Padding(8, 6, 2, 6)
+	}
+	if !open {
+		return
+	}
+	for _, ct := range g.list {
+		a.ctrRow(c.Key(ct.ID), s, ct, g.project != "", cols, now)
+	}
+}
+
+// ctrRow is a container's line; a click opens its details.
+func (a *App) ctrRow(c *ui.Context, s *Session, ct *monitor.Container, indent bool, cols ctrColumns, now time.Time) {
+	row := ui.Row(c).Gap(10).Padding(4, 6).Radius(4).AlignItems(ui.Center).FillWidth().MinHeight(26).
+		Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(ct.Name)
+	if row.Hovered() {
+		row.Background(theme.Text.Alpha(0.06))
+	}
+	if row.Clicked() {
+		a.openContainer(s, ct.ID)
+	}
+	status := ctrStatusText(ct, now)
+	row.Children(func() {
+		// The names line up, a project's containers' dots indented.
+		ui.Row(c).Width(ctrDotW).Shrink(0).Children(func() {
+			dot := widgets.StatusDot(c, ctrColor(ct)).Tooltip(status)
+			if indent {
+				dot.Margin(0, 0, 0, 14)
+			}
+		})
+		name := ct.Name
+		tip := ct.Name
+		if ct.Service != "" && ct.Project != "" {
+			tip += "\n" + ct.Project + " / " + ct.Service
+		}
+		if !cols.status {
+			tip += "\n" + status
+		}
+		ui.Text(c, name).SingleLine().Grow(2).Basis(0).MinWidth(0).Tooltip(tip)
+		if cols.image {
+			widgets.Muted(c, ct.Image).SingleLine().Grow(1).Basis(0).MinWidth(0).Tooltip(ct.Image)
+		}
+		if cols.status {
+			t := ui.Text(c, status).FontSize(12).SingleLine().Width(ctrStatusW).Shrink(0).Tooltip(status)
+			if ct.Status != "running" || ct.Health == "unhealthy" {
+				t.TextColor(ctrColor(ct))
+			}
+		}
+		if cols.ports {
+			ports := portTexts(ct.Ports)
+			widgets.Muted(c, firstAndMore(ports)).FontSize(12).SingleLine().Width(ctrPortsW).Shrink(0).Tooltip(strings.Join(ports, "\n"))
+		}
+		if cols.ip {
+			ips := ctrIPs(ct)
+			widgets.Muted(c, firstAndMore(ips)).FontSize(12).SingleLine().Width(ctrIPW).Shrink(0).Tooltip(strings.Join(ips, "\n"))
+		}
+		ui.Text(c, ctrCPUText(ct)).FontSize(12).Width(ctrCPUW).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
+		ui.Text(c, ctrMemText(ct)).FontSize(12).Width(ctrMemW).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
+	})
+}

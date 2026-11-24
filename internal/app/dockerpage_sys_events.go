@@ -36,15 +36,11 @@ func (a *App) keepDockerEvents(s *Session, page *dockerResourcesPage) {
 		a.stopPoll(&state.poll)
 		return
 	}
-	stream := page.events
-	if stream == nil {
-		if s.overview.docker.run != nil {
-			stream = s.overview.docker.run
-		} else {
-			stream = monitor.StreamDockerEvents
-		}
-	}
 	a.keepPolling(&state.poll, s, 3*time.Second, func() pollRead {
+		stream := a.dockerExec(s, monitor.StreamDockerEvents, nil, false).command
+		if page.events != nil && !page.tool.Root {
+			stream = page.events
+		}
 		state.ended = false
 		streamID := &dockerEventStream{anchor: state.last}
 		state.streamID = streamID

@@ -2,6 +2,7 @@ package app
 
 import (
 	"cmp"
+	"errors"
 	"slices"
 	"strings"
 	"time"
@@ -65,7 +66,11 @@ func (a *App) dockerRegistryView(c *ui.Context, s *Session, page *dockerResource
 			}
 		})
 	})
-	widgets.Muted(c, locales.DockerSysRegistryHint()).FontSize(11).SingleLine().FillWidth().Padding(0, 8, 2).Tooltip(locales.DockerSysRegistryHint())
+	hint := locales.DockerSysRegistryHint()
+	if page.tool.Root {
+		hint = locales.DockerPrivRegistryHint()
+	}
+	widgets.Muted(c, hint).FontSize(11).SingleLine().FillWidth().Padding(0, 8, 2).Tooltip(hint)
 	if data.Store != "" {
 		widgets.Muted(c, locales.DockerSysStore()+": "+data.Store).FontSize(11).SingleLine().Padding(0, 8, 2)
 	}
@@ -106,7 +111,11 @@ func (a *App) openDockerLogin(s *Session, page *dockerResourcesPage) {
 func (a *App) openDockerLogout(s *Session, page *dockerResourcesPage, registry string) {
 	page.show(locales.DockerSysLogout(), func(c *ui.Context, dialog *dockerResourceDialog, open *bool) {
 		ui.Text(c, registry).Bold().Selectable()
-		ui.Text(c, locales.DockerSysLogoutWarning())
+		warning := locales.DockerSysLogoutWarning()
+		if page.tool.Root {
+			warning = locales.DockerPrivRegistryLogout()
+		}
+		ui.Text(c, warning)
 		script, err := page.tool.RegistryLogout(registry)
 		reason := page.blocked(s)
 		if err != nil {
@@ -139,15 +148,16 @@ type daemonEditor struct {
 func (a *App) openDaemonConfig(s *Session, page *dockerResourcesPage) {
 	edit := &daemonEditor{}
 	load := func(force bool) {
-		readDockerResource(a, s, &edit.load, force, resourceOnce(page.tool.DaemonRead(), func(out string) (string, error) { return out, nil }))
+		readDockerResourceAccess(a, s, &edit.load, force, true, resourceOnce(page.tool.DaemonRead(), func(out string) (string, error) { return out, nil }))
 	}
-	load(false)
 	page.show(locales.DockerSysConfig(), func(c *ui.Context, dialog *dockerResourceDialog, open *bool) {
 		ui.Text(c, "/etc/docker/daemon.json").Bold().Selectable()
 		ui.Text(c, locales.DockerSysConfigWarning()).TextColor(theme.TextMuted)
 		resourceStatus(c, &edit.load, func() { load(true) })
 		if !edit.load.read || edit.load.loading || edit.load.err != nil {
-			if edit.load.err != nil {
+			if dockerPrivilegeFailed(edit.load.err) {
+				dockerPrivilegeHelp(c, s)
+			} else if edit.load.err != nil && !errors.Is(edit.load.err, monitor.ErrPrivilegeCancelled) {
 				widgets.Muted(c, locales.DockerSysConfigUnavailable())
 			}
 			if ui.Button(c, locales.Cancel()).Clicked() {
@@ -211,9 +221,15 @@ func (a *App) openDaemonConfig(s *Session, page *dockerResourcesPage) {
 				a.refreshResourceAfterAction(s, page, dockerSecSystem)
 				a.offerDockerRestart(s, page, toSave, dialog.work.output)
 			}
-			a.runDockerResource(s, page, dialog, dockerResourceStep{input: &input})
+			a.runDockerResource(s, page, dialog, dockerResourceStep{input: &input, root: true})
 		}
 	})
+	page.dialog.clear = func() {
+		if edit.load.request != nil {
+			edit.load.request.cancel()
+		}
+	}
+	load(false)
 }
 
 func (a *App) offerDockerRestart(s *Session, page *dockerResourcesPage, config, output string) {
@@ -239,7 +255,7 @@ func (a *App) confirmDockerRestart(s *Session, page *dockerResourcesPage, config
 			reason = cmp.Or(reason, locales.DockerSysRestartAck())
 		}
 		if resourceButtons(c, open, locales.DockerSysRestart(), reason) {
-			a.runDockerResource(s, page, dialog, dockerResourceStep{script: script})
+			a.runDockerResource(s, page, dialog, dockerResourceStep{script: script, root: true})
 		}
 	})
 }

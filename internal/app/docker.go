@@ -63,6 +63,9 @@ type dockerState struct {
 	client     *ssh.Client
 	dataClient *ssh.Client
 	loading    bool
+	authing    bool
+	autoRoot   bool
+	connection context.Context
 	err        error
 	gen        int // counts the reads; a result of an older one is dropped
 	cancel     context.CancelFunc
@@ -89,30 +92,81 @@ func (ds *dockerState) shown() bool { return ds.d.Tool != "" }
 // way; what was read before stays until the new one is done, and when it
 // fails.
 func (a *App) readDockerOf(s *Session) {
+	a.readDockerAccess(s, false)
+}
+
+func (a *App) readDockerAccess(s *Session, authorize bool) {
 	ds := &s.overview.docker
+	same := ds.client == s.client && ds.connection == s.ctx
+	if same && ds.authing {
+		return
+	}
 	if ds.cancel != nil {
 		ds.cancel()
 	}
+	if !same {
+		ds.read, ds.autoRoot, ds.d, ds.at, ds.err = false, true, monitor.Docker{}, time.Time{}, nil
+		ds.work, ds.actionError = nil, nil
+	}
 	ds.gen++
-	gen, client := ds.gen, s.client
-	ds.loading, ds.client = true, client
+	gen, client, connection := ds.gen, s.client, s.ctx
+	ds.loading, ds.authing, ds.client, ds.connection = true, authorize, client, connection
 	read := a.readDocker
 	if read == nil {
 		read = readDocker
 	}
-	ctx, cancel := context.WithTimeout(context.Background(), dockerTimeout)
+	last := ds.d
+	auto := ds.autoRoot || !ds.read && ds.err == nil
+	privilege := s.overview.memory.privilege
+	if authorize || last.Root {
+		privilege = a.sessionPrivilege(s)
+	} else if privilege != nil && (privilege.client != client || privilege.life.Err() != nil) {
+		privilege = nil
+	}
+	budget := dockerTimeout
+	if authorize {
+		budget = 5 * time.Minute
+	}
+	ctx, cancel := context.WithTimeout(resourceContext(s), budget)
 	ds.cancel = cancel
 	go func() {
-		d, err := read(ctx, client)
+		d := last
+		var err error
+		if !authorize && !last.Root {
+			d, err = read(ctx, client)
+		}
+		if err == nil && privilege != nil && (authorize || last.Root || d.State == monitor.DockerNeedsRoot && auto && privilege.runner.CachedMethod() != 0) {
+			run := privilege.runner.RunCached
+			if authorize {
+				run = privilege.runner.Run
+			}
+			root, rootErr := monitor.ReadDockerRoot(ctx, d.Tool, func(ctx context.Context, script string) (string, string, error) {
+				return run(ctx, script, monitor.PrivilegeOptions{ScriptStdin: true})
+			})
+			switch {
+			case rootErr == nil:
+				d = root
+			case dockerPrivilegeFailed(rootErr):
+				d.Root, d.State = false, monitor.DockerDenied
+				auto = false
+			case errors.Is(rootErr, monitor.ErrPrivilegeCancelled), errors.Is(rootErr, monitor.ErrPrivilegeNotCached):
+				d.Root, d.State = false, monitor.DockerNeedsRoot
+				auto = errors.Is(rootErr, monitor.ErrPrivilegeCancelled) && privilege.runner.CachedMethod() == 0
+			default:
+				err = rootErr
+			}
+		} else if err == nil && d.State == monitor.DockerNeedsRoot && last.State == monitor.DockerDenied {
+			d.State = monitor.DockerDenied
+		}
 		if errors.Is(ctx.Err(), context.DeadlineExceeded) {
 			err = context.DeadlineExceeded
 		}
 		cancel()
 		a.post(func() {
-			if ds.gen != gen {
+			if ds.gen != gen || s.client != client || s.ctx != connection {
 				return
 			}
-			ds.loading, ds.cancel, ds.err = false, nil, err
+			ds.loading, ds.authing, ds.cancel, ds.err, ds.autoRoot = false, false, nil, err, auto
 			if ds.work != nil && ds.work.done {
 				ds.work = nil
 			}
@@ -133,10 +187,12 @@ func (a *App) keepDockerRead(s *Session) {
 	ds := &s.overview.docker
 	again := ds.frame+1 < a.frame
 	ds.frame = a.frame
-	if ds.loading {
+	if ds.loading && ds.client == s.client && ds.connection == s.ctx {
 		return
 	}
-	if ds.client != s.client || !ds.read && ds.err == nil || again && time.Since(ds.at) > dockerStale {
+	priv := s.overview.memory.privilege
+	reuse := ds.d.State == monitor.DockerNeedsRoot && ds.autoRoot && ds.err == nil && priv != nil && priv.client == s.client && priv.life.Err() == nil && priv.runner.CachedMethod() != 0
+	if ds.client != s.client || ds.connection != s.ctx || !ds.read && ds.err == nil || again && time.Since(ds.at) > dockerStale || reuse {
 		a.readDockerOf(s)
 	}
 }
@@ -170,15 +226,22 @@ func (a *App) dockerCard(c *ui.Context, s *Session, width float32) {
 			a.readDockerOf(s)
 		}
 	}, func() {
-		if ds.err != nil {
+		if ds.err != nil && d.State != monitor.DockerDenied {
 			ui.Text(c, locales.DockerFailed(describeSysInfoError(ds.err))).FontSize(12).TextColor(theme.Danger)
 		}
 		if !ds.read && ds.err != nil {
 			return
 		}
 		switch d.State {
+		case monitor.DockerNeedsRoot:
+			ui.Text(c, locales.DockerPrivNeedsRoot(dockerName(d))).Bold()
+			widgets.Muted(c, locales.DockerPrivHint()).FontSize(12)
+			a.dockerPrivilegeButton(c, s)
+			return
 		case monitor.DockerDenied:
-			dockerProblem(c, locales.DockerDenied(), d.Error)
+			ui.Text(c, dockerDeniedText(d))
+			dockerPrivilegeHelp(c, s)
+			a.dockerPrivilegeButton(c, s)
 			return
 		case monitor.DockerDown:
 			dockerProblem(c, locales.DockerDown(), d.Error)
@@ -230,7 +293,9 @@ func dockerTiles(c *ui.Context, d *monitor.Docker) {
 	if d.APIVersion != "" && d.APIVersion != d.Version {
 		about = append(about, locales.DockerAPI(d.APIVersion))
 	}
-	if d.Sudo {
+	if d.Root {
+		about = append(about, locales.DockerPrivViaRoot())
+	} else if d.Sudo {
 		about = append(about, locales.DockerViaSudo())
 	}
 	statTile(c.Key("version"), locales.DockerVersion(), orDash(d.Version), text(strings.Join(about, ", "))).
@@ -353,7 +418,9 @@ func dockerVersionText(d *monitor.Docker) string {
 	if d.APIVersion != "" && d.APIVersion != d.Version {
 		version = locales.DockerVersionAPI(version, d.APIVersion)
 	}
-	if d.Sudo {
+	if d.Root {
+		version += ", " + locales.DockerPrivViaRoot()
+	} else if d.Sudo {
 		version += ", " + locales.DockerViaSudo()
 	}
 	return version

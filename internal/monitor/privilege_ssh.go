@@ -32,7 +32,14 @@ func runPrivilegeSSH(ctx context.Context, client *ssh.Client, request PrivilegeR
 		return PrivilegeResult{}, err
 	}
 	defer session.Close()
-	stop := context.AfterFunc(ctx, func() { session.Close() })
+	stop := context.AfterFunc(ctx, func() {
+		if request.interrupt {
+			deadline := time.AfterFunc(time.Second, func() { session.Close() })
+			defer deadline.Stop()
+			_ = session.Signal(ssh.SIGINT)
+		}
+		session.Close()
+	})
 	defer stop()
 	stream := newPrivilegeStream(request)
 	session.Stdout, session.Stderr = stream.writer(true), stream.writer(false)

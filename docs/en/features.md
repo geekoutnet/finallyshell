@@ -1078,13 +1078,27 @@ cancel, the app shows commands your administrator can copy to grant sudo
 access. Operating-system restrictions such as locked root accounts or
 read-only memory controls still apply.
 
+Docker and Podman first try the SSH user and passwordless `sudo`. If the
+engine still needs root, select **Use root / sudo** in the Docker tab or its
+Overview card. Refreshing does not open a password dialog; it can reuse a
+working method already authorized in this connection. Canceling the prompt
+leaves the button available. If authorization is refused or still cannot
+reach the engine, the app shows the administrator’s sudo commands. For
+Docker it also shows `usermod -aG docker <user>`; reconnect after a group
+change. Membership of the `docker` group grants root-equivalent access.
+
 ### Docker tab › Containers
 
 Filter and sort containers, group by Compose project, and show or hide stopped containers. Select rows using checkboxes, Ctrl/Command-click, or Shift-click, then use the selection menu for lifecycle actions or live stats. Double-click a row for details, or use its menu for logs, a shell, published ports, and more. Removal and other destructive operations show what they affect before proceeding.
 
+Once root access is authorized, all Docker sections and logs use that
+account. For an interactive container shell, the terminal sends the
+command but never types a stored password: enter it in the terminal if
+`sudo` or `su` prompts. Direct access and passwordless `sudo` do not prompt.
+
 **New container** configures the image, command, ports, mounts, environment, network, and resource limits. The run-command preview masks environment and log-option values. **Duplicate container** copies settings without reusing published ports or a static IP; mounts may still share data. **Edit container** replaces a standalone Docker container, retaining settings not shown by the form and attempting to restore the original if the replacement fails. It requires the Docker Unix socket and `curl`; edit Compose services in their Compose file instead. Replacement does not keep changes in the writable layer.
 
-**Live stats** samples CPU, memory, network rates, disk I/O, and PIDs every two seconds while open. **Container files** requires a running, unpaused container with suitable shell utilities. Browse, rename, create directories, and delete entries there. Copy files or folders between the container and an absolute path on the SSH server; use the SSH file panel for transfers between the server and your computer. The row menu can also commit a container to an image or export its filesystem as a tar on the server, excluding mounted volumes. Both can include sensitive data.
+**Live stats** samples CPU, memory, network rates, disk I/O, and PIDs every two seconds while open. **Container files** requires a running, unpaused container with suitable shell utilities. Browse, rename, create directories, and delete entries there. Copy files or folders between the container and an absolute path on the SSH server. The app checks that the destination is free before copying; use the SSH file panel for transfers between the server and your computer. The row menu can also commit a container to an image or export its filesystem as a tar on the server, excluding mounted volumes. Both can include sensitive data.
 
 ### Docker tab › Images
 
@@ -1114,7 +1128,7 @@ continue. The app refreshes Compose and Overview after changes.
 Open the Compose files or `.env` in the remote SFTP editor. After saving,
 return to the project to validate or deploy. **New project** writes
 `compose.yaml` and an optional `.env`, never overwriting existing files.
-It asks before using a nonempty directory, tries noninteractive sudo where
+It asks before using a nonempty directory, uses shared root escalation when
 SFTP cannot write, and can deploy after validation. The app remembers its
 projects locally so even undeployed projects remain listed.
 
@@ -1129,7 +1143,7 @@ under that path, including bind-mounted data stored there, will be lost.
 - **Networks:** Filter or sort the list, open details to see IP ranges and connected containers, and create networks with IPv4/IPv6, driver options and labels. From the row menu you can connect or disconnect a container, copy network values, or remove selected networks. Pruning in this section removes only the listed unused local networks; built-in, ingress and attached networks are protected.
 - **Volumes:** Show only unused volumes, inspect their labels, options and referencing containers, or measure sizes on demand. Browse local-engine mountpoints in Files if the SSH user has SFTP access. Removal and pruning permanently delete data; the app rechecks the volume’s identity before removal. On Docker 23 or later (API 1.42+), pruning in this section targets the displayed unused anonymous volumes by default; explicitly opt in to include named volumes.
 - **System:** Inspect engine information and disk usage, stream and filter recent events, or choose cleanup categories with estimates. Cleanup runs each confirmed step in order and streams the output. Network and volume removal is limited to the named resources. Container, image and build cache pruning applies to all resources the engine considers eligible at execution time. Stopping the wait does not undo changes.
-- **Registries and daemon:** Registry management uses the SSH user’s Docker configuration and shows only registry keys and helper names, not credentials. Login requires a configured credential helper; the password goes over standard input. The daemon editor is for a recognized Linux Docker system service using the default socket and configuration path. Saving requires Python 3 to validate the file against the running service’s flags and backs up any existing file. Restarting needs separate confirmation. Root or non-interactive sudo is required to write or restart. Podman does not expose Docker-specific operations such as daemon editing, registry management, or volume pruning.
+- **Registries and daemon:** Registry management uses the authorized root account’s Docker configuration in root mode; otherwise it uses the SSH user’s configuration. It shows only registry keys and helper names, not credentials. Login requires a configured credential helper; the password goes over standard input. The daemon editor is for a recognized Linux Docker system service using the default socket and configuration path. It uses shared root escalation even when the SSH user can already access the socket. Saving requires Python 3 to validate against the running service’s flags and backs up existing configuration as `daemon.json.bak-<yyyymmddHHMMSS>` (UTC). Restarting needs separate confirmation. Podman does not expose Docker-specific operations such as daemon editing, registry management, or volume pruning.
 
 <a id="terminal-section"></a>
 

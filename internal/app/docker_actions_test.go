@@ -152,6 +152,7 @@ func TestDockerContainerActions(t *testing.T) {
 	}
 	dockerActionShots(t, tester, "menu")
 	chooseDockerAction(t, tester, locales.DockerRestart())
+	clickButton(t, tester, locales.DockerRestart())
 	call := waitDockerAction(t, calls, "docker 'restart' '"+id+"'")
 	wantTexts(t, tester, "restart", locales.DockerActionRestarting())
 	call.reply <- "ok"
@@ -261,6 +262,7 @@ func TestDockerProjectActionsIgnoreRowFilter(t *testing.T) {
 	wantTexts(t, tester, "down confirmation", locales.DockerDownWarning())
 	clickButton(t, tester, locales.Cancel())
 	rowMenu(t, tester, "shop", locales.DockerProjectRestart())
+	clickButton(t, tester, locales.DockerProjectRestart())
 	call := waitDockerAction(t, calls, "docker 'restart'")
 	for _, ct := range state.d.Containers[:3] {
 		if !strings.Contains(call.script, "'"+ct.ID+"'") {

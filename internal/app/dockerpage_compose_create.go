@@ -101,7 +101,7 @@ func (a *App) createComposeProject(s *Session, dialog *composeDialog) {
 		return
 	}
 	dialog.validation = ""
-	remote := composeFilesOf(s)
+	remote := a.composeFilesOf(s)
 	if dialog.directory != nil && dialog.project.Project == project.Project && dialog.project.Dir == project.Dir {
 		a.writeComposeProject(s, dialog, remote, *dialog.directory, yaml, env)
 		return
@@ -119,7 +119,9 @@ func (a *App) createComposeProject(s *Session, dialog *composeDialog) {
 			}
 			dialog.checking = false
 			if err != nil {
-				dialog.validation = composeDirectoryError(err)
+				if !errors.Is(err, monitor.ErrPrivilegeCancelled) {
+					dialog.validation = composeDirectoryError(err)
+				}
 				return
 			}
 			if state.occupied {
@@ -135,7 +137,7 @@ func (a *App) createComposeProject(s *Session, dialog *composeDialog) {
 }
 
 func (a *App) writeComposeProject(s *Session, dialog *composeDialog, remote composeFileStore, expected composeDirectory, yaml, env string) {
-	page, project, client, run := &s.docker.compose, dialog.project, s.client, composeRunner(s)
+	page, project, client, run := &s.docker.compose, dialog.project, s.client, a.composeRunner(s)
 	if composeUnavailable(s) != "" || strings.TrimSpace(yaml) == "" || len(yaml) > 1<<20 || len(env) > 1<<20 || strings.ContainsRune(yaml, 0) || strings.ContainsRune(env, 0) {
 		dialog.validation = locales.DockerCmpInvalidFiles()
 		return

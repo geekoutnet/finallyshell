@@ -78,7 +78,7 @@ func TestDockerCtrFilesAndStats(t *testing.T) {
 		CtrFileRename:     `sudo -n podman 'exec' '-e' 'LC_ALL=C' 'box' 'mv' '-nT' '--' '/file'\''s' '/staging/a'`,
 	} {
 		script, err := cmd.CtrFileScript(action, "box", "/file's", "/staging/a")
-		if err != nil || script != scriptHead+want+"\n" {
+		if err != nil || !strings.HasSuffix(script, want+"\n") || action != CtrFileRename && !strings.Contains(script, `! -L "$1"`) {
 			t.Errorf("%s: %q, %v, want %q", action, script, err, want)
 		}
 	}

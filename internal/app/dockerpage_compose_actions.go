@@ -247,8 +247,8 @@ func (a *App) runComposeAction(s *Session, dialog *composeDialog) {
 		dialog.validation = err.Error()
 		return
 	}
-	client, run := s.client, composeRunner(s)
-	remote := composeFilesOf(s)
+	client, run := s.client, a.composeRunner(s)
+	remote := a.composeFilesOf(s)
 	deleting, removeDirectory, registry := dialog.delete, dialog.removeDirectory, composeRegistryPath(s)
 	project := dialog.project
 	mutates := dialog.action != monitor.ComposeLogs && dialog.action != monitor.ComposeValidate
@@ -474,7 +474,7 @@ func composeCheckbox(c *ui.Context, value *bool, label string, disabled bool, re
 }
 
 func (a *App) readComposeRemovalVolumes(s *Session, dialog *composeDialog) {
-	page, client, run := &s.docker.compose, s.client, composeRunner(s)
+	page, client, run := &s.docker.compose, s.client, a.composeRunner(s)
 	dialog.volumeRead = true
 	cmd, err := page.cli.VolumeListScript(dialog.project.Project)
 	if err != nil {
@@ -539,12 +539,19 @@ func (a *App) composeWorkView(c *ui.Context, s *Session, dialog *composeDialog, 
 	case !work.view.done:
 		widgets.Muted(c, locales.DockerActionRunning(composeDialogTitle(dialog)))
 	case work.view.err != nil:
-		ui.Text(c, composeDirectoryError(work.view.err)).TextColor(theme.Danger).Selectable()
+		switch {
+		case dockerPrivilegeFailed(work.view.err):
+			dockerPrivilegeHelp(c, s)
+		case errors.Is(work.view.err, monitor.ErrPrivilegeCancelled):
+			widgets.Muted(c, locales.DockerCmpCanceled())
+		default:
+			ui.Text(c, composeDirectoryError(work.view.err)).TextColor(theme.Danger).Selectable()
+		}
 	default:
 		widgets.Muted(c, locales.DockerActionDone())
 	}
 	if work.privileged {
-		widgets.Muted(c, locales.DockerCmpUsedSudo())
+		widgets.Muted(c, locales.DockerPrivComposeFiles())
 	}
 	if work.view.output != "" || dialog.action == monitor.ComposeLogs {
 		text := work.view.output

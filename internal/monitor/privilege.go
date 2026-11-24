@@ -8,6 +8,7 @@ import (
 	"errors"
 	"io"
 	"strings"
+	"sync/atomic"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -16,6 +17,7 @@ var (
 	ErrPrivilegeDenied        = errors.New("root privileges unavailable")
 	ErrPrivilegeCancelled     = errors.New("privilege request cancelled")
 	ErrPrivilegeWrongPassword = errors.New("incorrect privilege password")
+	ErrPrivilegeNotCached     = errors.New("no authorized root method cached")
 )
 
 type PrivilegeMethod int
@@ -30,8 +32,10 @@ const (
 type PrivilegeOptions struct {
 	// Stdin is read only after the command reaches its root shell. If it
 	// can block, the caller must arrange for cancellation to unblock it.
-	Stdin    io.Reader
-	Progress func(string)
+	Stdin       io.Reader
+	Progress    func(string)
+	ScriptStdin bool
+	Interrupt   bool
 }
 
 type PrivilegeAnswer struct {
@@ -60,6 +64,7 @@ type PrivilegeRequest struct {
 	script     io.Reader
 	progress   func(string)
 	frameInput bool
+	interrupt  bool
 }
 
 type PrivilegeResult struct {
@@ -77,6 +82,7 @@ type Privilege struct {
 	credentials PrivilegeCredentials
 	gate        chan struct{}
 	method      PrivilegeMethod
+	cached      atomic.Int32
 	password    []byte
 	triedLogin  bool
 	triedStored bool
@@ -95,6 +101,56 @@ func NewPrivilege(life context.Context, run PrivilegeRunner, credentials Privile
 func (priv *Privilege) forget() {
 	clear(priv.password)
 	priv.password, priv.method = nil, 0
+	priv.cached.Store(0)
+}
+
+func (priv *Privilege) CachedMethod() PrivilegeMethod { return PrivilegeMethod(priv.cached.Load()) }
+
+func (priv *Privilege) TerminalCommand(command string) string {
+	switch priv.CachedMethod() {
+	case privilegeRoot:
+		return command
+	case privilegeSudoNoninteractive:
+		return "sudo -n " + command
+	case PrivilegeSu:
+		return "su '-s' '/bin/sh' '-c' " + privilegeQuote(command) + " 'root'"
+	default:
+		return "sudo " + command
+	}
+}
+
+// RunCached uses only an already authorized method, without opening a dialog.
+// It releases the authentication gate before running so a stream cannot block other requests.
+func (priv *Privilege) RunCached(ctx context.Context, script string, opts PrivilegeOptions) (string, string, error) {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+	stop := context.AfterFunc(priv.life, cancel)
+	defer stop()
+	select {
+	case priv.gate <- struct{}{}:
+	case <-ctx.Done():
+		return "", "", ctx.Err()
+	}
+	answer := PrivilegeAnswer{Method: priv.method, Password: bytes.Clone(priv.password)}
+	<-priv.gate
+	defer clear(answer.Password)
+	if err := priv.life.Err(); err != nil {
+		return "", "", err
+	}
+	if answer.Method == 0 {
+		return "", "", ErrPrivilegeNotCached
+	}
+	result, err := priv.attempt(ctx, script, opts, answer)
+	if !result.Started && privilegeAuthError(err) {
+		return "", "", ErrPrivilegeNotCached
+	}
+	return result.Stdout, result.Stderr, err
+}
+
+func (request PrivilegeRequest) ReportProgress(chunk string) {
+	if request.progress != nil {
+		request.progress(redactPrivilegeText(chunk, request.Password))
+	}
 }
 
 // Run serializes authentication within a connection and never retries an action
@@ -142,6 +198,7 @@ func (priv *Privilege) runAction(ctx context.Context, script string, opts Privil
 				next := bytes.Clone(password)
 				priv.forget()
 				priv.method, priv.password = method, next
+				priv.cached.Store(int32(method))
 			}
 		}
 		return result, err
@@ -298,7 +355,7 @@ func (priv *Privilege) attempt(ctx context.Context, script string, opts Privileg
 }
 
 func redactPrivilegeText(text string, password []byte) string {
-	if bytes.Contains([]byte(text), password) {
+	if len(password) != 0 && bytes.Contains([]byte(text), password) {
 		return string(bytes.ReplaceAll([]byte(text), password, privilegeReplacement(password)))
 	}
 	return text
@@ -329,12 +386,12 @@ else
 fi`)
 
 func privilegeCommand(script string, opts PrivilegeOptions, answer PrivilegeAnswer) PrivilegeRequest {
-	request := PrivilegeRequest{Action: script, Password: answer.Password, method: answer.Method, ready: "ready-" + rand.Text(), Stdin: opts.Stdin, progress: opts.Progress}
+	request := PrivilegeRequest{Action: script, Password: answer.Password, method: answer.Method, ready: "ready-" + rand.Text(), Stdin: opts.Stdin, progress: opts.Progress, interrupt: opts.Interrupt}
 	body := `export LC_ALL=C
 [ "$(id -u)" = 0 ] || exit 125
 printf '%s\n' ` + request.ready + "\n"
 	command := "exec sh -c " + privilegeQuote(script)
-	if opts.Stdin == nil && answer.Method < PrivilegeSudo {
+	if opts.Stdin == nil && (opts.ScriptStdin || answer.Method < PrivilegeSudo) {
 		command = "exec sh -s"
 		request.script = strings.NewReader(script)
 	}
@@ -351,9 +408,12 @@ printf '%s\n' ` + request.ready + "\n"
 		request.Command = "env LC_ALL=C sudo -k -S -p " + request.prompt + " -u root -- sh -c " + privilegeQuote(body+command)
 	case PrivilegeSu:
 		request.PTY, request.prompt = true, "Password:"
-		if opts.Stdin != nil {
+		if request.script != nil {
 			request.frameInput = true
-			command = `while IFS= read -r frame && [ "$frame" != . ]; do printf '%b' "$frame"; done | sh -c ` + privilegeQuote(script)
+			command = privilegeFrameDecoder + "sh -s"
+		} else if opts.Stdin != nil {
+			request.frameInput = true
+			command = privilegeFrameDecoder + "sh -c " + privilegeQuote(script)
 		} else {
 			command += " </dev/null"
 		}
@@ -361,6 +421,8 @@ printf '%s\n' ` + request.ready + "\n"
 	}
 	return request
 }
+
+const privilegeFrameDecoder = `while IFS= read -r frame && [ "$frame" != . ]; do printf '%b' "$frame"; done | `
 
 func privilegeRejection(method PrivilegeMethod, text string) error {
 	for line := range strings.SplitSeq(text, "\n") {

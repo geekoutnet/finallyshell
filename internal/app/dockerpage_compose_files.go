@@ -110,13 +110,16 @@ type composeFileStore interface {
 type composeSSHFiles struct {
 	sftp   *sftp.Client
 	client *ssh.Client
+	root   monitor.DockerRootRunner
+	user   string
 }
 
-func composeFilesOf(s *Session) composeFileStore {
+func (a *App) composeFilesOf(s *Session) composeFileStore {
 	if files := s.docker.compose.files; files != nil {
 		return files
 	}
-	return composeSSHFiles{sftp: s.sftp, client: s.client}
+	privilege := a.sessionPrivilege(s)
+	return composeSSHFiles{sftp: s.sftp, client: s.client, root: privilege.runner.Run, user: privilege.user}
 }
 
 func composeShellArg(value string) string {
@@ -290,25 +293,42 @@ rm -rf --one-file-system -- "$1"`
 func composeMarker(marker string) string { return ".finallyshell-compose-" + marker }
 
 func (remote composeSSHFiles) exec(ctx context.Context, privileged bool, script, name string, data []byte) (string, error) {
-	if remote.client == nil {
-		return "", errNotConnected
-	}
 	if err := ctx.Err(); err != nil {
 		return "", err
 	}
-	session, err := remote.client.NewSession()
-	if err != nil {
-		return "", err
-	}
-	defer session.Close()
-	stop := context.AfterFunc(ctx, func() { session.Close() })
-	defer stop()
 	command := "sh -c " + composeShellArg(script) + " 'compose-files' " + composeShellArg(name)
+	var output string
+	var err error
 	if privileged {
-		command = "sudo -n " + command
+		if remote.root == nil {
+			return "", errNotConnected
+		}
+		if remote.user != "" && remote.user != "root" {
+			user := composeShellArg(remote.user)
+			command = "SUDO_UID=$(id '-u' '--' " + user + ") && SUDO_GID=$(id '-g' '--' " + user + ") || exit 1\nexport SUDO_UID SUDO_GID\n" + command
+		}
+		options := monitor.PrivilegeOptions{ScriptStdin: true}
+		if data != nil {
+			options.Stdin = bytes.NewReader(data)
+		}
+		output, _, err = remote.root(ctx, command, options)
+	} else {
+		if remote.client == nil {
+			return "", errNotConnected
+		}
+		var session *ssh.Session
+		session, err = remote.client.NewSession()
+		if err != nil {
+			return "", err
+		}
+		defer session.Close()
+		stop := context.AfterFunc(ctx, func() { session.Close() })
+		defer stop()
+		session.Stdin = bytes.NewReader(data)
+		var stdout []byte
+		stdout, err = session.Output(command)
+		output = string(stdout)
 	}
-	session.Stdin = bytes.NewReader(data)
-	output, err := session.Output(command)
 	if ctx.Err() != nil {
 		return "", ctx.Err()
 	}
@@ -319,7 +339,7 @@ func (remote composeSSHFiles) exec(ctx context.Context, privileged bool, script,
 	if err != nil {
 		return "", fmt.Errorf("%s: %w", name, err)
 	}
-	return strings.TrimSpace(string(output)), nil
+	return strings.TrimSpace(output), nil
 }
 
 func createComposeFiles(ctx context.Context, remote composeFileStore, dir, marker string, expected composeDirectory, yaml, env []byte) (bool, bool, error) {

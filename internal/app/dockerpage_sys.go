@@ -86,7 +86,11 @@ func (a *App) dockerSystemSection(c *ui.Context, s *Session) {
 			a.dockerDiskView(c, s, page)
 		}
 	})
-	a.keepDockerEvents(s, page)
+	if system.mode == dockerSystemEvents {
+		a.keepDockerEvents(s, page)
+	} else {
+		a.stopPoll(&system.events.poll)
+	}
 	page.drawDialog(c)
 }
 

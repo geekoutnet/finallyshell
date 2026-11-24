@@ -47,6 +47,51 @@ func TestParseDockerStates(t *testing.T) {
 	}
 }
 
+func TestDockerPrivilegeRead(t *testing.T) {
+	for _, test := range []struct {
+		name, sample, tool string
+		state              DockerState
+		sudo, root         bool
+	}{
+		{"user", "docker-centos.txt", "docker", DockerOK, false, false},
+		{"noninteractive", "docker-empty.txt", "docker", DockerOK, true, false},
+		{"needs root", "docker-denied.txt", "docker", DockerNeedsRoot, false, false},
+		{"root", "docker-centos.txt", "docker", DockerOK, false, true},
+		{"root still denied", "docker-denied.txt", "docker", DockerDenied, false, true},
+		{"rootless Podman", "docker-podman.txt", "podman", DockerOK, false, false},
+		{"rootful Podman", "docker-podman.txt", "podman", DockerOK, false, true},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			sample := dockerSample(t, test.sample)
+			run := func(_ context.Context, script string) (string, string, error) {
+				if test.root && (!strings.Contains(script, "d='"+test.tool+"'") || strings.Contains(script, "sudo -n")) {
+					t.Fatal("privileged read must use the selected engine without nested sudo")
+				}
+				return sample, "", nil
+			}
+			var data Docker
+			var err error
+			if test.root {
+				sample = strings.ReplaceAll(sample, "\n", "\r\n")
+				data, err = ReadDockerRoot(t.Context(), test.tool, run)
+			} else {
+				data, err = ReadDockerWith(t.Context(), run)
+			}
+			if err != nil || data.State != test.state || data.Tool != test.tool || data.Sudo != test.sudo || data.Root != (test.root && test.state == DockerOK) {
+				t.Fatalf("read: state %d, tool %q, sudo %t, root %t, error %v", data.State, data.Tool, data.Sudo, data.Root, err)
+			}
+		})
+	}
+	if _, err := ReadDockerRoot(t.Context(), "docker; exit", nil); err == nil {
+		t.Fatal("invalid tool accepted")
+	}
+	rootful := "---FINALLYSHELL:tool---\npodman\n---FINALLYSHELL:info---\nError: cannot clone: Operation not permitted\nError: cannot re-exec process\n---FINALLYSHELL:status---\n125\n---FINALLYSHELL:end---\n"
+	data, err := ReadDockerWith(t.Context(), func(context.Context, string) (string, string, error) { return rootful, "", nil })
+	if err != nil || data.Tool != "podman" || data.State != DockerNeedsRoot {
+		t.Fatalf("rootful Podman: %+v, %v", data, err)
+	}
+}
+
 // A server with Docker and no container yet, read with sudo.
 func TestParseDockerEmpty(t *testing.T) {
 	d := ParseDocker(dockerSample(t, "docker-empty.txt"))

@@ -157,6 +157,9 @@ func (a *App) dockerCard(c *ui.Context, s *Session, width float32) {
 		if ok && len(d.Warnings) > 0 {
 			dockerWarningsBadge(c, d.Warnings)
 		}
+		if ok && widgets.IconButton(c, "arrow-up-right", locales.DockerPageManage()).Clicked() {
+			a.openDockerPage(s, dockerSecContainers)
+		}
 		if ds.loading {
 			ui.Box(c).Size(24, 24).Center().Children(func() { ui.Spinner(c).Label(locales.DockerReading()) })
 		} else if widgets.IconButton(c, "refresh-cw", locales.DockerRefresh()).Clicked() {

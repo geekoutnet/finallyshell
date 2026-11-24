@@ -54,6 +54,7 @@ type Session struct {
 	procs    procState     // the Processes tab, see processes.go
 	net      netState      // the Network tab, see network.go
 	overview overviewState // the Overview tab, see overview.go
+	docker   dockerPage    // the Docker tab, see dockerpage.go
 
 	hostKeyQ *sshx.HostKeyQuestion
 	cancel   context.CancelFunc

@@ -11354,6 +11354,66 @@ func (msgs Messages) TabOverview() string {
 	return Catalog.Format(msgs.locale, "tabOverview", nil)
 }
 
+// TabDocker says "Docker"
+// in the language the app shows.
+func TabDocker() string { return In(i18n.Locale()).TabDocker() }
+
+// TabDocker says "Docker"
+// in the language of msgs.
+func (msgs Messages) TabDocker() string {
+	return Catalog.Format(msgs.locale, "tabDocker", nil)
+}
+
+// DockerPageCompose says "Compose"
+// in the language the app shows.
+func DockerPageCompose() string { return In(i18n.Locale()).DockerPageCompose() }
+
+// DockerPageCompose says "Compose"
+// in the language of msgs.
+func (msgs Messages) DockerPageCompose() string {
+	return Catalog.Format(msgs.locale, "dockerPageCompose", nil)
+}
+
+// DockerPageSystem says "System"
+// in the language the app shows.
+func DockerPageSystem() string { return In(i18n.Locale()).DockerPageSystem() }
+
+// DockerPageSystem says "System"
+// in the language of msgs.
+func (msgs Messages) DockerPageSystem() string {
+	return Catalog.Format(msgs.locale, "dockerPageSystem", nil)
+}
+
+// DockerPageNone says "Docker is not installed on this server."
+// in the language the app shows.
+func DockerPageNone() string { return In(i18n.Locale()).DockerPageNone() }
+
+// DockerPageNone says "Docker is not installed on this server."
+// in the language of msgs.
+func (msgs Messages) DockerPageNone() string {
+	return Catalog.Format(msgs.locale, "dockerPageNone", nil)
+}
+
+// DockerPageSoon says "Coming soon"
+// in the language the app shows.
+func DockerPageSoon() string { return In(i18n.Locale()).DockerPageSoon() }
+
+// DockerPageSoon says "Coming soon"
+// in the language of msgs.
+func (msgs Messages) DockerPageSoon() string {
+	return Catalog.Format(msgs.locale, "dockerPageSoon", nil)
+}
+
+// DockerPageManage says "Manage in the Docker tab"
+// in the language the app shows.
+func DockerPageManage() string { return In(i18n.Locale()).DockerPageManage() }
+
+// DockerPageManage says "Manage in the Docker tab"
+// in the language of msgs.
+func (msgs Messages) DockerPageManage() string {
+	return Catalog.Format(msgs.locale, "dockerPageManage", nil)
+}
+
 // OverviewOpenTip says "Show this server in the Overview tab"
 // in the language the app shows.
 func OverviewOpenTip() string { return In(i18n.Locale()).OverviewOpenTip() }

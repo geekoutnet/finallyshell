@@ -15728,6 +15728,1008 @@ func (msgs Messages) TabOverview() string {
 	return Catalog.Format(msgs.locale, "tabOverview", nil)
 }
 
+// DbTab says "Database"
+// in the language the app shows.
+func DbTab() string { return In(i18n.Locale()).DbTab() }
+
+// DbTab says "Database"
+// in the language of msgs.
+func (msgs Messages) DbTab() string {
+	return Catalog.Format(msgs.locale, "dbTab", nil)
+}
+
+// DbNew says "New connection"
+// in the language the app shows.
+func DbNew() string { return In(i18n.Locale()).DbNew() }
+
+// DbNew says "New connection"
+// in the language of msgs.
+func (msgs Messages) DbNew() string {
+	return Catalog.Format(msgs.locale, "dbNew", nil)
+}
+
+// DbDiscover says "Find databases"
+// in the language the app shows.
+func DbDiscover() string { return In(i18n.Locale()).DbDiscover() }
+
+// DbDiscover says "Find databases"
+// in the language of msgs.
+func (msgs Messages) DbDiscover() string {
+	return Catalog.Format(msgs.locale, "dbDiscover", nil)
+}
+
+// DbDiscoverRoot says "Check Docker with root"
+// in the language the app shows.
+func DbDiscoverRoot() string { return In(i18n.Locale()).DbDiscoverRoot() }
+
+// DbDiscoverRoot says "Check Docker with root"
+// in the language of msgs.
+func (msgs Messages) DbDiscoverRoot() string {
+	return Catalog.Format(msgs.locale, "dbDiscoverRoot", nil)
+}
+
+// DbDiscoverHint says "Detected ports are suggestions. Choose one to enter database credentials."
+// in the language the app shows.
+func DbDiscoverHint() string { return In(i18n.Locale()).DbDiscoverHint() }
+
+// DbDiscoverHint says "Detected ports are suggestions. Choose one to enter database credentials."
+// in the language of msgs.
+func (msgs Messages) DbDiscoverHint() string {
+	return Catalog.Format(msgs.locale, "dbDiscoverHint", nil)
+}
+
+// DbNoEndpoints says "No database endpoints found. You can still enter an address manually."
+// in the language the app shows.
+func DbNoEndpoints() string { return In(i18n.Locale()).DbNoEndpoints() }
+
+// DbNoEndpoints says "No database endpoints found. You can still enter an address manually."
+// in the language of msgs.
+func (msgs Messages) DbNoEndpoints() string {
+	return Catalog.Format(msgs.locale, "dbNoEndpoints", nil)
+}
+
+// DbDockerPermission says "Docker ports could not be read without elevated access."
+// in the language the app shows.
+func DbDockerPermission() string { return In(i18n.Locale()).DbDockerPermission() }
+
+// DbDockerPermission says "Docker ports could not be read without elevated access."
+// in the language of msgs.
+func (msgs Messages) DbDockerPermission() string {
+	return Catalog.Format(msgs.locale, "dbDockerPermission", nil)
+}
+
+// DbReadOnly says "Read-only"
+// in the language the app shows.
+func DbReadOnly() string { return In(i18n.Locale()).DbReadOnly() }
+
+// DbReadOnly says "Read-only"
+// in the language of msgs.
+func (msgs Messages) DbReadOnly() string {
+	return Catalog.Format(msgs.locale, "dbReadOnly", nil)
+}
+
+// DbWorking says "Working…"
+// in the language the app shows.
+func DbWorking() string { return In(i18n.Locale()).DbWorking() }
+
+// DbWorking says "Working…"
+// in the language of msgs.
+func (msgs Messages) DbWorking() string {
+	return Catalog.Format(msgs.locale, "dbWorking", nil)
+}
+
+// DbCancelled says "Cancelled. Check the database before retrying a write."
+// in the language the app shows.
+func DbCancelled() string { return In(i18n.Locale()).DbCancelled() }
+
+// DbCancelled says "Cancelled. Check the database before retrying a write."
+// in the language of msgs.
+func (msgs Messages) DbCancelled() string {
+	return Catalog.Format(msgs.locale, "dbCancelled", nil)
+}
+
+// DbTimeout says "The database operation timed out. Check the database before retrying a write."
+// in the language the app shows.
+func DbTimeout() string { return In(i18n.Locale()).DbTimeout() }
+
+// DbTimeout says "The database operation timed out. Check the database before retrying a write."
+// in the language of msgs.
+func (msgs Messages) DbTimeout() string {
+	return Catalog.Format(msgs.locale, "dbTimeout", nil)
+}
+
+// DbInvalidProfile says "Enter a name, valid host and port, and a user for SQL. For Redis, use a numeric database index."
+// in the language the app shows.
+func DbInvalidProfile() string { return In(i18n.Locale()).DbInvalidProfile() }
+
+// DbInvalidProfile says "Enter a name, valid host and port, and a user for SQL. For Redis, use a numeric database index."
+// in the language of msgs.
+func (msgs Messages) DbInvalidProfile() string {
+	return Catalog.Format(msgs.locale, "dbInvalidProfile", nil)
+}
+
+// DbInvalidInput says "Invalid or unsupported syntax. Check the input and try again."
+// in the language the app shows.
+func DbInvalidInput() string { return In(i18n.Locale()).DbInvalidInput() }
+
+// DbInvalidInput says "Invalid or unsupported syntax. Check the input and try again."
+// in the language of msgs.
+func (msgs Messages) DbInvalidInput() string {
+	return Catalog.Format(msgs.locale, "dbInvalidInput", nil)
+}
+
+// DbCredentialInput says "Credentials and connection-control commands are not supported here."
+// in the language the app shows.
+func DbCredentialInput() string { return In(i18n.Locale()).DbCredentialInput() }
+
+// DbCredentialInput says "Credentials and connection-control commands are not supported here."
+// in the language of msgs.
+func (msgs Messages) DbCredentialInput() string {
+	return Catalog.Format(msgs.locale, "dbCredentialInput", nil)
+}
+
+// DbReadOnlyBlocked says "This operation is blocked in read-only mode."
+// in the language the app shows.
+func DbReadOnlyBlocked() string { return In(i18n.Locale()).DbReadOnlyBlocked() }
+
+// DbReadOnlyBlocked says "This operation is blocked in read-only mode."
+// in the language of msgs.
+func (msgs Messages) DbReadOnlyBlocked() string {
+	return Catalog.Format(msgs.locale, "dbReadOnlyBlocked", nil)
+}
+
+// DbResultLimit says "This result exceeds the display size limit. Narrow the query or filter."
+// in the language the app shows.
+func DbResultLimit() string { return In(i18n.Locale()).DbResultLimit() }
+
+// DbResultLimit says "This result exceeds the display size limit. Narrow the query or filter."
+// in the language of msgs.
+func (msgs Messages) DbResultLimit() string {
+	return Catalog.Format(msgs.locale, "dbResultLimit", nil)
+}
+
+// DbLoadFailed says "Could not read db.json. No connections will be overwritten."
+// in the language the app shows.
+func DbLoadFailed() string { return In(i18n.Locale()).DbLoadFailed() }
+
+// DbLoadFailed says "Could not read db.json. No connections will be overwritten."
+// in the language of msgs.
+func (msgs Messages) DbLoadFailed() string {
+	return Catalog.Format(msgs.locale, "dbLoadFailed", nil)
+}
+
+// DbChooseConnection says "Select or add a database connection"
+// in the language the app shows.
+func DbChooseConnection() string { return In(i18n.Locale()).DbChooseConnection() }
+
+// DbChooseConnection says "Select or add a database connection"
+// in the language of msgs.
+func (msgs Messages) DbChooseConnection() string {
+	return Catalog.Format(msgs.locale, "dbChooseConnection", nil)
+}
+
+// DbConnectionFailed says "Could not connect to the database"
+// in the language the app shows.
+func DbConnectionFailed() string { return In(i18n.Locale()).DbConnectionFailed() }
+
+// DbConnectionFailed says "Could not connect to the database"
+// in the language of msgs.
+func (msgs Messages) DbConnectionFailed() string {
+	return Catalog.Format(msgs.locale, "dbConnectionFailed", nil)
+}
+
+// DbConfirmProfile says "Update the connection {name}?"
+// in the language the app shows.
+func DbConfirmProfile(name string) string { return In(i18n.Locale()).DbConfirmProfile(name) }
+
+// DbConfirmProfile says "Update the connection {name}?"
+// in the language of msgs.
+func (msgs Messages) DbConfirmProfile(name string) string {
+	return Catalog.Format(msgs.locale, "dbConfirmProfile", map[string]any{"name": name})
+}
+
+// DbProfileConsequence says "This replaces the saved profile and disconnects its open database sessions. The SSH session stays open."
+// in the language the app shows.
+func DbProfileConsequence() string { return In(i18n.Locale()).DbProfileConsequence() }
+
+// DbProfileConsequence says "This replaces the saved profile and disconnects its open database sessions. The SSH session stays open."
+// in the language of msgs.
+func (msgs Messages) DbProfileConsequence() string {
+	return Catalog.Format(msgs.locale, "dbProfileConsequence", nil)
+}
+
+// DbEnableWrites says "Turn off read-only mode for {name}?"
+// in the language the app shows.
+func DbEnableWrites(name string) string { return In(i18n.Locale()).DbEnableWrites(name) }
+
+// DbEnableWrites says "Turn off read-only mode for {name}?"
+// in the language of msgs.
+func (msgs Messages) DbEnableWrites(name string) string {
+	return Catalog.Format(msgs.locale, "dbEnableWrites", map[string]any{"name": name})
+}
+
+// DbEnableWritesDetail says "This connection can submit database changes after confirmation."
+// in the language the app shows.
+func DbEnableWritesDetail() string { return In(i18n.Locale()).DbEnableWritesDetail() }
+
+// DbEnableWritesDetail says "This connection can submit database changes after confirmation."
+// in the language of msgs.
+func (msgs Messages) DbEnableWritesDetail() string {
+	return Catalog.Format(msgs.locale, "dbEnableWritesDetail", nil)
+}
+
+// DbRemoveProfile says "Remove the connection {name}?"
+// in the language the app shows.
+func DbRemoveProfile(name string) string { return In(i18n.Locale()).DbRemoveProfile(name) }
+
+// DbRemoveProfile says "Remove the connection {name}?"
+// in the language of msgs.
+func (msgs Messages) DbRemoveProfile(name string) string {
+	return Catalog.Format(msgs.locale, "dbRemoveProfile", map[string]any{"name": name})
+}
+
+// DbRemoveProfileDetail says "The local profile and saved password are removed. No server data is deleted."
+// in the language the app shows.
+func DbRemoveProfileDetail() string { return In(i18n.Locale()).DbRemoveProfileDetail() }
+
+// DbRemoveProfileDetail says "The local profile and saved password are removed. No server data is deleted."
+// in the language of msgs.
+func (msgs Messages) DbRemoveProfileDetail() string {
+	return Catalog.Format(msgs.locale, "dbRemoveProfileDetail", nil)
+}
+
+// DbEditProfile says "Edit connection"
+// in the language the app shows.
+func DbEditProfile() string { return In(i18n.Locale()).DbEditProfile() }
+
+// DbEditProfile says "Edit connection"
+// in the language of msgs.
+func (msgs Messages) DbEditProfile() string {
+	return Catalog.Format(msgs.locale, "dbEditProfile", nil)
+}
+
+// DbSaveConnect says "Save and connect"
+// in the language the app shows.
+func DbSaveConnect() string { return In(i18n.Locale()).DbSaveConnect() }
+
+// DbSaveConnect says "Save and connect"
+// in the language of msgs.
+func (msgs Messages) DbSaveConnect() string {
+	return Catalog.Format(msgs.locale, "dbSaveConnect", nil)
+}
+
+// DbName says "Name"
+// in the language the app shows.
+func DbName() string { return In(i18n.Locale()).DbName() }
+
+// DbName says "Name"
+// in the language of msgs.
+func (msgs Messages) DbName() string {
+	return Catalog.Format(msgs.locale, "dbName", nil)
+}
+
+// DbEngine says "Engine"
+// in the language the app shows.
+func DbEngine() string { return In(i18n.Locale()).DbEngine() }
+
+// DbEngine says "Engine"
+// in the language of msgs.
+func (msgs Messages) DbEngine() string {
+	return Catalog.Format(msgs.locale, "dbEngine", nil)
+}
+
+// DbHost says "Host as seen from SSH server"
+// in the language the app shows.
+func DbHost() string { return In(i18n.Locale()).DbHost() }
+
+// DbHost says "Host as seen from SSH server"
+// in the language of msgs.
+func (msgs Messages) DbHost() string {
+	return Catalog.Format(msgs.locale, "dbHost", nil)
+}
+
+// DbPort says "Port"
+// in the language the app shows.
+func DbPort() string { return In(i18n.Locale()).DbPort() }
+
+// DbPort says "Port"
+// in the language of msgs.
+func (msgs Messages) DbPort() string {
+	return Catalog.Format(msgs.locale, "dbPort", nil)
+}
+
+// DbUser says "User"
+// in the language the app shows.
+func DbUser() string { return In(i18n.Locale()).DbUser() }
+
+// DbUser says "User"
+// in the language of msgs.
+func (msgs Messages) DbUser() string {
+	return Catalog.Format(msgs.locale, "dbUser", nil)
+}
+
+// DbDatabase says "Database / Redis index"
+// in the language the app shows.
+func DbDatabase() string { return In(i18n.Locale()).DbDatabase() }
+
+// DbDatabase says "Database / Redis index"
+// in the language of msgs.
+func (msgs Messages) DbDatabase() string {
+	return Catalog.Format(msgs.locale, "dbDatabase", nil)
+}
+
+// DbPassword says "Database password"
+// in the language the app shows.
+func DbPassword() string { return In(i18n.Locale()).DbPassword() }
+
+// DbPassword says "Database password"
+// in the language of msgs.
+func (msgs Messages) DbPassword() string {
+	return Catalog.Format(msgs.locale, "dbPassword", nil)
+}
+
+// DbPasswordPrompt says "Connect to {name}"
+// in the language the app shows.
+func DbPasswordPrompt(name string) string { return In(i18n.Locale()).DbPasswordPrompt(name) }
+
+// DbPasswordPrompt says "Connect to {name}"
+// in the language of msgs.
+func (msgs Messages) DbPasswordPrompt(name string) string {
+	return Catalog.Format(msgs.locale, "dbPasswordPrompt", map[string]any{"name": name})
+}
+
+// DbTLSOff says "Disabled (SSH tunnel only)"
+// in the language the app shows.
+func DbTLSOff() string { return In(i18n.Locale()).DbTLSOff() }
+
+// DbTLSOff says "Disabled (SSH tunnel only)"
+// in the language of msgs.
+func (msgs Messages) DbTLSOff() string {
+	return Catalog.Format(msgs.locale, "dbTLSOff", nil)
+}
+
+// DbTLSRequire says "Required, without certificate verification"
+// in the language the app shows.
+func DbTLSRequire() string { return In(i18n.Locale()).DbTLSRequire() }
+
+// DbTLSRequire says "Required, without certificate verification"
+// in the language of msgs.
+func (msgs Messages) DbTLSRequire() string {
+	return Catalog.Format(msgs.locale, "dbTLSRequire", nil)
+}
+
+// DbTLSVerify says "Verify server certificate and name"
+// in the language the app shows.
+func DbTLSVerify() string { return In(i18n.Locale()).DbTLSVerify() }
+
+// DbTLSVerify says "Verify server certificate and name"
+// in the language of msgs.
+func (msgs Messages) DbTLSVerify() string {
+	return Catalog.Format(msgs.locale, "dbTLSVerify", nil)
+}
+
+// DbRemember says "Remember password"
+// in the language the app shows.
+func DbRemember() string { return In(i18n.Locale()).DbRemember() }
+
+// DbRemember says "Remember password"
+// in the language of msgs.
+func (msgs Messages) DbRemember() string {
+	return Catalog.Format(msgs.locale, "dbRemember", nil)
+}
+
+// DbConnections says "Connections"
+// in the language the app shows.
+func DbConnections() string { return In(i18n.Locale()).DbConnections() }
+
+// DbConnections says "Connections"
+// in the language of msgs.
+func (msgs Messages) DbConnections() string {
+	return Catalog.Format(msgs.locale, "dbConnections", nil)
+}
+
+// DbConnectionActions says "Connection actions"
+// in the language the app shows.
+func DbConnectionActions() string { return In(i18n.Locale()).DbConnectionActions() }
+
+// DbConnectionActions says "Connection actions"
+// in the language of msgs.
+func (msgs Messages) DbConnectionActions() string {
+	return Catalog.Format(msgs.locale, "dbConnectionActions", nil)
+}
+
+// DbDisconnect says "Disconnect database"
+// in the language the app shows.
+func DbDisconnect() string { return In(i18n.Locale()).DbDisconnect() }
+
+// DbDisconnect says "Disconnect database"
+// in the language of msgs.
+func (msgs Messages) DbDisconnect() string {
+	return Catalog.Format(msgs.locale, "dbDisconnect", nil)
+}
+
+// DbRemove says "Remove saved connection"
+// in the language the app shows.
+func DbRemove() string { return In(i18n.Locale()).DbRemove() }
+
+// DbRemove says "Remove saved connection"
+// in the language of msgs.
+func (msgs Messages) DbRemove() string {
+	return Catalog.Format(msgs.locale, "dbRemove", nil)
+}
+
+// DbNoObjects says "No accessible tables or views"
+// in the language the app shows.
+func DbNoObjects() string { return In(i18n.Locale()).DbNoObjects() }
+
+// DbNoObjects says "No accessible tables or views"
+// in the language of msgs.
+func (msgs Messages) DbNoObjects() string {
+	return Catalog.Format(msgs.locale, "dbNoObjects", nil)
+}
+
+// DbData says "Data"
+// in the language the app shows.
+func DbData() string { return In(i18n.Locale()).DbData() }
+
+// DbData says "Data"
+// in the language of msgs.
+func (msgs Messages) DbData() string {
+	return Catalog.Format(msgs.locale, "dbData", nil)
+}
+
+// DbStructure says "Structure"
+// in the language the app shows.
+func DbStructure() string { return In(i18n.Locale()).DbStructure() }
+
+// DbStructure says "Structure"
+// in the language of msgs.
+func (msgs Messages) DbStructure() string {
+	return Catalog.Format(msgs.locale, "dbStructure", nil)
+}
+
+// DbEditor says "SQL editor"
+// in the language the app shows.
+func DbEditor() string { return In(i18n.Locale()).DbEditor() }
+
+// DbEditor says "SQL editor"
+// in the language of msgs.
+func (msgs Messages) DbEditor() string {
+	return Catalog.Format(msgs.locale, "dbEditor", nil)
+}
+
+// DbKey says "Key"
+// in the language the app shows.
+func DbKey() string { return In(i18n.Locale()).DbKey() }
+
+// DbKey says "Key"
+// in the language of msgs.
+func (msgs Messages) DbKey() string {
+	return Catalog.Format(msgs.locale, "dbKey", nil)
+}
+
+// DbConsole says "Console"
+// in the language the app shows.
+func DbConsole() string { return In(i18n.Locale()).DbConsole() }
+
+// DbConsole says "Console"
+// in the language of msgs.
+func (msgs Messages) DbConsole() string {
+	return Catalog.Format(msgs.locale, "dbConsole", nil)
+}
+
+// DbChooseObject says "Select a table or view in the tree"
+// in the language the app shows.
+func DbChooseObject() string { return In(i18n.Locale()).DbChooseObject() }
+
+// DbChooseObject says "Select a table or view in the tree"
+// in the language of msgs.
+func (msgs Messages) DbChooseObject() string {
+	return Catalog.Format(msgs.locale, "dbChooseObject", nil)
+}
+
+// DbWhere says "WHERE expression, e.g. id > 10"
+// in the language the app shows.
+func DbWhere() string { return In(i18n.Locale()).DbWhere() }
+
+// DbWhere says "WHERE expression, e.g. id > 10"
+// in the language of msgs.
+func (msgs Messages) DbWhere() string {
+	return Catalog.Format(msgs.locale, "dbWhere", nil)
+}
+
+// DbApplyFilter says "Apply filter"
+// in the language the app shows.
+func DbApplyFilter() string { return In(i18n.Locale()).DbApplyFilter() }
+
+// DbApplyFilter says "Apply filter"
+// in the language of msgs.
+func (msgs Messages) DbApplyFilter() string {
+	return Catalog.Format(msgs.locale, "dbApplyFilter", nil)
+}
+
+// DbFirstPage says "Already on the first page"
+// in the language the app shows.
+func DbFirstPage() string { return In(i18n.Locale()).DbFirstPage() }
+
+// DbFirstPage says "Already on the first page"
+// in the language of msgs.
+func (msgs Messages) DbFirstPage() string {
+	return Catalog.Format(msgs.locale, "dbFirstPage", nil)
+}
+
+// DbLastPage says "No more rows on the next page"
+// in the language the app shows.
+func DbLastPage() string { return In(i18n.Locale()).DbLastPage() }
+
+// DbLastPage says "No more rows on the next page"
+// in the language of msgs.
+func (msgs Messages) DbLastPage() string {
+	return Catalog.Format(msgs.locale, "dbLastPage", nil)
+}
+
+// DbPrevious says "Previous page"
+// in the language the app shows.
+func DbPrevious() string { return In(i18n.Locale()).DbPrevious() }
+
+// DbPrevious says "Previous page"
+// in the language of msgs.
+func (msgs Messages) DbPrevious() string {
+	return Catalog.Format(msgs.locale, "dbPrevious", nil)
+}
+
+// DbNext says "Next page"
+// in the language the app shows.
+func DbNext() string { return In(i18n.Locale()).DbNext() }
+
+// DbNext says "Next page"
+// in the language of msgs.
+func (msgs Messages) DbNext() string {
+	return Catalog.Format(msgs.locale, "dbNext", nil)
+}
+
+// DbPage says "Page {page, number} · {count, plural, one {# row} other {# rows}}"
+// in the language the app shows.
+func DbPage(page int, count int) string { return In(i18n.Locale()).DbPage(page, count) }
+
+// DbPage says "Page {page, number} · {count, plural, one {# row} other {# rows}}"
+// in the language of msgs.
+func (msgs Messages) DbPage(page int, count int) string {
+	return Catalog.Format(msgs.locale, "dbPage", map[string]any{"page": page, "count": count})
+}
+
+// DbColumns says "Columns"
+// in the language the app shows.
+func DbColumns() string { return In(i18n.Locale()).DbColumns() }
+
+// DbColumns says "Columns"
+// in the language of msgs.
+func (msgs Messages) DbColumns() string {
+	return Catalog.Format(msgs.locale, "dbColumns", nil)
+}
+
+// DbKeys says "Keys"
+// in the language the app shows.
+func DbKeys() string { return In(i18n.Locale()).DbKeys() }
+
+// DbKeys says "Keys"
+// in the language of msgs.
+func (msgs Messages) DbKeys() string {
+	return Catalog.Format(msgs.locale, "dbKeys", nil)
+}
+
+// DbIndexes says "Indexes"
+// in the language the app shows.
+func DbIndexes() string { return In(i18n.Locale()).DbIndexes() }
+
+// DbIndexes says "Indexes"
+// in the language of msgs.
+func (msgs Messages) DbIndexes() string {
+	return Catalog.Format(msgs.locale, "dbIndexes", nil)
+}
+
+// DbReconstructed says "Reconstructed definition for reference; not a schema backup."
+// in the language the app shows.
+func DbReconstructed() string { return In(i18n.Locale()).DbReconstructed() }
+
+// DbReconstructed says "Reconstructed definition for reference; not a schema backup."
+// in the language of msgs.
+func (msgs Messages) DbReconstructed() string {
+	return Catalog.Format(msgs.locale, "dbReconstructed", nil)
+}
+
+// DbNoResults says "No results to display"
+// in the language the app shows.
+func DbNoResults() string { return In(i18n.Locale()).DbNoResults() }
+
+// DbNoResults says "No results to display"
+// in the language of msgs.
+func (msgs Messages) DbNoResults() string {
+	return Catalog.Format(msgs.locale, "dbNoResults", nil)
+}
+
+// DbViewValue says "View full value"
+// in the language the app shows.
+func DbViewValue() string { return In(i18n.Locale()).DbViewValue() }
+
+// DbViewValue says "View full value"
+// in the language of msgs.
+func (msgs Messages) DbViewValue() string {
+	return Catalog.Format(msgs.locale, "dbViewValue", nil)
+}
+
+// DbErrorDetails says "View database error"
+// in the language the app shows.
+func DbErrorDetails() string { return In(i18n.Locale()).DbErrorDetails() }
+
+// DbErrorDetails says "View database error"
+// in the language of msgs.
+func (msgs Messages) DbErrorDetails() string {
+	return Catalog.Format(msgs.locale, "dbErrorDetails", nil)
+}
+
+// DbCopyValue says "Copy value"
+// in the language the app shows.
+func DbCopyValue() string { return In(i18n.Locale()).DbCopyValue() }
+
+// DbCopyValue says "Copy value"
+// in the language of msgs.
+func (msgs Messages) DbCopyValue() string {
+	return Catalog.Format(msgs.locale, "dbCopyValue", nil)
+}
+
+// DbResults says "Results"
+// in the language the app shows.
+func DbResults() string { return In(i18n.Locale()).DbResults() }
+
+// DbResults says "Results"
+// in the language of msgs.
+func (msgs Messages) DbResults() string {
+	return Catalog.Format(msgs.locale, "dbResults", nil)
+}
+
+// DbValue says "Value"
+// in the language the app shows.
+func DbValue() string { return In(i18n.Locale()).DbValue() }
+
+// DbValue says "Value"
+// in the language of msgs.
+func (msgs Messages) DbValue() string {
+	return Catalog.Format(msgs.locale, "dbValue", nil)
+}
+
+// DbType says "Type"
+// in the language the app shows.
+func DbType() string { return In(i18n.Locale()).DbType() }
+
+// DbType says "Type"
+// in the language of msgs.
+func (msgs Messages) DbType() string {
+	return Catalog.Format(msgs.locale, "dbType", nil)
+}
+
+// DbNullable says "Nullable"
+// in the language the app shows.
+func DbNullable() string { return In(i18n.Locale()).DbNullable() }
+
+// DbNullable says "Nullable"
+// in the language of msgs.
+func (msgs Messages) DbNullable() string {
+	return Catalog.Format(msgs.locale, "dbNullable", nil)
+}
+
+// DbDefault says "Default"
+// in the language the app shows.
+func DbDefault() string { return In(i18n.Locale()).DbDefault() }
+
+// DbDefault says "Default"
+// in the language of msgs.
+func (msgs Messages) DbDefault() string {
+	return Catalog.Format(msgs.locale, "dbDefault", nil)
+}
+
+// DbField says "Field"
+// in the language the app shows.
+func DbField() string { return In(i18n.Locale()).DbField() }
+
+// DbField says "Field"
+// in the language of msgs.
+func (msgs Messages) DbField() string {
+	return Catalog.Format(msgs.locale, "dbField", nil)
+}
+
+// DbReply says "Reply"
+// in the language the app shows.
+func DbReply() string { return In(i18n.Locale()).DbReply() }
+
+// DbReply says "Reply"
+// in the language of msgs.
+func (msgs Messages) DbReply() string {
+	return Catalog.Format(msgs.locale, "dbReply", nil)
+}
+
+// DbExport says "Export"
+// in the language the app shows.
+func DbExport() string { return In(i18n.Locale()).DbExport() }
+
+// DbExport says "Export"
+// in the language of msgs.
+func (msgs Messages) DbExport() string {
+	return Catalog.Format(msgs.locale, "dbExport", nil)
+}
+
+// DbExported says "Result exported"
+// in the language the app shows.
+func DbExported() string { return In(i18n.Locale()).DbExported() }
+
+// DbExported says "Result exported"
+// in the language of msgs.
+func (msgs Messages) DbExported() string {
+	return Catalog.Format(msgs.locale, "dbExported", nil)
+}
+
+// DbOverwrite says "Replace {path}?"
+// in the language the app shows.
+func DbOverwrite(path string) string { return In(i18n.Locale()).DbOverwrite(path) }
+
+// DbOverwrite says "Replace {path}?"
+// in the language of msgs.
+func (msgs Messages) DbOverwrite(path string) string {
+	return Catalog.Format(msgs.locale, "dbOverwrite", map[string]any{"path": path})
+}
+
+// DbBackupDetail says "A dated backup of the current file is saved before replacing it."
+// in the language the app shows.
+func DbBackupDetail() string { return In(i18n.Locale()).DbBackupDetail() }
+
+// DbBackupDetail says "A dated backup of the current file is saved before replacing it."
+// in the language of msgs.
+func (msgs Messages) DbBackupDetail() string {
+	return Catalog.Format(msgs.locale, "dbBackupDetail", nil)
+}
+
+// DbRun says "Run all"
+// in the language the app shows.
+func DbRun() string { return In(i18n.Locale()).DbRun() }
+
+// DbRun says "Run all"
+// in the language of msgs.
+func (msgs Messages) DbRun() string {
+	return Catalog.Format(msgs.locale, "dbRun", nil)
+}
+
+// DbRunSelection says "Run selection"
+// in the language the app shows.
+func DbRunSelection() string { return In(i18n.Locale()).DbRunSelection() }
+
+// DbRunSelection says "Run selection"
+// in the language of msgs.
+func (msgs Messages) DbRunSelection() string {
+	return Catalog.Format(msgs.locale, "dbRunSelection", nil)
+}
+
+// DbSelectText says "Select text to run"
+// in the language the app shows.
+func DbSelectText() string { return In(i18n.Locale()).DbSelectText() }
+
+// DbSelectText says "Select text to run"
+// in the language of msgs.
+func (msgs Messages) DbSelectText() string {
+	return Catalog.Format(msgs.locale, "dbSelectText", nil)
+}
+
+// DbHistory says "Query history"
+// in the language the app shows.
+func DbHistory() string { return In(i18n.Locale()).DbHistory() }
+
+// DbHistory says "Query history"
+// in the language of msgs.
+func (msgs Messages) DbHistory() string {
+	return Catalog.Format(msgs.locale, "dbHistory", nil)
+}
+
+// DbHistoryEmpty says "No recent queries"
+// in the language the app shows.
+func DbHistoryEmpty() string { return In(i18n.Locale()).DbHistoryEmpty() }
+
+// DbHistoryEmpty says "No recent queries"
+// in the language of msgs.
+func (msgs Messages) DbHistoryEmpty() string {
+	return Catalog.Format(msgs.locale, "dbHistoryEmpty", nil)
+}
+
+// DbQueryText says "Query text"
+// in the language the app shows.
+func DbQueryText() string { return In(i18n.Locale()).DbQueryText() }
+
+// DbQueryText says "Query text"
+// in the language of msgs.
+func (msgs Messages) DbQueryText() string {
+	return Catalog.Format(msgs.locale, "dbQueryText", nil)
+}
+
+// DbAffected says "{count, plural, one {# affected row} other {# affected rows}}"
+// in the language the app shows.
+func DbAffected(count int) string { return In(i18n.Locale()).DbAffected(count) }
+
+// DbAffected says "{count, plural, one {# affected row} other {# affected rows}}"
+// in the language of msgs.
+func (msgs Messages) DbAffected(count int) string {
+	return Catalog.Format(msgs.locale, "dbAffected", map[string]any{"count": count})
+}
+
+// DbRows says "{count, plural, one {# row} other {# rows}}"
+// in the language the app shows.
+func DbRows(count int) string { return In(i18n.Locale()).DbRows(count) }
+
+// DbRows says "{count, plural, one {# row} other {# rows}}"
+// in the language of msgs.
+func (msgs Messages) DbRows(count int) string {
+	return Catalog.Format(msgs.locale, "dbRows", map[string]any{"count": count})
+}
+
+// DbTruncated says "Partial result"
+// in the language the app shows.
+func DbTruncated() string { return In(i18n.Locale()).DbTruncated() }
+
+// DbTruncated says "Partial result"
+// in the language of msgs.
+func (msgs Messages) DbTruncated() string {
+	return Catalog.Format(msgs.locale, "dbTruncated", nil)
+}
+
+// DbConfirmQuery says "Change data on {name}?"
+// in the language the app shows.
+func DbConfirmQuery(name string) string { return In(i18n.Locale()).DbConfirmQuery(name) }
+
+// DbConfirmQuery says "Change data on {name}?"
+// in the language of msgs.
+func (msgs Messages) DbConfirmQuery(name string) string {
+	return Catalog.Format(msgs.locale, "dbConfirmQuery", map[string]any{"name": name})
+}
+
+// DbQueryConsequence says "Runs {verbs}. Earlier statements can remain committed if a later statement fails or is cancelled. Changes may not be …"
+// in the language the app shows.
+func DbQueryConsequence(verbs string) string { return In(i18n.Locale()).DbQueryConsequence(verbs) }
+
+// DbQueryConsequence says "Runs {verbs}. Earlier statements can remain committed if a later statement fails or is cancelled. Changes may not be …"
+// in the language of msgs.
+func (msgs Messages) DbQueryConsequence(verbs string) string {
+	return Catalog.Format(msgs.locale, "dbQueryConsequence", map[string]any{"verbs": verbs})
+}
+
+// DbPattern says "Key pattern"
+// in the language the app shows.
+func DbPattern() string { return In(i18n.Locale()).DbPattern() }
+
+// DbPattern says "Key pattern"
+// in the language of msgs.
+func (msgs Messages) DbPattern() string {
+	return Catalog.Format(msgs.locale, "dbPattern", nil)
+}
+
+// DbDeleteKeys says "Delete keys"
+// in the language the app shows.
+func DbDeleteKeys() string { return In(i18n.Locale()).DbDeleteKeys() }
+
+// DbDeleteKeys says "Delete keys"
+// in the language of msgs.
+func (msgs Messages) DbDeleteKeys() string {
+	return Catalog.Format(msgs.locale, "dbDeleteKeys", nil)
+}
+
+// DbNoKeys says "No keys on this scan page"
+// in the language the app shows.
+func DbNoKeys() string { return In(i18n.Locale()).DbNoKeys() }
+
+// DbNoKeys says "No keys on this scan page"
+// in the language of msgs.
+func (msgs Messages) DbNoKeys() string {
+	return Catalog.Format(msgs.locale, "dbNoKeys", nil)
+}
+
+// DbChooseKeys says "Select a Redis key"
+// in the language the app shows.
+func DbChooseKeys() string { return In(i18n.Locale()).DbChooseKeys() }
+
+// DbChooseKeys says "Select a Redis key"
+// in the language of msgs.
+func (msgs Messages) DbChooseKeys() string {
+	return Catalog.Format(msgs.locale, "dbChooseKeys", nil)
+}
+
+// DbTTLNoExpiry says "No expiration"
+// in the language the app shows.
+func DbTTLNoExpiry() string { return In(i18n.Locale()).DbTTLNoExpiry() }
+
+// DbTTLNoExpiry says "No expiration"
+// in the language of msgs.
+func (msgs Messages) DbTTLNoExpiry() string {
+	return Catalog.Format(msgs.locale, "dbTTLNoExpiry", nil)
+}
+
+// DbKeyMissing says "Key not found"
+// in the language the app shows.
+func DbKeyMissing() string { return In(i18n.Locale()).DbKeyMissing() }
+
+// DbKeyMissing says "Key not found"
+// in the language of msgs.
+func (msgs Messages) DbKeyMissing() string {
+	return Catalog.Format(msgs.locale, "dbKeyMissing", nil)
+}
+
+// DbKeyTypeReadOnly says "Only text strings and hash fields can be edited here."
+// in the language the app shows.
+func DbKeyTypeReadOnly() string { return In(i18n.Locale()).DbKeyTypeReadOnly() }
+
+// DbKeyTypeReadOnly says "Only text strings and hash fields can be edited here."
+// in the language of msgs.
+func (msgs Messages) DbKeyTypeReadOnly() string {
+	return Catalog.Format(msgs.locale, "dbKeyTypeReadOnly", nil)
+}
+
+// DbEditValue says "Edit value"
+// in the language the app shows.
+func DbEditValue() string { return In(i18n.Locale()).DbEditValue() }
+
+// DbEditValue says "Edit value"
+// in the language of msgs.
+func (msgs Messages) DbEditValue() string {
+	return Catalog.Format(msgs.locale, "dbEditValue", nil)
+}
+
+// DbConfirmDelete says "{count, plural, one {Delete # key on {name}?} other {Delete # keys on {name}?}}"
+// in the language the app shows.
+func DbConfirmDelete(count int, name string) string {
+	return In(i18n.Locale()).DbConfirmDelete(count, name)
+}
+
+// DbConfirmDelete says "{count, plural, one {Delete # key on {name}?} other {Delete # keys on {name}?}}"
+// in the language of msgs.
+func (msgs Messages) DbConfirmDelete(count int, name string) string {
+	return Catalog.Format(msgs.locale, "dbConfirmDelete", map[string]any{"count": count, "name": name})
+}
+
+// DbDeleteConsequence says "Deletes the listed keys and their values immediately. This cannot be undone."
+// in the language the app shows.
+func DbDeleteConsequence() string { return In(i18n.Locale()).DbDeleteConsequence() }
+
+// DbDeleteConsequence says "Deletes the listed keys and their values immediately. This cannot be undone."
+// in the language of msgs.
+func (msgs Messages) DbDeleteConsequence() string {
+	return Catalog.Format(msgs.locale, "dbDeleteConsequence", nil)
+}
+
+// DbConfirm says "Confirm"
+// in the language the app shows.
+func DbConfirm() string { return In(i18n.Locale()).DbConfirm() }
+
+// DbConfirm says "Confirm"
+// in the language of msgs.
+func (msgs Messages) DbConfirm() string {
+	return Catalog.Format(msgs.locale, "dbConfirm", nil)
+}
+
+// DbReviewChange says "Review change"
+// in the language the app shows.
+func DbReviewChange() string { return In(i18n.Locale()).DbReviewChange() }
+
+// DbReviewChange says "Review change"
+// in the language of msgs.
+func (msgs Messages) DbReviewChange() string {
+	return Catalog.Format(msgs.locale, "dbReviewChange", nil)
+}
+
+// DbKeyChange says "Writes the new value to {target}. The expiration is kept. The old value is not backed up."
+// in the language the app shows.
+func DbKeyChange(target string) string { return In(i18n.Locale()).DbKeyChange(target) }
+
+// DbKeyChange says "Writes the new value to {target}. The expiration is kept. The old value is not backed up."
+// in the language of msgs.
+func (msgs Messages) DbKeyChange(target string) string {
+	return Catalog.Format(msgs.locale, "dbKeyChange", map[string]any{"target": target})
+}
+
 // TabDocker says "Docker"
 // in the language the app shows.
 func TabDocker() string { return In(i18n.Locale()).TabDocker() }

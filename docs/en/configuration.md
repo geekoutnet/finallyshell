@@ -14,6 +14,7 @@ behind each setting.
   - [Folders, deleted hosts and other fields](#folders-deleted-hosts-and-other-fields)
   - [Safety](#safety)
 - [settings.json](#settingsjson)
+- [db.json](#dbjson)
 - [Sync](#sync)
 - [Command history](#command-history)
 - [quickcommands.json](#quickcommandsjson)
@@ -37,6 +38,7 @@ instead.
 | `hosts.v1.json` | The original file, kept when a version 1 `hosts.json` is migrated. |
 | `hosts.json.broken-<date-time>` | A copy of a `hosts.json` that could not be read. |
 | `settings.json` | The options (see below). |
+| `db.json` | Local database connection profiles by SSH host ID; no credentials or query history. |
 | `log-paths/<host-hash>.json` | Up to 12 recently entered remote log paths per connection; local only. No log contents are stored here. Previous versions use the `.bak-YYYYMMDDHHMMSS` suffix. |
 | `known_hosts` | Host keys you have trusted. |
 | `background-<time>.<extension>` | The copy of the terminal background image. |
@@ -244,6 +246,18 @@ Details of each option are in [features.md](features.md): see
 - `terminalHighlight`: this device's optional object with `disabled`, `useCustom` and `rules`. Without `useCustom`, built-in rules apply. A custom rule has `pattern`, `regex`, `caseSensitive`, `color`, `bold`, `underline` and an optional `host` ID; an empty host applies to all hosts.
 - `terminalRecording`: this device's optional object with `automatic`, `text`, `folder` and `limitMiB`. Automatic recording and text logs default to off. The default folder is `recordings/` under the config directory, and the default rotation limit is 64 MiB per file (range 1–512 MiB).
 - `.cast` files and optional `.txt` companions are created in a host-specific subfolder. Their names start with the local date and time (`yyyy-mm-dd_HH-MM-SS`); extra parts get a numbered suffix. New parts never replace existing files. Terminal stream settings save a `settings.json.bak-<yyyymmddHHMMSS>` copy before replacing existing settings.
+
+## db.json
+
+This optional file maps SSH host IDs to arrays of Database tab connection
+profiles. Each profile stores `id`, `name`, `engine` (`mysql`, `postgres`
+or `redis`), `host`, `port`, `user`, `database` (or Redis index), `tls`
+(`disable`, `require` or `verify-full`), `remember` and `readOnly`. Missing
+boolean fields are false. Profiles are not synced and do not change
+`hosts.json` or `settings.json`. Unreadable data is not overwritten.
+Updates back up the previous file as `db.json.bak-<YYYYMMDDHHMMSS>` (UTC).
+Remembered passwords are system credentials under
+`database/<SSH host ID>/<profile ID>/password`.
 
 ## Sync
 

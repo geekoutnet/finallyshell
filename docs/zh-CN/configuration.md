@@ -11,6 +11,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
   - [文件夹、已删除的主机和其他字段](#文件夹已删除的主机和其他字段)
   - [安全](#安全)
 - [settings.json](#settingsjson)
+- [db.json](#dbjson)
 - [同步](#同步)
 - [命令历史](#命令历史)
 - [quickcommands.json](#quickcommandsjson)
@@ -30,6 +31,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `hosts.v1.json` | 迁移第 1 版的 `hosts.json` 时保留的原文件。 |
 | `hosts.json.broken-<日期-时间>` | 读不出来的 `hosts.json` 的副本。 |
 | `settings.json` | 选项（见下面）。 |
+| `db.json` | 按 SSH 主机 ID 保存的本机数据库连接配置，不含凭据和查询历史。 |
 | `log-paths/<连接哈希>.json` | 每个连接最近输入的最多 12 个远程日志路径，仅存本机，不保存日志内容。旧版本以 `.bak-YYYYMMDDHHMMSS` 为后缀。 |
 | `known_hosts` | 信任过的主机指纹。 |
 | `background-<时间>.<扩展名>` | 终端背景图片的副本。 |
@@ -197,6 +199,16 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - `terminalHighlight`：本机可选设置对象，含 `disabled`、`useCustom` 和 `rules`。未开启 `useCustom` 时用内置规则。每条自定义规则含 `pattern`、`regex`、`caseSensitive`、`color`、`bold`、`underline` 以及可选的 `host` 主机 ID；`host` 为空时应用于所有主机。
 - `terminalRecording`：本机可选设置对象，含 `automatic`、`text`、`folder` 和 `limitMiB`。自动录制和纯文本日志默认关闭。默认保存在配置目录下的 `recordings/`，单个文件默认 64 MiB 轮转，可设为 1–512 MiB。
 - `.cast` 和可选的 `.txt` 文件保存在对应主机的子目录中。文件名以本地日期和时间开头（`yyyy-mm-dd_HH-MM-SS`），后续分段加序号，不覆盖已有文件。保存终端数据流设置前会将现有设置备份为 `settings.json.bak-<yyyymmddHHMMSS>`。
+
+## db.json
+
+此文件可以不存在，按 SSH 主机 ID 保存数据库页的连接配置列表。每条配置包含
+`id`、`name`、`engine`（`mysql`、`postgres` 或 `redis`）、`host`、`port`、
+`user`、`database`（或 Redis 库编号）、`tls`（`disable`、`require` 或
+`verify-full`）、`remember` 和 `readOnly`。未填写的布尔值默认为关闭。
+该文件不参与同步，不修改 `hosts.json` 或 `settings.json`，读取失败时不会覆盖。
+更新前将原文件备份为 `db.json.bak-<YYYYMMDDHHMMSS>`（协调世界时）。
+记住的密码以 `database/<SSH 主机 ID>/<配置 ID>/password` 为键存入系统凭据库。
 
 ## 同步
 

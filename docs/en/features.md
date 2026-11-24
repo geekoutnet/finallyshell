@@ -53,6 +53,7 @@ supported. [configuration.md](configuration.md) covers the files on disk;
   - [IP locations](#ip-locations)
   - [Trace route](#trace-route)
 - [Run on many hosts](#run-on-many-hosts)
+- [Database tab](#database-tab)
 - [Commands tab](#commands-tab)
   - [Command editor](#command-editor)
 - [Options window](#options-window)
@@ -2086,6 +2087,48 @@ The separate window can stay open beside the terminals.
   Do not put secrets in scripts or print them to output. Back up any files
   that a script will overwrite first. Cancelling or timing out closes the
   execution channel; it cannot undo changes or guarantee remote jobs stop.
+
+## Database tab
+
+Use **Database** on a connected SSH session to browse MySQL/MariaDB,
+PostgreSQL or Redis. The panel can be opened as a full-size tab. Each
+database connection uses the existing SSH session; it opens no local
+port and installs nothing remotely. **Find databases** suggests addresses
+from listening TCP sockets and Docker-published ports. Docker discovery
+can be retried through the shared root prompt when access is restricted.
+
+- Connections are saved per SSH host. The address is relative to the SSH
+  server (default `127.0.0.1`). If the database is on a different machine,
+  prefer TLS with certificate and name verification: SSH alone does not
+  encrypt the leg from the SSH server to the database. The password is
+  stored only in the system credential store when **Remember password**
+  is selected and authentication succeeds.
+- Choose a database, schema, table or view in the tree. Data loads 200
+  rows at a time. Sort by a column for repeatable pages, enter a WHERE
+  expression without the `WHERE` keyword, or right-click a cell to view
+  its full value. NULL is distinct from an empty string and binary values
+  display in hex. Structure shows columns, constraints and indexes, with
+  the CREATE statement (a reference reconstruction on PostgreSQL, not a
+  restorable dump). Table cells are not edited directly.
+- The SQL editor runs the selection or all statements, with a result for
+  each executed statement, elapsed time, and affected rows where available.
+  Query history holds the last 100 runs per open connection in memory only.
+  Query results are capped; export the displayed result or page to CSV or
+  JSON. JSON preserves NULL, while CSV uses an empty field. An existing
+  export requires confirmation and is backed up before replacement.
+- Redis uses cursor-based `SCAN`, not `KEYS`. Browse strings, hashes,
+  lists, sets, sorted sets and streams, and inspect TTL. Edit text strings
+  and hash fields without clearing expiration, or select multiple keys to
+  delete. The console runs one command per line; quote arguments with
+  spaces. Credential and connection-control commands are not supported.
+- **Read-only** is off by default. When on, only a conservative set of
+  read commands is accepted; SQL reads run in a read-only transaction.
+  Server-side routines may have side effects despite using read syntax.
+  Use a database account with read-only permissions for an independently
+  enforced boundary. Writes require confirmation, run in order, and stop
+  at the first error. Cancellation does not undo changes, and completed
+  statements may already be committed. Back up important data first and
+  never put passwords or private keys in the editor or console.
 
 ## Commands tab
 

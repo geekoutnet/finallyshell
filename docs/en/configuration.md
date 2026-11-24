@@ -245,6 +245,10 @@ Details of each option are in [features.md](features.md): see
 - `terminalRecording`: this device's optional object with `automatic`, `text`, `folder` and `limitMiB`. Automatic recording and text logs default to off. The default folder is `recordings/` under the config directory, and the default rotation limit is 64 MiB per file (range 1–512 MiB).
 - `.cast` files and optional `.txt` companions are created in a host-specific subfolder. Their names start with the local date and time (`yyyy-mm-dd_HH-MM-SS`); extra parts get a numbered suffix. New parts never replace existing files. Terminal stream settings save a `settings.json.bak-<yyyymmddHHMMSS>` copy before replacing existing settings.
 
+### Website and certificate files
+
+The Websites section adds no host or application settings. It reads Nginx configuration on the remote server, creates site files under `/etc/nginx/sites-available/` or `/etc/nginx/conf.d/`, and manages corresponding Debian links under `/etc/nginx/sites-enabled/`. Backups use the sibling name `<file>.bak-<YYYYMMDDHHMMSS>`. The app reads public certificates configured by Nginx and `/etc/letsencrypt/live/*/fullchain.pem`; it does not download private keys or cache configuration locally.
+
 ## Sync
 
 The Sync page of the options (see [Sync](features.md#sync)) is the `sync`

@@ -15,12 +15,14 @@ import (
 )
 
 type memoryState struct {
-	client        *ssh.Client
-	confirm       monitor.MemoryAction
-	busy          bool
-	before, after monitor.Memory
-	output        string
-	err           error
+	client          *ssh.Client
+	confirm         monitor.MemoryAction
+	busy            bool
+	before, after   monitor.Memory
+	output          string
+	err             error
+	privilege       *privilegeSession
+	privilegeRunner monitor.PrivilegeRunner
 }
 
 func memoryActionName(action monitor.MemoryAction) string {
@@ -47,8 +49,6 @@ func memoryErrorText(err error) string {
 		return locales.MemoryUnavailable()
 	case errors.Is(err, monitor.ErrMemoryNoCompact):
 		return locales.MemoryNoCompact()
-	case errors.Is(err, monitor.ErrMemoryPrivilege):
-		return locales.MemoryNeedsRoot()
 	case errors.Is(err, monitor.ErrMemoryRestricted):
 		return locales.MemoryRestricted()
 	case errors.Is(err, context.DeadlineExceeded):
@@ -82,12 +82,14 @@ func (a *App) runMemoryAction(s *Session, action monitor.MemoryAction) {
 			return monitor.RunScript(ctx, client, script)
 		}
 	}
-	parent := s.ctx
+	sessionContext := s.ctx
+	parent := sessionContext
 	if parent == nil {
 		parent = context.Background()
 	}
+	privilege := a.sessionPrivilege(s)
 	state.busy, state.confirm, state.err, state.output = true, 0, nil, ""
-	state.before = monitor.Memory{}
+	state.before, state.after = monitor.Memory{}, monitor.Memory{}
 	go func() {
 		read := func() (monitor.Memory, error) {
 			ctx, cancel := context.WithTimeout(parent, sysInfoTimeout)
@@ -102,13 +104,21 @@ func (a *App) runMemoryAction(s *Session, action monitor.MemoryAction) {
 		var output string
 		if err == nil && parent.Err() == nil {
 			ctx, cancel := context.WithTimeout(parent, 2*time.Minute)
-			output, err = monitor.RunMemoryAction(ctx, run, action)
+			output, err = monitor.RunMemoryAction(ctx, func(ctx context.Context, script string) (string, string, error) {
+				return privilege.runner.Run(ctx, script, monitor.PrivilegeOptions{})
+			}, action)
 			cancel()
-			after, _ = read()
-			after.Rates = after.SwapRates(before)
+			if err == nil {
+				after, _ = read()
+				after.Rates = after.SwapRates(before)
+			}
 		}
 		a.post(func() {
-			if s.client != client || state.client != client || parent.Err() != nil {
+			if s.client != client || state.client != client || s.ctx != sessionContext || state.privilege != privilege {
+				return
+			}
+			if privilege.life.Err() != nil {
+				state.busy = false
 				return
 			}
 			if err != nil {
@@ -175,7 +185,11 @@ func memoryRate(rate monitor.SwapRate) string {
 func (a *App) memoryCard(c *ui.Context, s *Session, width float32) {
 	state := &s.overview.memory
 	if state.client != s.client {
+		privilege := state.privilege
 		*state = memoryState{client: s.client}
+		if privilege != nil && privilege.client == s.client && privilege.life.Err() == nil {
+			state.privilege = privilege
+		}
 	}
 	mem := s.stats.Memory
 	if state.after.SampledAt.After(mem.SampledAt) {
@@ -327,7 +341,19 @@ func (a *App) memoryDialog(c *ui.Context, s *Session) {
 		ui.Column(c).Width(min(max(width-64, 240), 480)).Gap(12).Children(func() {
 			if state.err != nil {
 				ui.Text(c, locales.MemoryFailed()).FontSize(16).Bold()
-				ui.Text(c, memoryErrorText(state.err))
+				switch {
+				case errors.Is(state.err, monitor.ErrPrivilegeDenied), errors.Is(state.err, monitor.ErrPrivilegeCancelled), errors.Is(state.err, monitor.ErrPrivilegeWrongPassword):
+					if errors.Is(state.err, monitor.ErrPrivilegeWrongPassword) {
+						ui.Text(c, locales.PrivWrongPassword()).TextColor(theme.Danger)
+					}
+					user := s.Host.User
+					if state.privilege != nil {
+						user = state.privilege.user
+					}
+					privilegeHelp(c, user)
+				default:
+					ui.Text(c, memoryErrorText(state.err))
+				}
 				if state.output != "" {
 					ui.Scroll(c).FillWidth().MaxHeight(height / 3).Children(func() {
 						ui.Text(c, state.output).Selectable().FontSize(12)

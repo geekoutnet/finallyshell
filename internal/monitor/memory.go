@@ -132,7 +132,6 @@ func ReadMemory(ctx context.Context, run MemoryRunner) (Memory, error) {
 
 var (
 	ErrMemoryUnavailable = errors.New("memory counters unavailable")
-	ErrMemoryPrivilege   = errors.New("needs root or passwordless sudo")
 	ErrMemoryRestricted  = errors.New("kernel memory controls are restricted")
 	ErrMemoryNoCompact   = errors.New("memory compaction is not available")
 )
@@ -144,11 +143,7 @@ const (
 	MemoryCompact
 )
 
-const (
-	memoryStarted = "---FINALLYSHELL:memory-started---"
-	memorySudo    = "---FINALLYSHELL:memory-sudo---"
-	memoryCompact = "---FINALLYSHELL:memory-compact---"
-)
+const memoryCompact = "---FINALLYSHELL:memory-compact---"
 
 func memoryActionScript(action MemoryAction) (string, error) {
 	var body string
@@ -162,14 +157,7 @@ echo 1 > /proc/sys/vm/compact_memory`
 	default:
 		return "", errors.New("unknown memory action")
 	}
-	body = "echo " + memoryStarted + "\n" + body
-	quoted := "'" + strings.ReplaceAll(body, "'", `'\''`) + "'"
-	return `export LC_ALL=C
-if [ "$(id -u)" = 0 ]; then
-    exec sh -c ` + quoted + `
-fi
-echo ` + memorySudo + `
-exec sudo -n -- sh -c ` + quoted + "\n", nil
+	return body, nil
 }
 
 func RunMemoryAction(ctx context.Context, run MemoryRunner, action MemoryAction) (string, error) {
@@ -179,11 +167,11 @@ func RunMemoryAction(ctx context.Context, run MemoryRunner, action MemoryAction)
 	}
 	stdout, stderr, err := run(ctx, script)
 	var lines []string
-	markers := make(map[string]bool)
+	noCompact := false
 	for line := range strings.SplitSeq(stdout+"\n"+stderr, "\n") {
 		switch strings.TrimSpace(line) {
-		case memoryStarted, memorySudo, memoryCompact:
-			markers[strings.TrimSpace(line)] = true
+		case memoryCompact:
+			noCompact = true
 		default:
 			if strings.TrimSpace(line) != "" {
 				lines = append(lines, line)
@@ -193,10 +181,9 @@ func RunMemoryAction(ctx context.Context, run MemoryRunner, action MemoryAction)
 	output := strings.Join(lines, "\n")
 	switch {
 	case err == nil, ctx.Err() != nil:
-	case markers[memoryCompact]:
+	case privilegeAuthError(err), errors.Is(err, ErrPrivilegeCancelled):
+	case noCompact:
 		err = ErrMemoryNoCompact
-	case markers[memorySudo] && !markers[memoryStarted]:
-		err = ErrMemoryPrivilege
 	case strings.Contains(output, "Read-only file system"), strings.Contains(output, "Operation not permitted"), strings.Contains(output, "Permission denied"):
 		err = ErrMemoryRestricted
 	}

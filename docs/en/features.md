@@ -1056,11 +1056,27 @@ separate measure, not swap usage. The card also shows swap usage,
 page-in and page-out rates, and swappiness when available.
 
 **Free memory** drops kernel caches after confirmation; the menu also
-offers memory compaction on supported kernels. Both require root or
-non-interactive sudo and can temporarily increase load. Dropping caches
+offers memory compaction on supported kernels. Both run as root and can
+temporarily increase load. Dropping caches
 does not free memory held by running apps. The result compares observed
 before and after readings, not a guaranteed amount freed. Swap is
 read-only in this card.
+
+### Running as root
+
+The app runs a privileged action directly if the SSH login is root, or
+tries non-interactive `sudo`. If `sudo` needs a password, the app tries the
+SSH login password once when it has one in memory. It can then reuse a
+saved privilege password or ask for the `sudo` password. If `sudo` is not
+available to the account, the dialog offers the root password (`su`).
+
+The successful method is reused until the connection ends. The password
+is masked; selecting **Remember (system credential store)** saves it only
+after authentication succeeds. A wrong entry can be corrected, with at
+most three dialog submissions per action. If elevation is denied or you
+cancel, the app shows commands your administrator can copy to grant sudo
+access. Operating-system restrictions such as locked root accounts or
+read-only memory controls still apply.
 
 ### Docker tab › Compose
 

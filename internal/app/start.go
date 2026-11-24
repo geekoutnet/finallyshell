@@ -145,11 +145,14 @@ func hostRows(rows []quickRow) []int {
 }
 
 // hostMatches tells whether each of the words, in lower case, is in the
-// host's name, address, user or notes.
+// host's name, address, user or notes, or names its kind ("rdp", "ssh").
 func hostMatches(h *config.Host, words []string) bool {
+	if len(words) == 0 {
+		return true
+	}
 	text := strings.ToLower(strings.Join([]string{h.Name, h.Target(), h.Notes}, "\n"))
 	for _, w := range words {
-		if !strings.Contains(text, w) {
+		if !strings.Contains(text, w) && !matchesKind(h, w) {
 			return false
 		}
 	}
@@ -286,8 +289,9 @@ func (a *App) quickConnect(c *ui.Context, tab *Session, st *startState) {
 			}
 			row.Children(func() {
 				ui.Row(c).Gap(8).Grow(3).Basis(0).MinWidth(0).AlignItems(ui.Center).Children(func() {
-					ui.Icon(c, icons.Get(hostIcon(h))).FontSize(14).TextColor(color.Alpha(0.7))
-					ui.Text(c, h.Title()).SingleLine().TextColor(color).Grow(1).MinWidth(0)
+					hostIcon(c, h, i == st.row, color)
+					ui.Text(c, h.Title()).SingleLine().TextColor(color).Shrink(1).MinWidth(0)
+					kindPill(c, h, i == st.row, color)
 				})
 				addr := h.Addr
 				if h.PortOr22() != h.DefaultPort() {

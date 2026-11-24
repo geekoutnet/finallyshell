@@ -47,6 +47,7 @@ func TestEditorProxyPage(t *testing.T) {
 			saved := savedHosts(a)
 			p.SetLocale(lang)
 			h := proxyEditorHosts(a)
+			rdpHost(a)
 			a.editConnection(h)
 			tt := editorWindow(t, a, p)
 			if err := tt.Click(locales.EditorPageProxy()); err != nil {
@@ -111,10 +112,10 @@ func TestEditorProxyPage(t *testing.T) {
 			sel, _ := tt.AccessByRole(ui.RolePopUpButton, locales.FieldJumpHost())
 			tt.ClickAt(sel.Bounds.X+sel.Bounds.W/2, sel.Bounds.Y+sel.Bounds.H/2)
 			tt.Frame()
-			// Not web-1 itself.
-			if !tt.HasText("bastion (jump@203.0.113.5)") || !tt.HasText("root@10.0.1.30") || tt.HasText("web-1 (deploy@10.0.1.20)") {
+			if !tt.HasText("bastion (jump@203.0.113.5)") || !tt.HasText("root@10.0.1.30") || tt.HasText("web-1 (deploy@10.0.1.20)") || tt.HasText("win-1 (Administrator@10.0.0.5)") {
 				t.Errorf("choices; texts %q", tt.Texts())
 			}
+			checkHostKindIcon(t, tt, "bastion (jump@203.0.113.5)", locales.KindSSH())
 			if err := tt.Click("bastion (jump@203.0.113.5)"); err != nil {
 				t.Fatal(err)
 			}

@@ -118,7 +118,7 @@
   "welcomeHint": "{key} opens the connection manager",
   "newTab": "New tab",
   "quickConnect": "Quick connect",
-  "searchHosts": "Search name, host, user or notes",
+  "searchHosts": "Search name, host, user, notes or type",
   "hostColName": "Name",
   "hostColHost": "Host",
   "hostColUser": "User",
@@ -1768,6 +1768,9 @@
   "fieldHostKind": "Type",
   "kindSSH": "SSH",
   "kindRDP": "Remote Desktop (RDP)",
+  "kindRDPShort": "RDP",
+  "remoteDesktop": "Remote Desktop",
+  "allTypes": "All types",
   "kindRDPHint": "Opens in {client}, the system's Remote Desktop client, with every option below.",
   "@kindRDPHint": {
     "placeholders": {

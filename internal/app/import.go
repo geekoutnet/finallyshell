@@ -400,7 +400,7 @@ func (a *App) importTable(c *ui.Context, st *importState, statuses []importStatu
 			}
 		case "name":
 			ui.Row(c).Gap(6).AlignItems(ui.Center).MinWidth(0).Children(func() {
-				ui.Icon(c, icons.Get("server")).FontSize(14).TextColor(color.Alpha(0.75))
+				hostIcon(c, h, row == st.row, color)
 				text(h.Title())
 			})
 		case "host":

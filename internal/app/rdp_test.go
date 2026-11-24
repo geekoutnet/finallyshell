@@ -459,9 +459,3 @@ func TestRDPShots(t *testing.T) {
 		})
 	}
 }
-
-func TestHostIcon(t *testing.T) {
-	if hostIcon(&config.Host{}) != "server" || hostIcon(&config.Host{Kind: config.KindRDP}) != "monitor" {
-		t.Error("icons")
-	}
-}

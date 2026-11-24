@@ -57,6 +57,7 @@ type managerState struct {
 	sort        ui.SortOrder
 	query       string
 	filter      string // the folder shown, "" for all
+	kind        kindFilter
 	showDeleted bool
 
 	opened bool // once opened, with every folder open
@@ -148,9 +149,10 @@ type managerTree struct {
 // newManagerTree is what the tree of m shows.
 func (a *App) newManagerTree(m *managerState) *managerTree {
 	words := strings.Fields(strings.ToLower(m.query))
-	t := &managerTree{a: a, m: m, hosts: map[string][]*config.Host{}, matches: map[string]bool{}, search: len(words) > 0}
+	// The type filter narrows the tree as a search does.
+	t := &managerTree{a: a, m: m, hosts: map[string][]*config.Host{}, matches: map[string]bool{}, search: len(words) > 0 || m.kind != kindsAll}
 	for _, h := range a.hosts.Hosts {
-		if h.Deleted() && !m.showDeleted || t.search && !hostMatches(h, words) {
+		if h.Deleted() && !m.showDeleted || !m.kind.keeps(h) || !hostMatches(h, words) {
 			continue
 		}
 		folder := a.folderOf(h)
@@ -237,6 +239,8 @@ func sortHosts(hosts []*config.Host, s ui.SortOrder) []*config.Host {
 		switch s.Column {
 		case "name":
 			return h.Title()
+		case "type":
+			return kindLook(h).label
 		case "host":
 			return h.Addr
 		case "user":
@@ -258,11 +262,13 @@ func sortHosts(hosts []*config.Host, s ui.SortOrder) []*config.Host {
 	return hosts
 }
 
-func managerColumns() []ui.TableColumn {
+func managerColumns(width float32) []ui.TableColumn {
+	compact := min(1, max(0, (float32(managerSpec.Width)-width)/float32(managerSpec.Width-managerSpec.MinWidth)))
 	return []ui.TableColumn{
-		{ID: "name", Title: locales.HostColName(), Width: 230, MinWidth: 140, Sortable: true},
-		{ID: "host", Title: locales.HostColHost(), Width: 160, MinWidth: 80, Sortable: true},
-		{ID: "port", Title: locales.HostColPort(), Width: 64, MinWidth: 48, Align: ui.End, Sortable: true},
+		{ID: "name", Title: locales.HostColName(), Width: 230 - 70*compact, MinWidth: 140, Sortable: true},
+		{ID: "type", Title: locales.FieldHostKind(), Width: 84, MinWidth: 70, Sortable: true},
+		{ID: "host", Title: locales.HostColHost(), Width: 160 - 10*compact, MinWidth: 80, Sortable: true},
+		{ID: "port", Title: locales.HostColPort(), Width: 64 - 10*compact, MinWidth: 48, Align: ui.End, Sortable: true},
 		{ID: "user", Title: locales.HostColUser(), Width: 110, MinWidth: 60, Sortable: true},
 		{ID: "notes", Title: locales.HostColNotes(), MinWidth: 80, Sortable: true},
 	}
@@ -365,6 +371,8 @@ func (a *App) managerToolbar(c *ui.Context) {
 			}
 		}).Label(locales.ManagerTitle()).Grow(1).MinWidth(0)
 		ui.Checkbox(c, &m.showDeleted, locales.ShowDeleted())
+	})
+	ui.Row(c).Gap(10).Padding(0, 10, 8, 10).AlignItems(ui.Center).Children(func() {
 		labels, ids := []string{locales.FilterAll()}, []string{""}
 		chosen := labels[0]
 		for _, f := range a.allFolders() {
@@ -379,8 +387,15 @@ func (a *App) managerToolbar(c *ui.Context) {
 		}
 		if ui.Select(c, &chosen, labels).Label(locales.FolderFilter()).Width(150).Changed() {
 			m.filter = ids[max(slices.Index(labels, chosen), 0)]
+			a.searchChanged(m)
 		}
-		search := ui.SearchField(c, &m.query).Placeholder(locales.SearchHosts()).Label(locales.SearchHosts()).Width(220)
+		kinds := kindFilterLabels(false)
+		kind := kinds[m.kind]
+		if ui.Select(c, &kind, kinds).Label(locales.FieldHostKind()).Width(150).Changed() {
+			m.kind = kindFilter(max(slices.Index(kinds, kind), 0))
+			a.searchChanged(m)
+		}
+		search := ui.SearchField(c, &m.query).Placeholder(locales.SearchHosts()).Label(locales.SearchHosts()).Grow(1).MinWidth(0)
 		if search.Changed() {
 			a.searchChanged(m)
 		}
@@ -588,7 +603,8 @@ func (a *App) managerTable(c *ui.Context, later *[]func()) {
 	// A drop on a folder's row goes into the folder, on a host's into its
 	// folder, and past the rows to the top of what the tree shows.
 	dropZone := a.treeDropZone(m, later, &over)
-	table := ui.OutlineTable(c, &m.tree, managerColumns(), t.roots(), t.children, func(it managerItem, col int) {
+	width, _ := c.Size()
+	table := ui.OutlineTable(c, &m.tree, managerColumns(width), t.roots(), t.children, func(it managerItem, col int) {
 		chosen := m.isChosen(it)
 		// The cell's padding included, for drops to land on the row.
 		padY, padX := theme.Space(1.5), theme.Space(2.5)
@@ -634,20 +650,22 @@ func (a *App) managerTable(c *ui.Context, later *[]func()) {
 			}
 			switch col {
 			case 0:
-				icon := hostIcon(h)
 				if h.Deleted() {
-					icon = "trash-2"
+					ui.Icon(c, icons.Get("trash-2")).FontSize(14).TextColor(color.Alpha(0.75))
+				} else {
+					hostIcon(c, h, chosen, color)
 				}
-				ui.Icon(c, icons.Get(icon)).FontSize(14).TextColor(color.Alpha(0.75))
 				text(h.Title())
 			case 1:
-				text(h.Addr)
+				kindPill(c, h, chosen, color)
 			case 2:
+				text(h.Addr)
+			case 3:
 				ui.Spacer(c)
 				text(strconv.Itoa(h.PortOr22()))
-			case 3:
-				text(h.User)
 			case 4:
+				text(h.User)
+			case 5:
 				notes, _, _ := strings.Cut(h.Notes, "\n")
 				text(notes)
 			}

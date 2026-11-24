@@ -195,12 +195,3 @@ func (a *App) rdpConnInfoFields(h *config.Host, add func(label, value string), s
 	}
 	add(locales.ConnInfoRDPAddress(), hostPort(h.Addr, h.PortOr22()))
 }
-
-// hostIcon is the icon of h's rows: a monitor for a Remote Desktop host,
-// a server for an SSH host.
-func hostIcon(h *config.Host) string {
-	if h.IsRDP() {
-		return "monitor"
-	}
-	return "server"
-}

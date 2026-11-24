@@ -440,6 +440,7 @@ const (
 	tabCommands
 	tabOverview
 	tabDocker
+	tabSystem
 )
 
 // bottomTab is a tab of the bottom panel: its label, and its page.
@@ -467,6 +468,7 @@ func (a *App) bottomTabs() []bottomTab {
 		tabCommands:  {locales.TabCommands(), a.quickPanel},
 		tabOverview:  {locales.TabOverview(), a.overviewPanel},
 		tabDocker:    {locales.TabDocker(), a.dockerPanel},
+		tabSystem:    {locales.TabSystem(), a.serverPanel},
 	}
 }
 

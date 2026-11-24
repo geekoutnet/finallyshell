@@ -55,6 +55,7 @@ type Session struct {
 	net      netState      // the Network tab, see network.go
 	overview overviewState // the Overview tab, see overview.go
 	docker   dockerPage    // the Docker tab, see dockerpage.go
+	server   serverPage    // the System tab, see serverpage.go
 
 	hostKeyQ *sshx.HostKeyQuestion
 	cancel   context.CancelFunc

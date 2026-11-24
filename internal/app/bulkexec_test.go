@@ -129,7 +129,18 @@ func TestBulkRootRememberAndUseForAll(t *testing.T) {
 	clickNamed(t, dialog, locales.BulkUsePasswordAll())
 	clickNamed(t, dialog, locales.PrivRemember())
 	clickNamed(t, dialog, locales.PrivRun())
-	platform.until(t, "both hosts elevated", func() bool { return len(result) == 1 && len(platform.secrets()) == 1 })
+	// One remembered password, besides the index the app lock's reset
+	// keeps of them.
+	remembered := func() int {
+		n := 0
+		for key := range platform.secrets() {
+			if isPrivilegeCredentialKey(key) {
+				n++
+			}
+		}
+		return n
+	}
+	platform.until(t, "both hosts elevated", func() bool { return len(result) == 1 && remembered() == 1 })
 	if err := <-result; err != nil {
 		t.Fatal(err)
 	}

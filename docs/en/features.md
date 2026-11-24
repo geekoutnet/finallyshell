@@ -51,6 +51,7 @@ supported. [configuration.md](configuration.md) covers the files on disk;
 - [Network tab](#network-tab)
   - [IP locations](#ip-locations)
   - [Trace route](#trace-route)
+- [Run on many hosts](#run-on-many-hosts)
 - [Commands tab](#commands-tab)
   - [Command editor](#command-editor)
 - [Options window](#options-window)
@@ -1996,6 +1997,38 @@ host name.
 - NextTrace and traceroute need root, or the capability to send raw
   packets, on many servers: their error shows in the tab.
 - The tab's buttons copy the route as text and trace it again.
+
+## Run on many hosts
+
+Open **Run on hosts** from the connection manager's selection or context
+menu, or from the Commands tab, next to **Send to**. In either place,
+**Ctrl+Shift+P** (**Cmd+Shift+P** on macOS) opens the command palette.
+The separate window can stay open beside the terminals.
+
+- Search the connection tree and check individual SSH hosts or whole folders
+  (including subfolders). Remote Desktop hosts and SSH hosts with exec
+  disabled cannot be selected. Type a POSIX Shell script or load a saved
+  quick command. Unlike **Send to**, this does not type into the terminals.
+- Each run and retry asks for confirmation and shows the actual targets.
+  Default limits are 10 simultaneous hosts and 60 seconds per host, including
+  connection and elevation. **Stop scheduling on first failure** skips hosts
+  that have not started; those already running finish independently.
+- Open sessions are reused. Other hosts use saved SSH authentication and
+  proxy/jump-host settings. Unknown or changed keys, including jump-host
+  keys, are never accepted here: connect interactively and verify them first.
+  Use interactive connection setup to provide any missing SSH login secret.
+- **Run as root** uses shared escalation. If a sudo or root password is needed,
+  the dialog can reuse it in memory for other hosts in this run. **Remember**
+  stores an authenticated password for that host in the system credential store.
+- Results can be sorted, filtered by status, or selected for stdout/stderr
+  and batch retries. **Retry failed** includes timeouts. Results keep up to
+  1 MiB per host and can be copied or exported as CSV or plain text; replacing
+  an existing export requires confirmation and makes a timestamped backup.
+- The last 20 runs keep the target IDs, options and summary locally, not
+  output. Enable **Save script in local history** to reopen the script too.
+  Do not put secrets in scripts or print them to output. Back up any files
+  that a script will overwrite first. Cancelling or timing out closes the
+  execution channel; it cannot undo changes or guarantee remote jobs stop.
 
 ## Commands tab
 

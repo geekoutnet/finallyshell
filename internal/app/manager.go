@@ -338,6 +338,9 @@ func (a *App) managerView(c *ui.Context) {
 
 func (a *App) managerToolbar(c *ui.Context) {
 	m := &a.manager
+	if c.Shortcut(ui.Cmd|ui.Shift, ui.KeyP) {
+		a.openBulkPalette(a.bulkManagerHosts(m, m.selectedRows()))
+	}
 	ui.Row(c).Gap(10).Padding(8, 10).AlignItems(ui.Center).Children(func() {
 		ui.Toolbar(c, func() {
 			// A tool shows its icon, and short when it is not "".
@@ -762,6 +765,7 @@ func (a *App) managerItemMenu(c *ui.Context, m *managerState, menu *ui.Menu, it 
 		if menu.Item(locales.ConnectAll()).Disabled(len(a.folderHosts(m, f.ID)) == 0).Chosen() {
 			do(func() { a.connectAll(m, f.ID) })
 		}
+		a.bulkManagerItem(menu, m, []managerItem{it}, later)
 		menu.Separator()
 		if menu.Item(locales.NewConnection()).Chosen() {
 			do(func() { a.newConnectionIn(m, f.ID) })
@@ -800,6 +804,7 @@ func (a *App) managerItemMenu(c *ui.Context, m *managerState, menu *ui.Menu, it 
 	if menu.Item(locales.Connect()).Chosen() {
 		do(func() { a.connectFrom(m, h) })
 	}
+	a.bulkManagerItem(menu, m, []managerItem{it}, later)
 	if menu.Item(locales.Edit()).Chosen() {
 		do(func() { a.editFrom(m, h) })
 	}

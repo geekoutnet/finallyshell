@@ -46,6 +46,7 @@ instead.
 | `quickcommands.json` | The Commands tab's quick commands (see [quickcommands.json](#quickcommandsjson)). |
 | `quickcommands.json.broken-<date-time>` | A copy of a `quickcommands.json` that could not be read. |
 | `commandeditor.txt` | The text of the Commands tab's command editor (see [commandeditor.txt](#commandeditortxt)). |
+| `bulk-runs/` | Local metadata for the last 20 [bulk runs](features.md#run-on-many-hosts), one JSON file per run. Includes a script only when opted in, and never output. Not synced. |
 | `geo/` | IP location data, downloaded only when you agree: `ip2region_v4.xdb`, `ip2region_v6.xdb`, and `cache.json`, the online lookups' answers (see [IP locations](features.md#ip-locations)). |
 
 `mygo dev`, `go run` and the installed app all use the same directory, so

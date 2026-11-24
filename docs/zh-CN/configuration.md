@@ -39,6 +39,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `quickcommands.json` | 命令页的快捷命令（见 [quickcommands.json](#quickcommandsjson)）。 |
 | `quickcommands.json.broken-<日期-时间>` | 读不出来的 `quickcommands.json` 的副本。 |
 | `commandeditor.txt` | 命令页里命令编辑器的文本（见 [commandeditor.txt](#commandeditortxt)）。 |
+| `bulk-runs/` | 最近 20 次[批量执行](features.md#批量执行)的本地记录，每次一个 JSON 文件。仅在勾选时保存脚本，从不保存输出，不参与同步。 |
 | `geo/` | IP 位置数据，只在你同意时下载：`ip2region_v4.xdb`、`ip2region_v6.xdb`，以及在线查询结果的缓存 `cache.json`（见 [IP 归属地](features.md#ip-归属地)）。 |
 
 `mygo dev`、`go run` 和安装版用的是同一个目录，所以共用主机和设置。

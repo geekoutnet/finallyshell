@@ -245,6 +245,15 @@ Details of each option are in [features.md](features.md): see
 - `terminalRecording`: this device's optional object with `automatic`, `text`, `folder` and `limitMiB`. Automatic recording and text logs default to off. The default folder is `recordings/` under the config directory, and the default rotation limit is 64 MiB per file (range 1–512 MiB).
 - `.cast` files and optional `.txt` companions are created in a host-specific subfolder. Their names start with the local date and time (`yyyy-mm-dd_HH-MM-SS`); extra parts get a numbered suffix. New parts never replace existing files. Terminal stream settings save a `settings.json.bak-<yyyymmddHHMMSS>` copy before replacing existing settings.
 
+### App lock settings
+
+- `lockEnabled`: enables the password gate on startup; absent means off.
+- `lockIdleMinutes`: `1`, `5`, `15`, `30`, or `60`; absent or `0` disables idle locking.
+- `lockOnMinimize`: locks when minimizing or hiding to the tray; absent means off.
+
+These settings stay on this device. Before changing them the app backs up
+an existing `settings.json` as `settings.json.bak-<yyyymmddHHMMSS>`.
+
 ## Sync
 
 The Sync page of the options (see [Sync](features.md#sync)) is the `sync`
@@ -425,6 +434,10 @@ same entries, as they share `hosts.json`. The keys are:
 - `host/<host ID>/passphrase`: the private key passphrase;
 - `host/<host ID>/proxy-password`: the password of this host's SOCKS5 or
   HTTP proxy;
+- `host/<host ID>/totp`: the SSH two-factor secret and its algorithm,
+  digits and period. Nothing is stored in `hosts.json` or plaintext
+  backups. It only travels in encrypted sync when **Include passwords**
+  is enabled. Duplicating a host does not duplicate its TOTP secret;
 - `host/<host ID>/privilege/<endpoint hash>`: the method (`sudo` or `su`)
   and password selected in the privilege dialog. The endpoint hash scopes
   the entry to the SSH user, address and port as well as the saved host.
@@ -433,7 +446,12 @@ same entries, as they share `hosts.json`. The keys are:
   deleting the saved connection.
 - `sync/password`: the sync password (see [Sync](features.md#sync));
 - `sync/<service>/credential`: the token, password or secret access key of
-  the sync service (`gist`, `webdav` or `s3`).
+  the sync service (`gist`, `webdav` or `s3`);
+- `app/lock/verifier`: a randomly salted Argon2id verifier (3 passes,
+  64 MiB, 4 lanes). The lock password itself is never stored, and the
+  verifier never syncs. Reset can delete indexed privilege entries and
+  entries for current hosts; legacy privilege entries for removed hosts
+  or old endpoints may need to be removed from the system store manually.
 
 "Remember password" is a per-host setting for the login and proxy
 credentials. The privilege dialog has its own **Remember** checkbox.

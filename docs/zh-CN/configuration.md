@@ -198,6 +198,14 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - `terminalRecording`：本机可选设置对象，含 `automatic`、`text`、`folder` 和 `limitMiB`。自动录制和纯文本日志默认关闭。默认保存在配置目录下的 `recordings/`，单个文件默认 64 MiB 轮转，可设为 1–512 MiB。
 - `.cast` 和可选的 `.txt` 文件保存在对应主机的子目录中。文件名以本地日期和时间开头（`yyyy-mm-dd_HH-MM-SS`），后续分段加序号，不覆盖已有文件。保存终端数据流设置前会将现有设置备份为 `settings.json.bak-<yyyymmddHHMMSS>`。
 
+### 应用锁设置
+
+- `lockEnabled`：启动时要求输入应用锁密码；缺省为关闭。
+- `lockIdleMinutes`：`1`、`5`、`15`、`30` 或 `60`；缺省或 `0` 表示不按空闲时间锁定。
+- `lockOnMinimize`：最小化或隐藏到托盘时锁定；缺省为关闭。
+
+这些设置留在本机。更改前会把已有的 `settings.json` 备份为 `settings.json.bak-<年月日时分秒>`。
+
 ## 同步
 
 选项里的“同步”页（见[同步](features.md#同步)）是 `settings.json` 的 `sync` 对象，从没设置过同步时没有这个键：
@@ -294,9 +302,11 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 - `host/<主机 ID>/password`：密码；
 - `host/<主机 ID>/passphrase`：私钥密码；
 - `host/<主机 ID>/proxy-password`：这台主机的 SOCKS5 或 HTTP 代理的密码；
+- `host/<主机 ID>/totp`：SSH 双因素认证密钥及其算法、位数和周期。不写入 `hosts.json` 或明文备份；只有开启 **包含密码** 才随加密同步传输。复制连接不会复制 TOTP 密钥；
 - `host/<主机 ID>/privilege/<端点哈希>`：提权弹窗中保存的方式（`sudo` 或 `su`）和密码。端点哈希由 SSH 用户名、地址和端口确定，与主机 ID 一起限定适用范围。它独立于登录的 **记住密码** 设置，不参与同步或备份；删除连接后仍可在系统凭据存储中手动移除。
 - `sync/password`：同步密码（见[同步](features.md#同步)）；
-- `sync/<服务>/credential`：同步服务（`gist`、`webdav` 或 `s3`）的令牌、密码或私有访问密钥。
+- `sync/<服务>/credential`：同步服务（`gist`、`webdav` 或 `s3`）的令牌、密码或私有访问密钥；
+- `app/lock/verifier`：带随机盐的 Argon2id 验证数据（3 次迭代、64 MiB、4 路并行）。不保存应用锁密码本身，验证数据也不参与同步。重置能删除已登记及当前主机的提权凭据；已移除主机或旧端点的历史提权凭据可能需要在系统凭据库手动删除。
 
 “记住密码”按主机设置，适用于登录和代理凭据。提权弹窗有独立的 **记住** 选项。
 

@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"finallyshell/internal/config"
+	"finallyshell/internal/totp"
 
 	"golang.org/x/crypto/ssh"
 	"golang.org/x/crypto/ssh/knownhosts"
@@ -23,10 +24,11 @@ import (
 
 // Errors that say what went wrong, for the app to put in the user's words.
 var (
-	ErrHostKeyRejected = errors.New("host key rejected")
-	ErrHostKeyTimeout  = errors.New("timed out waiting for the host key to be confirmed")
-	ErrNeedPassphrase  = errors.New("the private key needs a passphrase")
-	ErrNoAuth          = errors.New("no authentication method")
+	ErrHostKeyRejected  = errors.New("host key rejected")
+	ErrHostKeyTimeout   = errors.New("timed out waiting for the host key to be confirmed")
+	ErrNeedPassphrase   = errors.New("the private key needs a passphrase")
+	ErrNoAuth           = errors.New("no authentication method")
+	ErrVerificationCode = errors.New("SSH two-factor verification did not complete")
 )
 
 // HostKeyChangedError is a host whose key is not the one known_hosts has.
@@ -61,6 +63,7 @@ type HostKeyQuestion struct {
 // Options is what Dial needs besides the host.
 type Options struct {
 	Password             string
+	AskVerificationCode  func(prompt string) (string, error)
 	Passphrase           string
 	VerifyKeyFingerprint string
 	keySigned            *bool
@@ -148,7 +151,11 @@ func authMethods(h *config.Host, opts Options) ([]ssh.AuthMethod, *agentLogin, e
 		if err != nil {
 			return nil, nil, err
 		}
-		return []ssh.AuthMethod{method}, login, nil
+		methods := []ssh.AuthMethod{method}
+		if opts.AskVerificationCode != nil {
+			methods = append(methods, ssh.KeyboardInteractive(keyboardInteractive(opts)))
+		}
+		return methods, login, nil
 	}
 	var methods []ssh.AuthMethod
 	if h.Auth == config.AuthKey {
@@ -178,21 +185,45 @@ func authMethods(h *config.Host, opts Options) ([]ssh.AuthMethod, *agentLogin, e
 		}
 	}
 	if opts.Password != "" {
-		pw := opts.Password
-		methods = append(methods, ssh.Password(pw),
-			// Many servers only offer keyboard-interactive for passwords.
-			ssh.KeyboardInteractive(func(_, _ string, questions []string, _ []bool) ([]string, error) {
-				answers := make([]string, len(questions))
-				for i := range answers {
-					answers[i] = pw
-				}
-				return answers, nil
-			}))
+		methods = append(methods, ssh.Password(opts.Password))
+	}
+	if opts.VerifyKeyFingerprint == "" && (opts.Password != "" || opts.AskVerificationCode != nil) {
+		methods = append(methods, ssh.KeyboardInteractive(keyboardInteractive(opts)))
 	}
 	if len(methods) == 0 {
 		return nil, nil, ErrNoAuth
 	}
 	return methods, nil, nil
+}
+
+func keyboardInteractive(opts Options) ssh.KeyboardInteractiveChallenge {
+	return func(_, _ string, questions []string, echo []bool) ([]string, error) {
+		answers := make([]string, len(questions))
+		for index, question := range questions {
+			switch {
+			case totp.VerificationPrompt(question):
+				if opts.AskVerificationCode == nil {
+					return nil, ErrVerificationCode
+				}
+				code, err := opts.AskVerificationCode(question)
+				if err != nil {
+					return nil, err
+				}
+				answers[index] = code
+			case opts.Password != "" && index < len(echo) && !echo[index] && passwordPrompt(question):
+				answers[index] = opts.Password
+			case len(questions) == 1 && strings.TrimSpace(question) == "":
+			default:
+				return nil, ErrNoAuth
+			}
+		}
+		return answers, nil
+	}
+}
+
+func passwordPrompt(question string) bool {
+	question = strings.ToLower(strings.TrimSpace(question))
+	return strings.Contains(question, "password") || strings.Contains(question, "密码")
 }
 
 // Dial connects and logs in to h, through its proxy or jump host if it

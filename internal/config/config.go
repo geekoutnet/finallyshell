@@ -28,7 +28,10 @@ type Settings struct {
 	Language string `json:"language,omitempty"`
 	// Appearance is whether the app is light or dark: AppearanceLight,
 	// AppearanceDark, or AppearanceSystem (or "") to follow the system's.
-	Appearance Appearance `json:"appearance,omitempty"`
+	Appearance      Appearance `json:"appearance,omitempty"`
+	LockEnabled     bool       `json:"lockEnabled,omitempty"`
+	LockIdleMinutes int        `json:"lockIdleMinutes,omitempty"`
+	LockOnMinimize  bool       `json:"lockOnMinimize,omitempty"`
 
 	// The sizes of the window's panes, as the user last dragged their
 	// dividers: the sidebar's and the folder tree's widths in DIPs, the
@@ -387,12 +390,9 @@ func LoadSettings() Settings {
 
 // SaveSettings writes the settings.
 func SaveSettings(s Settings) error {
-	if err := os.MkdirAll(Dir(), 0o700); err != nil {
-		return err
-	}
 	data, err := json.MarshalIndent(s, "", "  ")
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(settingsPath(), data, 0o600)
+	return writeFileAtomic(settingsPath(), data)
 }

@@ -820,6 +820,7 @@ func (a *App) managerItemMenu(c *ui.Context, m *managerState, menu *ui.Menu, it 
 		c.WriteClipboard(h.Addr)
 	}
 	a.connInfoMenuItems(c, menu, m, h, do)
+	a.totpMenu(c, menu, m.win, h)
 	menu.Separator()
 	if menu.Item(locales.Delete()).Shortcut(0, ui.KeyDelete).Chosen() {
 		do(func() { a.deleteItem(m, it) })

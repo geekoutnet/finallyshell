@@ -23,6 +23,8 @@ type platform struct {
 	win     *mygo.Window // the main window
 	windows map[app.WindowKind]*childWindow
 	tray    *mygo.Tray // while the main window is hidden in the tray
+	app     *app.App
+	locked  bool
 }
 
 // childWindow is an open secondary window.
@@ -42,8 +44,26 @@ func (p *platform) Post(fn func()) {
 }
 
 func (p *platform) Redraw() {
-	p.win.Invalidate()
-	p.redrawChildren()
+	p.win.Update(func() {
+		if p.app != nil && p.locked != p.app.Locked() {
+			p.locked = p.app.Locked()
+			if p.tray != nil {
+				p.tray.SetMenu(p.trayMenu())
+			}
+			if p.locked {
+				tracked := map[*mygo.Window]bool{p.win: true}
+				for _, child := range p.windows {
+					tracked[child.win] = true
+				}
+				for _, win := range mygo.Windows() {
+					if !tracked[win] {
+						win.Close()
+					}
+				}
+			}
+		}
+		p.redrawChildren()
+	})
 }
 
 func (p *platform) redrawChildren() {
@@ -282,6 +302,8 @@ func main() {
 		}
 		plat := &platform{windows: map[app.WindowKind]*childWindow{}}
 		a := app.New(plat)
+		plat.app = a
+		plat.locked = a.Locked()
 		a.NewTab() // it starts on the start page
 		plat.win = mygo.NewWindow(mygo.WindowOptions{
 			Title:     locales.AppTitle(),
@@ -292,6 +314,7 @@ func main() {
 			Content:   ui.View(a.View),
 		})
 		plat.win.OnLeaveFullScreen(a.WindowLeftFullScreen)
+		plat.win.OnMinimize(a.WindowMinimized)
 		// The close button may hide the window to the tray, or ask first;
 		// a quit may ask too (closing.go in internal/app).
 		plat.win.OnClose(func(e *mygo.CloseEvent) {

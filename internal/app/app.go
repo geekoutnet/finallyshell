@@ -137,8 +137,12 @@ type Platform interface {
 
 // App is the state of the window.
 type App struct {
-	plat     Platform
-	settings config.Settings
+	plat          Platform
+	settings      config.Settings
+	lock          appLock
+	totpCopies    map[WindowKind]totpClipboard
+	totpStatus    map[string]totpStatus
+	totpPromptSeq uint64
 
 	hosts     *config.Store     // deleted hosts included: lists show hosts.Live()
 	passwords map[string]string // by host ID: what the host logs in with, this run
@@ -324,6 +328,7 @@ func New(plat Platform) *App {
 	}
 	a.hosts, _ = config.LoadHosts()
 	a.settings = config.LoadSettings()
+	a.lock.locked = a.settings.LockEnabled
 	a.loadAppearance()
 	a.restoreLayout()
 	a.restoreLeftPanel()
@@ -345,6 +350,9 @@ func (a *App) View(c *ui.Context) {
 	defer a.stopUnseenPolls()
 	a.frame++
 	useTheme(c)
+	if a.lockGate(c, WindowMain) {
+		return
+	}
 	a.showNotices(c)
 	a.writePendingCopy(c)
 	a.shortcuts(c)
@@ -578,6 +586,7 @@ func (a *App) closeSession(s *Session) {
 // secondary windows, and saves the pane sizes the user changed and the
 // command editor's text.
 func (a *App) CloseAll() {
+	a.stopIdleLock()
 	a.fe.discard = true // the editor's changes go with the app
 	a.closeWindows()
 	if a.layoutDirty {

@@ -57,6 +57,10 @@ var optionPages = []optionPage{
 		view: (*App).generalPage,
 	},
 	{
+		id: pageSecurity, title: locales.LockSecurity,
+		view: (*App).securityPage,
+	},
+	{
 		id: pageTransfers, title: locales.OptionsTransfers,
 		view: (*App).transfersPage,
 	},
@@ -119,7 +123,11 @@ var optionPages = []optionPage{
 }
 
 // openOptions opens the options window, or brings it to the front.
-func (a *App) openOptions() { a.openWindow(optionsWindow, a.optionsView) }
+func (a *App) openOptions() {
+	spec := optionsWindow
+	spec.Closed = func() { a.lock.options = nil }
+	a.openWindow(spec, a.optionsView)
+}
 
 // optionsView is the options window: the pages, and Done below them.
 // The options apply as they change, so there is nothing to confirm.

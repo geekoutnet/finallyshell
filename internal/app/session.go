@@ -123,7 +123,7 @@ func (a *App) connect(s *Session, secret string) {
 	s.cancel, s.ctx = cancel, ctx
 	// Through the host's proxy or jump hosts, if any (see proxy.go):
 	// closing the client closes theirs.
-	opts, err := a.dialOptions(s.Host, secret, func(q *sshx.HostKeyQuestion) { a.post(func() { s.hostKeyQ = q }) })
+	opts, err := a.dialOptionsFor(ctx, s.Host, secret, func(q *sshx.HostKeyQuestion) { a.post(func() { s.hostKeyQ = q }) }, true)
 	if err != nil {
 		s.status, s.err = statusFailed, err
 		return
@@ -466,6 +466,8 @@ func describeError(err error) string {
 		return locales.ErrHostKeyTimeout()
 	case errors.Is(err, sshx.ErrNeedPassphrase):
 		return locales.ErrNeedPassphrase()
+	case errors.Is(err, sshx.ErrVerificationCode):
+		return locales.TotpVerificationFailed()
 	case errors.Is(err, sshx.ErrNoAuth):
 		return locales.ErrNoAuth()
 	case errors.Is(err, x509.IncorrectPasswordError):

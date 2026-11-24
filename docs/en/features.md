@@ -64,6 +64,7 @@ supported. [configuration.md](configuration.md) covers the files on disk;
   - [Terminal › Command bar](#terminal--command-bar)
   - [Network monitor](#network-monitor)
   - [Sync](#sync)
+- [App lock](#app-lock)
 - [Keyboard shortcuts](#keyboard-shortcuts)
 - [Layout and split dividers](#layout-and-split-dividers)
 - [Language](#language)
@@ -888,15 +889,30 @@ on the left and OK and Cancel at the bottom.
   Passphrase.
 - "Remember password" ("Remember passphrase" for a private key), on by
   default.
+- **Two-factor (TOTP)**: paste a Base32 secret or an `otpauth://totp/` URI.
+  Plain secrets use six digits, a 30-second period and SHA-1. URIs can
+  also specify eight digits, a different period, and SHA-256 or SHA-512.
+  Save or remove the secret with confirmation; leave the field blank to
+  keep an existing secret. It is stored separately from the login password.
 - "Enable exec channel (server monitor)".
 
 Errors are shown under the field they belong to.
 
+When an SSH keyboard-interactive challenge asks for a verification code,
+the client uses the host's saved TOTP, waiting for the next code if the
+current one has three seconds or less left. Password questions still take
+the login password. Without a saved TOTP, interactive connections show the
+server's prompt and let you enter the code manually. In the Connections
+page or Connection Manager, right-click an SSH host and choose **Copy
+current code**. The menu or copy notice shows the remaining validity;
+the code itself goes only to the clipboard. Clipboard history is managed
+by your operating system.
+
 With **SSH agent**, the host logs in with the keys an SSH agent holds
 (Bitwarden, 1Password, KeePassXC, OpenSSH's `ssh-agent`, the Windows
 OpenSSH agent service), so no key file is needed. Only the user is asked:
-the key file, passphrase, password and "Remember" fields are hidden, and
-nothing is kept in the credential store. The line "SSH agent: Uses the
+the key file, passphrase, password and "Remember" fields are hidden. The
+optional TOTP field is still available. The line "SSH agent: Uses the
 address in Options › General" has a **Check** button, which lists the
 agent's keys (type, SHA256 fingerprint, comment) without logging in;
 listing asks the agent for no approval. Connecting tries the agent's keys
@@ -2584,6 +2600,28 @@ The **Sync log** tab shows the latest 100 sync events.
   Deleted and folder subtrees containing more than 10 live connections.
   Review versions, restore from the server copy, or approve the deletion.
   Automatic sync never confirms the deletion for you.
+
+## App lock
+
+App lock is off by default. In **Options › Security**, set a password
+to require it at startup. Use your current password to change or remove
+it. Choose **Off**, **1**, **5**, **15**, **30** or **60 minutes** of
+inactivity, and optionally lock whenever the main window is minimized
+or hidden to the tray. **Lock now** is available here, in the command
+palette and in the tray menu. The shortcut is `Ctrl+Alt+L` on Windows and
+Linux and `Command+Option+Shift+L` on macOS.
+
+While locked, the app replaces its window content with the lock screen.
+Connections and transfers already in progress keep running. Failed
+password attempts delay the next try by 1, 2, 4, 8, 16, then at most 30
+seconds. This is a privacy lock for the app, not a replacement for the
+operating system's screen lock.
+
+If you forget the password, **Reset lock…** asks you to confirm deleting
+the app's remembered credentials from this device. It removes the lock
+and quits, ending open connections and transfers and discarding unsaved
+edits. Saved connections, private key files and cloud backups are not
+changed. Reopen the app after reset to work without the lock.
 
 ## Keyboard shortcuts
 

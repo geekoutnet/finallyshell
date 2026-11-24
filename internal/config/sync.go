@@ -120,6 +120,7 @@ var (
 		"noCommandBar", "noCommandBarPaths", "noCommandBarHistory", "noCommandBarCommands", "noServerHistory",
 	}
 	localSettings = []string{
+		"lockEnabled", "lockIdleMinutes", "lockOnMinimize",
 		"sidebarWidth", "monitorPercent", "terminalPercent", "treeWidth",
 		"procListPercent", "procFieldsPercent", "netListPercent",
 		"monitorHidden", // what this device's monitor shows, as the pane sizes

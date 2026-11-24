@@ -1047,6 +1047,21 @@ read once each time the popover opens, over an exec channel, by a POSIX sh
 script that also runs on BusyBox. When tools such as `lscpu`, `nproc` or
 `ip` are missing, it skips them or uses something else.
 
+### Overview memory
+
+The **Overview › Memory** card separates non-cache use, buffers and
+reclaimable cache, and free RAM. Available RAM is the kernel’s estimate
+of what can be used without swapping; virtual memory committed is a
+separate measure, not swap usage. The card also shows swap usage,
+page-in and page-out rates, and swappiness when available.
+
+**Free memory** drops kernel caches after confirmation; the menu also
+offers memory compaction on supported kernels. Both require root or
+non-interactive sudo and can temporarily increase load. Dropping caches
+does not free memory held by running apps. The result compares observed
+before and after readings, not a guaranteed amount freed. Swap is
+read-only in this card.
+
 <a id="terminal-section"></a>
 
 ## Terminal

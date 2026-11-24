@@ -200,6 +200,350 @@ func (msgs Messages) SysMemory() string {
 	return Catalog.Format(msgs.locale, "sysMemory", nil)
 }
 
+// MemoryPhysical says "Physical memory"
+// in the language the app shows.
+func MemoryPhysical() string { return In(i18n.Locale()).MemoryPhysical() }
+
+// MemoryPhysical says "Physical memory"
+// in the language of msgs.
+func (msgs Messages) MemoryPhysical() string {
+	return Catalog.Format(msgs.locale, "memoryPhysical", nil)
+}
+
+// MemoryTotal says "Total"
+// in the language the app shows.
+func MemoryTotal() string { return In(i18n.Locale()).MemoryTotal() }
+
+// MemoryTotal says "Total"
+// in the language of msgs.
+func (msgs Messages) MemoryTotal() string {
+	return Catalog.Format(msgs.locale, "memoryTotal", nil)
+}
+
+// MemoryApps says "Used (non-cache)"
+// in the language the app shows.
+func MemoryApps() string { return In(i18n.Locale()).MemoryApps() }
+
+// MemoryApps says "Used (non-cache)"
+// in the language of msgs.
+func (msgs Messages) MemoryApps() string {
+	return Catalog.Format(msgs.locale, "memoryApps", nil)
+}
+
+// MemoryFreeSpace says "Free"
+// in the language the app shows.
+func MemoryFreeSpace() string { return In(i18n.Locale()).MemoryFreeSpace() }
+
+// MemoryFreeSpace says "Free"
+// in the language of msgs.
+func (msgs Messages) MemoryFreeSpace() string {
+	return Catalog.Format(msgs.locale, "memoryFreeSpace", nil)
+}
+
+// MemoryAvailable says "Available"
+// in the language the app shows.
+func MemoryAvailable() string { return In(i18n.Locale()).MemoryAvailable() }
+
+// MemoryAvailable says "Available"
+// in the language of msgs.
+func (msgs Messages) MemoryAvailable() string {
+	return Catalog.Format(msgs.locale, "memoryAvailable", nil)
+}
+
+// MemoryAvailableHint says "The kernel’s estimate of memory available to new apps without swapping. The gauge shows total minus available; the …"
+// in the language the app shows.
+func MemoryAvailableHint() string { return In(i18n.Locale()).MemoryAvailableHint() }
+
+// MemoryAvailableHint says "The kernel’s estimate of memory available to new apps without swapping. The gauge shows total minus available; the …"
+// in the language of msgs.
+func (msgs Messages) MemoryAvailableHint() string {
+	return Catalog.Format(msgs.locale, "memoryAvailableHint", nil)
+}
+
+// MemoryCache says "Buffers / reclaimable cache"
+// in the language the app shows.
+func MemoryCache() string { return In(i18n.Locale()).MemoryCache() }
+
+// MemoryCache says "Buffers / reclaimable cache"
+// in the language of msgs.
+func (msgs Messages) MemoryCache() string {
+	return Catalog.Format(msgs.locale, "memoryCache", nil)
+}
+
+// MemoryShared says "Shared"
+// in the language the app shows.
+func MemoryShared() string { return In(i18n.Locale()).MemoryShared() }
+
+// MemoryShared says "Shared"
+// in the language of msgs.
+func (msgs Messages) MemoryShared() string {
+	return Catalog.Format(msgs.locale, "memoryShared", nil)
+}
+
+// MemoryDirty says "Dirty"
+// in the language the app shows.
+func MemoryDirty() string { return In(i18n.Locale()).MemoryDirty() }
+
+// MemoryDirty says "Dirty"
+// in the language of msgs.
+func (msgs Messages) MemoryDirty() string {
+	return Catalog.Format(msgs.locale, "memoryDirty", nil)
+}
+
+// MemoryCommitted says "Virtual committed / limit"
+// in the language the app shows.
+func MemoryCommitted() string { return In(i18n.Locale()).MemoryCommitted() }
+
+// MemoryCommitted says "Virtual committed / limit"
+// in the language of msgs.
+func (msgs Messages) MemoryCommitted() string {
+	return Catalog.Format(msgs.locale, "memoryCommitted", nil)
+}
+
+// MemorySwapUsed says "Used / total"
+// in the language the app shows.
+func MemorySwapUsed() string { return In(i18n.Locale()).MemorySwapUsed() }
+
+// MemorySwapUsed says "Used / total"
+// in the language of msgs.
+func (msgs Messages) MemorySwapUsed() string {
+	return Catalog.Format(msgs.locale, "memorySwapUsed", nil)
+}
+
+// MemorySwapOccupied says "Used (not cached)"
+// in the language the app shows.
+func MemorySwapOccupied() string { return In(i18n.Locale()).MemorySwapOccupied() }
+
+// MemorySwapOccupied says "Used (not cached)"
+// in the language of msgs.
+func (msgs Messages) MemorySwapOccupied() string {
+	return Catalog.Format(msgs.locale, "memorySwapOccupied", nil)
+}
+
+// MemorySwapCached says "Cached"
+// in the language the app shows.
+func MemorySwapCached() string { return In(i18n.Locale()).MemorySwapCached() }
+
+// MemorySwapCached says "Cached"
+// in the language of msgs.
+func (msgs Messages) MemorySwapCached() string {
+	return Catalog.Format(msgs.locale, "memorySwapCached", nil)
+}
+
+// MemorySwapIn says "Swap in"
+// in the language the app shows.
+func MemorySwapIn() string { return In(i18n.Locale()).MemorySwapIn() }
+
+// MemorySwapIn says "Swap in"
+// in the language of msgs.
+func (msgs Messages) MemorySwapIn() string {
+	return Catalog.Format(msgs.locale, "memorySwapIn", nil)
+}
+
+// MemorySwapOut says "Swap out"
+// in the language the app shows.
+func MemorySwapOut() string { return In(i18n.Locale()).MemorySwapOut() }
+
+// MemorySwapOut says "Swap out"
+// in the language of msgs.
+func (msgs Messages) MemorySwapOut() string {
+	return Catalog.Format(msgs.locale, "memorySwapOut", nil)
+}
+
+// MemoryPagesRate says "{rate} pages/s"
+// in the language the app shows.
+func MemoryPagesRate(rate string) string { return In(i18n.Locale()).MemoryPagesRate(rate) }
+
+// MemoryPagesRate says "{rate} pages/s"
+// in the language of msgs.
+func (msgs Messages) MemoryPagesRate(rate string) string {
+	return Catalog.Format(msgs.locale, "memoryPagesRate", map[string]any{"rate": rate})
+}
+
+// MemorySwappiness says "Swappiness"
+// in the language the app shows.
+func MemorySwappiness() string { return In(i18n.Locale()).MemorySwappiness() }
+
+// MemorySwappiness says "Swappiness"
+// in the language of msgs.
+func (msgs Messages) MemorySwappiness() string {
+	return Catalog.Format(msgs.locale, "memorySwappiness", nil)
+}
+
+// MemoryFree says "Free memory"
+// in the language the app shows.
+func MemoryFree() string { return In(i18n.Locale()).MemoryFree() }
+
+// MemoryFree says "Free memory"
+// in the language of msgs.
+func (msgs Messages) MemoryFree() string {
+	return Catalog.Format(msgs.locale, "memoryFree", nil)
+}
+
+// MemoryActions says "Memory actions"
+// in the language the app shows.
+func MemoryActions() string { return In(i18n.Locale()).MemoryActions() }
+
+// MemoryActions says "Memory actions"
+// in the language of msgs.
+func (msgs Messages) MemoryActions() string {
+	return Catalog.Format(msgs.locale, "memoryActions", nil)
+}
+
+// MemoryDropCaches says "Drop caches"
+// in the language the app shows.
+func MemoryDropCaches() string { return In(i18n.Locale()).MemoryDropCaches() }
+
+// MemoryDropCaches says "Drop caches"
+// in the language of msgs.
+func (msgs Messages) MemoryDropCaches() string {
+	return Catalog.Format(msgs.locale, "memoryDropCaches", nil)
+}
+
+// MemoryCompact says "Compact memory"
+// in the language the app shows.
+func MemoryCompact() string { return In(i18n.Locale()).MemoryCompact() }
+
+// MemoryCompact says "Compact memory"
+// in the language of msgs.
+func (msgs Messages) MemoryCompact() string {
+	return Catalog.Format(msgs.locale, "memoryCompact", nil)
+}
+
+// MemoryDropWarning says "Flushes pending writes and drops kernel caches. It does not free memory held by running apps. Disk I/O and response t…"
+// in the language the app shows.
+func MemoryDropWarning() string { return In(i18n.Locale()).MemoryDropWarning() }
+
+// MemoryDropWarning says "Flushes pending writes and drops kernel caches. It does not free memory held by running apps. Disk I/O and response t…"
+// in the language of msgs.
+func (msgs Messages) MemoryDropWarning() string {
+	return Catalog.Format(msgs.locale, "memoryDropWarning", nil)
+}
+
+// MemoryCompactWarning says "Moves memory pages to make larger contiguous blocks. This may briefly raise CPU load and does not necessarily increas…"
+// in the language the app shows.
+func MemoryCompactWarning() string { return In(i18n.Locale()).MemoryCompactWarning() }
+
+// MemoryCompactWarning says "Moves memory pages to make larger contiguous blocks. This may briefly raise CPU load and does not necessarily increas…"
+// in the language of msgs.
+func (msgs Messages) MemoryCompactWarning() string {
+	return Catalog.Format(msgs.locale, "memoryCompactWarning", nil)
+}
+
+// MemoryUnavailable says "Memory counters are unavailable."
+// in the language the app shows.
+func MemoryUnavailable() string { return In(i18n.Locale()).MemoryUnavailable() }
+
+// MemoryUnavailable says "Memory counters are unavailable."
+// in the language of msgs.
+func (msgs Messages) MemoryUnavailable() string {
+	return Catalog.Format(msgs.locale, "memoryUnavailable", nil)
+}
+
+// MemoryWaiting says "Waiting for memory data…"
+// in the language the app shows.
+func MemoryWaiting() string { return In(i18n.Locale()).MemoryWaiting() }
+
+// MemoryWaiting says "Waiting for memory data…"
+// in the language of msgs.
+func (msgs Messages) MemoryWaiting() string {
+	return Catalog.Format(msgs.locale, "memoryWaiting", nil)
+}
+
+// MemoryNoCompact says "This kernel does not expose memory compaction."
+// in the language the app shows.
+func MemoryNoCompact() string { return In(i18n.Locale()).MemoryNoCompact() }
+
+// MemoryNoCompact says "This kernel does not expose memory compaction."
+// in the language of msgs.
+func (msgs Messages) MemoryNoCompact() string {
+	return Catalog.Format(msgs.locale, "memoryNoCompact", nil)
+}
+
+// MemoryNeedsRoot says "This action needs root or passwordless sudo."
+// in the language the app shows.
+func MemoryNeedsRoot() string { return In(i18n.Locale()).MemoryNeedsRoot() }
+
+// MemoryNeedsRoot says "This action needs root or passwordless sudo."
+// in the language of msgs.
+func (msgs Messages) MemoryNeedsRoot() string {
+	return Catalog.Format(msgs.locale, "memoryNeedsRoot", nil)
+}
+
+// MemoryRestricted says "The kernel blocked this action. Memory controls may be read-only or restricted in containers."
+// in the language the app shows.
+func MemoryRestricted() string { return In(i18n.Locale()).MemoryRestricted() }
+
+// MemoryRestricted says "The kernel blocked this action. Memory controls may be read-only or restricted in containers."
+// in the language of msgs.
+func (msgs Messages) MemoryRestricted() string {
+	return Catalog.Format(msgs.locale, "memoryRestricted", nil)
+}
+
+// MemoryWorking says "Working on the server…"
+// in the language the app shows.
+func MemoryWorking() string { return In(i18n.Locale()).MemoryWorking() }
+
+// MemoryWorking says "Working on the server…"
+// in the language of msgs.
+func (msgs Messages) MemoryWorking() string {
+	return Catalog.Format(msgs.locale, "memoryWorking", nil)
+}
+
+// MemoryFailed says "Memory action failed"
+// in the language the app shows.
+func MemoryFailed() string { return In(i18n.Locale()).MemoryFailed() }
+
+// MemoryFailed says "Memory action failed"
+// in the language of msgs.
+func (msgs Messages) MemoryFailed() string {
+	return Catalog.Format(msgs.locale, "memoryFailed", nil)
+}
+
+// MemoryRefreshFailed says "The action completed, but the new memory usage could not be read."
+// in the language the app shows.
+func MemoryRefreshFailed() string { return In(i18n.Locale()).MemoryRefreshFailed() }
+
+// MemoryRefreshFailed says "The action completed, but the new memory usage could not be read."
+// in the language of msgs.
+func (msgs Messages) MemoryRefreshFailed() string {
+	return Catalog.Format(msgs.locale, "memoryRefreshFailed", nil)
+}
+
+// MemoryAvailableChange says "Available memory observed: {before} → {after}"
+// in the language the app shows.
+func MemoryAvailableChange(before string, after string) string {
+	return In(i18n.Locale()).MemoryAvailableChange(before, after)
+}
+
+// MemoryAvailableChange says "Available memory observed: {before} → {after}"
+// in the language of msgs.
+func (msgs Messages) MemoryAvailableChange(before string, after string) string {
+	return Catalog.Format(msgs.locale, "memoryAvailableChange", map[string]any{"before": before, "after": after})
+}
+
+// MemoryActionComplete says "Memory action complete"
+// in the language the app shows.
+func MemoryActionComplete() string { return In(i18n.Locale()).MemoryActionComplete() }
+
+// MemoryActionComplete says "Memory action complete"
+// in the language of msgs.
+func (msgs Messages) MemoryActionComplete() string {
+	return Catalog.Format(msgs.locale, "memoryActionComplete", nil)
+}
+
+// MemoryResultChange says "Buffers/cache {cacheBefore} → {cacheAfter} · Swap used {swapBefore} → {swapAfter}"
+// in the language the app shows.
+func MemoryResultChange(cacheBefore string, cacheAfter string, swapBefore string, swapAfter string) string {
+	return In(i18n.Locale()).MemoryResultChange(cacheBefore, cacheAfter, swapBefore, swapAfter)
+}
+
+// MemoryResultChange says "Buffers/cache {cacheBefore} → {cacheAfter} · Swap used {swapBefore} → {swapAfter}"
+// in the language of msgs.
+func (msgs Messages) MemoryResultChange(cacheBefore string, cacheAfter string, swapBefore string, swapAfter string) string {
+	return Catalog.Format(msgs.locale, "memoryResultChange", map[string]any{"cacheBefore": cacheBefore, "cacheAfter": cacheAfter, "swapBefore": swapBefore, "swapAfter": swapAfter})
+}
+
 // SysUptime says "Uptime"
 // in the language the app shows.
 func SysUptime() string { return In(i18n.Locale()).SysUptime() }

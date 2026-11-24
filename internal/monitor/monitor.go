@@ -27,6 +27,7 @@ type Stats struct {
 	MemTotal  uint64
 	SwapUsed  uint64
 	SwapTotal uint64
+	Memory    Memory
 	Procs     []Proc
 	Iface     string
 	RxRate    float64 // bytes per second
@@ -62,7 +63,7 @@ const statsScript = `export LC_ALL=C
 cat /proc/uptime; echo ` + sep + `
 cat /proc/loadavg; echo ` + sep + `
 head -1 /proc/stat; echo ` + sep + `
-grep -E '^(MemTotal|MemAvailable|SwapTotal|SwapFree):' /proc/meminfo; echo ` + sep + `
+` + memoryScript + `echo ` + sep + `
 cat /proc/net/dev; echo ` + sep + `
 df -kP -x tmpfs -x devtmpfs -x overlay -x squashfs 2>/dev/null || df -kP; echo ` + sep + `
 ps -eo rss=,pcpu=,comm= --sort=-rss 2>/dev/null | head -5
@@ -97,6 +98,7 @@ func run(ctx context.Context, client *ssh.Client, interval, timeout time.Duratio
 		st.Latency = time.Since(start)
 		st.LatHist = pushHist(st.LatHist, float64(st.Latency.Microseconds())/1000)
 
+		sampledAt := time.Now()
 		if out, err := runOutput(client, statsScript, timeout); err == nil {
 			parts := strings.Split(out, sep+"\n")
 			if len(parts) >= 7 {
@@ -108,7 +110,10 @@ func run(ctx context.Context, client *ssh.Client, interval, timeout time.Duratio
 					st.CPU = 100 * (1 - float64(idle-prevIdle)/float64(total-prevTotal))
 				}
 				prevIdle, prevTotal = idle, total
-				st.MemTotal, st.MemUsed, st.SwapTotal, st.SwapUsed = parseMem(parts[3])
+				memory := parseMemory(parts[3], sampledAt)
+				memory.Rates = memory.SwapRates(st.Memory)
+				st.Memory = memory
+				st.MemTotal, st.MemUsed, st.SwapTotal, st.SwapUsed = memory.summary()
 				net.update(&st, parts[4], time.Now())
 				st.Disks = parseDisks(parts[5])
 				st.Procs = parseProcs(parts[6])
@@ -233,24 +238,7 @@ func parseCPU(s string) (idle, total uint64) {
 }
 
 func parseMem(s string) (memTotal, memUsed, swapTotal, swapUsed uint64) {
-	vals := map[string]uint64{}
-	sc := bufio.NewScanner(strings.NewReader(s))
-	for sc.Scan() {
-		f := strings.Fields(sc.Text())
-		if len(f) >= 2 {
-			n, _ := strconv.ParseUint(f[1], 10, 64)
-			vals[strings.TrimSuffix(f[0], ":")] = n * 1024
-		}
-	}
-	memTotal = vals["MemTotal"]
-	if a := vals["MemAvailable"]; a <= memTotal {
-		memUsed = memTotal - a
-	}
-	swapTotal = vals["SwapTotal"]
-	if f := vals["SwapFree"]; f <= swapTotal {
-		swapUsed = swapTotal - f
-	}
-	return
+	return parseMemory(s, time.Time{}).summary()
 }
 
 func parseDisks(s string) []Disk {

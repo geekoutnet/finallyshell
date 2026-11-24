@@ -34,7 +34,9 @@ type overviewState struct {
 	gen     int // counts the reads; a result of an older one is dropped
 	cancel  context.CancelFunc
 	// allAddrs shows the addresses of virtual interfaces too.
-	allAddrs bool
+	allAddrs     bool
+	memory       memoryState
+	memoryRunner monitor.MemoryRunner
 	// docker is the Docker cards (docker.go).
 	docker dockerState
 }
@@ -171,12 +173,16 @@ func (a *App) overviewPage(c *ui.Context, s *Session) {
 		ui.Column(c).FillWidth().Padding(pad).Gap(pad).Children(func() {
 			a.overviewHeader(c, s)
 			overviewGauges(c, s, width-2*pad, height > 0 && height < 380)
+			if s.client != nil || !st.Memory.SampledAt.IsZero() {
+				a.memoryCard(c, s, width-2*pad)
+			}
 			a.overviewCards(c, s, width-2*pad)
 			if ov.docker.shown() && ov.docker.d.State == monitor.DockerOK && (ov.docker.read || len(ov.docker.d.Containers) > 0) {
 				a.dockerContainers(c, s, width-2*pad)
 			}
 		})
 	})
+	a.memoryDialog(c, s)
 }
 
 // overviewHeader is what the server is: its name, system, kernel and

@@ -198,6 +198,10 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - `terminalRecording`：本机可选设置对象，含 `automatic`、`text`、`folder` 和 `limitMiB`。自动录制和纯文本日志默认关闭。默认保存在配置目录下的 `recordings/`，单个文件默认 64 MiB 轮转，可设为 1–512 MiB。
 - `.cast` 和可选的 `.txt` 文件保存在对应主机的子目录中。文件名以本地日期和时间开头（`yyyy-mm-dd_HH-MM-SS`），后续分段加序号，不覆盖已有文件。保存终端数据流设置前会将现有设置备份为 `settings.json.bak-<yyyymmddHHMMSS>`。
 
+### 告警规则
+
+- `alertRules`：可选对象，以 SSH 主机 ID 为键。空键 `""` 保存所有 SSH 主机的默认规则。按主机设置的对象整体覆盖默认规则；`{}` 会关闭该主机的全部告警。规则中的 `unreachable`、`services` 为开关；`cpu`、`memory`、`disk` 为百分比阈值，`0` 表示关闭；`cpuMinutes` 为 1–60 分钟（默认 1 分钟）；`loadPerCore` 是在线 CPU 核心数的倍数，`0` 表示关闭。该设置仅存于本机，告警历史不会写入磁盘。
+
 ## 同步
 
 选项里的“同步”页（见[同步](features.md#同步)）是 `settings.json` 的 `sync` 对象，从没设置过同步时没有这个键：

@@ -194,6 +194,8 @@ type App struct {
 	saveSettings func(config.Settings) error
 
 	transfers transferQueue
+	relay     *relayDialog
+	alerts    alertsState
 
 	// The connection manager's window.
 	manager managerState
@@ -548,6 +550,7 @@ func (a *App) reconnect(s *Session) {
 	}
 	s.disconnect()
 	a.connect(s, a.passwords[s.Host.ID])
+	a.syncAlertSessions()
 }
 
 // closeSession closes the row of s: its session, with its panel row, or
@@ -566,6 +569,7 @@ func (a *App) closeSession(s *Session) {
 		s.disconnect()
 	}
 	a.sessions = slices.Delete(a.sessions, i, i+1)
+	a.syncAlertSessions()
 	if a.active >= len(a.sessions) || a.active > i {
 		a.active--
 	}
@@ -578,6 +582,10 @@ func (a *App) closeSession(s *Session) {
 // secondary windows, and saves the pane sizes the user changed and the
 // command editor's text.
 func (a *App) CloseAll() {
+	a.stopAlerts()
+	if a.relay != nil {
+		a.closeRelay(a.relay)
+	}
 	a.fe.discard = true // the editor's changes go with the app
 	a.closeWindows()
 	if a.layoutDirty {

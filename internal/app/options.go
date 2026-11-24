@@ -116,6 +116,10 @@ var optionPages = []optionPage{
 		id: "ssh-keys", title: locales.KeysTitle,
 		view: (*App).keysOptions,
 	},
+	{
+		id: pageAlerts, title: locales.AlertTitle,
+		view: (*App).alertsPage,
+	},
 }
 
 // openOptions opens the options window, or brings it to the front.

@@ -141,6 +141,7 @@ func (a *App) leftPanelHeader(c *ui.Context) {
 			a.setLeftPage(page)
 		}
 		ui.Spacer(c)
+		a.alertButton(c)
 		if a.managerButton(c).Clicked() {
 			a.showManager(false) // the manager alone: its Import stays in front
 		}

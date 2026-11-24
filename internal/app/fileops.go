@@ -319,6 +319,9 @@ func (a *App) treeMenu(c *ui.Context, m *ui.Menu, s *Session, dir string) {
 	if dir != "/" && m.Item(locales.DownloadAsArchive()).Chosen() {
 		a.downloadDirArchive(s, dir)
 	}
+	if dir != "/" {
+		a.relayMenu(m, s, path.Dir(dir), []string{path.Base(dir)})
+	}
 	m.Separator()
 	if m.Item(locales.NewFolder()).Chosen() {
 		a.askNew(s, dir, opMkdir)

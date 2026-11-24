@@ -28,7 +28,8 @@ type Settings struct {
 	Language string `json:"language,omitempty"`
 	// Appearance is whether the app is light or dark: AppearanceLight,
 	// AppearanceDark, or AppearanceSystem (or "") to follow the system's.
-	Appearance Appearance `json:"appearance,omitempty"`
+	Appearance Appearance             `json:"appearance,omitempty"`
+	AlertRules *map[string]AlertRules `json:"alertRules,omitempty"`
 
 	// The sizes of the window's panes, as the user last dragged their
 	// dividers: the sidebar's and the folder tree's widths in DIPs, the

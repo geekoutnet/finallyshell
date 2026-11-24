@@ -10660,6 +10660,724 @@ func (msgs Messages) ImportSSHConfigNote() string {
 	return Catalog.Format(msgs.locale, "importSSHConfigNote", nil)
 }
 
+// RelaySend says "Send to another server…"
+// in the language the app shows.
+func RelaySend() string { return In(i18n.Locale()).RelaySend() }
+
+// RelaySend says "Send to another server…"
+// in the language of msgs.
+func (msgs Messages) RelaySend() string {
+	return Catalog.Format(msgs.locale, "relaySend", nil)
+}
+
+// RelayNeedsSftp says "The source server needs an open SFTP connection."
+// in the language the app shows.
+func RelayNeedsSftp() string { return In(i18n.Locale()).RelayNeedsSftp() }
+
+// RelayNeedsSftp says "The source server needs an open SFTP connection."
+// in the language of msgs.
+func (msgs Messages) RelayNeedsSftp() string {
+	return Catalog.Format(msgs.locale, "relayNeedsSftp", nil)
+}
+
+// RelaySelectFiles says "Select files or folders to send."
+// in the language the app shows.
+func RelaySelectFiles() string { return In(i18n.Locale()).RelaySelectFiles() }
+
+// RelaySelectFiles says "Select files or folders to send."
+// in the language of msgs.
+func (msgs Messages) RelaySelectFiles() string {
+	return Catalog.Format(msgs.locale, "relaySelectFiles", nil)
+}
+
+// RelayInvalidPath says "This path is not supported for server-to-server transfer."
+// in the language the app shows.
+func RelayInvalidPath() string { return In(i18n.Locale()).RelayInvalidPath() }
+
+// RelayInvalidPath says "This path is not supported for server-to-server transfer."
+// in the language of msgs.
+func (msgs Messages) RelayInvalidPath() string {
+	return Catalog.Format(msgs.locale, "relayInvalidPath", nil)
+}
+
+// RelayDragHint says "Send to another server, or drag this button onto its session"
+// in the language the app shows.
+func RelayDragHint() string { return In(i18n.Locale()).RelayDragHint() }
+
+// RelayDragHint says "Send to another server, or drag this button onto its session"
+// in the language of msgs.
+func (msgs Messages) RelayDragHint() string {
+	return Catalog.Format(msgs.locale, "relayDragHint", nil)
+}
+
+// RelayChooseHost says "Choose destination server"
+// in the language the app shows.
+func RelayChooseHost() string { return In(i18n.Locale()).RelayChooseHost() }
+
+// RelayChooseHost says "Choose destination server"
+// in the language of msgs.
+func (msgs Messages) RelayChooseHost() string {
+	return Catalog.Format(msgs.locale, "relayChooseHost", nil)
+}
+
+// RelayNoHosts says "No other SSH servers"
+// in the language the app shows.
+func RelayNoHosts() string { return In(i18n.Locale()).RelayNoHosts() }
+
+// RelayNoHosts says "No other SSH servers"
+// in the language of msgs.
+func (msgs Messages) RelayNoHosts() string {
+	return Catalog.Format(msgs.locale, "relayNoHosts", nil)
+}
+
+// RelayConnectHost says "Connect to browse folders"
+// in the language the app shows.
+func RelayConnectHost() string { return In(i18n.Locale()).RelayConnectHost() }
+
+// RelayConnectHost says "Connect to browse folders"
+// in the language of msgs.
+func (msgs Messages) RelayConnectHost() string {
+	return Catalog.Format(msgs.locale, "relayConnectHost", nil)
+}
+
+// RelaySource says "{host}:{folder} · {count, plural, one {# item} other {# items}}"
+// in the language the app shows.
+func RelaySource(host string, folder string, count int) string {
+	return In(i18n.Locale()).RelaySource(host, folder, count)
+}
+
+// RelaySource says "{host}:{folder} · {count, plural, one {# item} other {# items}}"
+// in the language of msgs.
+func (msgs Messages) RelaySource(host string, folder string, count int) string {
+	return Catalog.Format(msgs.locale, "relaySource", map[string]any{"host": host, "folder": folder, "count": count})
+}
+
+// RelayFolder says "Destination folder"
+// in the language the app shows.
+func RelayFolder() string { return In(i18n.Locale()).RelayFolder() }
+
+// RelayFolder says "Destination folder"
+// in the language of msgs.
+func (msgs Messages) RelayFolder() string {
+	return Catalog.Format(msgs.locale, "relayFolder", nil)
+}
+
+// RelayNoSubfolders says "No subfolders"
+// in the language the app shows.
+func RelayNoSubfolders() string { return In(i18n.Locale()).RelayNoSubfolders() }
+
+// RelayNoSubfolders says "No subfolders"
+// in the language of msgs.
+func (msgs Messages) RelayNoSubfolders() string {
+	return Catalog.Format(msgs.locale, "relayNoSubfolders", nil)
+}
+
+// RelayMode says "Transfer method"
+// in the language the app shows.
+func RelayMode() string { return In(i18n.Locale()).RelayMode() }
+
+// RelayMode says "Transfer method"
+// in the language of msgs.
+func (msgs Messages) RelayMode() string {
+	return Catalog.Format(msgs.locale, "relayMode", nil)
+}
+
+// RelayAutomatic says "Automatic (try direct SSH first)"
+// in the language the app shows.
+func RelayAutomatic() string { return In(i18n.Locale()).RelayAutomatic() }
+
+// RelayAutomatic says "Automatic (try direct SSH first)"
+// in the language of msgs.
+func (msgs Messages) RelayAutomatic() string {
+	return Catalog.Format(msgs.locale, "relayAutomatic", nil)
+}
+
+// RelayDirect says "Direct SSH"
+// in the language the app shows.
+func RelayDirect() string { return In(i18n.Locale()).RelayDirect() }
+
+// RelayDirect says "Direct SSH"
+// in the language of msgs.
+func (msgs Messages) RelayDirect() string {
+	return Catalog.Format(msgs.locale, "relayDirect", nil)
+}
+
+// RelayViaApp says "Relay through this computer"
+// in the language the app shows.
+func RelayViaApp() string { return In(i18n.Locale()).RelayViaApp() }
+
+// RelayViaApp says "Relay through this computer"
+// in the language of msgs.
+func (msgs Messages) RelayViaApp() string {
+	return Catalog.Format(msgs.locale, "relayViaApp", nil)
+}
+
+// RelayReview says "Review transfer…"
+// in the language the app shows.
+func RelayReview() string { return In(i18n.Locale()).RelayReview() }
+
+// RelayReview says "Review transfer…"
+// in the language of msgs.
+func (msgs Messages) RelayReview() string {
+	return Catalog.Format(msgs.locale, "relayReview", nil)
+}
+
+// RelayConfirmBody says "Copy these items to {host}:{folder}. The source will not be changed."
+// in the language the app shows.
+func RelayConfirmBody(host string, folder string) string {
+	return In(i18n.Locale()).RelayConfirmBody(host, folder)
+}
+
+// RelayConfirmBody says "Copy these items to {host}:{folder}. The source will not be changed."
+// in the language of msgs.
+func (msgs Messages) RelayConfirmBody(host string, folder string) string {
+	return Catalog.Format(msgs.locale, "relayConfirmBody", map[string]any{"host": host, "folder": folder})
+}
+
+// RelayConflicts says "When a destination name already exists"
+// in the language the app shows.
+func RelayConflicts() string { return In(i18n.Locale()).RelayConflicts() }
+
+// RelayConflicts says "When a destination name already exists"
+// in the language of msgs.
+func (msgs Messages) RelayConflicts() string {
+	return Catalog.Format(msgs.locale, "relayConflicts", nil)
+}
+
+// RelaySkip says "Skip existing items"
+// in the language the app shows.
+func RelaySkip() string { return In(i18n.Locale()).RelaySkip() }
+
+// RelaySkip says "Skip existing items"
+// in the language of msgs.
+func (msgs Messages) RelaySkip() string {
+	return Catalog.Format(msgs.locale, "relaySkip", nil)
+}
+
+// RelayRename says "Rename incoming items"
+// in the language the app shows.
+func RelayRename() string { return In(i18n.Locale()).RelayRename() }
+
+// RelayRename says "Rename incoming items"
+// in the language of msgs.
+func (msgs Messages) RelayRename() string {
+	return Catalog.Format(msgs.locale, "relayRename", nil)
+}
+
+// RelayOverwrite says "Replace existing items after backup"
+// in the language the app shows.
+func RelayOverwrite() string { return In(i18n.Locale()).RelayOverwrite() }
+
+// RelayOverwrite says "Replace existing items after backup"
+// in the language of msgs.
+func (msgs Messages) RelayOverwrite() string {
+	return Catalog.Format(msgs.locale, "relayOverwrite", nil)
+}
+
+// RelayBackupNote says "Replace backs up the entire existing file or folder as .bak-YYYYMMDDhhmmss. Folders are replaced, not merged."
+// in the language the app shows.
+func RelayBackupNote() string { return In(i18n.Locale()).RelayBackupNote() }
+
+// RelayBackupNote says "Replace backs up the entire existing file or folder as .bak-YYYYMMDDhhmmss. Folders are replaced, not merged."
+// in the language of msgs.
+func (msgs Messages) RelayBackupNote() string {
+	return Catalog.Format(msgs.locale, "relayBackupNote", nil)
+}
+
+// RelayAllSkipped says "All selected names already exist."
+// in the language the app shows.
+func RelayAllSkipped() string { return In(i18n.Locale()).RelayAllSkipped() }
+
+// RelayAllSkipped says "All selected names already exist."
+// in the language of msgs.
+func (msgs Messages) RelayAllSkipped() string {
+	return Catalog.Format(msgs.locale, "relayAllSkipped", nil)
+}
+
+// RelayWillReplace says "{name} — replace after backup"
+// in the language the app shows.
+func RelayWillReplace(name string) string { return In(i18n.Locale()).RelayWillReplace(name) }
+
+// RelayWillReplace says "{name} — replace after backup"
+// in the language of msgs.
+func (msgs Messages) RelayWillReplace(name string) string {
+	return Catalog.Format(msgs.locale, "relayWillReplace", map[string]any{"name": name})
+}
+
+// RelayStart says "Start transfer"
+// in the language the app shows.
+func RelayStart() string { return In(i18n.Locale()).RelayStart() }
+
+// RelayStart says "Start transfer"
+// in the language of msgs.
+func (msgs Messages) RelayStart() string {
+	return Catalog.Format(msgs.locale, "relayStart", nil)
+}
+
+// RelayBack says "Back"
+// in the language the app shows.
+func RelayBack() string { return In(i18n.Locale()).RelayBack() }
+
+// RelayBack says "Back"
+// in the language of msgs.
+func (msgs Messages) RelayBack() string {
+	return Catalog.Format(msgs.locale, "relayBack", nil)
+}
+
+// RelaySizeMismatch says "The file size changed or did not match."
+// in the language the app shows.
+func RelaySizeMismatch() string { return In(i18n.Locale()).RelaySizeMismatch() }
+
+// RelaySizeMismatch says "The file size changed or did not match."
+// in the language of msgs.
+func (msgs Messages) RelaySizeMismatch() string {
+	return Catalog.Format(msgs.locale, "relaySizeMismatch", nil)
+}
+
+// RelayUnsupportedType says "Symbolic links and special files are not supported."
+// in the language the app shows.
+func RelayUnsupportedType() string { return In(i18n.Locale()).RelayUnsupportedType() }
+
+// RelayUnsupportedType says "Symbolic links and special files are not supported."
+// in the language of msgs.
+func (msgs Messages) RelayUnsupportedType() string {
+	return Catalog.Format(msgs.locale, "relayUnsupportedType", nil)
+}
+
+// RelayDestinationChanged says "The destination changed after confirmation. Review it again."
+// in the language the app shows.
+func RelayDestinationChanged() string { return In(i18n.Locale()).RelayDestinationChanged() }
+
+// RelayDestinationChanged says "The destination changed after confirmation. Review it again."
+// in the language of msgs.
+func (msgs Messages) RelayDestinationChanged() string {
+	return Catalog.Format(msgs.locale, "relayDestinationChanged", nil)
+}
+
+// RelayDirectUnavailable says "Direct SSH requires public-key access and a trusted destination host key on the source server."
+// in the language the app shows.
+func RelayDirectUnavailable() string { return In(i18n.Locale()).RelayDirectUnavailable() }
+
+// RelayDirectUnavailable says "Direct SSH requires public-key access and a trusted destination host key on the source server."
+// in the language of msgs.
+func (msgs Messages) RelayDirectUnavailable() string {
+	return Catalog.Format(msgs.locale, "relayDirectUnavailable", nil)
+}
+
+// RelayTarFailed says "The source tar command failed."
+// in the language the app shows.
+func RelayTarFailed() string { return In(i18n.Locale()).RelayTarFailed() }
+
+// RelayTarFailed says "The source tar command failed."
+// in the language of msgs.
+func (msgs Messages) RelayTarFailed() string {
+	return Catalog.Format(msgs.locale, "relayTarFailed", nil)
+}
+
+// RelayOverlap says "The destination overlaps the source on the same server."
+// in the language the app shows.
+func RelayOverlap() string { return In(i18n.Locale()).RelayOverlap() }
+
+// RelayOverlap says "The destination overlaps the source on the same server."
+// in the language of msgs.
+func (msgs Messages) RelayOverlap() string {
+	return Catalog.Format(msgs.locale, "relayOverlap", nil)
+}
+
+// RelayProgress says "{mode} · {total, plural, one {{files}/# file} other {{files}/# files}}"
+// in the language the app shows.
+func RelayProgress(mode string, files int, total int) string {
+	return In(i18n.Locale()).RelayProgress(mode, files, total)
+}
+
+// RelayProgress says "{mode} · {total, plural, one {{files}/# file} other {{files}/# files}}"
+// in the language of msgs.
+func (msgs Messages) RelayProgress(mode string, files int, total int) string {
+	return Catalog.Format(msgs.locale, "relayProgress", map[string]any{"mode": mode, "files": files, "total": total})
+}
+
+// RelayTransferEnded says "This transfer has already ended."
+// in the language the app shows.
+func RelayTransferEnded() string { return In(i18n.Locale()).RelayTransferEnded() }
+
+// RelayTransferEnded says "This transfer has already ended."
+// in the language of msgs.
+func (msgs Messages) RelayTransferEnded() string {
+	return Catalog.Format(msgs.locale, "relayTransferEnded", nil)
+}
+
+// AlertTitle says "Alerts"
+// in the language the app shows.
+func AlertTitle() string { return In(i18n.Locale()).AlertTitle() }
+
+// AlertTitle says "Alerts"
+// in the language of msgs.
+func (msgs Messages) AlertTitle() string {
+	return Catalog.Format(msgs.locale, "alertTitle", nil)
+}
+
+// AlertUnreadCount says "{count, plural, =0 {Alerts} one {Alerts (# new)} other {Alerts (# new)}}"
+// in the language the app shows.
+func AlertUnreadCount(count int) string { return In(i18n.Locale()).AlertUnreadCount(count) }
+
+// AlertUnreadCount says "{count, plural, =0 {Alerts} one {Alerts (# new)} other {Alerts (# new)}}"
+// in the language of msgs.
+func (msgs Messages) AlertUnreadCount(count int) string {
+	return Catalog.Format(msgs.locale, "alertUnreadCount", map[string]any{"count": count})
+}
+
+// AlertBadge says "{count, plural, =100 {99+} one {#} other {#}}"
+// in the language the app shows.
+func AlertBadge(count int) string { return In(i18n.Locale()).AlertBadge(count) }
+
+// AlertBadge says "{count, plural, =100 {99+} one {#} other {#}}"
+// in the language of msgs.
+func (msgs Messages) AlertBadge(count int) string {
+	return Catalog.Format(msgs.locale, "alertBadge", map[string]any{"count": count})
+}
+
+// AlertNotification says "{host}: {rule}"
+// in the language the app shows.
+func AlertNotification(host string, rule string) string {
+	return In(i18n.Locale()).AlertNotification(host, rule)
+}
+
+// AlertNotification says "{host}: {rule}"
+// in the language of msgs.
+func (msgs Messages) AlertNotification(host string, rule string) string {
+	return Catalog.Format(msgs.locale, "alertNotification", map[string]any{"host": host, "rule": rule})
+}
+
+// AlertWhileRunning says "Checks and in-app history are available only while the app is running."
+// in the language the app shows.
+func AlertWhileRunning() string { return In(i18n.Locale()).AlertWhileRunning() }
+
+// AlertWhileRunning says "Checks and in-app history are available only while the app is running."
+// in the language of msgs.
+func (msgs Messages) AlertWhileRunning() string {
+	return Catalog.Format(msgs.locale, "alertWhileRunning", nil)
+}
+
+// AlertUnreachable says "SSH connection lost or unreachable"
+// in the language the app shows.
+func AlertUnreachable() string { return In(i18n.Locale()).AlertUnreachable() }
+
+// AlertUnreachable says "SSH connection lost or unreachable"
+// in the language of msgs.
+func (msgs Messages) AlertUnreachable() string {
+	return Catalog.Format(msgs.locale, "alertUnreachable", nil)
+}
+
+// AlertDisconnected says "SSH connection dropped unexpectedly."
+// in the language the app shows.
+func AlertDisconnected() string { return In(i18n.Locale()).AlertDisconnected() }
+
+// AlertDisconnected says "SSH connection dropped unexpectedly."
+// in the language of msgs.
+func (msgs Messages) AlertDisconnected() string {
+	return Catalog.Format(msgs.locale, "alertDisconnected", nil)
+}
+
+// AlertConnectFailed says "Could not reach the SSH endpoint."
+// in the language the app shows.
+func AlertConnectFailed() string { return In(i18n.Locale()).AlertConnectFailed() }
+
+// AlertConnectFailed says "Could not reach the SSH endpoint."
+// in the language of msgs.
+func (msgs Messages) AlertConnectFailed() string {
+	return Catalog.Format(msgs.locale, "alertConnectFailed", nil)
+}
+
+// AlertCPU says "High CPU usage"
+// in the language the app shows.
+func AlertCPU() string { return In(i18n.Locale()).AlertCPU() }
+
+// AlertCPU says "High CPU usage"
+// in the language of msgs.
+func (msgs Messages) AlertCPU() string {
+	return Catalog.Format(msgs.locale, "alertCPU", nil)
+}
+
+// AlertMemory says "High memory usage"
+// in the language the app shows.
+func AlertMemory() string { return In(i18n.Locale()).AlertMemory() }
+
+// AlertMemory says "High memory usage"
+// in the language of msgs.
+func (msgs Messages) AlertMemory() string {
+	return Catalog.Format(msgs.locale, "alertMemory", nil)
+}
+
+// AlertDisk says "High disk usage"
+// in the language the app shows.
+func AlertDisk() string { return In(i18n.Locale()).AlertDisk() }
+
+// AlertDisk says "High disk usage"
+// in the language of msgs.
+func (msgs Messages) AlertDisk() string {
+	return Catalog.Format(msgs.locale, "alertDisk", nil)
+}
+
+// AlertLoad says "High system load"
+// in the language the app shows.
+func AlertLoad() string { return In(i18n.Locale()).AlertLoad() }
+
+// AlertLoad says "High system load"
+// in the language of msgs.
+func (msgs Messages) AlertLoad() string {
+	return Catalog.Format(msgs.locale, "alertLoad", nil)
+}
+
+// AlertService says "Failed systemd service"
+// in the language the app shows.
+func AlertService() string { return In(i18n.Locale()).AlertService() }
+
+// AlertService says "Failed systemd service"
+// in the language of msgs.
+func (msgs Messages) AlertService() string {
+	return Catalog.Format(msgs.locale, "alertService", nil)
+}
+
+// AlertNew says "New"
+// in the language the app shows.
+func AlertNew() string { return In(i18n.Locale()).AlertNew() }
+
+// AlertNew says "New"
+// in the language of msgs.
+func (msgs Messages) AlertNew() string {
+	return Catalog.Format(msgs.locale, "alertNew", nil)
+}
+
+// AlertAcknowledged says "Acknowledged"
+// in the language the app shows.
+func AlertAcknowledged() string { return In(i18n.Locale()).AlertAcknowledged() }
+
+// AlertAcknowledged says "Acknowledged"
+// in the language of msgs.
+func (msgs Messages) AlertAcknowledged() string {
+	return Catalog.Format(msgs.locale, "alertAcknowledged", nil)
+}
+
+// AlertAcknowledge says "Acknowledge"
+// in the language the app shows.
+func AlertAcknowledge() string { return In(i18n.Locale()).AlertAcknowledge() }
+
+// AlertAcknowledge says "Acknowledge"
+// in the language of msgs.
+func (msgs Messages) AlertAcknowledge() string {
+	return Catalog.Format(msgs.locale, "alertAcknowledge", nil)
+}
+
+// AlertAcknowledgeSelected says "Acknowledge selected"
+// in the language the app shows.
+func AlertAcknowledgeSelected() string { return In(i18n.Locale()).AlertAcknowledgeSelected() }
+
+// AlertAcknowledgeSelected says "Acknowledge selected"
+// in the language of msgs.
+func (msgs Messages) AlertAcknowledgeSelected() string {
+	return Catalog.Format(msgs.locale, "alertAcknowledgeSelected", nil)
+}
+
+// AlertAlreadyAcknowledged says "This alert has already been acknowledged."
+// in the language the app shows.
+func AlertAlreadyAcknowledged() string { return In(i18n.Locale()).AlertAlreadyAcknowledged() }
+
+// AlertAlreadyAcknowledged says "This alert has already been acknowledged."
+// in the language of msgs.
+func (msgs Messages) AlertAlreadyAcknowledged() string {
+	return Catalog.Format(msgs.locale, "alertAlreadyAcknowledged", nil)
+}
+
+// AlertCopyValue says "Copy value"
+// in the language the app shows.
+func AlertCopyValue() string { return In(i18n.Locale()).AlertCopyValue() }
+
+// AlertCopyValue says "Copy value"
+// in the language of msgs.
+func (msgs Messages) AlertCopyValue() string {
+	return Catalog.Format(msgs.locale, "alertCopyValue", nil)
+}
+
+// AlertFilter says "Filter alerts"
+// in the language the app shows.
+func AlertFilter() string { return In(i18n.Locale()).AlertFilter() }
+
+// AlertFilter says "Filter alerts"
+// in the language of msgs.
+func (msgs Messages) AlertFilter() string {
+	return Catalog.Format(msgs.locale, "alertFilter", nil)
+}
+
+// AlertOnlyUnread says "Unacknowledged only"
+// in the language the app shows.
+func AlertOnlyUnread() string { return In(i18n.Locale()).AlertOnlyUnread() }
+
+// AlertOnlyUnread says "Unacknowledged only"
+// in the language of msgs.
+func (msgs Messages) AlertOnlyUnread() string {
+	return Catalog.Format(msgs.locale, "alertOnlyUnread", nil)
+}
+
+// AlertTime says "Time"
+// in the language the app shows.
+func AlertTime() string { return In(i18n.Locale()).AlertTime() }
+
+// AlertTime says "Time"
+// in the language of msgs.
+func (msgs Messages) AlertTime() string {
+	return Catalog.Format(msgs.locale, "alertTime", nil)
+}
+
+// AlertHost says "Host"
+// in the language the app shows.
+func AlertHost() string { return In(i18n.Locale()).AlertHost() }
+
+// AlertHost says "Host"
+// in the language of msgs.
+func (msgs Messages) AlertHost() string {
+	return Catalog.Format(msgs.locale, "alertHost", nil)
+}
+
+// AlertRule says "Rule"
+// in the language the app shows.
+func AlertRule() string { return In(i18n.Locale()).AlertRule() }
+
+// AlertRule says "Rule"
+// in the language of msgs.
+func (msgs Messages) AlertRule() string {
+	return Catalog.Format(msgs.locale, "alertRule", nil)
+}
+
+// AlertValue says "Value"
+// in the language the app shows.
+func AlertValue() string { return In(i18n.Locale()).AlertValue() }
+
+// AlertValue says "Value"
+// in the language of msgs.
+func (msgs Messages) AlertValue() string {
+	return Catalog.Format(msgs.locale, "alertValue", nil)
+}
+
+// AlertState says "Status"
+// in the language the app shows.
+func AlertState() string { return In(i18n.Locale()).AlertState() }
+
+// AlertState says "Status"
+// in the language of msgs.
+func (msgs Messages) AlertState() string {
+	return Catalog.Format(msgs.locale, "alertState", nil)
+}
+
+// AlertEmpty says "No matching alerts."
+// in the language the app shows.
+func AlertEmpty() string { return In(i18n.Locale()).AlertEmpty() }
+
+// AlertEmpty says "No matching alerts."
+// in the language of msgs.
+func (msgs Messages) AlertEmpty() string {
+	return Catalog.Format(msgs.locale, "alertEmpty", nil)
+}
+
+// AlertAllHosts says "All SSH hosts (defaults)"
+// in the language the app shows.
+func AlertAllHosts() string { return In(i18n.Locale()).AlertAllHosts() }
+
+// AlertAllHosts says "All SSH hosts (defaults)"
+// in the language of msgs.
+func (msgs Messages) AlertAllHosts() string {
+	return Catalog.Format(msgs.locale, "alertAllHosts", nil)
+}
+
+// AlertScope says "Apply rules to"
+// in the language the app shows.
+func AlertScope() string { return In(i18n.Locale()).AlertScope() }
+
+// AlertScope says "Apply rules to"
+// in the language of msgs.
+func (msgs Messages) AlertScope() string {
+	return Catalog.Format(msgs.locale, "alertScope", nil)
+}
+
+// AlertOverride says "Use custom rules for this host"
+// in the language the app shows.
+func AlertOverride() string { return In(i18n.Locale()).AlertOverride() }
+
+// AlertOverride says "Use custom rules for this host"
+// in the language of msgs.
+func (msgs Messages) AlertOverride() string {
+	return Catalog.Format(msgs.locale, "alertOverride", nil)
+}
+
+// AlertInherits says "This host uses the rules for all SSH hosts."
+// in the language the app shows.
+func AlertInherits() string { return In(i18n.Locale()).AlertInherits() }
+
+// AlertInherits says "This host uses the rules for all SSH hosts."
+// in the language of msgs.
+func (msgs Messages) AlertInherits() string {
+	return Catalog.Format(msgs.locale, "alertInherits", nil)
+}
+
+// AlertThresholdNote says "Set a threshold to 0 to disable it. Resource and service rules require an open SSH session with monitoring enabled."
+// in the language the app shows.
+func AlertThresholdNote() string { return In(i18n.Locale()).AlertThresholdNote() }
+
+// AlertThresholdNote says "Set a threshold to 0 to disable it. Resource and service rules require an open SSH session with monitoring enabled."
+// in the language of msgs.
+func (msgs Messages) AlertThresholdNote() string {
+	return Catalog.Format(msgs.locale, "alertThresholdNote", nil)
+}
+
+// AlertCPUPercent says "CPU usage above (%)"
+// in the language the app shows.
+func AlertCPUPercent() string { return In(i18n.Locale()).AlertCPUPercent() }
+
+// AlertCPUPercent says "CPU usage above (%)"
+// in the language of msgs.
+func (msgs Messages) AlertCPUPercent() string {
+	return Catalog.Format(msgs.locale, "alertCPUPercent", nil)
+}
+
+// AlertMinutes says "CPU stays above the threshold (minutes)"
+// in the language the app shows.
+func AlertMinutes() string { return In(i18n.Locale()).AlertMinutes() }
+
+// AlertMinutes says "CPU stays above the threshold (minutes)"
+// in the language of msgs.
+func (msgs Messages) AlertMinutes() string {
+	return Catalog.Format(msgs.locale, "alertMinutes", nil)
+}
+
+// AlertMemoryPercent says "Memory usage above (%)"
+// in the language the app shows.
+func AlertMemoryPercent() string { return In(i18n.Locale()).AlertMemoryPercent() }
+
+// AlertMemoryPercent says "Memory usage above (%)"
+// in the language of msgs.
+func (msgs Messages) AlertMemoryPercent() string {
+	return Catalog.Format(msgs.locale, "alertMemoryPercent", nil)
+}
+
+// AlertDiskPercent says "Any monitored mount above (%)"
+// in the language the app shows.
+func AlertDiskPercent() string { return In(i18n.Locale()).AlertDiskPercent() }
+
+// AlertDiskPercent says "Any monitored mount above (%)"
+// in the language of msgs.
+func (msgs Messages) AlertDiskPercent() string {
+	return Catalog.Format(msgs.locale, "alertDiskPercent", nil)
+}
+
+// AlertLoadFactor says "1-minute load above (× online CPU cores)"
+// in the language the app shows.
+func AlertLoadFactor() string { return In(i18n.Locale()).AlertLoadFactor() }
+
+// AlertLoadFactor says "1-minute load above (× online CPU cores)"
+// in the language of msgs.
+func (msgs Messages) AlertLoadFactor() string {
+	return Catalog.Format(msgs.locale, "alertLoadFactor", nil)
+}
+
 // ProblemSSHMatch says "Match is not supported, skipped"
 // in the language the app shows.
 func ProblemSSHMatch() string { return In(i18n.Locale()).ProblemSSHMatch() }

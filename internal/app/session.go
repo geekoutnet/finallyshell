@@ -144,6 +144,9 @@ func (a *App) connect(s *Session, secret string) {
 	panes := s.panes.panes()
 	fail := func(err error) {
 		a.post(func() {
+			if ctx.Err() == nil && s.ctx == ctx {
+				a.alertDialFailed(s, err)
+			}
 			s.status, s.err = statusFailed, err
 			if ctx.Err() == nil {
 				a.loginFailed(s, err)
@@ -218,6 +221,7 @@ func (a *App) connect(s *Session, secret string) {
 			s.status, s.err = statusConnected, nil
 			a.noteConnected(s.Host)
 			a.startTunnels(s, h.Tunnels)
+			a.alertSessionStarted(s, client, ctx)
 		})
 		// The monitor polls with an exec channel; hosts that drop extra
 		// channels turn it off.
@@ -226,6 +230,7 @@ func (a *App) connect(s *Session, secret string) {
 				a.post(func() {
 					if ctx.Err() == nil {
 						s.stats = st
+						a.alertStats(s, st)
 					}
 				})
 			})

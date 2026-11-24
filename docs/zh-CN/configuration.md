@@ -76,6 +76,12 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 }
 ```
 
+### Telnet 和串口字段
+
+- `kind` 缺省表示 SSH，`telnet` 表示 Telnet，`serial` 表示串口。
+- Telnet 使用 `addr`、`port`（缺省为 23）、`user`、`termType`、`encoding`、`backspace` 和 `delete`。`telnet` 对象包含 `autoLogin`、`loginPrompt`、`passwordPrompt` 和 `keepAlive`。密码不写入 `hosts.json`；记住的密码保存在系统凭据库的 `host/<id>/telnet-password`，与 SSH 凭据分开，不参与同步。
+- 串口以 `addr` 保存本机设备名，没有网络端口。`serial` 对象包含 `baud`、`dataBits`、`parity`（`none`、`odd`、`even`）、`stopBits`（1 或 2；Windows 上用 5 数据位时可选 1.5）、`flow`（`none`、`rtscts`、`xonxoff`）、`localEcho` 和 `lineEnding`（`cr`、`lf`、`crlf`）。字符编码和按键行为使用通用的 `encoding`、`backspace` 和 `delete` 字段。
+
 ### 隧道
 
 `tunnels` 是这台主机的端口转发：

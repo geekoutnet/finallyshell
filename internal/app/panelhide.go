@@ -1,6 +1,8 @@
 package app
 
 import (
+	"slices"
+
 	"finallyshell/internal/widgets"
 	"finallyshell/locales"
 
@@ -76,6 +78,19 @@ func (a *App) panelTabRow(c *ui.Context, tabs []bottomTab, tab *int, collapsed b
 		labels := make([]string, len(tabs))
 		for i, t := range tabs {
 			labels[i] = t.label
+		}
+		if s := a.connSession(); s.isDeviceSession() && !collapsed {
+			current := min(max(*tab, 0), len(labels)-1)
+			choice := labels[current]
+			if ui.Select(c, &choice, labels).Width(150).Shrink(1).MinWidth(0).Label(locales.TelnetPanelTab()).Changed() {
+				*tab = slices.Index(labels, choice)
+			}
+			ui.Spacer(c)
+			if underTerminal {
+				a.bottomPanelButton(c)
+			}
+			a.panelCornerButton(c, *tab)
+			return
 		}
 		// The tabs scroll sideways where they do not fit, as in the
 		// right column, so that the buttons stay in view; the wheel

@@ -631,6 +631,10 @@ LiteShell, MeatShell, OpenFinalShell), summarized in the comments of
 ignored, missing ones get defaults (port 22, password authentication), and
 a port written as a string is accepted.
 
+Telnet and serial entries are recognized when the file explicitly names
+the protocol in `protocol` or `conection_type`. Unknown numeric type codes
+are not inferred from the port. Serial settings are used when present.
+
 ### From Xshell
 
 Xshell keeps each session in a file of its own, `<name>.xsh`, in its
@@ -653,8 +657,10 @@ import an `.xts` file, choose the folder that holds it.
 
 Fields that are imported: the name (the file's, without `.xsh`), host,
 port, user, notes (the session's Description), folder and authentication
-method. Only SSH sessions are imported; Telnet, Rlogin, serial and other
-sessions are skipped.
+method. SSH, Telnet and serial sessions are imported; Rlogin and other
+unsupported sessions are skipped. Telnet also carries over the terminal
+type and literal login prompts. For serial sessions, verify the device
+name and settings after import; unrecognized settings use defaults.
 
 - Passwords are not imported. Xshell stores them encrypted in the session
   file; Finallyshell does not decrypt them and does not read that field.
@@ -694,9 +700,10 @@ folder's sessions: neither is a session. At most 10,000 session files
 are read; the first one past that is listed as failed.
 
 Fields that are imported: name (the file name without `.ini`), host,
-port, user, notes (the session's description) and folder. SSH2 and SSH1
-sessions are imported; Telnet, Serial, RLogin, RDP and other sessions
-count as skipped.
+port, user, notes (the session's description) and folder. SSH2, SSH1,
+Telnet and serial sessions are imported; RLogin, RDP and other sessions
+count as skipped. Serial imports carry over the COM port or device name
+and recognized line settings.
 
 - Passwords are not imported. SecureCRT stores them encrypted in the
   session files; Finallyshell does not decrypt them and does not read
@@ -735,8 +742,9 @@ sessions from this folder" write a `.mxtsessions` file, and "Save session
 to file" a `.moba` file of one session. Files saved on Chinese Windows
 (GBK) are read too.
 
-Only SSH sessions are imported; RDP, VNC, SFTP, Telnet and the others are
-skipped. Fields that are imported: name, host, port, user (none for
+SSH, Telnet and serial sessions are imported; RDP, VNC, SFTP and other
+unsupported sessions are skipped. Serial imports include the COM port
+and recognized line settings. Fields that are imported: name, host, port, user (none for
 MobaXterm's `<default>`), the comment as the notes, the folder (the
 session folders, nested as in MobaXterm; a folder exported on its own is
 a folder of its name), and the private key file, as the host's key file
@@ -912,6 +920,42 @@ settings" button that opens Options › General: no agent at the address
 keys, the server refused every key in the agent, or the agent did not
 sign (the user denied it). No password prompt opens. Agent forwarding
 (`ssh -A`) is not supported.
+
+### Telnet connection
+
+Choose **Telnet** in the connection editor, enter a host and port (23 by
+default), and optionally turn on the 30-second keepalive. To connect
+without saving a host, enter `telnet://host[:port]` in Quick Connect and
+press Enter; wrap IPv6 addresses in brackets. Do not put credentials in
+the URL. The Terminal page sets the advertised terminal type, character
+encoding and Backspace/Delete behavior; resizing updates the server when
+it supports window-size negotiation.
+
+Automatic login is off by default, including for imported hosts. The
+Authentication page uses case-insensitive `login:` or `username:` and
+`password:` prompts by default; you can supply regular expressions. A
+password is sent only after the username prompt has matched and you have
+confirmed the clear-text warning. Remembered passwords go only to the
+system credential store and are not synced. Leave the password blank to
+enter it manually. **Telnet is not encrypted**: use it only on a trusted
+network, and do not reuse your SSH password. Telnet connects directly;
+it has no proxy or SSH management features.
+
+### Serial connection
+
+Choose **Serial** in the connection editor. Select or refresh detected
+ports, or enter a local device manually (`COM4`, `/dev/ttyUSB0`, or
+`/dev/cu.usbserial-…`). On Windows, Linux and macOS the app opens the port
+directly with your account's permissions; it does not elevate access.
+
+Choose a common baud rate or enter a custom one, and set data bits,
+parity, stop bits and flow control (none, RTS/CTS or XON/XOFF). Defaults
+are 9600 baud, 8 data bits, no parity, one stop bit and no flow control.
+Set CR, LF or CRLF for outgoing line endings. Local echo is off by
+default; leave it off when entering passwords on a device. The Terminal
+page sets character encoding and Backspace/Delete behavior. If the device
+is unplugged, plug it back in and choose **Reconnect**. Serial sessions
+have no SSH management features.
 
 <a id="terminal-page"></a>
 

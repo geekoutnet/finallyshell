@@ -89,6 +89,20 @@ version 2.
 }
 ```
 
+### Telnet and serial fields
+
+- `kind` is absent for SSH, `telnet` for Telnet, or `serial` for a serial port.
+- Telnet uses `addr`, `port` (23 if unset), `user`, `termType`, `encoding`,
+  `backspace` and `delete`. The `telnet` object has `autoLogin`,
+  `loginPrompt`, `passwordPrompt` and `keepAlive`. Passwords are never
+  written to `hosts.json`; if remembered, the credential store uses
+  `host/<id>/telnet-password`, separate from SSH and excluded from sync.
+- Serial uses `addr` for the local device and has no network port. The
+  `serial` object has `baud`, `dataBits`, `parity` (`none`, `odd`, `even`),
+  `stopBits` (1 or 2, and 1.5 for 5 data bits on Windows), `flow`
+  (`none`, `rtscts`, `xonxoff`), `localEcho` and `lineEnding` (`cr`, `lf`,
+  `crlf`). `encoding`, `backspace` and `delete` are shared terminal fields.
+
 ### Tunnels
 
 `tunnels` are the host's port forwards:

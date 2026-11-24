@@ -46,8 +46,7 @@ import (
 //
 // The settings read, by index, for an SSH session:
 //
-//	0       the session type: 0 SSH; others (4 RDP, 5 VNC, 7 SFTP,
-//	        11 browser and such) are skipped as NotSSH
+//	0       the session type: 0 SSH, 1 Telnet, 8 Serial; others are skipped
 //	1, 2, 3 host, port (22 when missing), user ("<default>" for none)
 //	8, 9, 10  the SSH gateways' hosts, ports and users, "__PIPE__"
 //	        between them: the gateway (jump host) is not imported, the
@@ -268,24 +267,40 @@ func mobaSession(name, value string) (*Entry, *Problem) {
 	name = strings.TrimSpace(mobaUnescape(name))
 	// The type is never empty in the files described; one that is, is
 	// taken for SSH, the default.
-	if t := setting(0); t != "" && t != "0" {
+	kind := config.KindSSH
+	switch t := setting(0); t {
+	case "", "0":
+	case "1":
+		kind = config.KindTelnet
+	case "8":
+		kind = config.KindSerial
+	default:
 		return nil, &Problem{Reason: NotSSH, Detail: fmt.Sprintf("session %q: type %s", name, t)}
 	}
 	addr := setting(1)
 	if addr == "" {
 		return nil, &Problem{Reason: NoHost, Detail: fmt.Sprintf("session %q", name)}
 	}
-	h := &config.Host{Name: name, Addr: addr, Auth: config.AuthPassword}
-	if p, err := strconv.Atoi(setting(2)); err == nil && p > 0 && p <= 65535 && p != 22 {
-		h.Port = p
-	}
-	if u := setting(3); u != "<default>" {
-		h.User = u
+	h := &config.Host{Name: name, Addr: addr, Kind: kind, Auth: config.AuthPassword}
+	if kind != config.KindSerial {
+		port, _ := strconv.Atoi(setting(2))
+		devicePort(h, port)
+		if u := setting(3); u != "<default>" {
+			h.User = u
+		}
 	}
 	if len(fields) > 5 {
 		h.Notes = strings.TrimSpace(mobaUnescape(fields[5]))
 	}
 	e := &Entry{Host: h}
+	if kind == config.KindSerial {
+		h.Addr = serialPortName(addr)
+		h.Serial = serialSettings(setting(2), setting(3), setting(4), setting(5), setting(6))
+		return e, nil
+	}
+	if kind == config.KindTelnet {
+		return e, nil
+	}
 	if key := mobaKeyPath(setting(14)); key != "" {
 		h.Auth = config.AuthKey
 		if isWindowsPath(key) && mobaGOOS != "windows" {

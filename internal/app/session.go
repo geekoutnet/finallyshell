@@ -11,6 +11,7 @@ import (
 	"finallyshell/internal/config"
 	"finallyshell/internal/monitor"
 	"finallyshell/internal/remotefs"
+	"finallyshell/internal/serial"
 	"finallyshell/internal/sshx"
 	"finallyshell/locales"
 
@@ -39,6 +40,7 @@ type Session struct {
 	ID              int64
 	Host            *config.Host // nil for a new tab and a local terminal
 	local           bool         // a local terminal (local.go)
+	deviceKind      config.HostKind
 	status          sessionStatus
 	err             error // why it failed or closed; nil when the user disconnected
 	ip              string
@@ -114,6 +116,7 @@ func (s *Session) label() string {
 // credential store when the app has not read it yet. A password the
 // server refuses opens the prompt (loginFailed).
 func (a *App) connect(s *Session, secret string) {
+	s.deviceKind = config.KindSSH
 	if s.cancel != nil {
 		s.cancel()
 	}
@@ -436,6 +439,12 @@ func (s *Session) statusText() string {
 
 // describeError says err in the language the app shows.
 func describeError(err error) string {
+	if errors.Is(err, errTelnetAddress) {
+		return locales.TelnetHostInvalid()
+	}
+	if errors.Is(err, serial.ErrUnsupported) {
+		return locales.SerialUnsupported()
+	}
 	var changed *sshx.HostKeyChangedError
 	var keyFile *sshx.KeyFileError
 	var step *stepError

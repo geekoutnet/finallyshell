@@ -59,6 +59,9 @@ func hostSecretKey(id, name string) string { return "host/" + id + "/" + name }
 // loginSecretKey is the key of what h logs in with: its password, or the
 // passphrase of its key.
 func loginSecretKey(h *config.Host) string {
+	if h.Kind == config.KindTelnet {
+		return hostSecretKey(h.ID, secretTelnetPassword)
+	}
 	if h.Auth == config.AuthKey {
 		return hostSecretKey(h.ID, secretPassphrase)
 	}
@@ -298,10 +301,21 @@ func (a *App) storedPassphrase(h *config.Host) func(ctx context.Context) string 
 // its proxy's password, with those saved, once they are read; for a new
 // host (nil) it only finds out whether there is a store.
 func (a *App) readEditorSecret(ed *connEditor, h *config.Host) {
-	if h != nil && h.Auth != config.AuthAgent {
+	if h != nil && h.Kind == config.KindTelnet {
+		if h.Telnet != nil && h.Telnet.AutoLogin {
+			ed.readingSecret = a.readSecret(telnetSecretNeed(h), func() {
+				if a.editor == ed && a.windowOpen(WindowEditor) && ed.kind == config.KindTelnet && ed.readingSecret {
+					ed.readingSecret = false
+					if ed.password == "" {
+						ed.password = a.passwords[telnetPasswordKey(h.ID)]
+					}
+				}
+			})
+		}
+	} else if h != nil && h.Kind != config.KindSerial && h.Auth != config.AuthAgent {
 		auth := h.Auth
 		ed.readingSecret = a.readSecret(loginNeed(h, h), func() {
-			if a.editor != ed || !ed.readingSecret {
+			if a.editor != ed || !a.windowOpen(WindowEditor) || !ed.readingSecret || ed.kind == config.KindTelnet || ed.kind == config.KindSerial {
 				return
 			}
 			ed.readingSecret = false
@@ -525,6 +539,7 @@ func loginRefused(h *config.Host, err error) bool {
 // deleteHostSecrets deletes every secret the store keeps for the host
 // with the ID, as it is deleted for good (deleteHostForever).
 func (a *App) deleteHostSecrets(id string) {
+	a.forgetTelnetSecret(id)
 	for _, name := range hostSecretNames {
 		a.deleteSecret(hostSecretKey(id, name))
 	}
@@ -538,7 +553,11 @@ func (a *App) copyHostSecrets(from, to *config.Host) {
 	if !to.RemembersPassword() || a.secretsUnavailable() {
 		return
 	}
-	for _, name := range hostSecretNames {
+	names := hostSecretNames
+	if from.Kind == config.KindTelnet {
+		names = []string{secretTelnetPassword}
+	}
+	for _, name := range names {
 		src, dst := hostSecretKey(from.ID, name), hostSecretKey(to.ID, name)
 		a.secrets.queue.do(func() {
 			v, ok, err := a.plat.SecretGet(src)

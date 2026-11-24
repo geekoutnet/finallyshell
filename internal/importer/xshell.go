@@ -9,6 +9,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"slices"
 	"strconv"
@@ -44,6 +45,8 @@ import (
 //	                             PUBLICKEY), UserKey (the name of a key
 //	                             in Xshell's own key store, UserKeys)
 //	[CONNECTION:PROXY]           Proxy, the name of one of Xshell's proxies
+//	[CONNECTION:SERIAL]          ComPort and recognized line settings
+//	[TERMINAL]                   Type for Telnet
 //
 // The session's name is its file's, without .xsh. [SessionInfo] and
 // [Information] have a Description too, but it is the same for every file
@@ -417,12 +420,13 @@ func (r *xshReader) session(data []byte, file, name string, folder []string) {
 		return
 	}
 	conn, auth := ini["connection"], ini["connection:authentication"]
-	if p := conn["protocol"]; p != "" && !strings.HasPrefix(strings.ToUpper(p), "SSH") {
+	protocol := strings.ToUpper(conn["protocol"])
+	if protocol != "" && protocol != "TELNET" && protocol != "SERIAL" && !strings.HasPrefix(protocol, "SSH") {
 		r.problem(file, NotSSH, nil)
 		return
 	}
 	addr := conn["host"]
-	if addr == "" {
+	if addr == "" && protocol != "SERIAL" {
 		r.problem(file, NoHost, nil)
 		return
 	}
@@ -433,11 +437,34 @@ func (r *xshReader) session(data []byte, file, name string, folder []string) {
 		Auth:  config.AuthPassword,
 		Notes: conn["description"],
 	}
-	if p, err := strconv.Atoi(conn["port"]); err == nil && p > 0 && p <= 65535 && p != 22 {
-		h.Port = p
+	switch protocol {
+	case "TELNET":
+		h.Kind, h.TermType = config.KindTelnet, ini["terminal"]["type"]
+		h.Telnet = &config.TelnetConfig{LoginPrompt: regexp.QuoteMeta(auth["telnetloginprompt"]), PasswordPrompt: regexp.QuoteMeta(auth["telnetpasswordprompt"])}
+	case "SERIAL":
+		h.Kind, h.User = config.KindSerial, ""
+		settings := ini["connection:serial"]
+		h.Addr = serialPortName(settings["comport"])
+		if index, err := strconv.Atoi(h.Addr); err == nil && index >= 0 && index < 256 {
+			h.Addr = "COM" + strconv.Itoa(index+1)
+		}
+		if h.Addr == "" {
+			r.problem(file, NoHost, nil)
+			return
+		}
+		baud := settings["baudrate"]
+		if index, err := strconv.Atoi(baud); err == nil && index >= 0 && index < 50 {
+			baud = ""
+		}
+		h.Serial = serialSettings(baud, settings["databits"], settings["parity"], settings["stopbits"], settings["flowcontrol"])
+	default:
+		if xshKeyAuth(auth["method"], auth["userkey"]) {
+			h.Auth = config.AuthKey
+		}
 	}
-	if xshKeyAuth(auth["method"], auth["userkey"]) {
-		h.Auth = config.AuthKey
+	if h.Kind != config.KindSerial {
+		port, _ := strconv.Atoi(conn["port"])
+		devicePort(h, port)
 	}
 	if len(folder) == 0 {
 		folder = nil
@@ -475,8 +502,10 @@ func xshProxy(name string) bool {
 // others, the password among them, are not even kept.
 var xshKeys = map[string][]string{
 	"connection":                {"host", "port", "protocol", "description", "proxy", "firewall"},
-	"connection:authentication": {"username", "method", "userkey"},
+	"connection:authentication": {"username", "method", "userkey", "telnetloginprompt", "telnetpasswordprompt"},
 	"connection:proxy":          {"proxy", "firewall"},
+	"connection:serial":         {"comport", "baudrate", "databits", "parity", "stopbits", "flowcontrol"},
+	"terminal":                  {"type"},
 }
 
 // parseXsh is the keys of xshKeys that data, a session's file, has, by

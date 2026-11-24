@@ -170,7 +170,7 @@ func (a *App) startPage(c *ui.Context, tab *Session) {
 	}
 	ui.Column(c.Key(key)).Fill().Background(theme.Background).Children(func() {
 		if len(a.hosts.Live()) == 0 {
-			a.startEmpty(c, tab)
+			a.startEmpty(c, tab, st)
 			return
 		}
 		ui.Column(c).Fill().MaxWidth(820).AlignSelf(ui.Center).Padding(24, 28, 16, 28).Gap(12).Children(func() {
@@ -182,11 +182,19 @@ func (a *App) startPage(c *ui.Context, tab *Session) {
 // startEmpty is the page while there are no hosts at all. The connection
 // manager's button is there too, as it is where a new user imports the
 // hosts of another client. A local terminal opens from it too, in tab.
-func (a *App) startEmpty(c *ui.Context, tab *Session) {
+func (a *App) startEmpty(c *ui.Context, tab *Session, st *startState) {
 	ui.Column(c).Fill().Center().Gap(12).Children(func() {
 		ui.Icon(c, icons.Get("server")).FontSize(40).TextColor(theme.TextMuted)
 		ui.Text(c, locales.NoHostsTitle()).FontSize(16)
 		widgets.Muted(c, locales.NoHostsBody()).TextAlign(ui.Center).MaxWidth(480)
+		if ui.SearchField(c, &st.query).Placeholder("telnet://host[:port]").Label(locales.QuickConnect()).Width(300).Submitted() {
+			if h, _ := parseTelnetQuick(st.query); h != nil {
+				st.query = ""
+				a.openSessionIn(tab, h)
+			} else {
+				c.Toast(locales.TelnetQuickInvalid())
+			}
+		}
 		ui.Column(c).Gap(8).Width(200).Children(func() {
 			if ui.PrimaryButton(c, locales.NewConnection()).AutoFocus().Clicked() {
 				a.startNewConnection()
@@ -229,13 +237,24 @@ func (a *App) quickConnect(c *ui.Context, tab *Session, st *startState) {
 	var local bool // Local terminal clicked
 	ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
 		ui.Text(c, locales.QuickConnect()).FontSize(16).Bold().Grow(1)
-		search := ui.SearchField(c, &st.query).Placeholder(locales.SearchHosts()).Label(locales.SearchHosts()).Width(300).AutoFocus()
+		search := ui.SearchField(c, &st.query).Placeholder(locales.TelnetQuickConnect()).Label(locales.SearchHosts()).Width(350).MinWidth(0).Shrink(1).AutoFocus()
 		if search.Changed() {
 			rows = quickRows(quickHosts(a.hosts, st.query))
 			hostAt = hostRows(rows)
 			st.row = -1
 			if st.query != "" && len(hostAt) > 0 {
 				st.row = hostAt[0]
+			}
+		}
+		if search.Submitted() {
+			if h, matched := parseTelnetQuick(st.query); matched {
+				if h == nil {
+					c.Toast(locales.TelnetQuickInvalid())
+				} else {
+					st.query = ""
+					connect = h
+				}
+				return
 			}
 		}
 		if len(hostAt) == 0 {

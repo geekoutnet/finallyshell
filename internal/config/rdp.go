@@ -30,8 +30,13 @@ func (h *Host) IsRDP() bool { return h.Kind == KindRDP }
 
 // DefaultPort is the port of h's kind: 22, or 3389 for Remote Desktop.
 func (h *Host) DefaultPort() int {
-	if h.IsRDP() {
+	switch h.Kind {
+	case KindRDP:
 		return DefaultRDPPort
+	case KindTelnet:
+		return DefaultTelnetPort
+	case KindSerial:
+		return 0
 	}
 	return 22
 }

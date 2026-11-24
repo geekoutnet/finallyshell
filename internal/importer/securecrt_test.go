@@ -46,7 +46,7 @@ func TestReadSecureCRT(t *testing.T) {
 	}
 	// In folder order, then by name; the top level first. Default.ini of
 	// the top level is no session; one in a folder is.
-	want := []string{"|web-1", "Lab|global-key", "Lab|legacy", "Production|bastion",
+	want := []string{"|web-1", "Lab|console", "Lab|global-key", "Lab|legacy", "Lab|router", "Production|bastion",
 		"Production / Databases|db-1", "Production / Databases|Default", "实验室|树莓派"}
 	if !slices.Equal(got, want) {
 		t.Fatalf("entries %q, want %q", got, want)
@@ -102,13 +102,11 @@ func TestReadSecureCRT(t *testing.T) {
 	wantProblems := map[string]Reason{
 		"broken.ini":      Broken,
 		"Lab/no-host.ini": NoHost,
-		"Lab/router.ini":  NotSSH,
-		"Lab/console.ini": NotSSH,
 	}
 	if !maps(problems, wantProblems) {
 		t.Errorf("problems %v, want %v", problems, wantProblems)
 	}
-	if !src.Problems[0].Reason.Failed() || src.Problems[len(src.Problems)-1].Reason.Failed() {
+	if !src.Problems[0].Reason.Failed() || !src.Problems[len(src.Problems)-1].Reason.Failed() {
 		t.Errorf("problems in order %v", src.Problems)
 	}
 
@@ -132,7 +130,7 @@ func TestReadSecureCRT(t *testing.T) {
 // The Sessions folder, or a folder of it, reads too.
 func TestReadSecureCRTSessions(t *testing.T) {
 	src, err := ReadSecureCRT(filepath.Join(crtSample, "Sessions"))
-	if err != nil || len(src.Entries) != 7 {
+	if err != nil || len(src.Entries) != 9 {
 		t.Fatalf("Sessions: %+v, %v", src, err)
 	}
 	// Its config folder is still known.
@@ -192,7 +190,7 @@ func TestReadSecureCRTNoConfig(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(src.Entries) != 2 {
+	if len(src.Entries) != 4 {
 		t.Errorf("entries %+v", src.Entries)
 	}
 	if e := crtEntry(t, src, "global-key"); e.Host.Auth != config.AuthKey || e.KeyFile != "" || !e.NeedsKey {

@@ -125,7 +125,7 @@ func (s *Store) JumpHosts(h *Host) ([]*Host, error) {
 			return jumps, nil
 		}
 		next := s.Host(p.JumpHost)
-		if next == nil || next.Deleted() {
+		if !next.IsSSH() || next.Deleted() {
 			return nil, &JumpError{From: cur.Title(), Err: ErrJumpHostMissing}
 		}
 		names = append(names, next.Title())

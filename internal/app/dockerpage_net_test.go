@@ -121,6 +121,17 @@ func resourceTestApp(t *testing.T) (*App, *fakePlatform, *Session, *ui.Tester, *
 		calls <- resourceTestCall{input.Script()}
 		return "fake saved\n", nil
 	}
+	s.overview.memory.privilegeRunner = func(ctx context.Context, request monitor.PrivilegeRequest) (monitor.PrivilegeResult, error) {
+		if request.Probe {
+			return monitor.PrivilegeResult{Stdout: "root"}, nil
+		}
+		if request.Stdin != nil {
+			calls <- resourceTestCall{request.Action}
+			return monitor.PrivilegeResult{Started: true, Stdout: "fake saved\n"}, nil
+		}
+		out, err := s.overview.docker.run(ctx, nil, request.Action, request.ReportProgress)
+		return monitor.PrivilegeResult{Started: true, Stdout: out}, err
+	}
 	page.events = func(ctx context.Context, _ *ssh.Client, script string, report func(string)) (string, error) {
 		calls <- resourceTestCall{script}
 		report("{\"Type\":\"container\",\"Action\":\"start\",\"time\":1700000000,\"Actor\":{\"ID\":\"a1\",\"Attributes\":{\"name\":\"docs\"}}}\n{\"Type\":\"network\",\"Action\":\"create\",\"time\":1700000001,\"Actor\":{\"ID\":\"bb\",\"Attributes\":{\"name\":\"retired\"}}}\n")
@@ -286,8 +297,10 @@ func TestDockerSystemControls(t *testing.T) {
 	a, p, s, tt, page, calls := resourceTestApp(t)
 	s.docker.section = dockerSecSystem
 	tt.Frame()
-	resourceCall(t, calls, "'events' '--since' '30m'")
 	p.until(t, "system lists", func() bool { return page.system.info.read && page.system.disk.read })
+	if page.system.events.poll.run != nil {
+		t.Fatal("events started while the overview was visible")
+	}
 	a.openDockerCleanup(s, page)
 	tt.Frame()
 	choice := locales.DockerSysStopped() + " · 10MB (66%)"
@@ -327,6 +340,7 @@ func TestDockerSystemControls(t *testing.T) {
 	page.closeDialog()
 	page.system.mode = dockerSystemEvents
 	tt.Frame()
+	resourceCall(t, calls, "'events' '--since' '30m'")
 	p.until(t, "events", func() bool { return len(page.system.events.rows) == 2 })
 	page.system.events.table.query = "retired"
 	tt.Frame()

@@ -378,6 +378,9 @@ func (a *App) askDeleteQuick(cmd *config.QuickCommand) {
 // quickToolbar is the row above the buttons: New command, the command
 // editor's toggle, why the buttons are disabled, Send to and the search.
 func (a *App) quickToolbar(c *ui.Context, s *Session, live bool) {
+	if c.Shortcut(ui.Cmd|ui.Shift, ui.KeyP) {
+		a.openBulkPalette(a.bulkCurrentHost(s))
+	}
 	// Narrow, as in the right column or beside the command editor, it
 	// wraps: Send to and the search go to a row of their own, at its end.
 	// While the command editor shows, Send to is the one by its Send.
@@ -402,6 +405,7 @@ func (a *App) quickToolbar(c *ui.Context, s *Session, live bool) {
 			} else {
 				a.quickTarget(c, "quick")
 			}
+			a.bulkQuickEntry(c, s)
 			ui.SearchField(c, &a.quickUI.query).Placeholder(placeholder).Label(locales.QuickSearch()).Basis(220).Shrink(1).MinWidth(searchMinWidth)
 		})
 	})
@@ -496,6 +500,9 @@ func (a *App) quickButton(c *ui.Context, store *config.QuickCommands, s *Session
 	btn.ContextMenu(func(m *ui.Menu) {
 		if m.Item(locales.QuickSend()).Disabled(!live).Chosen() {
 			*act = func() { a.sendQuick(c, s, cmd) }
+		}
+		if m.Item(locales.BulkOpen()).Chosen() {
+			*act = func() { a.openBulkExec(a.bulkCurrentHost(s), cmd.Text) }
 		}
 		line, ok := a.barLine(s, cmd)
 		if m.Item(locales.QuickPutInBar()).Disabled(!ok).Chosen() {

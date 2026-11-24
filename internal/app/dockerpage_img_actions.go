@@ -230,7 +230,7 @@ func (a *App) readDockerImgDialog(dialog *dockerImgDialog, id string) {
 	}
 	ctx, cancel := dockerImgContext(dialog.target.session, dockerTimeout)
 	dialog.loading, dialog.stopRead = true, cancel
-	run := dockerImgRunner(dialog.target.session)
+	run := a.dockerExec(dialog.target.session, monitor.RunImageProgress, nil, false).command
 	go func() {
 		defer cancel()
 		output, err := run(ctx, dialog.target.client, script, nil)
@@ -281,7 +281,7 @@ func (a *App) requestDockerImgSearch(dialog *dockerImgDialog) {
 	}
 	ctx, cancel := dockerImgContext(dialog.target.session, 10*time.Second)
 	dialog.stopSearch = cancel
-	run := dockerImgRunner(dialog.target.session)
+	run := a.dockerExec(dialog.target.session, monitor.RunImageProgress, nil, false).command
 	go func() {
 		defer cancel()
 		select {
@@ -510,7 +510,7 @@ func (a *App) runDockerImgDialog(dialog *dockerImgDialog) {
 	ctx, cancel := dockerImgContext(s, 60*time.Minute)
 	work := &dockerWork{}
 	dialog.work, dialog.stopWork, dialog.validation = work, cancel, ""
-	run, report := dockerImgRunner(s), a.dockerProgress(work)
+	run, report := a.dockerExec(s, monitor.RunImageProgress, nil, false).command, a.dockerProgress(work)
 	var prepare func(context.Context) (string, func() error, error)
 	if dialog.op == imgPrune {
 		prepare = dockerImgPruneCheck(s, dialog, run)
@@ -518,8 +518,12 @@ func (a *App) runDockerImgDialog(dialog *dockerImgDialog) {
 		local, mode, tag := dialog.local, dialog.importing, strings.TrimSpace(dialog.platform)
 		tool, client := dialog.tool, dialog.target.client
 		uploaded := locales.DockerImgUploaded()
+		staging := monitor.RunDockerProgress
+		if s.overview.docker.run != nil {
+			staging = s.overview.docker.run
+		}
 		prepare = func(ctx context.Context) (string, func() error, error) {
-			return dockerImgUpload(ctx, client, tool, run, local, mode, tag, report, uploaded)
+			return dockerImgUpload(ctx, client, tool, staging, local, mode, tag, report, uploaded)
 		}
 	}
 	go func() {

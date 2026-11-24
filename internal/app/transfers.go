@@ -42,6 +42,7 @@ const maxRunning = 3
 // transferJob copies one file or directory, src into dstDir.
 type transferJob struct {
 	id     int64
+	zmodem bool
 	sess   *Session
 	sftp   *sftp.Client
 	dir    direction
@@ -419,6 +420,9 @@ func (a *App) transferPanel(c *ui.Context) {
 // what can be done with it.
 func (a *App) transferRow(c *ui.Context, t *transferJob) {
 	row := ui.Row(c).Gap(10).Padding(6, 10).BorderWidth(0, 0, 1, 0).BorderColor(colors.rowLine)
+	if t.zmodem {
+		row.ContextMenu(func(menu *ui.Menu) { a.zmodemTransferMenu(menu, t) })
+	}
 	row.Children(func() {
 		ic, dirLabel, dest := icons.Get("upload"), locales.UploadDirection(), t.sess.label()+":"+t.dstDir
 		if t.dir == download {
@@ -427,11 +431,17 @@ func (a *App) transferRow(c *ui.Context, t *transferJob) {
 		if t.archive {
 			dirLabel = t.archiveLabel()
 		}
+		if t.zmodem {
+			dirLabel = locales.ZmDirection(dirLabel)
+			if dest == "" || t.dir == upload {
+				dest = t.sess.label()
+			}
+		}
 		ui.Icon(c, ic).FontSize(16).TextColor(theme.TextMuted)
 		ui.Column(c).Grow(1).MinWidth(0).Gap(3).Children(func() {
 			ui.Row(c).Gap(8).Children(func() {
 				ui.Text(c, t.name()).SingleLine().Shrink(1).MinWidth(0)
-				widgets.Muted(c, dirLabel+" → "+dest).FontSize(11.5).SingleLine().Grow(1).MinWidth(0)
+				widgets.Muted(c, dirLabel+" → "+dest).Tooltip(dest).FontSize(11.5).SingleLine().Grow(1).MinWidth(0)
 			})
 			switch t.state {
 			case transferWaiting:
@@ -464,7 +474,7 @@ func (a *App) transferRow(c *ui.Context, t *transferJob) {
 			if widgets.IconButton(c, "x", locales.Cancel()).Clicked() {
 				a.cancelTransfer(t)
 			}
-		case t.state == transferFailed || t.state == transferCanceled:
+		case !t.zmodem && (t.state == transferFailed || t.state == transferCanceled):
 			if a.canRetryOverSFTP(t) && smallButton(c, locales.RetryOverSftp()).Clicked() {
 				a.retryOverSFTP(t)
 			}
@@ -479,6 +489,8 @@ func (a *App) transferRow(c *ui.Context, t *transferJob) {
 			if widgets.IconButton(c, "folder", locales.ShowInFolder()).Clicked() {
 				a.plat.ShowInFolder(t.local)
 			}
+		case t.zmodem && (t.state == transferCanceled || t.state == transferFailed):
+			widgets.IconButton(c, "rotate-cw", locales.Retry()).Disabled(true).Tooltip(locales.ZmRestart())
 		}
 	})
 }

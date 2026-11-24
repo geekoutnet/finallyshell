@@ -51,21 +51,16 @@ func composeContext(s *Session) context.Context {
 }
 
 func composeSessionReady(s *Session) bool {
-	state := &s.overview.docker
-	return s.status == statusConnected && execAllowed(s.Host) && state.dataClient == s.client &&
-		state.d.Tool != "" && state.d.State == monitor.DockerOK && (s.client != nil || state.run != nil)
+	return resourceTarget(s).available()
 }
 
-func composeRunner(s *Session) dockerRunner {
-	if run := s.overview.docker.run; run != nil {
-		return run
-	}
-	return func(ctx context.Context, client *ssh.Client, script string, report func(string)) (string, error) {
+func (a *App) composeRunner(s *Session) dockerRunner {
+	return a.dockerExec(s, func(ctx context.Context, client *ssh.Client, script string, report func(string)) (string, error) {
 		if report != nil {
 			return monitor.RunComposeStream(ctx, client, script, report)
 		}
 		return monitor.RunDocker(ctx, client, script)
-	}
+	}, nil, false).command
 }
 
 func (a *App) refreshDockerCompose(s *Session) {
@@ -73,7 +68,7 @@ func (a *App) refreshDockerCompose(s *Session) {
 		return
 	}
 	page := &s.docker.compose
-	client, engine, run, registry := s.client, monitor.CmdOf(&s.overview.docker.d), composeRunner(s), composeRegistryPath(s)
+	client, engine, run, registry := s.client, monitor.CmdOf(&s.overview.docker.d), a.composeRunner(s), composeRegistryPath(s)
 	if page.client != client || page.cli.Engine != engine {
 		if page.work != nil {
 			page.work.cancel()
@@ -140,7 +135,7 @@ func (a *App) readComposeServices(s *Session, project monitor.ComposeProject) {
 		return
 	}
 	page.serviceReading = true
-	readID, client, run := page.serviceReadID, s.client, composeRunner(s)
+	readID, client, run := page.serviceReadID, s.client, a.composeRunner(s)
 	ctx, cancel := context.WithTimeout(composeContext(s), dockerTimeout)
 	go func() {
 		defer cancel()

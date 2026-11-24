@@ -3,6 +3,7 @@ package app
 import (
 	"cmp"
 	"context"
+	"errors"
 	"slices"
 	"strings"
 	"time"
@@ -24,7 +25,7 @@ type dockerResourcesPage struct {
 	dialog   *dockerResourceDialog
 	lastWork *dockerResourceDialog
 	work     *dockerWork
-	input    func(context.Context, *ssh.Client, monitor.DockerInput, func(string)) (string, error)
+	input    dockerInputRunner
 	events   dockerRunner
 }
 
@@ -66,13 +67,6 @@ type dockerResourceLoad[T any] struct {
 
 type dockerResourceRequest struct{ cancel context.CancelFunc }
 
-func resourceRunner(s *Session) dockerRunner {
-	if s.overview.docker.run != nil {
-		return s.overview.docker.run
-	}
-	return monitor.RunDockerProgress
-}
-
 func resourceTarget(s *Session) dockerTarget { return dockerTarget{session: s, client: s.client} }
 
 func resourceContext(s *Session) context.Context {
@@ -83,6 +77,10 @@ func resourceContext(s *Session) context.Context {
 }
 
 func readDockerResource[T any](a *App, s *Session, load *dockerResourceLoad[T], force bool, read func(context.Context, *ssh.Client, dockerRunner) (T, error)) {
+	readDockerResourceAccess(a, s, load, force, false, read)
+}
+
+func readDockerResourceAccess[T any](a *App, s *Session, load *dockerResourceLoad[T], force, root bool, read func(context.Context, *ssh.Client, dockerRunner) (T, error)) {
 	target := resourceTarget(s)
 	if !target.available() || (!force && (load.read || load.loading || load.err != nil)) {
 		return
@@ -90,8 +88,12 @@ func readDockerResource[T any](a *App, s *Session, load *dockerResourceLoad[T], 
 	if load.request != nil {
 		load.request.cancel()
 	}
-	run, tool := resourceRunner(s), monitor.CmdOf(&s.overview.docker.d)
-	ctx, cancel := context.WithTimeout(resourceContext(s), dockerTimeout)
+	run, tool := a.dockerExec(s, monitor.RunDockerProgress, nil, root).command, monitor.CmdOf(&s.overview.docker.d)
+	timeout := dockerTimeout
+	if root {
+		timeout = 5 * time.Minute
+	}
+	ctx, cancel := context.WithTimeout(resourceContext(s), timeout)
 	request := &dockerResourceRequest{cancel}
 	load.loading, load.err, load.request = true, nil, request
 	go func() {
@@ -316,8 +318,13 @@ func (page *dockerResourcesPage) show(title string, fields func(*ui.Context, *do
 }
 
 func (page *dockerResourcesPage) closeDialog() {
-	if page.dialog != nil && page.dialog.clear != nil {
-		page.dialog.clear()
+	if page.dialog != nil {
+		if page.dialog.cancel != nil && (page.dialog.work == nil || !page.dialog.work.done) {
+			page.dialog.cancel()
+		}
+		if page.dialog.clear != nil {
+			page.dialog.clear()
+		}
 	}
 	page.dialog = nil
 }
@@ -360,9 +367,15 @@ func drawResourceWork(c *ui.Context, dialog *dockerResourceDialog, height float3
 		widgets.Muted(c, locales.DockerResStoppedWaiting())
 	case !work.done:
 		widgets.Muted(c, locales.DockerActionRunning(dialog.title))
+	case dockerPrivilegeFailed(work.err):
+		dockerPrivilegeHelp(c, work.target.session)
 	case work.err != nil:
-		ui.Text(c, locales.DockerActionFailed()).Bold().TextColor(theme.Danger)
-		ui.Text(c, work.err.Error()).Selectable()
+		if errors.Is(work.err, monitor.ErrPrivilegeCancelled) {
+			widgets.Muted(c, locales.DockerResStoppedWaiting())
+		} else {
+			ui.Text(c, locales.DockerActionFailed()).Bold().TextColor(theme.Danger)
+			ui.Text(c, work.err.Error()).Selectable()
+		}
 	default:
 		widgets.Muted(c, locales.DockerActionDone())
 	}
@@ -416,6 +429,7 @@ type dockerResourceStep struct {
 	label, script string
 	input         *monitor.DockerInput
 	private       bool
+	root          bool
 }
 
 func (a *App) runDockerResource(s *Session, page *dockerResourcesPage, dialog *dockerResourceDialog, steps ...dockerResourceStep) {
@@ -431,11 +445,10 @@ func (a *App) runDockerResource(s *Session, page *dockerResourcesPage, dialog *d
 	if dialog.clear != nil {
 		dialog.clear()
 	}
-	run, runInput, report := resourceRunner(s), page.input, a.dockerProgress(work)
-	if runInput == nil {
-		runInput = func(ctx context.Context, client *ssh.Client, input monitor.DockerInput, progress func(string)) (string, error) {
-			return input.Run(ctx, client, progress)
-		}
+	run, report := a.dockerExec(s, monitor.RunDockerProgress, page.input, false), a.dockerProgress(work)
+	var root dockerExec
+	if slices.ContainsFunc(steps, func(step dockerResourceStep) bool { return step.root }) {
+		root = a.dockerExec(s, monitor.RunDockerProgress, page.input, true)
 	}
 	tool := page.tool
 	privateFailure := locales.DockerSysLoginHint()
@@ -456,16 +469,24 @@ func (a *App) runDockerResource(s *Session, page *dockerResourcesPage, dialog *d
 				report(line)
 			}
 			var text string
+			exec := run
+			if step.root {
+				exec = root
+			}
 			if step.input != nil {
-				text, err = runInput(ctx, target.client, *step.input, nil)
+				var progress func(string)
+				if !step.private {
+					progress = report
+				}
+				text, err = exec.input(ctx, target.client, *step.input, progress)
 				if step.private {
 					text = ""
-					if err != nil {
+					if err != nil && !dockerPrivilegeFailed(err) && !errors.Is(err, monitor.ErrPrivilegeNotCached) && !errors.Is(err, context.Canceled) {
 						err = dockerPrivateCommandError{message: privateFailure}
 					}
 				}
 			} else {
-				text, err = run(ctx, target.client, step.script, report)
+				text, err = exec.command(ctx, target.client, step.script, report)
 			}
 			if text != "" {
 				if amount, ok := monitor.DockerReclaimed(text); ok {

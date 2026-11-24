@@ -117,6 +117,9 @@ type Host struct {
 	// them with RDPOf.
 	RDP *RDPConfig `json:"rdp,omitempty"`
 
+	ForwardAgent bool   `json:"forwardAgent,omitempty"`
+	X11Forward   string `json:"x11Forward,omitempty"`
+
 	extra extras
 }
 
@@ -211,7 +214,7 @@ func (h *Host) UnmarshalJSON(data []byte) error {
 }
 
 // NewHostID returns an ID for a new host.
-func NewHostID() string { return fmt.Sprintf("h%d", time.Now().UnixNano()) }
+func NewHostID() string { return fmt.Sprintf("h%d", uniqueNano()) }
 
 // Folder groups hosts. Folders nest by Parent.
 type Folder struct {
@@ -241,7 +244,7 @@ func (f *Folder) UnmarshalJSON(data []byte) error {
 }
 
 // NewFolderID returns an ID for a new folder.
-func NewFolderID() string { return fmt.Sprintf("f%d", time.Now().UnixNano()) }
+func NewFolderID() string { return fmt.Sprintf("f%d", uniqueNano()) }
 
 // Store is the content of hosts.json: the saved hosts, deleted ones
 // included, and their folders, both in the order the user keeps them.

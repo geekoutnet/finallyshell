@@ -110,7 +110,8 @@ type Settings struct {
 	// one use (AuthAgent): a Unix socket's path, ~ for the home folder,
 	// or on Windows a named pipe, \\.\pipe\<name>. "" for the default:
 	// SSH_AUTH_SOCK, or the Windows OpenSSH agent's pipe.
-	SSHAgent string `json:"sshAgent,omitempty"`
+	SSHAgent   string `json:"sshAgent,omitempty"`
+	X11Display string `json:"x11Display,omitempty"`
 
 	// The Mouse page of the terminal options, zero by default too.
 	//
@@ -189,7 +190,9 @@ type Settings struct {
 	// TermBackgroundOpacity is how much of the image shows through the
 	// color scheme's background, in percent from 1 to 100: 0 for
 	// DefaultBackgroundOpacity.
-	TermBackgroundOpacity float32 `json:"termBackgroundOpacity,omitempty"`
+	TermBackgroundOpacity float32            `json:"termBackgroundOpacity,omitempty"`
+	Highlight             *TerminalHighlight `json:"terminalHighlight,omitempty"`
+	Recording             *TerminalRecording `json:"terminalRecording,omitempty"`
 
 	// The Transfers page of the options.
 	//

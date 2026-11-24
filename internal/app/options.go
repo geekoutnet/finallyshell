@@ -29,6 +29,8 @@ const (
 	pageBackground = "terminal/background"
 	pageFont       = "terminal/font"
 	pageCommandBar = "terminal/commandbar"
+	pageHighlight  = "terminal/highlight"
+	pageRecording  = "terminal/recording"
 	pageFiles      = "files"
 	pageFileIcons  = "files/icons"
 	pageNetwork    = "network"
@@ -87,6 +89,14 @@ var optionPages = []optionPage{
 		view: (*App).commandBarPage,
 	},
 	{
+		id: pageHighlight, parent: pageTerminal, title: locales.HlNav,
+		view: (*App).highlightPage,
+	},
+	{
+		id: pageRecording, parent: pageTerminal, title: locales.RecOptions,
+		view: (*App).recordingPage,
+	},
+	{
 		id: pageFiles, title: locales.OptionsFileManager,
 		view: nil,
 	},
@@ -101,6 +111,10 @@ var optionPages = []optionPage{
 	{
 		id: pageSync, title: locales.OptionsSync,
 		view: (*App).syncPage,
+	},
+	{
+		id: "ssh-keys", title: locales.KeysTitle,
+		view: (*App).keysOptions,
 	},
 }
 

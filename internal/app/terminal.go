@@ -21,6 +21,8 @@ func (a *App) terminalArea(c *ui.Context) {
 	area.Children(func() {
 		if s.status != statusConnected {
 			a.statusBanner(c, s)
+		} else if len(s.forwardWarnings) != 0 {
+			a.forwardingStatus(c, s)
 		}
 		if s.term() != nil {
 			a.paneArea(c, s)

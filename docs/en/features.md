@@ -15,6 +15,7 @@ supported. [configuration.md](configuration.md) covers the files on disk;
 - [New tab and quick connect](#new-tab-and-quick-connect)
 - [Local terminal](#local-terminal)
 - [Connection manager](#connection-manager)
+- [SSH keys](#ssh-keys)
 - [Import connections](#import-connections)
   - [From FinalShell](#from-finalshell)
   - [From Xshell](#from-xshell)
@@ -51,6 +52,7 @@ supported. [configuration.md](configuration.md) covers the files on disk;
 - [Network tab](#network-tab)
   - [IP locations](#ip-locations)
   - [Trace route](#trace-route)
+- [Run on many hosts](#run-on-many-hosts)
 - [Commands tab](#commands-tab)
   - [Command editor](#command-editor)
 - [Options window](#options-window)
@@ -520,6 +522,16 @@ connection manager shows and selects the connection right away.
 
 The main window's [Connections page](#connections-page) shows the same
 tree, and what changes in one shows in the other at once.
+
+## SSH keys
+
+Open the key manager from **Options → SSH keys**, or from **Deploy public key** on a saved connection's Terminal page. The manager lists keys in `~/.ssh` and key paths referenced by saved connections, including keys outside that directory. Filter or sort by file name, type, size, encryption, comment, SHA256 fingerprint or host count. Key details show the full fingerprint and randomart; **Copy public key** copies the OpenSSH public line, never the private key.
+
+Generate Ed25519 (the default) or RSA 4096 with an optional passphrase, or import an existing OpenSSH-compatible private key. The new pair goes into `~/.ssh`. Replacing an unused pair takes a separate confirmation and backs up both existing files. Deleting a pair referenced by a connection requires a second confirmation; it never removes public keys from servers. Keys outside `~/.ssh` are not deleted by the manager.
+
+**Deploy public key** can target multiple saved SSH connections. It uses their existing credentials and adds the public key to each login user's `~/.ssh/authorized_keys` without root. It keeps a timestamped backup before appending and does not add a duplicate or bypass restrictions on an existing copy. Results are shown per host. Verification opens a new connection that must authenticate with the selected key, without a password fallback. Only verified connections can be switched to that key; existing passwords in the credential store are retained unless you explicitly choose to remove them. If the existing credentials are unavailable, connect normally first and retry.
+
+**Disable password authentication** is a separate, optional server-wide change. It requires a verified key login in this deployment and a second key login that can run the change through the shared root escalation flow. It uses an OpenSSH drop-in when the standard directory is included early enough, otherwise backs up and edits the main config. Configurations with custom Includes or Match blocks are left for manual review. Validation with `sshd -t` and an effective configuration check must pass before reload; on failure the change is rolled back and backups are kept. Keep an independent recovery session open: disabling password authentication can lock out other users and services, and does not disable keyboard-interactive authentication.
 
 ## Import connections
 
@@ -997,6 +1009,8 @@ be started by hand on the Tunnels tab.
   unsaved in it.
 - Changes to the host of a session that is already open take effect at the
   next connection.
+- **Forward the SSH agent** is off by default. It asks for agent forwarding on each shell, independently of how the host logs in, using the local agent configured in Options. A remote user with access to the forwarded socket can request signatures while the shell is open; enable it only on servers you trust.
+- **X11 forwarding** is off by default. Untrusted mode uses the local X server's SECURITY extension to issue a restricted cookie and refuses to fall back to trusted access. Trusted mode lets remote X clients interact with local windows and input, so use it only on trusted hosts. The local display defaults to `$DISPLAY`, or `localhost:0` on Windows when unset; change it in **Options → SSH keys**. The X server must already be running (for example XQuartz, VcXsrv or Xming). If the display is unreachable, local authorization fails, or the server refuses forwarding, the terminal shows the reason and the shell still opens.
 - If the host is deleted in the connection manager while it is being
   edited, OK only says "This connection was deleted" and does not save it
   back.
@@ -1078,13 +1092,27 @@ cancel, the app shows commands your administrator can copy to grant sudo
 access. Operating-system restrictions such as locked root accounts or
 read-only memory controls still apply.
 
+Docker and Podman first try the SSH user and passwordless `sudo`. If the
+engine still needs root, select **Use root / sudo** in the Docker tab or its
+Overview card. Refreshing does not open a password dialog; it can reuse a
+working method already authorized in this connection. Canceling the prompt
+leaves the button available. If authorization is refused or still cannot
+reach the engine, the app shows the administrator’s sudo commands. For
+Docker it also shows `usermod -aG docker <user>`; reconnect after a group
+change. Membership of the `docker` group grants root-equivalent access.
+
 ### Docker tab › Containers
 
 Filter and sort containers, group by Compose project, and show or hide stopped containers. Select rows using checkboxes, Ctrl/Command-click, or Shift-click, then use the selection menu for lifecycle actions or live stats. Double-click a row for details, or use its menu for logs, a shell, published ports, and more. Removal and other destructive operations show what they affect before proceeding.
 
+Once root access is authorized, all Docker sections and logs use that
+account. For an interactive container shell, the terminal sends the
+command but never types a stored password: enter it in the terminal if
+`sudo` or `su` prompts. Direct access and passwordless `sudo` do not prompt.
+
 **New container** configures the image, command, ports, mounts, environment, network, and resource limits. The run-command preview masks environment and log-option values. **Duplicate container** copies settings without reusing published ports or a static IP; mounts may still share data. **Edit container** replaces a standalone Docker container, retaining settings not shown by the form and attempting to restore the original if the replacement fails. It requires the Docker Unix socket and `curl`; edit Compose services in their Compose file instead. Replacement does not keep changes in the writable layer.
 
-**Live stats** samples CPU, memory, network rates, disk I/O, and PIDs every two seconds while open. **Container files** requires a running, unpaused container with suitable shell utilities. Browse, rename, create directories, and delete entries there. Copy files or folders between the container and an absolute path on the SSH server; use the SSH file panel for transfers between the server and your computer. The row menu can also commit a container to an image or export its filesystem as a tar on the server, excluding mounted volumes. Both can include sensitive data.
+**Live stats** samples CPU, memory, network rates, disk I/O, and PIDs every two seconds while open. **Container files** requires a running, unpaused container with suitable shell utilities. Browse, rename, create directories, and delete entries there. Copy files or folders between the container and an absolute path on the SSH server. The app checks that the destination is free before copying; use the SSH file panel for transfers between the server and your computer. The row menu can also commit a container to an image or export its filesystem as a tar on the server, excluding mounted volumes. Both can include sensitive data.
 
 ### Docker tab › Images
 
@@ -1114,7 +1142,7 @@ continue. The app refreshes Compose and Overview after changes.
 Open the Compose files or `.env` in the remote SFTP editor. After saving,
 return to the project to validate or deploy. **New project** writes
 `compose.yaml` and an optional `.env`, never overwriting existing files.
-It asks before using a nonempty directory, tries noninteractive sudo where
+It asks before using a nonempty directory, uses shared root escalation when
 SFTP cannot write, and can deploy after validation. The app remembers its
 projects locally so even undeployed projects remain listed.
 
@@ -1129,7 +1157,7 @@ under that path, including bind-mounted data stored there, will be lost.
 - **Networks:** Filter or sort the list, open details to see IP ranges and connected containers, and create networks with IPv4/IPv6, driver options and labels. From the row menu you can connect or disconnect a container, copy network values, or remove selected networks. Pruning in this section removes only the listed unused local networks; built-in, ingress and attached networks are protected.
 - **Volumes:** Show only unused volumes, inspect their labels, options and referencing containers, or measure sizes on demand. Browse local-engine mountpoints in Files if the SSH user has SFTP access. Removal and pruning permanently delete data; the app rechecks the volume’s identity before removal. On Docker 23 or later (API 1.42+), pruning in this section targets the displayed unused anonymous volumes by default; explicitly opt in to include named volumes.
 - **System:** Inspect engine information and disk usage, stream and filter recent events, or choose cleanup categories with estimates. Cleanup runs each confirmed step in order and streams the output. Network and volume removal is limited to the named resources. Container, image and build cache pruning applies to all resources the engine considers eligible at execution time. Stopping the wait does not undo changes.
-- **Registries and daemon:** Registry management uses the SSH user’s Docker configuration and shows only registry keys and helper names, not credentials. Login requires a configured credential helper; the password goes over standard input. The daemon editor is for a recognized Linux Docker system service using the default socket and configuration path. Saving requires Python 3 to validate the file against the running service’s flags and backs up any existing file. Restarting needs separate confirmation. Root or non-interactive sudo is required to write or restart. Podman does not expose Docker-specific operations such as daemon editing, registry management, or volume pruning.
+- **Registries and daemon:** Registry management uses the authorized root account’s Docker configuration in root mode; otherwise it uses the SSH user’s configuration. It shows only registry keys and helper names, not credentials. Login requires a configured credential helper; the password goes over standard input. The daemon editor is for a recognized Linux Docker system service using the default socket and configuration path. It uses shared root escalation even when the SSH user can already access the socket. Saving requires Python 3 to validate against the running service’s flags and backs up existing configuration as `daemon.json.bak-<yyyymmddHHMMSS>` (UTC). Restarting needs separate confirmation. Podman does not expose Docker-specific operations such as daemon editing, registry management, or volume pruning.
 
 <a id="terminal-section"></a>
 
@@ -1322,6 +1350,22 @@ and lists its keys (see [Terminal › Command bar](#terminal--command-bar)).
 
 Commands you send often can be kept as buttons in the
 [Commands tab](#commands-tab).
+
+### ZMODEM (rz/sz)
+
+Run `rz` in an SSH terminal to select one or more local files and confirm the upload. Use plain `rz` without an overwrite option; the app asks the receiver to protect existing files, but the remote program controls its own write policy. Run `sz -- 'file'` to choose a local destination, starting in the configured Downloads folder, and confirm each incoming file. No extra SSH channel, SFTP or privilege escalation is needed.
+
+The Transfers tab shows the current file, speed and cancellation. Verified downloads are published under their original name or with a ` (1)`-style suffix; unsafe names, directories and files of 4 GiB or more are not supported. Retransmissions within a transfer are automatic. After canceling or disconnecting, run the command again to start a new transfer. ZMODEM is not used in local terminals.
+
+### Keyword highlighting
+
+SSH terminals color common errors red, warnings yellow, success indicators green, IP addresses cyan and HTTP(S) URLs blue with an underline. In Options › Terminal › Keyword highlighting, turn highlighting off or edit, preview and scope rules to all hosts or a saved host. Rules can match whole words or regular expressions, with case and style controls. The rules apply to new output; escape sequences, full-screen programs using the alternate screen and ZMODEM payloads are left alone.
+
+### Session recording
+
+Use the recording button in an SSH pane or the session menu to start or stop recording the focused pane. A red dot identifies a recording pane. In Options › Terminal › Session recording, choose a folder, add an ANSI-stripped `.txt` log, set the per-file rotation limit or opt into automatic recording of newly opened SSH panes. Automatic recording is off by default.
+
+Recordings use asciicast v2 (`.cast`) and can be replayed with an external player. Keyboard input is not captured directly, but echoed commands and other visible output are recorded. Stop recording before displaying credentials, private keys or confidential output. Use Open Recordings Folder to find the files.
 
 ### Appearance: font, color scheme, background image
 
@@ -1787,6 +1831,23 @@ file is saved through another connected session to the same host.
 Not supported: saving with sudo. A file without write permission fails to
 save with "permission denied".
 
+## System tab
+
+The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.
+
+### System tab › Services, logs and scheduled jobs
+
+- **Services:** Filter and sort units by state or startup policy. Select one or more rows and use **Actions** or the context menu. Details show status, the unit file and properties. Editing a drop-in backs up the existing `override.conf`, saves the replacement and reloads systemd; it does not restart the service. OpenRC and SysV service lists, when available, are read-only.
+- **Logs:** Follow the system journal, a unit journal or an absolute remote file path. Filter the journal by priority and time, or filter received lines by literal text or a regular expression. Pause freezes the display while up to 20,000 recent lines (and at most 24 MiB of text) buffer. A hidden viewer closes its SSH stream. Copy or save the filtered view; local export refuses to overwrite an existing file. Recently entered paths stay on this computer, not in the connection sync.
+- **Scheduled jobs:** Switch between your crontab, another user's crontab, system cron files and systemd timers. Personal crontab edits preserve unrelated lines and back up the existing crontab in the writing user's home (root's home when elevated). Disabling a job comments it out without deleting it. The next three times are estimates using the server's current UTC offset, not future daylight-saving changes or `CRON_TZ` settings. System cron files are edited separately with a backup; timers are read-only. **Run once now** shows command output and does not reproduce the cron environment or support `%` input syntax.
+
+### System tab › Disk, updates, security and firewall
+
+- **Disk** lists mount usage and scans one filesystem at a time. Enter an absolute path or open a mount; double-click a directory to scan it, or switch to **Largest files** for up to 100 files over 50 MiB. Scans have a timeout, can be canceled and are cached until refresh or disconnect. Right-click to open Files, copy a path or delete selected items that are not protected. Turn off **Scan as root** to operate as the login user inside directories that ordinary users can modify. An emptied `.log` file is backed up next to the original. Cleanup offers APT and DNF caches, archived system journals with a size limit, and matching rotated logs; visible sizes are estimates, not guaranteed savings.
+- **Updates** shows the OS, kernel, latest available package versions, security updates and reboot requirements when supported. Refresh indexes or upgrade all, security or selected packages on APT, DNF and YUM. Zypper, APK and Pacman show the locally available index read-only. Package operations stream output and cannot be canceled from the app once confirmed; keep SSH connected until they finish. Confirming **Reboot server** schedules a restart in one minute.
+- **Security** groups recent SSH failures by source IP, username or day, and lists successful logins, present and past sessions, recent sudo users, and selected effective SSH settings. IP locations use the existing lookup settings. Fail2ban lists active jails and their banned IPs, supports confirmed bans and unbans, and does not ban the current SSH source.
+- **Firewall** shows UFW numbered rules, Firewalld zones and listening ports. It protects the configured SSH port, the actual connection port and other SSH ports it can verify. UFW adds a source-specific SSH allow rule before enabling; unknown or potentially unsafe rule changes are refused. Firewalld changes only the chosen port or service in the live and persistent configurations, without reloading unrelated runtime rules. Rich rules, nftables and iptables are read-only. Existing firewall configuration files are backed up beside the originals before changes.
+
 ## Tunnels tab
 
 The "Tunnels" tab at the bottom right lists the tunnels of the current
@@ -1993,6 +2054,38 @@ host name.
 - NextTrace and traceroute need root, or the capability to send raw
   packets, on many servers: their error shows in the tab.
 - The tab's buttons copy the route as text and trace it again.
+
+## Run on many hosts
+
+Open **Run on hosts** from the connection manager's selection or context
+menu, or from the Commands tab, next to **Send to**. In either place,
+**Ctrl+Shift+P** (**Cmd+Shift+P** on macOS) opens the command palette.
+The separate window can stay open beside the terminals.
+
+- Search the connection tree and check individual SSH hosts or whole folders
+  (including subfolders). Remote Desktop hosts and SSH hosts with exec
+  disabled cannot be selected. Type a POSIX Shell script or load a saved
+  quick command. Unlike **Send to**, this does not type into the terminals.
+- Each run and retry asks for confirmation and shows the actual targets.
+  Default limits are 10 simultaneous hosts and 60 seconds per host, including
+  connection and elevation. **Stop scheduling on first failure** skips hosts
+  that have not started; those already running finish independently.
+- Open sessions are reused. Other hosts use saved SSH authentication and
+  proxy/jump-host settings. Unknown or changed keys, including jump-host
+  keys, are never accepted here: connect interactively and verify them first.
+  Use interactive connection setup to provide any missing SSH login secret.
+- **Run as root** uses shared escalation. If a sudo or root password is needed,
+  the dialog can reuse it in memory for other hosts in this run. **Remember**
+  stores an authenticated password for that host in the system credential store.
+- Results can be sorted, filtered by status, or selected for stdout/stderr
+  and batch retries. **Retry failed** includes timeouts. Results keep up to
+  1 MiB per host and can be copied or exported as CSV or plain text; replacing
+  an existing export requires confirmation and makes a timestamped backup.
+- The last 20 runs keep the target IDs, options and summary locally, not
+  output. Enable **Save script in local history** to reopen the script too.
+  Do not put secrets in scripts or print them to output. Back up any files
+  that a script will overwrite first. Cancelling or timing out closes the
+  execution channel; it cannot undo changes or guarantee remote jobs stop.
 
 ## Commands tab
 

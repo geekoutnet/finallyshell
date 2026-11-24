@@ -69,7 +69,7 @@ func (a *App) ctrReadStats(modal *ctrModal, now time.Time) {
 		stats.err = ctrErrorText(err)
 		return
 	}
-	run, ctx, cancel := ctrRunner(target, 10*time.Second)
+	run, ctx, cancel := a.ctrRunner(target, 10*time.Second)
 	stats.cancel = cancel
 	go func() {
 		defer cancel()

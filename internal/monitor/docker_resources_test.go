@@ -102,7 +102,7 @@ func TestDockerSystemCommandSafety(t *testing.T) {
 		t.Fatal("password must only be sent on stdin")
 	}
 	config, err := cmd.DaemonSave("", `{"registry-mirrors":["https://mirror.example"]}`, time.Date(2026, 1, 2, 3, 4, 5, 0, time.UTC))
-	if err != nil || !strings.Contains(config.script, "daemon.json.bak-20260102T030405") || !strings.Contains(config.script, "'tee'") || strings.Contains(config.script, "mirror.example") {
+	if err != nil || !strings.Contains(config.script, "daemon.json.bak-20260102030405") || !strings.Contains(config.script, "'tee'") || strings.Contains(config.script, "mirror.example") || strings.Contains(config.script, "sudo -n") {
 		t.Fatalf("save: %q %v", config.script, err)
 	}
 	if _, err := cmd.DaemonSave("", `{"registry-mirrors":["http://mirror.example"]}`, time.Now()); err == nil {

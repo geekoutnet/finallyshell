@@ -21,6 +21,7 @@ behind each setting.
 - [updater.json](#updaterjson)
 - [Updates in mygo.json](#updates-in-mygojson)
 - [Where passwords are stored](#where-passwords-are-stored)
+- [Where SSH keys are stored](#where-ssh-keys-are-stored)
 
 ## Config directory
 
@@ -36,6 +37,7 @@ instead.
 | `hosts.v1.json` | The original file, kept when a version 1 `hosts.json` is migrated. |
 | `hosts.json.broken-<date-time>` | A copy of a `hosts.json` that could not be read. |
 | `settings.json` | The options (see below). |
+| `log-paths/<host-hash>.json` | Up to 12 recently entered remote log paths per connection; local only. No log contents are stored here. Previous versions use the `.bak-YYYYMMDDHHMMSS` suffix. |
 | `known_hosts` | Host keys you have trusted. |
 | `background-<time>.<extension>` | The copy of the terminal background image. |
 | `icon-themes/` | File icon themes installed from VSIX files, as `<publisher>.<name>.vsix`. |
@@ -45,6 +47,7 @@ instead.
 | `quickcommands.json` | The Commands tab's quick commands (see [quickcommands.json](#quickcommandsjson)). |
 | `quickcommands.json.broken-<date-time>` | A copy of a `quickcommands.json` that could not be read. |
 | `commandeditor.txt` | The text of the Commands tab's command editor (see [commandeditor.txt](#commandeditortxt)). |
+| `bulk-runs/` | Local metadata for the last 20 [bulk runs](features.md#run-on-many-hosts), one JSON file per run. Includes a script only when opted in, and never output. Not synced. |
 | `geo/` | IP location data, downloaded only when you agree: `ip2region_v4.xdb`, `ip2region_v6.xdb`, and `cache.json`, the online lookups' answers (see [IP locations](features.md#ip-locations)). |
 
 `mygo dev`, `go run` and the installed app all use the same directory, so
@@ -140,6 +143,8 @@ Fields with empty values are not written. Missing fields mean:
 | `delete` | The global setting (`termDelete`). | `vt220`: Delete sends `ESC [3~`; `del`: `^?`; `ctrl-h`: `^H`. |
 | `encoding` | The global setting (`termEncoding`). | `utf-8`, `gbk`, `gb18030`, `big5`, `shift_jis`, `euc-jp`, `euc-kr`, `iso-8859-1` or `windows-1252`; unknown values mean UTF-8. |
 | `noRememberPassword` | Passwords are remembered. | `true`: "Remember password" was turned off. |
+| `forwardAgent` | SSH agent forwarding is off. | `true`: request forwarding for interactive shells. |
+| `x11Forward` | X11 forwarding is off. | `untrusted` or `trusted`: request that mode for interactive shells. |
 
 ### Safety
 
@@ -167,6 +172,7 @@ default.
 | `noConfirmClose` | `true` closes and quits without asking while sessions are open. | Ask first. |
 | `keepAliveSeconds` | Seconds between the SSH keepalives of each connection, 1 to 3600 (higher reads as 3600); `-1` (any negative number) turns them off, which the options show as 0. Applies to new connections. | 30 (also for `0`) |
 | `sshAgent` | The SSH agent of the hosts with `"auth": "agent"`: a Unix socket's path (`~` for the home folder), such as `~/.bitwarden-ssh-agent.sock`, or on Windows a named pipe, `\\.\pipe\<name>`. This computer's own: not synced. Applies to new connections. | `SSH_AUTH_SOCK`; `\\.\pipe\openssh-ssh-agent` on Windows. |
+| `x11Display` | Override the local X display for X11 forwarding (for example `localhost:1`). This computer's own: not synced. | `$DISPLAY`, or `localhost:0` on Windows when unset. |
 | `downloadDir` | Folder downloads go into. | The system's Downloads folder. |
 | `askDownloadDir` | `true` asks where to save each download. | Use `downloadDir`. |
 | `copyOnSelect` | `true` copies the mouse selection to the clipboard. | Off. |
@@ -233,6 +239,12 @@ Details of each option are in [features.md](features.md): see
 [Command editor](features.md#command-editor) and
 [Layout and split dividers](features.md#layout-and-split-dividers).
 
+### Terminal stream settings
+
+- `terminalHighlight`: this device's optional object with `disabled`, `useCustom` and `rules`. Without `useCustom`, built-in rules apply. A custom rule has `pattern`, `regex`, `caseSensitive`, `color`, `bold`, `underline` and an optional `host` ID; an empty host applies to all hosts.
+- `terminalRecording`: this device's optional object with `automatic`, `text`, `folder` and `limitMiB`. Automatic recording and text logs default to off. The default folder is `recordings/` under the config directory, and the default rotation limit is 64 MiB per file (range 1–512 MiB).
+- `.cast` files and optional `.txt` companions are created in a host-specific subfolder. Their names start with the local date and time (`yyyy-mm-dd_HH-MM-SS`); extra parts get a numbered suffix. New parts never replace existing files. Terminal stream settings save a `settings.json.bak-<yyyymmddHHMMSS>` copy before replacing existing settings.
+
 ## Sync
 
 The Sync page of the options (see [Sync](features.md#sync)) is the `sync`
@@ -257,7 +269,7 @@ local: `sidebarWidth`, `monitorPercent`, `terminalPercent`, `treeWidth`,
 `monitorHidden`, `bottomPanelHidden`, `bottomPanelSide`, `rightPanelWidth`,
 `monitorSide`, `rightMonitorPercent`, `commandEditorShown`,
 `commandEditorWidth`, `commandEditorPercent`, `commandEditorNoEnter`,
-`commandEditorClear`, `termBackground`, `localShell`, `sshAgent`, `downloadDir`,
+`commandEditorClear`, `termBackground`, `localShell`, `sshAgent`, `x11Display`, `downloadDir`,
 `askDownloadDir`, `sync`,
 `geoLocations`, `geoLocationsV6`, `geoOnline`, `leftPanelPage` and
 `connectionTreeExpanded` (the left panel's page and the folders open are
@@ -472,3 +484,7 @@ How passwords are used:
   (see the comment at the top of `internal/app/secrets.go`). They run in
   order on a background goroutine, and the results go back to the UI thread
   through `App.post`.
+
+## Where SSH keys are stored
+
+The key manager writes generated and imported OpenSSH key pairs to the user's `~/.ssh` directory, outside the app's configuration and sync storage. Only the path is saved in `hosts.json`. Private files and their backups are mode `0600` on Unix; on Windows their ACL grants access only to the current user. Backups end in `.bak-<yyyymmddHHMMSS>` and may still be valid private keys, so keep them protected. A saved private-key passphrase goes to the system credential store, never alongside the key.

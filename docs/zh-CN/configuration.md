@@ -18,6 +18,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - [updater.json](#updaterjson)
 - [mygo.json 里的 updates](#mygojson-里的-updates)
 - [密码存在哪里](#密码存在哪里)
+- [SSH 密钥存在哪里](#ssh-密钥存在哪里)
 
 ## 配置目录
 
@@ -29,6 +30,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `hosts.v1.json` | 迁移第 1 版的 `hosts.json` 时保留的原文件。 |
 | `hosts.json.broken-<日期-时间>` | 读不出来的 `hosts.json` 的副本。 |
 | `settings.json` | 选项（见下面）。 |
+| `log-paths/<连接哈希>.json` | 每个连接最近输入的最多 12 个远程日志路径，仅存本机，不保存日志内容。旧版本以 `.bak-YYYYMMDDHHMMSS` 为后缀。 |
 | `known_hosts` | 信任过的主机指纹。 |
 | `background-<时间>.<扩展名>` | 终端背景图片的副本。 |
 | `icon-themes/` | 从 VSIX 文件安装的文件图标主题，存成 `<发布者>.<名称>.vsix`。 |
@@ -38,6 +40,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `quickcommands.json` | 命令页的快捷命令（见 [quickcommands.json](#quickcommandsjson)）。 |
 | `quickcommands.json.broken-<日期-时间>` | 读不出来的 `quickcommands.json` 的副本。 |
 | `commandeditor.txt` | 命令页里命令编辑器的文本（见 [commandeditor.txt](#commandeditortxt)）。 |
+| `bulk-runs/` | 最近 20 次[批量执行](features.md#批量执行)的本地记录，每次一个 JSON 文件。仅在勾选时保存脚本，从不保存输出，不参与同步。 |
 | `geo/` | IP 位置数据，只在你同意时下载：`ip2region_v4.xdb`、`ip2region_v6.xdb`，以及在线查询结果的缓存 `cache.json`（见 [IP 归属地](features.md#ip-归属地)）。 |
 
 `mygo dev`、`go run` 和安装版用的是同一个目录，所以共用主机和设置。
@@ -112,6 +115,8 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `delete` | 跟随全局设置（`termDelete`）。 | `vt220`：删除键发送 `ESC [3~`；`del`：`^?`；`ctrl-h`：`^H`。 |
 | `encoding` | 跟随全局设置（`termEncoding`）。 | `utf-8`、`gbk`、`gb18030`、`big5`、`shift_jis`、`euc-jp`、`euc-kr`、`iso-8859-1` 或 `windows-1252`；不认识的值按 UTF-8。 |
 | `noRememberPassword` | 记住密码。 | `true`：关掉了“记住密码”。 |
+| `forwardAgent` | 关闭 SSH 代理转发。 | `true`：打开交互式 shell 时请求转发。 |
+| `x11Forward` | 关闭 X11 转发。 | `untrusted`（非信任）或 `trusted`（信任）：打开交互式 shell 时请求对应模式。 |
 
 ### 安全
 
@@ -132,6 +137,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `noConfirmClose` | `true` 时有会话打开也不问，直接关闭、退出。 | 先问。 |
 | `keepAliveSeconds` | 每个连接发送 SSH 保活消息的间隔秒数，1 到 3600（更大按 3600）；`-1`（任何负数）关闭保活，选项里显示为 0。对新建的连接生效。 | 30（`0` 也是） |
 | `sshAgent` | `"auth": "agent"` 的主机用的 SSH Agent：Unix socket 的路径（`~` 表示主目录），比如 `~/.bitwarden-ssh-agent.sock`，Windows 上也可以是命名管道 `\\.\pipe\<名字>`。这台电脑自己的，不同步。对新建的连接生效。 | `SSH_AUTH_SOCK`；Windows 上是 `\\.\pipe\openssh-ssh-agent`。 |
+| `x11Display` | X11 转发使用的本地显示地址，例如 `localhost:1`。仅保存在本机，不同步。 | `$DISPLAY`；Windows 未设置时为 `localhost:0`。 |
 | `downloadDir` | 下载存到的文件夹。 | 系统的下载文件夹。 |
 | `askDownloadDir` | `true` 时每次下载都问保存位置。 | 用 `downloadDir`。 |
 | `copyOnSelect` | `true` 时把鼠标选中的文字复制到剪贴板。 | 关。 |
@@ -186,6 +192,12 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 
 每个选项的详细说明在 [features.md](features.md)：见[常规](features.md#常规)、[传输](features.md#传输)、[终端](features.md#terminal-defaults)、[终端 › 鼠标](features.md#终端--鼠标)、[终端 › 快捷键](features.md#终端--快捷键)、[终端 › 命令输入框](features.md#终端--命令输入框)、[网络监控](features.md#网络监控)、[外观](features.md#外观字体配色背景图片)、[文件图标主题](features.md#文件图标主题)、[连接管理器](features.md#连接管理器)、[“连接”页](features.md#连接页)、[命令编辑器](features.md#命令编辑器)和[布局和分隔条](features.md#布局和分隔条)。
 
+### 终端数据流设置
+
+- `terminalHighlight`：本机可选设置对象，含 `disabled`、`useCustom` 和 `rules`。未开启 `useCustom` 时用内置规则。每条自定义规则含 `pattern`、`regex`、`caseSensitive`、`color`、`bold`、`underline` 以及可选的 `host` 主机 ID；`host` 为空时应用于所有主机。
+- `terminalRecording`：本机可选设置对象，含 `automatic`、`text`、`folder` 和 `limitMiB`。自动录制和纯文本日志默认关闭。默认保存在配置目录下的 `recordings/`，单个文件默认 64 MiB 轮转，可设为 1–512 MiB。
+- `.cast` 和可选的 `.txt` 文件保存在对应主机的子目录中。文件名以本地日期和时间开头（`yyyy-mm-dd_HH-MM-SS`），后续分段加序号，不覆盖已有文件。保存终端数据流设置前会将现有设置备份为 `settings.json.bak-<yyyymmddHHMMSS>`。
+
 ## 同步
 
 选项里的“同步”页（见[同步](features.md#同步)）是 `settings.json` 的 `sync` 对象，从没设置过同步时没有这个键：
@@ -202,7 +214,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `historyAllDays`、`historyDailyDays`、`historyWeeklyWeeks`、`historyMax` | WebDAV 和 S3 的版本保留时间与目标上限。 | 7 天、30 天、26 周、200 份。 |
 | `localBackupCount`、`localBackupDays` | 本机备份的数量和保存天数上限。 | 50 份、90 天。 |
 
-`settings.json` 的每个键要么同步，要么留在各自的电脑上，两个列表是 `internal/config/sync.go` 里的 `syncedSettings` 和 `localSettings`。留在本机的有：`sidebarWidth`、`monitorPercent`、`terminalPercent`、`treeWidth`、`procListPercent`、`procFieldsPercent`、`netListPercent`、`monitorHidden`、`bottomPanelHidden`、`bottomPanelSide`、`rightPanelWidth`、`monitorSide`、`rightMonitorPercent`、`commandEditorShown`、`commandEditorWidth`、`commandEditorPercent`、`commandEditorNoEnter`、`commandEditorClear`、`termBackground`、`localShell`、`sshAgent`、`downloadDir`、`askDownloadDir`、`sync`、`geoLocations`、`geoLocationsV6`、`geoOnline`、`leftPanelPage` 和 `connectionTreeExpanded`（左侧面板显示哪一页、展开了哪些文件夹，是这台电脑上窗口留下的样子，和窗格大小一样），以及从 VSIX 安装或在编辑器扩展里找到的 `fileIconTheme`。
+`settings.json` 的每个键要么同步，要么留在各自的电脑上，两个列表是 `internal/config/sync.go` 里的 `syncedSettings` 和 `localSettings`。留在本机的有：`sidebarWidth`、`monitorPercent`、`terminalPercent`、`treeWidth`、`procListPercent`、`procFieldsPercent`、`netListPercent`、`monitorHidden`、`bottomPanelHidden`、`bottomPanelSide`、`rightPanelWidth`、`monitorSide`、`rightMonitorPercent`、`commandEditorShown`、`commandEditorWidth`、`commandEditorPercent`、`commandEditorNoEnter`、`commandEditorClear`、`termBackground`、`localShell`、`sshAgent`、`x11Display`、`downloadDir`、`askDownloadDir`、`sync`、`geoLocations`、`geoLocationsV6`、`geoOnline`、`leftPanelPage` 和 `connectionTreeExpanded`（左侧面板显示哪一页、展开了哪些文件夹，是这台电脑上窗口留下的样子，和窗格大小一样），以及从 VSIX 安装或在编辑器扩展里找到的 `fileIconTheme`。
 
 同步和备份数据与 `hosts.json` 放在一起：
 
@@ -303,3 +315,7 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 - 关掉“记住密码”会把密码从凭据存储里删掉，只留在内存里，退出程序后需要重新输入。这个选择按主机保存（`hosts.json` 的 `noRememberPassword`），以后密码框也默认不勾。
 - 系统没有凭据存储时（Linux 上没有 libsecret、没有会话 D-Bus，或者 D-Bus 上没有 Secret Service，服务器和精简桌面上常见），密码只存在内存里：编辑器和密码框里的“记住密码”变灰，下面写明原因。
 - 读写凭据存储时系统可能会询问用户：解锁钥匙串或密钥环；macOS 上重新编译过的程序第一次读以前存的条目时，会问是否允许。这些调用可能要等很久，所以程序从不在 UI 线程上调用它们（见 `internal/app/secrets.go` 开头的说明），而是放在一个后台 goroutine 里按顺序执行，结果通过 `App.post` 交回 UI 线程。
+
+## SSH 密钥存在哪里
+
+密钥管理器将生成或导入的 OpenSSH 密钥对写入当前用户的 `~/.ssh`，不存入应用配置目录，也不同步。`hosts.json` 只记录路径。私钥和备份在 Unix 上的权限为 `0600`；在 Windows 上通过 ACL 仅授予当前用户访问权限。备份以 `.bak-<年月日时分秒>` 结尾，可能仍是有效私钥，请妥善保护。选择记住的私钥口令只存进系统凭据库，不与密钥文件放在一起。

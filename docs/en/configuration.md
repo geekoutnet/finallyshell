@@ -21,6 +21,7 @@ behind each setting.
 - [updater.json](#updaterjson)
 - [Updates in mygo.json](#updates-in-mygojson)
 - [Where passwords are stored](#where-passwords-are-stored)
+- [Where SSH keys are stored](#where-ssh-keys-are-stored)
 
 ## Config directory
 
@@ -142,6 +143,8 @@ Fields with empty values are not written. Missing fields mean:
 | `delete` | The global setting (`termDelete`). | `vt220`: Delete sends `ESC [3~`; `del`: `^?`; `ctrl-h`: `^H`. |
 | `encoding` | The global setting (`termEncoding`). | `utf-8`, `gbk`, `gb18030`, `big5`, `shift_jis`, `euc-jp`, `euc-kr`, `iso-8859-1` or `windows-1252`; unknown values mean UTF-8. |
 | `noRememberPassword` | Passwords are remembered. | `true`: "Remember password" was turned off. |
+| `forwardAgent` | SSH agent forwarding is off. | `true`: request forwarding for interactive shells. |
+| `x11Forward` | X11 forwarding is off. | `untrusted` or `trusted`: request that mode for interactive shells. |
 
 ### Safety
 
@@ -169,6 +172,7 @@ default.
 | `noConfirmClose` | `true` closes and quits without asking while sessions are open. | Ask first. |
 | `keepAliveSeconds` | Seconds between the SSH keepalives of each connection, 1 to 3600 (higher reads as 3600); `-1` (any negative number) turns them off, which the options show as 0. Applies to new connections. | 30 (also for `0`) |
 | `sshAgent` | The SSH agent of the hosts with `"auth": "agent"`: a Unix socket's path (`~` for the home folder), such as `~/.bitwarden-ssh-agent.sock`, or on Windows a named pipe, `\\.\pipe\<name>`. This computer's own: not synced. Applies to new connections. | `SSH_AUTH_SOCK`; `\\.\pipe\openssh-ssh-agent` on Windows. |
+| `x11Display` | Override the local X display for X11 forwarding (for example `localhost:1`). This computer's own: not synced. | `$DISPLAY`, or `localhost:0` on Windows when unset. |
 | `downloadDir` | Folder downloads go into. | The system's Downloads folder. |
 | `askDownloadDir` | `true` asks where to save each download. | Use `downloadDir`. |
 | `copyOnSelect` | `true` copies the mouse selection to the clipboard. | Off. |
@@ -259,7 +263,7 @@ local: `sidebarWidth`, `monitorPercent`, `terminalPercent`, `treeWidth`,
 `monitorHidden`, `bottomPanelHidden`, `bottomPanelSide`, `rightPanelWidth`,
 `monitorSide`, `rightMonitorPercent`, `commandEditorShown`,
 `commandEditorWidth`, `commandEditorPercent`, `commandEditorNoEnter`,
-`commandEditorClear`, `termBackground`, `localShell`, `sshAgent`, `downloadDir`,
+`commandEditorClear`, `termBackground`, `localShell`, `sshAgent`, `x11Display`, `downloadDir`,
 `askDownloadDir`, `sync`,
 `geoLocations`, `geoLocationsV6`, `geoOnline`, `leftPanelPage` and
 `connectionTreeExpanded` (the left panel's page and the folders open are
@@ -474,3 +478,7 @@ How passwords are used:
   (see the comment at the top of `internal/app/secrets.go`). They run in
   order on a background goroutine, and the results go back to the UI thread
   through `App.post`.
+
+## Where SSH keys are stored
+
+The key manager writes generated and imported OpenSSH key pairs to the user's `~/.ssh` directory, outside the app's configuration and sync storage. Only the path is saved in `hosts.json`. Private files and their backups are mode `0600` on Unix; on Windows their ACL grants access only to the current user. Backups end in `.bak-<yyyymmddHHMMSS>` and may still be valid private keys, so keep them protected. A saved private-key passphrase goes to the system credential store, never alongside the key.

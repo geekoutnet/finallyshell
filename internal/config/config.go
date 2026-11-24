@@ -110,7 +110,8 @@ type Settings struct {
 	// one use (AuthAgent): a Unix socket's path, ~ for the home folder,
 	// or on Windows a named pipe, \\.\pipe\<name>. "" for the default:
 	// SSH_AUTH_SOCK, or the Windows OpenSSH agent's pipe.
-	SSHAgent string `json:"sshAgent,omitempty"`
+	SSHAgent   string `json:"sshAgent,omitempty"`
+	X11Display string `json:"x11Display,omitempty"`
 
 	// The Mouse page of the terminal options, zero by default too.
 	//

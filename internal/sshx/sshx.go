@@ -60,8 +60,10 @@ type HostKeyQuestion struct {
 
 // Options is what Dial needs besides the host.
 type Options struct {
-	Password   string
-	Passphrase string
+	Password             string
+	Passphrase           string
+	VerifyKeyFingerprint string
+	keySigned            *bool
 	// AskHostKey shows q and returns at once; the answer comes on q.Answer.
 	AskHostKey func(q *HostKeyQuestion)
 	// KnownHosts is the known_hosts file: <config dir>/known_hosts when
@@ -165,7 +167,15 @@ func authMethods(h *config.Host, opts Options) ([]ssh.AuthMethod, *agentLogin, e
 		if err != nil {
 			return nil, nil, &KeyFileError{Parse: true, Err: err}
 		}
-		methods = append(methods, ssh.PublicKeys(signer))
+		if opts.VerifyKeyFingerprint != "" {
+			algorithmSigner, ok := signer.(ssh.AlgorithmSigner)
+			if !ok || ssh.FingerprintSHA256(signer.PublicKey()) != opts.VerifyKeyFingerprint {
+				return nil, nil, ErrNoAuth
+			}
+			methods = append(methods, ssh.PublicKeys(verifiedKeySigner{algorithmSigner, opts.keySigned}))
+		} else {
+			methods = append(methods, ssh.PublicKeys(signer))
+		}
 	}
 	if opts.Password != "" {
 		pw := opts.Password
@@ -192,6 +202,13 @@ func authMethods(h *config.Host, opts Options) ([]ssh.AuthMethod, *agentLogin, e
 // until it is logged in, and no longer. Its errors are *AgentError: the
 // agent missing, without keys, not signing, or every key refused.
 func Dial(h *config.Host, opts Options) (*ssh.Client, error) {
+	keySigned := false
+	if opts.VerifyKeyFingerprint != "" {
+		if h.Auth != config.AuthKey || opts.Password != "" {
+			return nil, ErrNoAuth
+		}
+		opts.keySigned = &keySigned
+	}
 	auth, agentLogin, err := authMethods(h, opts)
 	if err != nil {
 		return nil, err
@@ -207,6 +224,10 @@ func Dial(h *config.Host, opts Options) (*ssh.Client, error) {
 	// may wait for the user to approve each signature.
 	cfg := &ssh.ClientConfig{User: h.User, Auth: auth, HostKeyCallback: hk, Timeout: 15 * time.Second}
 	client, err := dialRoute(h, opts, cfg)
+	if err == nil && opts.VerifyKeyFingerprint != "" && !keySigned {
+		client.Close()
+		return nil, ErrNoAuth
+	}
 	if agentLogin != nil {
 		err = agentLogin.refused(err)
 	}
@@ -222,6 +243,7 @@ type Shell struct {
 	sess   *ssh.Session
 	stdin  io.WriteCloser
 	stdout io.Reader
+	stop   func()
 }
 
 // PTY is the pseudo-terminal a shell runs in.
@@ -231,7 +253,12 @@ type PTY struct {
 	Term string
 	// Erase is the character the terminal's Backspace sends, which the
 	// server's line editing then erases with (VERASE): DEL (0x7f) when 0.
-	Erase byte
+	Erase          byte
+	ForwardAgent   bool
+	AgentAddress   string
+	X11            string
+	XDisplay       string
+	ForwardWarning func(feature string, err error)
 }
 
 // OpenShell starts a login shell in a pseudo-terminal as pty says.
@@ -264,16 +291,51 @@ func OpenShell(client *ssh.Client, pty PTY) (*Shell, error) {
 		return nil, err
 	}
 	sess.Setenv("COLORTERM", "truecolor") // most servers refuse it; harmless
+	var cleanup []func()
+	stop := func() {
+		for _, closeForward := range cleanup {
+			closeForward()
+		}
+	}
+	setup := func(feature string, done func(), err error) {
+		if err == nil {
+			cleanup = append(cleanup, done)
+		} else if pty.ForwardWarning != nil {
+			pty.ForwardWarning(feature, err)
+		}
+	}
+	if pty.ForwardAgent {
+		done, err := requestAgentForward(client, sess, pty.AgentAddress)
+		setup("agent", done, err)
+	}
+	if pty.X11 == "trusted" || pty.X11 == "untrusted" {
+		done, err := requestX11Forward(client, sess, pty.XDisplay, pty.X11 == "trusted", func(err error) {
+			if pty.ForwardWarning != nil {
+				pty.ForwardWarning("x11", err)
+			}
+		})
+		setup("x11", done, err)
+	}
 	if err := sess.Shell(); err != nil {
+		stop()
 		sess.Close()
 		return nil, err
 	}
-	return &Shell{sess: sess, stdin: stdin, stdout: stdout}, nil
+	return &Shell{sess: sess, stdin: stdin, stdout: stdout, stop: stop}, nil
 }
 
-func (s *Shell) Read(p []byte) (int, error)  { return s.stdout.Read(p) }
+func (s *Shell) Read(p []byte) (int, error) {
+	n, err := s.stdout.Read(p)
+	if err != nil {
+		s.stop()
+	}
+	return n, err
+}
 func (s *Shell) Write(p []byte) (int, error) { return s.stdin.Write(p) }
-func (s *Shell) Close() error                { return s.sess.Close() }
+func (s *Shell) Close() error {
+	s.stop()
+	return s.sess.Close()
+}
 
 // Resize is called by the terminal view as its size in cells changes.
 func (s *Shell) Resize(cols, rows int) error { return s.sess.WindowChange(rows, cols) }

@@ -15,6 +15,7 @@ supported. [configuration.md](configuration.md) covers the files on disk;
 - [New tab and quick connect](#new-tab-and-quick-connect)
 - [Local terminal](#local-terminal)
 - [Connection manager](#connection-manager)
+- [SSH keys](#ssh-keys)
 - [Import connections](#import-connections)
   - [From FinalShell](#from-finalshell)
   - [From Xshell](#from-xshell)
@@ -522,6 +523,16 @@ connection manager shows and selects the connection right away.
 The main window's [Connections page](#connections-page) shows the same
 tree, and what changes in one shows in the other at once.
 
+## SSH keys
+
+Open the key manager from **Options → SSH keys**, or from **Deploy public key** on a saved connection's Terminal page. The manager lists keys in `~/.ssh` and key paths referenced by saved connections, including keys outside that directory. Filter or sort by file name, type, size, encryption, comment, SHA256 fingerprint or host count. Key details show the full fingerprint and randomart; **Copy public key** copies the OpenSSH public line, never the private key.
+
+Generate Ed25519 (the default) or RSA 4096 with an optional passphrase, or import an existing OpenSSH-compatible private key. The new pair goes into `~/.ssh`. Replacing an unused pair takes a separate confirmation and backs up both existing files. Deleting a pair referenced by a connection requires a second confirmation; it never removes public keys from servers. Keys outside `~/.ssh` are not deleted by the manager.
+
+**Deploy public key** can target multiple saved SSH connections. It uses their existing credentials and adds the public key to each login user's `~/.ssh/authorized_keys` without root. It keeps a timestamped backup before appending and does not add a duplicate or bypass restrictions on an existing copy. Results are shown per host. Verification opens a new connection that must authenticate with the selected key, without a password fallback. Only verified connections can be switched to that key; existing passwords in the credential store are retained unless you explicitly choose to remove them. If the existing credentials are unavailable, connect normally first and retry.
+
+**Disable password authentication** is a separate, optional server-wide change. It requires a verified key login in this deployment and a second key login that can run the change through the shared root escalation flow. It uses an OpenSSH drop-in when the standard directory is included early enough, otherwise backs up and edits the main config. Configurations with custom Includes or Match blocks are left for manual review. Validation with `sshd -t` and an effective configuration check must pass before reload; on failure the change is rolled back and backups are kept. Keep an independent recovery session open: disabling password authentication can lock out other users and services, and does not disable keyboard-interactive authentication.
+
 ## Import connections
 
 Import, in the connection manager's toolbar, opens the "Import connections"
@@ -998,6 +1009,8 @@ be started by hand on the Tunnels tab.
   unsaved in it.
 - Changes to the host of a session that is already open take effect at the
   next connection.
+- **Forward the SSH agent** is off by default. It asks for agent forwarding on each shell, independently of how the host logs in, using the local agent configured in Options. A remote user with access to the forwarded socket can request signatures while the shell is open; enable it only on servers you trust.
+- **X11 forwarding** is off by default. Untrusted mode uses the local X server's SECURITY extension to issue a restricted cookie and refuses to fall back to trusted access. Trusted mode lets remote X clients interact with local windows and input, so use it only on trusted hosts. The local display defaults to `$DISPLAY`, or `localhost:0` on Windows when unset; change it in **Options → SSH keys**. The X server must already be running (for example XQuartz, VcXsrv or Xming). If the display is unreachable, local authorization fails, or the server refuses forwarding, the terminal shows the reason and the shell still opens.
 - If the host is deleted in the connection manager while it is being
   edited, OK only says "This connection was deleted" and does not save it
   back.

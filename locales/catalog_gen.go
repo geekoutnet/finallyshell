@@ -16318,6 +16318,856 @@ func (msgs Messages) RdpAdminHint() string {
 	return Catalog.Format(msgs.locale, "rdpAdminHint", nil)
 }
 
+// KeysTitle says "SSH keys"
+// in the language the app shows.
+func KeysTitle() string { return In(i18n.Locale()).KeysTitle() }
+
+// KeysTitle says "SSH keys"
+// in the language of msgs.
+func (msgs Messages) KeysTitle() string {
+	return Catalog.Format(msgs.locale, "keysTitle", nil)
+}
+
+// KeysOptionsHint says "Manage local private keys and install public keys on saved SSH connections."
+// in the language the app shows.
+func KeysOptionsHint() string { return In(i18n.Locale()).KeysOptionsHint() }
+
+// KeysOptionsHint says "Manage local private keys and install public keys on saved SSH connections."
+// in the language of msgs.
+func (msgs Messages) KeysOptionsHint() string {
+	return Catalog.Format(msgs.locale, "keysOptionsHint", nil)
+}
+
+// KeysManage says "Open key manager"
+// in the language the app shows.
+func KeysManage() string { return In(i18n.Locale()).KeysManage() }
+
+// KeysManage says "Open key manager"
+// in the language of msgs.
+func (msgs Messages) KeysManage() string {
+	return Catalog.Format(msgs.locale, "keysManage", nil)
+}
+
+// KeysGenerate says "Generate key"
+// in the language the app shows.
+func KeysGenerate() string { return In(i18n.Locale()).KeysGenerate() }
+
+// KeysGenerate says "Generate key"
+// in the language of msgs.
+func (msgs Messages) KeysGenerate() string {
+	return Catalog.Format(msgs.locale, "keysGenerate", nil)
+}
+
+// KeysImport says "Import private key"
+// in the language the app shows.
+func KeysImport() string { return In(i18n.Locale()).KeysImport() }
+
+// KeysImport says "Import private key"
+// in the language of msgs.
+func (msgs Messages) KeysImport() string {
+	return Catalog.Format(msgs.locale, "keysImport", nil)
+}
+
+// KeysName says "File name"
+// in the language the app shows.
+func KeysName() string { return In(i18n.Locale()).KeysName() }
+
+// KeysName says "File name"
+// in the language of msgs.
+func (msgs Messages) KeysName() string {
+	return Catalog.Format(msgs.locale, "keysName", nil)
+}
+
+// KeysType says "Type"
+// in the language the app shows.
+func KeysType() string { return In(i18n.Locale()).KeysType() }
+
+// KeysType says "Type"
+// in the language of msgs.
+func (msgs Messages) KeysType() string {
+	return Catalog.Format(msgs.locale, "keysType", nil)
+}
+
+// KeysBits says "Bits"
+// in the language the app shows.
+func KeysBits() string { return In(i18n.Locale()).KeysBits() }
+
+// KeysBits says "Bits"
+// in the language of msgs.
+func (msgs Messages) KeysBits() string {
+	return Catalog.Format(msgs.locale, "keysBits", nil)
+}
+
+// KeysHosts says "Hosts"
+// in the language the app shows.
+func KeysHosts() string { return In(i18n.Locale()).KeysHosts() }
+
+// KeysHosts says "Hosts"
+// in the language of msgs.
+func (msgs Messages) KeysHosts() string {
+	return Catalog.Format(msgs.locale, "keysHosts", nil)
+}
+
+// KeysEncrypted says "Encrypted"
+// in the language the app shows.
+func KeysEncrypted() string { return In(i18n.Locale()).KeysEncrypted() }
+
+// KeysEncrypted says "Encrypted"
+// in the language of msgs.
+func (msgs Messages) KeysEncrypted() string {
+	return Catalog.Format(msgs.locale, "keysEncrypted", nil)
+}
+
+// KeysComment says "Comment"
+// in the language the app shows.
+func KeysComment() string { return In(i18n.Locale()).KeysComment() }
+
+// KeysComment says "Comment"
+// in the language of msgs.
+func (msgs Messages) KeysComment() string {
+	return Catalog.Format(msgs.locale, "keysComment", nil)
+}
+
+// KeysFingerprint says "SHA256 fingerprint"
+// in the language the app shows.
+func KeysFingerprint() string { return In(i18n.Locale()).KeysFingerprint() }
+
+// KeysFingerprint says "SHA256 fingerprint"
+// in the language of msgs.
+func (msgs Messages) KeysFingerprint() string {
+	return Catalog.Format(msgs.locale, "keysFingerprint", nil)
+}
+
+// KeysPassphrase says "Key passphrase"
+// in the language the app shows.
+func KeysPassphrase() string { return In(i18n.Locale()).KeysPassphrase() }
+
+// KeysPassphrase says "Key passphrase"
+// in the language of msgs.
+func (msgs Messages) KeysPassphrase() string {
+	return Catalog.Format(msgs.locale, "keysPassphrase", nil)
+}
+
+// KeysRepeatPassphrase says "Confirm passphrase"
+// in the language the app shows.
+func KeysRepeatPassphrase() string { return In(i18n.Locale()).KeysRepeatPassphrase() }
+
+// KeysRepeatPassphrase says "Confirm passphrase"
+// in the language of msgs.
+func (msgs Messages) KeysRepeatPassphrase() string {
+	return Catalog.Format(msgs.locale, "keysRepeatPassphrase", nil)
+}
+
+// KeysFilter says "Filter by name, type, comment or fingerprint"
+// in the language the app shows.
+func KeysFilter() string { return In(i18n.Locale()).KeysFilter() }
+
+// KeysFilter says "Filter by name, type, comment or fingerprint"
+// in the language of msgs.
+func (msgs Messages) KeysFilter() string {
+	return Catalog.Format(msgs.locale, "keysFilter", nil)
+}
+
+// KeysEmpty says "No matching keys"
+// in the language the app shows.
+func KeysEmpty() string { return In(i18n.Locale()).KeysEmpty() }
+
+// KeysEmpty says "No matching keys"
+// in the language of msgs.
+func (msgs Messages) KeysEmpty() string {
+	return Catalog.Format(msgs.locale, "keysEmpty", nil)
+}
+
+// KeysLoading says "Reading local keys…"
+// in the language the app shows.
+func KeysLoading() string { return In(i18n.Locale()).KeysLoading() }
+
+// KeysLoading says "Reading local keys…"
+// in the language of msgs.
+func (msgs Messages) KeysLoading() string {
+	return Catalog.Format(msgs.locale, "keysLoading", nil)
+}
+
+// KeysYes says "Yes"
+// in the language the app shows.
+func KeysYes() string { return In(i18n.Locale()).KeysYes() }
+
+// KeysYes says "Yes"
+// in the language of msgs.
+func (msgs Messages) KeysYes() string {
+	return Catalog.Format(msgs.locale, "keysYes", nil)
+}
+
+// KeysNo says "No"
+// in the language the app shows.
+func KeysNo() string { return In(i18n.Locale()).KeysNo() }
+
+// KeysNo says "No"
+// in the language of msgs.
+func (msgs Messages) KeysNo() string {
+	return Catalog.Format(msgs.locale, "keysNo", nil)
+}
+
+// KeysFromHost says "Deployment target: {target}"
+// in the language the app shows.
+func KeysFromHost(target string) string { return In(i18n.Locale()).KeysFromHost(target) }
+
+// KeysFromHost says "Deployment target: {target}"
+// in the language of msgs.
+func (msgs Messages) KeysFromHost(target string) string {
+	return Catalog.Format(msgs.locale, "keysFromHost", map[string]any{"target": target})
+}
+
+// KeysDetails says "Key details"
+// in the language the app shows.
+func KeysDetails() string { return In(i18n.Locale()).KeysDetails() }
+
+// KeysDetails says "Key details"
+// in the language of msgs.
+func (msgs Messages) KeysDetails() string {
+	return Catalog.Format(msgs.locale, "keysDetails", nil)
+}
+
+// KeysCopyPublic says "Copy public key"
+// in the language the app shows.
+func KeysCopyPublic() string { return In(i18n.Locale()).KeysCopyPublic() }
+
+// KeysCopyPublic says "Copy public key"
+// in the language of msgs.
+func (msgs Messages) KeysCopyPublic() string {
+	return Catalog.Format(msgs.locale, "keysCopyPublic", nil)
+}
+
+// KeysDeploy says "Deploy public key"
+// in the language the app shows.
+func KeysDeploy() string { return In(i18n.Locale()).KeysDeploy() }
+
+// KeysDeploy says "Deploy public key"
+// in the language of msgs.
+func (msgs Messages) KeysDeploy() string {
+	return Catalog.Format(msgs.locale, "keysDeploy", nil)
+}
+
+// KeysSelect says "Select a key first"
+// in the language the app shows.
+func KeysSelect() string { return In(i18n.Locale()).KeysSelect() }
+
+// KeysSelect says "Select a key first"
+// in the language of msgs.
+func (msgs Messages) KeysSelect() string {
+	return Catalog.Format(msgs.locale, "keysSelect", nil)
+}
+
+// KeysNoPublic says "No validated public key is available"
+// in the language the app shows.
+func KeysNoPublic() string { return In(i18n.Locale()).KeysNoPublic() }
+
+// KeysNoPublic says "No validated public key is available"
+// in the language of msgs.
+func (msgs Messages) KeysNoPublic() string {
+	return Catalog.Format(msgs.locale, "keysNoPublic", nil)
+}
+
+// KeysFileChanged says "Could not validate the selected private key. Check the passphrase or close and refresh the key list."
+// in the language the app shows.
+func KeysFileChanged() string { return In(i18n.Locale()).KeysFileChanged() }
+
+// KeysFileChanged says "Could not validate the selected private key. Check the passphrase or close and refresh the key list."
+// in the language of msgs.
+func (msgs Messages) KeysFileChanged() string {
+	return Catalog.Format(msgs.locale, "keysFileChanged", nil)
+}
+
+// KeysUnverifiedPublic says "Import this encrypted key with its passphrase to verify the public key before deploying it"
+// in the language the app shows.
+func KeysUnverifiedPublic() string { return In(i18n.Locale()).KeysUnverifiedPublic() }
+
+// KeysUnverifiedPublic says "Import this encrypted key with its passphrase to verify the public key before deploying it"
+// in the language of msgs.
+func (msgs Messages) KeysUnverifiedPublic() string {
+	return Catalog.Format(msgs.locale, "keysUnverifiedPublic", nil)
+}
+
+// KeysDeleteBlocked says "Only readable keys in ~/.ssh can be deleted here"
+// in the language the app shows.
+func KeysDeleteBlocked() string { return In(i18n.Locale()).KeysDeleteBlocked() }
+
+// KeysDeleteBlocked says "Only readable keys in ~/.ssh can be deleted here"
+// in the language of msgs.
+func (msgs Messages) KeysDeleteBlocked() string {
+	return Catalog.Format(msgs.locale, "keysDeleteBlocked", nil)
+}
+
+// KeysReadFailed says "Could not read or validate the key files."
+// in the language the app shows.
+func KeysReadFailed() string { return In(i18n.Locale()).KeysReadFailed() }
+
+// KeysReadFailed says "Could not read or validate the key files."
+// in the language of msgs.
+func (msgs Messages) KeysReadFailed() string {
+	return Catalog.Format(msgs.locale, "keysReadFailed", nil)
+}
+
+// KeysHomeFailed says "Could not locate your home directory."
+// in the language the app shows.
+func KeysHomeFailed() string { return In(i18n.Locale()).KeysHomeFailed() }
+
+// KeysHomeFailed says "Could not locate your home directory."
+// in the language of msgs.
+func (msgs Messages) KeysHomeFailed() string {
+	return Catalog.Format(msgs.locale, "keysHomeFailed", nil)
+}
+
+// KeysWriteHint says "Writes a private key and its .pub file to ~/.ssh. An empty passphrase leaves the private key unencrypted."
+// in the language the app shows.
+func KeysWriteHint() string { return In(i18n.Locale()).KeysWriteHint() }
+
+// KeysWriteHint says "Writes a private key and its .pub file to ~/.ssh. An empty passphrase leaves the private key unencrypted."
+// in the language of msgs.
+func (msgs Messages) KeysWriteHint() string {
+	return Catalog.Format(msgs.locale, "keysWriteHint", nil)
+}
+
+// KeysOverwrite says "Replace “{name}” and its .pub file in ~/.ssh? Existing files are backed up; servers trusting the old key will not…"
+// in the language the app shows.
+func KeysOverwrite(name string) string { return In(i18n.Locale()).KeysOverwrite(name) }
+
+// KeysOverwrite says "Replace “{name}” and its .pub file in ~/.ssh? Existing files are backed up; servers trusting the old key will not…"
+// in the language of msgs.
+func (msgs Messages) KeysOverwrite(name string) string {
+	return Catalog.Format(msgs.locale, "keysOverwrite", map[string]any{"name": name})
+}
+
+// KeysReplace says "Back up and replace"
+// in the language the app shows.
+func KeysReplace() string { return In(i18n.Locale()).KeysReplace() }
+
+// KeysReplace says "Back up and replace"
+// in the language of msgs.
+func (msgs Messages) KeysReplace() string {
+	return Catalog.Format(msgs.locale, "keysReplace", nil)
+}
+
+// KeysInvalidName says "Use a file name with letters, digits, periods, underscores or hyphens, and a single-line comment."
+// in the language the app shows.
+func KeysInvalidName() string { return In(i18n.Locale()).KeysInvalidName() }
+
+// KeysInvalidName says "Use a file name with letters, digits, periods, underscores or hyphens, and a single-line comment."
+// in the language of msgs.
+func (msgs Messages) KeysInvalidName() string {
+	return Catalog.Format(msgs.locale, "keysInvalidName", nil)
+}
+
+// KeysPassMismatch says "The passphrases do not match."
+// in the language the app shows.
+func KeysPassMismatch() string { return In(i18n.Locale()).KeysPassMismatch() }
+
+// KeysPassMismatch says "The passphrases do not match."
+// in the language of msgs.
+func (msgs Messages) KeysPassMismatch() string {
+	return Catalog.Format(msgs.locale, "keysPassMismatch", nil)
+}
+
+// KeysSameFile says "This key is already in ~/.ssh. Use a different file name or refresh the list."
+// in the language the app shows.
+func KeysSameFile() string { return In(i18n.Locale()).KeysSameFile() }
+
+// KeysSameFile says "This key is already in ~/.ssh. Use a different file name or refresh the list."
+// in the language of msgs.
+func (msgs Messages) KeysSameFile() string {
+	return Catalog.Format(msgs.locale, "keysSameFile", nil)
+}
+
+// KeysOverwriteUsed says "A saved connection references this key. Use a different file name."
+// in the language the app shows.
+func KeysOverwriteUsed() string { return In(i18n.Locale()).KeysOverwriteUsed() }
+
+// KeysOverwriteUsed says "A saved connection references this key. Use a different file name."
+// in the language of msgs.
+func (msgs Messages) KeysOverwriteUsed() string {
+	return Catalog.Format(msgs.locale, "keysOverwriteUsed", nil)
+}
+
+// KeysNeedsPassphrase says "Enter the passphrase for this private key."
+// in the language the app shows.
+func KeysNeedsPassphrase() string { return In(i18n.Locale()).KeysNeedsPassphrase() }
+
+// KeysNeedsPassphrase says "Enter the passphrase for this private key."
+// in the language of msgs.
+func (msgs Messages) KeysNeedsPassphrase() string {
+	return Catalog.Format(msgs.locale, "keysNeedsPassphrase", nil)
+}
+
+// KeysWriteFailed says "Could not write the key pair. Check the key, passphrase, folder permissions and backup file name."
+// in the language the app shows.
+func KeysWriteFailed() string { return In(i18n.Locale()).KeysWriteFailed() }
+
+// KeysWriteFailed says "Could not write the key pair. Check the key, passphrase, folder permissions and backup file name."
+// in the language of msgs.
+func (msgs Messages) KeysWriteFailed() string {
+	return Catalog.Format(msgs.locale, "keysWriteFailed", nil)
+}
+
+// KeysSaved says "Key pair saved."
+// in the language the app shows.
+func KeysSaved() string { return In(i18n.Locale()).KeysSaved() }
+
+// KeysSaved says "Key pair saved."
+// in the language of msgs.
+func (msgs Messages) KeysSaved() string {
+	return Catalog.Format(msgs.locale, "keysSaved", nil)
+}
+
+// KeysDeleteConfirm says "Delete “{name}” and its .pub file?"
+// in the language the app shows.
+func KeysDeleteConfirm(name string) string { return In(i18n.Locale()).KeysDeleteConfirm(name) }
+
+// KeysDeleteConfirm says "Delete “{name}” and its .pub file?"
+// in the language of msgs.
+func (msgs Messages) KeysDeleteConfirm(name string) string {
+	return Catalog.Format(msgs.locale, "keysDeleteConfirm", map[string]any{"name": name})
+}
+
+// KeysDeleteHint says "This permanently deletes both local files. It does not remove the public key from any server."
+// in the language the app shows.
+func KeysDeleteHint() string { return In(i18n.Locale()).KeysDeleteHint() }
+
+// KeysDeleteHint says "This permanently deletes both local files. It does not remove the public key from any server."
+// in the language of msgs.
+func (msgs Messages) KeysDeleteHint() string {
+	return Catalog.Format(msgs.locale, "keysDeleteHint", nil)
+}
+
+// KeysDeleteUsed says "{count, plural, one {# saved connection references this key and may no longer connect. Confirm deletion again.} other…"
+// in the language the app shows.
+func KeysDeleteUsed(count int) string { return In(i18n.Locale()).KeysDeleteUsed(count) }
+
+// KeysDeleteUsed says "{count, plural, one {# saved connection references this key and may no longer connect. Confirm deletion again.} other…"
+// in the language of msgs.
+func (msgs Messages) KeysDeleteUsed(count int) string {
+	return Catalog.Format(msgs.locale, "keysDeleteUsed", map[string]any{"count": count})
+}
+
+// KeysUsed says "{count, plural, one {Used by # saved connection} other {Used by # saved connections}}"
+// in the language the app shows.
+func KeysUsed(count int) string { return In(i18n.Locale()).KeysUsed(count) }
+
+// KeysUsed says "{count, plural, one {Used by # saved connection} other {Used by # saved connections}}"
+// in the language of msgs.
+func (msgs Messages) KeysUsed(count int) string {
+	return Catalog.Format(msgs.locale, "keysUsed", map[string]any{"count": count})
+}
+
+// KeysDeleted says "Local key files deleted."
+// in the language the app shows.
+func KeysDeleted() string { return In(i18n.Locale()).KeysDeleted() }
+
+// KeysDeleted says "Local key files deleted."
+// in the language of msgs.
+func (msgs Messages) KeysDeleted() string {
+	return Catalog.Format(msgs.locale, "keysDeleted", nil)
+}
+
+// KeysDeleteFailed says "Could not delete both key files. Refresh and check the local files."
+// in the language the app shows.
+func KeysDeleteFailed() string { return In(i18n.Locale()).KeysDeleteFailed() }
+
+// KeysDeleteFailed says "Could not delete both key files. Refresh and check the local files."
+// in the language of msgs.
+func (msgs Messages) KeysDeleteFailed() string {
+	return Catalog.Format(msgs.locale, "keysDeleteFailed", nil)
+}
+
+// KeysHostFilter says "Filter saved SSH connections"
+// in the language the app shows.
+func KeysHostFilter() string { return In(i18n.Locale()).KeysHostFilter() }
+
+// KeysHostFilter says "Filter saved SSH connections"
+// in the language of msgs.
+func (msgs Messages) KeysHostFilter() string {
+	return Catalog.Format(msgs.locale, "keysHostFilter", nil)
+}
+
+// KeysNoHosts says "No matching SSH connections"
+// in the language the app shows.
+func KeysNoHosts() string { return In(i18n.Locale()).KeysNoHosts() }
+
+// KeysNoHosts says "No matching SSH connections"
+// in the language of msgs.
+func (msgs Messages) KeysNoHosts() string {
+	return Catalog.Format(msgs.locale, "keysNoHosts", nil)
+}
+
+// KeysExecDisabled says "This connection does not allow SSH exec channels."
+// in the language the app shows.
+func KeysExecDisabled() string { return In(i18n.Locale()).KeysExecDisabled() }
+
+// KeysExecDisabled says "This connection does not allow SSH exec channels."
+// in the language of msgs.
+func (msgs Messages) KeysExecDisabled() string {
+	return Catalog.Format(msgs.locale, "keysExecDisabled", nil)
+}
+
+// KeysSelectShown says "Select shown connections"
+// in the language the app shows.
+func KeysSelectShown() string { return In(i18n.Locale()).KeysSelectShown() }
+
+// KeysSelectShown says "Select shown connections"
+// in the language of msgs.
+func (msgs Messages) KeysSelectShown() string {
+	return Catalog.Format(msgs.locale, "keysSelectShown", nil)
+}
+
+// KeysVerify says "Verify a new login using only this key"
+// in the language the app shows.
+func KeysVerify() string { return In(i18n.Locale()).KeysVerify() }
+
+// KeysVerify says "Verify a new login using only this key"
+// in the language of msgs.
+func (msgs Messages) KeysVerify() string {
+	return Catalog.Format(msgs.locale, "keysVerify", nil)
+}
+
+// KeysSwitch says "Use this key for verified connections"
+// in the language the app shows.
+func KeysSwitch() string { return In(i18n.Locale()).KeysSwitch() }
+
+// KeysSwitch says "Use this key for verified connections"
+// in the language of msgs.
+func (msgs Messages) KeysSwitch() string {
+	return Catalog.Format(msgs.locale, "keysSwitch", nil)
+}
+
+// KeysClearPassword says "Remove the saved passwords after switching"
+// in the language the app shows.
+func KeysClearPassword() string { return In(i18n.Locale()).KeysClearPassword() }
+
+// KeysClearPassword says "Remove the saved passwords after switching"
+// in the language of msgs.
+func (msgs Messages) KeysClearPassword() string {
+	return Catalog.Format(msgs.locale, "keysClearPassword", nil)
+}
+
+// KeysClearPasswordConfirm says "Existing passwords for connections switched to key login will be deleted from the credential store."
+// in the language the app shows.
+func KeysClearPasswordConfirm() string { return In(i18n.Locale()).KeysClearPasswordConfirm() }
+
+// KeysClearPasswordConfirm says "Existing passwords for connections switched to key login will be deleted from the credential store."
+// in the language of msgs.
+func (msgs Messages) KeysClearPasswordConfirm() string {
+	return Catalog.Format(msgs.locale, "keysClearPasswordConfirm", nil)
+}
+
+// KeysReview says "Review deployment"
+// in the language the app shows.
+func KeysReview() string { return In(i18n.Locale()).KeysReview() }
+
+// KeysReview says "Review deployment"
+// in the language of msgs.
+func (msgs Messages) KeysReview() string {
+	return Catalog.Format(msgs.locale, "keysReview", nil)
+}
+
+// KeysDeployConfirm says "{count, plural, one {Install this public key on # connection?} other {Install this public key on # connections?}} Exi…"
+// in the language the app shows.
+func KeysDeployConfirm(count int) string { return In(i18n.Locale()).KeysDeployConfirm(count) }
+
+// KeysDeployConfirm says "{count, plural, one {Install this public key on # connection?} other {Install this public key on # connections?}} Exi…"
+// in the language of msgs.
+func (msgs Messages) KeysDeployConfirm(count int) string {
+	return Catalog.Format(msgs.locale, "keysDeployConfirm", map[string]any{"count": count})
+}
+
+// KeysSwitchConfirm says "After verification, the selected connections will use this key. Passwords already in the credential store are kept."
+// in the language the app shows.
+func KeysSwitchConfirm() string { return In(i18n.Locale()).KeysSwitchConfirm() }
+
+// KeysSwitchConfirm says "After verification, the selected connections will use this key. Passwords already in the credential store are kept."
+// in the language of msgs.
+func (msgs Messages) KeysSwitchConfirm() string {
+	return Catalog.Format(msgs.locale, "keysSwitchConfirm", nil)
+}
+
+// KeysWorking says "Working…"
+// in the language the app shows.
+func KeysWorking() string { return In(i18n.Locale()).KeysWorking() }
+
+// KeysWorking says "Working…"
+// in the language of msgs.
+func (msgs Messages) KeysWorking() string {
+	return Catalog.Format(msgs.locale, "keysWorking", nil)
+}
+
+// KeysMissingCredentials says "No existing credentials are available. Connect normally first, then retry deployment."
+// in the language the app shows.
+func KeysMissingCredentials() string { return In(i18n.Locale()).KeysMissingCredentials() }
+
+// KeysMissingCredentials says "No existing credentials are available. Connect normally first, then retry deployment."
+// in the language of msgs.
+func (msgs Messages) KeysMissingCredentials() string {
+	return Catalog.Format(msgs.locale, "keysMissingCredentials", nil)
+}
+
+// KeysHostChanged says "The saved connection changed. Reopen deployment to continue."
+// in the language the app shows.
+func KeysHostChanged() string { return In(i18n.Locale()).KeysHostChanged() }
+
+// KeysHostChanged says "The saved connection changed. Reopen deployment to continue."
+// in the language of msgs.
+func (msgs Messages) KeysHostChanged() string {
+	return Catalog.Format(msgs.locale, "keysHostChanged", nil)
+}
+
+// KeysAppended says "Public key installed or already present"
+// in the language the app shows.
+func KeysAppended() string { return In(i18n.Locale()).KeysAppended() }
+
+// KeysAppended says "Public key installed or already present"
+// in the language of msgs.
+func (msgs Messages) KeysAppended() string {
+	return Catalog.Format(msgs.locale, "keysAppended", nil)
+}
+
+// KeysVerified says "Key login verified"
+// in the language the app shows.
+func KeysVerified() string { return In(i18n.Locale()).KeysVerified() }
+
+// KeysVerified says "Key login verified"
+// in the language of msgs.
+func (msgs Messages) KeysVerified() string {
+	return Catalog.Format(msgs.locale, "keysVerified", nil)
+}
+
+// KeysSwitched says "Key login verified and saved"
+// in the language the app shows.
+func KeysSwitched() string { return In(i18n.Locale()).KeysSwitched() }
+
+// KeysSwitched says "Key login verified and saved"
+// in the language of msgs.
+func (msgs Messages) KeysSwitched() string {
+	return Catalog.Format(msgs.locale, "keysSwitched", nil)
+}
+
+// KeysDisabled says "Password authentication disabled; sshd reloaded"
+// in the language the app shows.
+func KeysDisabled() string { return In(i18n.Locale()).KeysDisabled() }
+
+// KeysDisabled says "Password authentication disabled; sshd reloaded"
+// in the language of msgs.
+func (msgs Messages) KeysDisabled() string {
+	return Catalog.Format(msgs.locale, "keysDisabled", nil)
+}
+
+// KeysDeployFailed says "Public key deployment failed"
+// in the language the app shows.
+func KeysDeployFailed() string { return In(i18n.Locale()).KeysDeployFailed() }
+
+// KeysDeployFailed says "Public key deployment failed"
+// in the language of msgs.
+func (msgs Messages) KeysDeployFailed() string {
+	return Catalog.Format(msgs.locale, "keysDeployFailed", nil)
+}
+
+// KeysVerifyFailed says "Key installed; new login could not be verified"
+// in the language the app shows.
+func KeysVerifyFailed() string { return In(i18n.Locale()).KeysVerifyFailed() }
+
+// KeysVerifyFailed says "Key installed; new login could not be verified"
+// in the language of msgs.
+func (msgs Messages) KeysVerifyFailed() string {
+	return Catalog.Format(msgs.locale, "keysVerifyFailed", nil)
+}
+
+// KeysSwitchFailed says "Key login verified; could not save the connection"
+// in the language the app shows.
+func KeysSwitchFailed() string { return In(i18n.Locale()).KeysSwitchFailed() }
+
+// KeysSwitchFailed says "Key login verified; could not save the connection"
+// in the language of msgs.
+func (msgs Messages) KeysSwitchFailed() string {
+	return Catalog.Format(msgs.locale, "keysSwitchFailed", nil)
+}
+
+// KeysDisableFailed says "Could not disable password authentication"
+// in the language the app shows.
+func KeysDisableFailed() string { return In(i18n.Locale()).KeysDisableFailed() }
+
+// KeysDisableFailed says "Could not disable password authentication"
+// in the language of msgs.
+func (msgs Messages) KeysDisableFailed() string {
+	return Catalog.Format(msgs.locale, "keysDisableFailed", nil)
+}
+
+// KeysDisablePassword says "Disable password authentication"
+// in the language the app shows.
+func KeysDisablePassword() string { return In(i18n.Locale()).KeysDisablePassword() }
+
+// KeysDisablePassword says "Disable password authentication"
+// in the language of msgs.
+func (msgs Messages) KeysDisablePassword() string {
+	return Catalog.Format(msgs.locale, "keysDisablePassword", nil)
+}
+
+// KeysDisableRequires says "Available only after a new login with this key was verified in this run."
+// in the language the app shows.
+func KeysDisableRequires() string { return In(i18n.Locale()).KeysDisableRequires() }
+
+// KeysDisableRequires says "Available only after a new login with this key was verified in this run."
+// in the language of msgs.
+func (msgs Messages) KeysDisableRequires() string {
+	return Catalog.Format(msgs.locale, "keysDisableRequires", nil)
+}
+
+// KeysDisableWarning says "This server-wide change may lock out other users or services. On the verified hosts you select below, set PasswordAut…"
+// in the language the app shows.
+func KeysDisableWarning() string { return In(i18n.Locale()).KeysDisableWarning() }
+
+// KeysDisableWarning says "This server-wide change may lock out other users or services. On the verified hosts you select below, set PasswordAut…"
+// in the language of msgs.
+func (msgs Messages) KeysDisableWarning() string {
+	return Catalog.Format(msgs.locale, "keysDisableWarning", nil)
+}
+
+// FwdTitle says "SSH forwarding"
+// in the language the app shows.
+func FwdTitle() string { return In(i18n.Locale()).FwdTitle() }
+
+// FwdTitle says "SSH forwarding"
+// in the language of msgs.
+func (msgs Messages) FwdTitle() string {
+	return Catalog.Format(msgs.locale, "fwdTitle", nil)
+}
+
+// FwdAgent says "Forward the SSH agent"
+// in the language the app shows.
+func FwdAgent() string { return In(i18n.Locale()).FwdAgent() }
+
+// FwdAgent says "Forward the SSH agent"
+// in the language of msgs.
+func (msgs Messages) FwdAgent() string {
+	return Catalog.Format(msgs.locale, "fwdAgent", nil)
+}
+
+// FwdAgentHint says "Enable only on servers you trust. A remote user with access to the forwarded agent can use it to sign while the shell…"
+// in the language the app shows.
+func FwdAgentHint() string { return In(i18n.Locale()).FwdAgentHint() }
+
+// FwdAgentHint says "Enable only on servers you trust. A remote user with access to the forwarded agent can use it to sign while the shell…"
+// in the language of msgs.
+func (msgs Messages) FwdAgentHint() string {
+	return Catalog.Format(msgs.locale, "fwdAgentHint", nil)
+}
+
+// FwdX11 says "X11 forwarding"
+// in the language the app shows.
+func FwdX11() string { return In(i18n.Locale()).FwdX11() }
+
+// FwdX11 says "X11 forwarding"
+// in the language of msgs.
+func (msgs Messages) FwdX11() string {
+	return Catalog.Format(msgs.locale, "fwdX11", nil)
+}
+
+// FwdOff says "Off"
+// in the language the app shows.
+func FwdOff() string { return In(i18n.Locale()).FwdOff() }
+
+// FwdOff says "Off"
+// in the language of msgs.
+func (msgs Messages) FwdOff() string {
+	return Catalog.Format(msgs.locale, "fwdOff", nil)
+}
+
+// FwdUntrusted says "On (untrusted)"
+// in the language the app shows.
+func FwdUntrusted() string { return In(i18n.Locale()).FwdUntrusted() }
+
+// FwdUntrusted says "On (untrusted)"
+// in the language of msgs.
+func (msgs Messages) FwdUntrusted() string {
+	return Catalog.Format(msgs.locale, "fwdUntrusted", nil)
+}
+
+// FwdTrusted says "On (trusted)"
+// in the language the app shows.
+func FwdTrusted() string { return In(i18n.Locale()).FwdTrusted() }
+
+// FwdTrusted says "On (trusted)"
+// in the language of msgs.
+func (msgs Messages) FwdTrusted() string {
+	return Catalog.Format(msgs.locale, "fwdTrusted", nil)
+}
+
+// FwdX11Hint says "Trusted X11 clients can read input and interact with local windows. Untrusted mode requires the X server’s SECURITY…"
+// in the language the app shows.
+func FwdX11Hint() string { return In(i18n.Locale()).FwdX11Hint() }
+
+// FwdX11Hint says "Trusted X11 clients can read input and interact with local windows. Untrusted mode requires the X server’s SECURITY…"
+// in the language of msgs.
+func (msgs Messages) FwdX11Hint() string {
+	return Catalog.Format(msgs.locale, "fwdX11Hint", nil)
+}
+
+// FwdDisplay says "Local X display"
+// in the language the app shows.
+func FwdDisplay() string { return In(i18n.Locale()).FwdDisplay() }
+
+// FwdDisplay says "Local X display"
+// in the language of msgs.
+func (msgs Messages) FwdDisplay() string {
+	return Catalog.Format(msgs.locale, "fwdDisplay", nil)
+}
+
+// FwdDisplayHint says "Leave empty to use $DISPLAY, or localhost:0 on Windows when unset. For VcXsrv or Xming, enter a local display such as…"
+// in the language the app shows.
+func FwdDisplayHint() string { return In(i18n.Locale()).FwdDisplayHint() }
+
+// FwdDisplayHint says "Leave empty to use $DISPLAY, or localhost:0 on Windows when unset. For VcXsrv or Xming, enter a local display such as…"
+// in the language of msgs.
+func (msgs Messages) FwdDisplayHint() string {
+	return Catalog.Format(msgs.locale, "fwdDisplayHint", nil)
+}
+
+// FwdAgentFailed says "SSH agent forwarding failed. Check the local agent and server settings."
+// in the language the app shows.
+func FwdAgentFailed() string { return In(i18n.Locale()).FwdAgentFailed() }
+
+// FwdAgentFailed says "SSH agent forwarding failed. Check the local agent and server settings."
+// in the language of msgs.
+func (msgs Messages) FwdAgentFailed() string {
+	return Catalog.Format(msgs.locale, "fwdAgentFailed", nil)
+}
+
+// FwdDisplayFailed says "X11 forwarding failed: the local X display could not be reached or authenticated."
+// in the language the app shows.
+func FwdDisplayFailed() string { return In(i18n.Locale()).FwdDisplayFailed() }
+
+// FwdDisplayFailed says "X11 forwarding failed: the local X display could not be reached or authenticated."
+// in the language of msgs.
+func (msgs Messages) FwdDisplayFailed() string {
+	return Catalog.Format(msgs.locale, "fwdDisplayFailed", nil)
+}
+
+// FwdUntrustedFailed says "X11 forwarding failed: the local X server did not grant untrusted access."
+// in the language the app shows.
+func FwdUntrustedFailed() string { return In(i18n.Locale()).FwdUntrustedFailed() }
+
+// FwdUntrustedFailed says "X11 forwarding failed: the local X server did not grant untrusted access."
+// in the language of msgs.
+func (msgs Messages) FwdUntrustedFailed() string {
+	return Catalog.Format(msgs.locale, "fwdUntrustedFailed", nil)
+}
+
+// FwdX11Failed says "The SSH server refused X11 forwarding."
+// in the language the app shows.
+func FwdX11Failed() string { return In(i18n.Locale()).FwdX11Failed() }
+
+// FwdX11Failed says "The SSH server refused X11 forwarding."
+// in the language of msgs.
+func (msgs Messages) FwdX11Failed() string {
+	return Catalog.Format(msgs.locale, "fwdX11Failed", nil)
+}
+
 // FieldRDPServerAuth says "If server authentication fails"
 // in the language the app shows.
 func FieldRDPServerAuth() string { return In(i18n.Locale()).FieldRDPServerAuth() }

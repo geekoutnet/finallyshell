@@ -37,12 +37,13 @@ var nextSessionID atomic.Int64
 // start page (see start.go). A local terminal has none either: it runs a
 // program on this computer (local.go).
 type Session struct {
-	ID     int64
-	Host   *config.Host // nil for a new tab and a local terminal
-	local  bool         // a local terminal (local.go)
-	status sessionStatus
-	err    error // why it failed or closed; nil when the user disconnected
-	ip     string
+	ID              int64
+	Host            *config.Host // nil for a new tab and a local terminal
+	local           bool         // a local terminal (local.go)
+	status          sessionStatus
+	err             error // why it failed or closed; nil when the user disconnected
+	ip              string
+	forwardWarnings map[string]error
 
 	client *ssh.Client
 	panes  paneTree // its terminals (panes.go)
@@ -118,6 +119,7 @@ func (a *App) connect(s *Session, secret string) {
 		s.cancel()
 	}
 	s.status, s.err, s.hostKeyQ = statusConnecting, nil, nil
+	s.forwardWarnings = nil
 	ctx, cancel := context.WithCancel(context.Background())
 	s.cancel, s.ctx = cancel, ctx
 	// Through the host's proxy or jump hosts, if any (see proxy.go):
@@ -133,6 +135,7 @@ func (a *App) connect(s *Session, secret string) {
 	opts.KeepAlive = a.keepAlive()
 	h := *s.Host
 	spec := a.shellSpec(&h) // here, on the UI thread, which owns the settings
+	spec.life = ctx
 	passphrase := a.storedPassphrase(s.Host)
 	// A shell in each pane: the one of a session connecting for the first
 	// time, every pane of the layout it had when it connects again.
@@ -257,6 +260,7 @@ type shellSpec struct {
 	bs    config.BackspaceKey
 	del   config.DeleteKey
 	exec  bool // the host allows exec channels: the monitor, the shell's follower
+	life  context.Context
 }
 
 // shellSpec is the spec of h's shells as the settings have it now.
@@ -264,11 +268,14 @@ func (a *App) shellSpec(h *config.Host) shellSpec {
 	bs, del := a.settings.HostBackspace(h), a.settings.HostDelete(h)
 	return shellSpec{
 		topts: a.terminalOptions(h),
-		pty:   sshx.PTY{Term: h.TermTypeOrDefault(), Erase: eraseChar(bs)},
-		enc:   a.settings.HostEncoding(h),
-		bs:    bs,
-		del:   del,
-		exec:  execAllowed(h),
+		pty: sshx.PTY{
+			Term: h.TermTypeOrDefault(), Erase: eraseChar(bs), ForwardAgent: h.ForwardAgent,
+			AgentAddress: a.settings.SSHAgent, X11: h.X11Forward, XDisplay: a.settings.X11Display,
+		},
+		enc:  a.settings.HostEncoding(h),
+		bs:   bs,
+		del:  del,
+		exec: execAllowed(h),
 	}
 }
 
@@ -276,6 +283,17 @@ func (a *App) shellSpec(h *config.Host) shellSpec {
 // terminal that shows it. It runs on a goroutine: it blocks until the
 // server answers.
 func (a *App) openPaneShell(s *Session, p *pane, client *ssh.Client, spec shellSpec) (*terminal.Terminal, error) {
+	spec.pty.ForwardWarning = func(feature string, err error) {
+		a.post(func() {
+			if spec.life != nil && (s.ctx != spec.life || spec.life.Err() != nil) || spec.life == nil && s.client != client {
+				return
+			}
+			if s.forwardWarnings == nil {
+				s.forwardWarnings = make(map[string]error)
+			}
+			s.forwardWarnings[feature] = err
+		})
+	}
 	shell, err := sshx.OpenShell(client, spec.pty)
 	if err != nil {
 		return nil, &stepError{"shell", err}

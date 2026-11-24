@@ -117,6 +117,9 @@ type Host struct {
 	// them with RDPOf.
 	RDP *RDPConfig `json:"rdp,omitempty"`
 
+	ForwardAgent bool   `json:"forwardAgent,omitempty"`
+	X11Forward   string `json:"x11Forward,omitempty"`
+
 	extra extras
 }
 

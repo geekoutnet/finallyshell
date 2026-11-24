@@ -102,6 +102,10 @@ var optionPages = []optionPage{
 		id: pageSync, title: locales.OptionsSync,
 		view: (*App).syncPage,
 	},
+	{
+		id: "ssh-keys", title: locales.KeysTitle,
+		view: (*App).keysOptions,
+	},
 }
 
 // openOptions opens the options window, or brings it to the front.

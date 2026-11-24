@@ -470,6 +470,156 @@ func (msgs Messages) MemoryNeedsRoot() string {
 	return Catalog.Format(msgs.locale, "memoryNeedsRoot", nil)
 }
 
+// PrivTitle says "Run as root"
+// in the language the app shows.
+func PrivTitle() string { return In(i18n.Locale()).PrivTitle() }
+
+// PrivTitle says "Run as root"
+// in the language of msgs.
+func (msgs Messages) PrivTitle() string {
+	return Catalog.Format(msgs.locale, "privTitle", nil)
+}
+
+// PrivSudoPrompt says "Enter the sudo password for {target}"
+// in the language the app shows.
+func PrivSudoPrompt(target string) string { return In(i18n.Locale()).PrivSudoPrompt(target) }
+
+// PrivSudoPrompt says "Enter the sudo password for {target}"
+// in the language of msgs.
+func (msgs Messages) PrivSudoPrompt(target string) string {
+	return Catalog.Format(msgs.locale, "privSudoPrompt", map[string]any{"target": target})
+}
+
+// PrivSuPrompt says "Enter the root password for {host}"
+// in the language the app shows.
+func PrivSuPrompt(host string) string { return In(i18n.Locale()).PrivSuPrompt(host) }
+
+// PrivSuPrompt says "Enter the root password for {host}"
+// in the language of msgs.
+func (msgs Messages) PrivSuPrompt(host string) string {
+	return Catalog.Format(msgs.locale, "privSuPrompt", map[string]any{"host": host})
+}
+
+// PrivPassword says "Privilege password"
+// in the language the app shows.
+func PrivPassword() string { return In(i18n.Locale()).PrivPassword() }
+
+// PrivPassword says "Privilege password"
+// in the language of msgs.
+func (msgs Messages) PrivPassword() string {
+	return Catalog.Format(msgs.locale, "privPassword", nil)
+}
+
+// PrivRemember says "Remember (system credential store)"
+// in the language the app shows.
+func PrivRemember() string { return In(i18n.Locale()).PrivRemember() }
+
+// PrivRemember says "Remember (system credential store)"
+// in the language of msgs.
+func (msgs Messages) PrivRemember() string {
+	return Catalog.Format(msgs.locale, "privRemember", nil)
+}
+
+// PrivUseSu says "Use the root password (su)"
+// in the language the app shows.
+func PrivUseSu() string { return In(i18n.Locale()).PrivUseSu() }
+
+// PrivUseSu says "Use the root password (su)"
+// in the language of msgs.
+func (msgs Messages) PrivUseSu() string {
+	return Catalog.Format(msgs.locale, "privUseSu", nil)
+}
+
+// PrivUseSudo says "Use the sudo password"
+// in the language the app shows.
+func PrivUseSudo() string { return In(i18n.Locale()).PrivUseSudo() }
+
+// PrivUseSudo says "Use the sudo password"
+// in the language of msgs.
+func (msgs Messages) PrivUseSudo() string {
+	return Catalog.Format(msgs.locale, "privUseSudo", nil)
+}
+
+// PrivSudoUnavailable says "Sudo is unavailable for this account. You can try the root password instead."
+// in the language the app shows.
+func PrivSudoUnavailable() string { return In(i18n.Locale()).PrivSudoUnavailable() }
+
+// PrivSudoUnavailable says "Sudo is unavailable for this account. You can try the root password instead."
+// in the language of msgs.
+func (msgs Messages) PrivSudoUnavailable() string {
+	return Catalog.Format(msgs.locale, "privSudoUnavailable", nil)
+}
+
+// PrivRun says "Run as root"
+// in the language the app shows.
+func PrivRun() string { return In(i18n.Locale()).PrivRun() }
+
+// PrivRun says "Run as root"
+// in the language of msgs.
+func (msgs Messages) PrivRun() string {
+	return Catalog.Format(msgs.locale, "privRun", nil)
+}
+
+// PrivWrongPassword says "Incorrect password. Check it before trying again."
+// in the language the app shows.
+func PrivWrongPassword() string { return In(i18n.Locale()).PrivWrongPassword() }
+
+// PrivWrongPassword says "Incorrect password. Check it before trying again."
+// in the language of msgs.
+func (msgs Messages) PrivWrongPassword() string {
+	return Catalog.Format(msgs.locale, "privWrongPassword", nil)
+}
+
+// PrivNeedsRoot says "This needs root. Log in as root, or allow this user to use sudo:"
+// in the language the app shows.
+func PrivNeedsRoot() string { return In(i18n.Locale()).PrivNeedsRoot() }
+
+// PrivNeedsRoot says "This needs root. Log in as root, or allow this user to use sudo:"
+// in the language of msgs.
+func (msgs Messages) PrivNeedsRoot() string {
+	return Catalog.Format(msgs.locale, "privNeedsRoot", nil)
+}
+
+// PrivAdminNote says "As an administrator, run the command for your distribution, then reconnect."
+// in the language the app shows.
+func PrivAdminNote() string { return In(i18n.Locale()).PrivAdminNote() }
+
+// PrivAdminNote says "As an administrator, run the command for your distribution, then reconnect."
+// in the language of msgs.
+func (msgs Messages) PrivAdminNote() string {
+	return Catalog.Format(msgs.locale, "privAdminNote", nil)
+}
+
+// PrivDebian says "Debian / Ubuntu"
+// in the language the app shows.
+func PrivDebian() string { return In(i18n.Locale()).PrivDebian() }
+
+// PrivDebian says "Debian / Ubuntu"
+// in the language of msgs.
+func (msgs Messages) PrivDebian() string {
+	return Catalog.Format(msgs.locale, "privDebian", nil)
+}
+
+// PrivRhel says "RHEL / CentOS"
+// in the language the app shows.
+func PrivRhel() string { return In(i18n.Locale()).PrivRhel() }
+
+// PrivRhel says "RHEL / CentOS"
+// in the language of msgs.
+func (msgs Messages) PrivRhel() string {
+	return Catalog.Format(msgs.locale, "privRhel", nil)
+}
+
+// PrivCopyCommands says "Copy commands"
+// in the language the app shows.
+func PrivCopyCommands() string { return In(i18n.Locale()).PrivCopyCommands() }
+
+// PrivCopyCommands says "Copy commands"
+// in the language of msgs.
+func (msgs Messages) PrivCopyCommands() string {
+	return Catalog.Format(msgs.locale, "privCopyCommands", nil)
+}
+
 // MemoryRestricted says "The kernel blocked this action. Memory controls may be read-only or restricted in containers."
 // in the language the app shows.
 func MemoryRestricted() string { return In(i18n.Locale()).MemoryRestricted() }

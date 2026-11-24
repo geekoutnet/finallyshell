@@ -68,14 +68,18 @@ type dockerState struct {
 	cancel     context.CancelFunc
 	frame      uint64 // the last frame of the main window that showed the cards
 
-	filter      string
-	sortBy      int
-	desc        bool // the other way from the column's own
-	flat        bool // not grouped by project
-	closed      map[string]bool
+	ctrList
 	run         dockerRunner
 	work        *dockerWork
 	actionError *dockerActionDialog
+}
+
+type ctrList struct {
+	filter      string
+	sortBy      int
+	desc, flat  bool
+	hideStopped bool
+	closed      map[string]bool
 }
 
 // shown tells whether the server has Docker, so that the cards show.
@@ -696,17 +700,21 @@ type ctrGroup struct {
 // projects, then the others; all in one group
 // when flat.
 func (ds *dockerState) ctrGroups(now time.Time) (groups []ctrGroup, shown int) {
-	q := strings.ToLower(strings.TrimSpace(ds.filter))
+	return ds.ctrList.groups(ds.d.Containers, now)
+}
+
+func (list *ctrList) groups(containers []monitor.Container, now time.Time) (groups []ctrGroup, shown int) {
+	q := strings.ToLower(strings.TrimSpace(list.filter))
 	byProject := map[string]*ctrGroup{}
 	rest := &ctrGroup{}
-	for i := range ds.d.Containers {
-		ct := &ds.d.Containers[i]
-		if !ctrMatches(ct, q, now) {
+	for i := range containers {
+		ct := &containers[i]
+		if list.hideStopped && ct.Status != "running" && ct.Status != "restarting" && ct.Status != "paused" || !ctrMatches(ct, q, now) {
 			continue
 		}
 		shown++
 		g := rest
-		if !ds.flat && ct.Project != "" {
+		if !list.flat && ct.Project != "" {
 			if g = byProject[ct.Project]; g == nil {
 				g = &ctrGroup{project: ct.Project}
 				byProject[ct.Project] = g
@@ -714,15 +722,15 @@ func (ds *dockerState) ctrGroups(now time.Time) (groups []ctrGroup, shown int) {
 		}
 		g.list = append(g.list, ct)
 	}
-	order := ctrCompare(ds.sortBy, ds.desc)
+	order := ctrCompare(list.sortBy, list.desc)
 	for _, g := range byProject {
 		slices.SortFunc(g.list, order)
 		groups = append(groups, *g)
 	}
 	slices.SortFunc(groups, func(a, b ctrGroup) int {
-		if ds.sortBy == ctrSortName {
+		if list.sortBy == ctrSortName {
 			r := strings.Compare(strings.ToLower(a.project), strings.ToLower(b.project))
-			if ds.desc {
+			if list.desc {
 				r = -r
 			}
 			return r
@@ -784,19 +792,11 @@ func (a *App) dockerContainers(c *ui.Context, s *Session, width float32) {
 			return
 		}
 		ui.Column(c).FillWidth().Children(func() {
-			a.ctrHeader(c, ds, cols)
+			a.ctrHeader(c, &ds.ctrList, cols, nil)
 			if shown == 0 {
 				widgets.Muted(c, locales.DockerNoMatch()).Padding(8, 4)
 			}
-			for _, g := range groups {
-				key := "project:" + g.project
-				if g.project == "" {
-					key = "other"
-				}
-				ui.Column(c.Key(key)).FillWidth().Children(func() {
-					a.ctrGroupView(c, s, g, len(groups) > 1, cols, now)
-				})
-			}
+			a.ctrGroupRows(c, s, &ds.ctrList, groups, cols, now, nil)
 		})
 	})
 }
@@ -813,7 +813,7 @@ func runningCount(list []monitor.Container) int {
 
 // ctrHeader is the containers' column headers; a click on Name, Status,
 // CPU or Memory sorts by it, a second the other way.
-func (a *App) ctrHeader(c *ui.Context, ds *dockerState, cols ctrColumns) {
+func (a *App) ctrHeader(c *ui.Context, ds *ctrList, cols ctrColumns, leading func()) {
 	head := func(title string, by int, width float32, end bool) {
 		label := title
 		if ds.sortBy == by {
@@ -854,6 +854,9 @@ func (a *App) ctrHeader(c *ui.Context, ds *dockerState, cols ctrColumns) {
 		}
 	}
 	ui.Row(c).Gap(10).Padding(2, 6, 4, 6).AlignItems(ui.Center).FillWidth().BorderWidth(0, 0, 1, 0).BorderColor(colors.line).Children(func() {
+		if leading != nil {
+			leading()
+		}
 		ui.Box(c).Width(ctrDotW).Shrink(0)
 		head(locales.DockerColName(), ctrSortName, 0, false)
 		if cols.image {
@@ -874,12 +877,20 @@ func (a *App) ctrHeader(c *ui.Context, ds *dockerState, cols ctrColumns) {
 	})
 }
 
+func (a *App) ctrGroupRows(c *ui.Context, s *Session, list *ctrList, groups []ctrGroup, cols ctrColumns, now time.Time, page *dockerContainersPage) {
+	for _, group := range groups {
+		ui.Column(c.Key("project:" + group.project)).FillWidth().Children(func() {
+			a.ctrGroupView(c, s, list, group, len(groups) > 1, cols, now, page)
+		})
+	}
+}
+
 // ctrGroupView is a group of containers: a project's, under its header,
 // which a click opens and closes, or the others, under a header of their
 // own when there are projects above them.
-func (a *App) ctrGroupView(c *ui.Context, s *Session, g ctrGroup, headed bool, cols ctrColumns, now time.Time) {
+func (a *App) ctrGroupView(c *ui.Context, s *Session, list *ctrList, g ctrGroup, headed bool, cols ctrColumns, now time.Time, page *dockerContainersPage) {
 	ds := &s.overview.docker
-	open := g.project == "" || !ds.closed[g.project]
+	open := g.project == "" || !list.closed[g.project]
 	if g.project != "" {
 		title := g.project
 		row := ui.Row(c).Gap(10).Padding(5, 6).Margin(4, 0, 0, 0).Radius(4).AlignItems(ui.Center).FillWidth().
@@ -893,10 +904,10 @@ func (a *App) ctrGroupView(c *ui.Context, s *Session, g ctrGroup, headed bool, c
 			content := ui.Row(c).Gap(10).AlignItems(ui.Center).Grow(1).MinWidth(0).Cursor(ui.CursorPointer).
 				Role(ui.RoleButton).Label(title).Expanded(open)
 			if content.Clicked() {
-				if ds.closed == nil {
-					ds.closed = map[string]bool{}
+				if list.closed == nil {
+					list.closed = map[string]bool{}
 				}
-				ds.closed[g.project] = open
+				list.closed[g.project] = open
 				open = !open
 			}
 			content.Children(func() {
@@ -923,7 +934,7 @@ func (a *App) ctrGroupView(c *ui.Context, s *Session, g ctrGroup, headed bool, c
 				if work := ds.work; work != nil && work.target.project == g.project && work.target.id == "" {
 					count = work.busyText()
 				}
-				widgets.Muted(c, count).FontSize(12).SingleLine().Grow(1).MinWidth(0)
+				widgets.Muted(c, count).FontSize(12).SingleLine().Grow(1).MinWidth(0).Tooltip(count)
 				widgets.Muted(c, fmt.Sprintf("%.1f%%", cpu)).FontSize(12).Width(ctrCPUW).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
 				widgets.Muted(c, formatBytes(float64(mem))).FontSize(12).Width(ctrMemW).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
 			})
@@ -936,12 +947,12 @@ func (a *App) ctrGroupView(c *ui.Context, s *Session, g ctrGroup, headed bool, c
 		return
 	}
 	for _, ct := range g.list {
-		a.ctrRow(c.Key(ct.ID), s, ct, g.project != "", cols, now)
+		a.ctrRow(c.Key(ct.ID), s, ct, g.project != "", cols, now, page)
 	}
 }
 
 // ctrRow is a container's line; a click opens its details.
-func (a *App) ctrRow(c *ui.Context, s *Session, ct *monitor.Container, indent bool, cols ctrColumns, now time.Time) {
+func (a *App) ctrRow(c *ui.Context, s *Session, ct *monitor.Container, indent bool, cols ctrColumns, now time.Time, page *dockerContainersPage) {
 	row := ui.Row(c).Gap(10).Padding(4, 6).Radius(4).AlignItems(ui.Center).FillWidth().MinHeight(26).
 		Cursor(ui.CursorPointer).Role(ui.RoleGroup).Label(ct.Name)
 	menu := func(m *ui.Menu) { a.dockerContainerMenu(c, m, s, ct) }
@@ -949,17 +960,26 @@ func (a *App) ctrRow(c *ui.Context, s *Session, ct *monitor.Container, indent bo
 	if row.Hovered() {
 		row.Background(theme.Text.Alpha(0.06))
 	}
+	if page != nil && page.selected[ct.ID] {
+		row.Background(theme.Accent.Alpha(0.16))
+	}
 	status := ctrStatusText(ct, now)
 	work := s.overview.docker.work
-	busy := work != nil && (work.target.id == ct.ID || work.target.id == "" && work.target.project == ct.Project)
+	busy := work != nil && (work.target.id == ct.ID || work.target.id == "" && work.target.project != "" && work.target.project == ct.Project || slices.Contains(work.ids, ct.ID))
 	if busy {
 		status = work.busyText()
 	}
 	row.Children(func() {
+		if page != nil {
+			page.checkbox(c, ct)
+		}
 		content := ui.Row(c).Gap(10).AlignItems(ui.Center).Grow(1).MinWidth(0).Cursor(ui.CursorPointer).
 			Role(ui.RoleButton).Label(ct.Name)
-		if content.Clicked() {
+		if page == nil && content.Clicked() || page != nil && content.DoubleClicked() {
 			a.openContainer(s, ct.ID)
+		} else if page != nil && content.Clicked() {
+			page.click(ct.ID, content.ClickModifiers())
+			c.Invalidate()
 		}
 		content.Children(func() { ctrRowCells(c, ct, indent, cols, status, busy) })
 		dockerMoreButton(c, ct.Name, menu)

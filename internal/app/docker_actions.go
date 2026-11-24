@@ -37,7 +37,7 @@ func (target dockerTarget) available() bool {
 		return false
 	}
 	state := &s.overview.docker
-	return state.dataClient == target.client && state.d.Tool != "" && (target.client != nil || state.run != nil)
+	return state.dataClient == target.client && state.d.Tool != "" && state.d.State == monitor.DockerOK && (target.client != nil || state.run != nil)
 }
 
 func (target dockerTarget) projectInfo() (monitor.Compose, []*monitor.Container) {
@@ -201,7 +201,13 @@ func (a *App) dockerContainerMenu(c *ui.Context, m *ui.Menu, s *Session, ct *mon
 		a.openDockerLogs(target)
 	}
 	terminalReady := canSplit(s) && s.client != nil
-	if m.Item(locales.DockerTerminal()).Disabled(!readable || !terminalReady || ct.Status != "running" || ct.Paused).Chosen() {
+	terminalReason := ""
+	if !readable || !terminalReady {
+		terminalReason = locales.DockerUnavailable()
+	} else if !ctrExecuting(ct) {
+		terminalReason = locales.DockerCtrMustRun()
+	}
+	if m.Item(locales.DockerTerminal()).Disabled(terminalReason != "").Subtitle(terminalReason).Chosen() {
 		a.openDockerTerminal(target, tool)
 	}
 	if m.Item(locales.DockerDetails()).Chosen() {
@@ -231,6 +237,7 @@ func (a *App) dockerContainerMenu(c *ui.Context, m *ui.Menu, s *Session, ct *mon
 	for _, action := range []dockerAction{dockerRename, dockerPolicy, dockerRecreate, dockerRemove, dockerForceRemove} {
 		a.dockerActionItem(m, target, action)
 	}
+	a.ctrMoreMenu(m, target, ct)
 }
 
 func (a *App) dockerProjectMenu(m *ui.Menu, s *Session, name string) {
@@ -248,7 +255,19 @@ func (a *App) dockerProjectMenu(m *ui.Menu, s *Session, name string) {
 }
 
 func (a *App) dockerActionItem(m *ui.Menu, target dockerTarget, action dockerAction) {
-	if !m.Item(action.title(target.id == "")).Disabled(!target.allow(action)).Chosen() {
+	allowed := target.allow(action)
+	reason := ""
+	if !allowed {
+		reason = locales.DockerUnavailable()
+		if target.available() && target.session.overview.docker.work == nil {
+			if target.id != "" {
+				reason = ctrActionReason(action, dockerContainer(target.session, target.id))
+			} else {
+				reason = locales.DockerCtrStateReason()
+			}
+		}
+	}
+	if !m.Item(action.title(target.id == "")).Disabled(!allowed).Subtitle(reason).Chosen() {
 		return
 	}
 	dialog := &dockerActionDialog{action: action, target: target}
@@ -327,11 +346,17 @@ type dockerWork struct {
 	output string
 	err    error
 	scroll ui.ScrollState
+	ids    []string
+	label  string
+	cancel context.CancelFunc
 }
 
 func (work *dockerWork) busyText() string {
 	if work.done {
 		return locales.DockerUpdatingList()
+	}
+	if work.label != "" {
+		return locales.DockerActionRunning(work.label)
 	}
 	if work.action == dockerRestart {
 		return locales.DockerActionRestarting()
@@ -371,6 +396,9 @@ func (a *App) runDockerAction(dialog *dockerActionDialog) {
 		timeout = 30 * time.Minute
 	}
 	ctx, cancel := context.WithTimeout(parent, timeout)
+	if dialog.action == dockerRecreate && target.project != "" {
+		work.cancel = cancel
+	}
 	go func() {
 		defer cancel()
 		var report func(string)
@@ -385,7 +413,7 @@ func (a *App) runDockerAction(dialog *dockerActionDialog) {
 				}
 				return
 			}
-			work.done, work.output, work.err = true, output, err
+			work.done, work.output, work.err, work.cancel = true, output, err, nil
 			if err != nil && (a.ctrDlg == nil || a.ctrDlg.action != dialog) {
 				state.actionError = dialog
 			}

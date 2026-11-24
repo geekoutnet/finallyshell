@@ -1062,6 +1062,14 @@ does not free memory held by running apps. The result compares observed
 before and after readings, not a guaranteed amount freed. Swap is
 read-only in this card.
 
+### Docker tab › Containers
+
+Filter and sort containers, group by Compose project, and show or hide stopped containers. Select rows using checkboxes, Ctrl/Command-click, or Shift-click, then use the selection menu for lifecycle actions or live stats. Double-click a row for details, or use its menu for logs, a shell, published ports, and more. Removal and other destructive operations show what they affect before proceeding.
+
+**New container** configures the image, command, ports, mounts, environment, network, and resource limits. The run-command preview masks environment and log-option values. **Duplicate container** copies settings without reusing published ports or a static IP; mounts may still share data. **Edit container** replaces a standalone Docker container, retaining settings not shown by the form and attempting to restore the original if the replacement fails. It requires the Docker Unix socket and `curl`; edit Compose services in their Compose file instead. Replacement does not keep changes in the writable layer.
+
+**Live stats** samples CPU, memory, network rates, disk I/O, and PIDs every two seconds while open. **Container files** requires a running, unpaused container with suitable shell utilities. Browse, rename, create directories, and delete entries there. Copy files or folders between the container and an absolute path on the SSH server; use the SSH file panel for transfers between the server and your computer. The row menu can also commit a container to an image or export its filesystem as a tar on the server, excluding mounted volumes. Both can include sensitive data.
+
 <a id="terminal-section"></a>
 
 ## Terminal

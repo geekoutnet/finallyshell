@@ -1316,6 +1316,22 @@ and lists its keys (see [Terminal › Command bar](#terminal--command-bar)).
 Commands you send often can be kept as buttons in the
 [Commands tab](#commands-tab).
 
+### ZMODEM (rz/sz)
+
+Run `rz` in an SSH terminal to select one or more local files and confirm the upload. Use plain `rz` without an overwrite option; the app asks the receiver to protect existing files, but the remote program controls its own write policy. Run `sz -- 'file'` to choose a local destination, starting in the configured Downloads folder, and confirm each incoming file. No extra SSH channel, SFTP or privilege escalation is needed.
+
+The Transfers tab shows the current file, speed and cancellation. Verified downloads are published under their original name or with a ` (1)`-style suffix; unsafe names, directories and files of 4 GiB or more are not supported. Retransmissions within a transfer are automatic. After canceling or disconnecting, run the command again to start a new transfer. ZMODEM is not used in local terminals.
+
+### Keyword highlighting
+
+SSH terminals color common errors red, warnings yellow, success indicators green, IP addresses cyan and HTTP(S) URLs blue with an underline. In Options › Terminal › Keyword highlighting, turn highlighting off or edit, preview and scope rules to all hosts or a saved host. Rules can match whole words or regular expressions, with case and style controls. The rules apply to new output; escape sequences, full-screen programs using the alternate screen and ZMODEM payloads are left alone.
+
+### Session recording
+
+Use the recording button in an SSH pane or the session menu to start or stop recording the focused pane. A red dot identifies a recording pane. In Options › Terminal › Session recording, choose a folder, add an ANSI-stripped `.txt` log, set the per-file rotation limit or opt into automatic recording of newly opened SSH panes. Automatic recording is off by default.
+
+Recordings use asciicast v2 (`.cast`) and can be replayed with an external player. Keyboard input is not captured directly, but echoed commands and other visible output are recorded. Stop recording before displaying credentials, private keys or confidential output. Use Open Recordings Folder to find the files.
+
 ### Appearance: font, color scheme, background image
 
 The Options pages Terminal › Font, Terminal › Color scheme and Terminal ›

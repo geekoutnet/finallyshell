@@ -4510,6 +4510,558 @@ func (msgs Messages) OptionsTerminal() string {
 	return Catalog.Format(msgs.locale, "optionsTerminal", nil)
 }
 
+// ZmTransfer says "ZMODEM transfer"
+// in the language the app shows.
+func ZmTransfer() string { return In(i18n.Locale()).ZmTransfer() }
+
+// ZmTransfer says "ZMODEM transfer"
+// in the language of msgs.
+func (msgs Messages) ZmTransfer() string {
+	return Catalog.Format(msgs.locale, "zmTransfer", nil)
+}
+
+// ZmDirection says "ZMODEM {direction}"
+// in the language the app shows.
+func ZmDirection(direction string) string { return In(i18n.Locale()).ZmDirection(direction) }
+
+// ZmDirection says "ZMODEM {direction}"
+// in the language of msgs.
+func (msgs Messages) ZmDirection(direction string) string {
+	return Catalog.Format(msgs.locale, "zmDirection", map[string]any{"direction": direction})
+}
+
+// ZmConfirmSend says "Send files to {host} over ZMODEM?"
+// in the language the app shows.
+func ZmConfirmSend(host string) string { return In(i18n.Locale()).ZmConfirmSend(host) }
+
+// ZmConfirmSend says "Send files to {host} over ZMODEM?"
+// in the language of msgs.
+func (msgs Messages) ZmConfirmSend(host string) string {
+	return Catalog.Format(msgs.locale, "zmConfirmSend", map[string]any{"host": host})
+}
+
+// ZmSelectedFiles says "{count, plural, one {# selected file} other {# selected files}}"
+// in the language the app shows.
+func ZmSelectedFiles(count int) string { return In(i18n.Locale()).ZmSelectedFiles(count) }
+
+// ZmSelectedFiles says "{count, plural, one {# selected file} other {# selected files}}"
+// in the language of msgs.
+func (msgs Messages) ZmSelectedFiles(count int) string {
+	return Catalog.Format(msgs.locale, "zmSelectedFiles", map[string]any{"count": count})
+}
+
+// ZmSendWarning says "The receiver will write these files in its current folder. It is asked to protect existing files; its own options may…"
+// in the language the app shows.
+func ZmSendWarning() string { return In(i18n.Locale()).ZmSendWarning() }
+
+// ZmSendWarning says "The receiver will write these files in its current folder. It is asked to protect existing files; its own options may…"
+// in the language of msgs.
+func (msgs Messages) ZmSendWarning() string {
+	return Catalog.Format(msgs.locale, "zmSendWarning", nil)
+}
+
+// ZmConfirmReceive says "Receive {name} ({size}) from {host} over ZMODEM?"
+// in the language the app shows.
+func ZmConfirmReceive(name string, size string, host string) string {
+	return In(i18n.Locale()).ZmConfirmReceive(name, size, host)
+}
+
+// ZmConfirmReceive says "Receive {name} ({size}) from {host} over ZMODEM?"
+// in the language of msgs.
+func (msgs Messages) ZmConfirmReceive(name string, size string, host string) string {
+	return Catalog.Format(msgs.locale, "zmConfirmReceive", map[string]any{"name": name, "size": size, "host": host})
+}
+
+// ZmReceiveDefault says "Save to {path}. Existing files are kept; new files with the same name get a numbered suffix."
+// in the language the app shows.
+func ZmReceiveDefault(path string) string { return In(i18n.Locale()).ZmReceiveDefault(path) }
+
+// ZmReceiveDefault says "Save to {path}. Existing files are kept; new files with the same name get a numbered suffix."
+// in the language of msgs.
+func (msgs Messages) ZmReceiveDefault(path string) string {
+	return Catalog.Format(msgs.locale, "zmReceiveDefault", map[string]any{"path": path})
+}
+
+// ZmChooseFolder says "Choose ZMODEM download folder"
+// in the language the app shows.
+func ZmChooseFolder() string { return In(i18n.Locale()).ZmChooseFolder() }
+
+// ZmChooseFolder says "Choose ZMODEM download folder"
+// in the language of msgs.
+func (msgs Messages) ZmChooseFolder() string {
+	return Catalog.Format(msgs.locale, "zmChooseFolder", nil)
+}
+
+// ZmTimeout says "No response from the ZMODEM peer. Start rz or sz again to retry."
+// in the language the app shows.
+func ZmTimeout() string { return In(i18n.Locale()).ZmTimeout() }
+
+// ZmTimeout says "No response from the ZMODEM peer. Start rz or sz again to retry."
+// in the language of msgs.
+func (msgs Messages) ZmTimeout() string {
+	return Catalog.Format(msgs.locale, "zmTimeout", nil)
+}
+
+// ZmFailed says "ZMODEM transfer failed. Check the file name, file size, disk space and remote tool."
+// in the language the app shows.
+func ZmFailed() string { return In(i18n.Locale()).ZmFailed() }
+
+// ZmFailed says "ZMODEM transfer failed. Check the file name, file size, disk space and remote tool."
+// in the language of msgs.
+func (msgs Messages) ZmFailed() string {
+	return Catalog.Format(msgs.locale, "zmFailed", nil)
+}
+
+// ZmRestart says "Run rz or sz again in the SSH terminal"
+// in the language the app shows.
+func ZmRestart() string { return In(i18n.Locale()).ZmRestart() }
+
+// ZmRestart says "Run rz or sz again in the SSH terminal"
+// in the language of msgs.
+func (msgs Messages) ZmRestart() string {
+	return Catalog.Format(msgs.locale, "zmRestart", nil)
+}
+
+// HlOptions says "Keyword highlighting"
+// in the language the app shows.
+func HlOptions() string { return In(i18n.Locale()).HlOptions() }
+
+// HlOptions says "Keyword highlighting"
+// in the language of msgs.
+func (msgs Messages) HlOptions() string {
+	return Catalog.Format(msgs.locale, "hlOptions", nil)
+}
+
+// HlNav says "Highlighting"
+// in the language the app shows.
+func HlNav() string { return In(i18n.Locale()).HlNav() }
+
+// HlNav says "Highlighting"
+// in the language of msgs.
+func (msgs Messages) HlNav() string {
+	return Catalog.Format(msgs.locale, "hlNav", nil)
+}
+
+// HlEnable says "Highlight terminal output"
+// in the language the app shows.
+func HlEnable() string { return In(i18n.Locale()).HlEnable() }
+
+// HlEnable says "Highlight terminal output"
+// in the language of msgs.
+func (msgs Messages) HlEnable() string {
+	return Catalog.Format(msgs.locale, "hlEnable", nil)
+}
+
+// HlHelp says "Color matching text in SSH terminals. Full-screen programs and file transfers are not highlighted."
+// in the language the app shows.
+func HlHelp() string { return In(i18n.Locale()).HlHelp() }
+
+// HlHelp says "Color matching text in SSH terminals. Full-screen programs and file transfers are not highlighted."
+// in the language of msgs.
+func (msgs Messages) HlHelp() string {
+	return Catalog.Format(msgs.locale, "hlHelp", nil)
+}
+
+// HlAdd says "Add Rule…"
+// in the language the app shows.
+func HlAdd() string { return In(i18n.Locale()).HlAdd() }
+
+// HlAdd says "Add Rule…"
+// in the language of msgs.
+func (msgs Messages) HlAdd() string {
+	return Catalog.Format(msgs.locale, "hlAdd", nil)
+}
+
+// HlReset says "Restore Defaults"
+// in the language the app shows.
+func HlReset() string { return In(i18n.Locale()).HlReset() }
+
+// HlReset says "Restore Defaults"
+// in the language of msgs.
+func (msgs Messages) HlReset() string {
+	return Catalog.Format(msgs.locale, "hlReset", nil)
+}
+
+// HlResetDetail says "Replace all custom rules with the built-in rules."
+// in the language the app shows.
+func HlResetDetail() string { return In(i18n.Locale()).HlResetDetail() }
+
+// HlResetDetail says "Replace all custom rules with the built-in rules."
+// in the language of msgs.
+func (msgs Messages) HlResetDetail() string {
+	return Catalog.Format(msgs.locale, "hlResetDetail", nil)
+}
+
+// HlPreview says "Preview"
+// in the language the app shows.
+func HlPreview() string { return In(i18n.Locale()).HlPreview() }
+
+// HlPreview says "Preview"
+// in the language of msgs.
+func (msgs Messages) HlPreview() string {
+	return Catalog.Format(msgs.locale, "hlPreview", nil)
+}
+
+// HlRule says "Highlight rule"
+// in the language the app shows.
+func HlRule() string { return In(i18n.Locale()).HlRule() }
+
+// HlRule says "Highlight rule"
+// in the language of msgs.
+func (msgs Messages) HlRule() string {
+	return Catalog.Format(msgs.locale, "hlRule", nil)
+}
+
+// HlPattern says "Pattern"
+// in the language the app shows.
+func HlPattern() string { return In(i18n.Locale()).HlPattern() }
+
+// HlPattern says "Pattern"
+// in the language of msgs.
+func (msgs Messages) HlPattern() string {
+	return Catalog.Format(msgs.locale, "hlPattern", nil)
+}
+
+// HlRegex says "Regular expression"
+// in the language the app shows.
+func HlRegex() string { return In(i18n.Locale()).HlRegex() }
+
+// HlRegex says "Regular expression"
+// in the language of msgs.
+func (msgs Messages) HlRegex() string {
+	return Catalog.Format(msgs.locale, "hlRegex", nil)
+}
+
+// HlWord says "Whole word"
+// in the language the app shows.
+func HlWord() string { return In(i18n.Locale()).HlWord() }
+
+// HlWord says "Whole word"
+// in the language of msgs.
+func (msgs Messages) HlWord() string {
+	return Catalog.Format(msgs.locale, "hlWord", nil)
+}
+
+// HlCase says "Match case"
+// in the language the app shows.
+func HlCase() string { return In(i18n.Locale()).HlCase() }
+
+// HlCase says "Match case"
+// in the language of msgs.
+func (msgs Messages) HlCase() string {
+	return Catalog.Format(msgs.locale, "hlCase", nil)
+}
+
+// HlColor says "Color"
+// in the language the app shows.
+func HlColor() string { return In(i18n.Locale()).HlColor() }
+
+// HlColor says "Color"
+// in the language of msgs.
+func (msgs Messages) HlColor() string {
+	return Catalog.Format(msgs.locale, "hlColor", nil)
+}
+
+// HlBold says "Bold"
+// in the language the app shows.
+func HlBold() string { return In(i18n.Locale()).HlBold() }
+
+// HlBold says "Bold"
+// in the language of msgs.
+func (msgs Messages) HlBold() string {
+	return Catalog.Format(msgs.locale, "hlBold", nil)
+}
+
+// HlUnderline says "Underline"
+// in the language the app shows.
+func HlUnderline() string { return In(i18n.Locale()).HlUnderline() }
+
+// HlUnderline says "Underline"
+// in the language of msgs.
+func (msgs Messages) HlUnderline() string {
+	return Catalog.Format(msgs.locale, "hlUnderline", nil)
+}
+
+// HlScope says "Apply to"
+// in the language the app shows.
+func HlScope() string { return In(i18n.Locale()).HlScope() }
+
+// HlScope says "Apply to"
+// in the language of msgs.
+func (msgs Messages) HlScope() string {
+	return Catalog.Format(msgs.locale, "hlScope", nil)
+}
+
+// HlAllHosts says "All hosts"
+// in the language the app shows.
+func HlAllHosts() string { return In(i18n.Locale()).HlAllHosts() }
+
+// HlAllHosts says "All hosts"
+// in the language of msgs.
+func (msgs Messages) HlAllHosts() string {
+	return Catalog.Format(msgs.locale, "hlAllHosts", nil)
+}
+
+// HlMissingHost says "Host no longer saved"
+// in the language the app shows.
+func HlMissingHost() string { return In(i18n.Locale()).HlMissingHost() }
+
+// HlMissingHost says "Host no longer saved"
+// in the language of msgs.
+func (msgs Messages) HlMissingHost() string {
+	return Catalog.Format(msgs.locale, "hlMissingHost", nil)
+}
+
+// HlInvalid says "Enter a valid pattern of at most 512 bytes."
+// in the language the app shows.
+func HlInvalid() string { return In(i18n.Locale()).HlInvalid() }
+
+// HlInvalid says "Enter a valid pattern of at most 512 bytes."
+// in the language of msgs.
+func (msgs Messages) HlInvalid() string {
+	return Catalog.Format(msgs.locale, "hlInvalid", nil)
+}
+
+// HlDelete says "Delete the rule “{pattern}”? Matching output will no longer use this rule."
+// in the language the app shows.
+func HlDelete(pattern string) string { return In(i18n.Locale()).HlDelete(pattern) }
+
+// HlDelete says "Delete the rule “{pattern}”? Matching output will no longer use this rule."
+// in the language of msgs.
+func (msgs Messages) HlDelete(pattern string) string {
+	return Catalog.Format(msgs.locale, "hlDelete", map[string]any{"pattern": pattern})
+}
+
+// HlRed says "Red"
+// in the language the app shows.
+func HlRed() string { return In(i18n.Locale()).HlRed() }
+
+// HlRed says "Red"
+// in the language of msgs.
+func (msgs Messages) HlRed() string {
+	return Catalog.Format(msgs.locale, "hlRed", nil)
+}
+
+// HlYellow says "Yellow"
+// in the language the app shows.
+func HlYellow() string { return In(i18n.Locale()).HlYellow() }
+
+// HlYellow says "Yellow"
+// in the language of msgs.
+func (msgs Messages) HlYellow() string {
+	return Catalog.Format(msgs.locale, "hlYellow", nil)
+}
+
+// HlGreen says "Green"
+// in the language the app shows.
+func HlGreen() string { return In(i18n.Locale()).HlGreen() }
+
+// HlGreen says "Green"
+// in the language of msgs.
+func (msgs Messages) HlGreen() string {
+	return Catalog.Format(msgs.locale, "hlGreen", nil)
+}
+
+// HlCyan says "Cyan"
+// in the language the app shows.
+func HlCyan() string { return In(i18n.Locale()).HlCyan() }
+
+// HlCyan says "Cyan"
+// in the language of msgs.
+func (msgs Messages) HlCyan() string {
+	return Catalog.Format(msgs.locale, "hlCyan", nil)
+}
+
+// HlBlue says "Blue"
+// in the language the app shows.
+func HlBlue() string { return In(i18n.Locale()).HlBlue() }
+
+// HlBlue says "Blue"
+// in the language of msgs.
+func (msgs Messages) HlBlue() string {
+	return Catalog.Format(msgs.locale, "hlBlue", nil)
+}
+
+// HlMagenta says "Magenta"
+// in the language the app shows.
+func HlMagenta() string { return In(i18n.Locale()).HlMagenta() }
+
+// HlMagenta says "Magenta"
+// in the language of msgs.
+func (msgs Messages) HlMagenta() string {
+	return Catalog.Format(msgs.locale, "hlMagenta", nil)
+}
+
+// RecOptions says "Session recording"
+// in the language the app shows.
+func RecOptions() string { return In(i18n.Locale()).RecOptions() }
+
+// RecOptions says "Session recording"
+// in the language of msgs.
+func (msgs Messages) RecOptions() string {
+	return Catalog.Format(msgs.locale, "recOptions", nil)
+}
+
+// RecStart says "Start Recording…"
+// in the language the app shows.
+func RecStart() string { return In(i18n.Locale()).RecStart() }
+
+// RecStart says "Start Recording…"
+// in the language of msgs.
+func (msgs Messages) RecStart() string {
+	return Catalog.Format(msgs.locale, "recStart", nil)
+}
+
+// RecStop says "Stop Recording"
+// in the language the app shows.
+func RecStop() string { return In(i18n.Locale()).RecStop() }
+
+// RecStop says "Stop Recording"
+// in the language of msgs.
+func (msgs Messages) RecStop() string {
+	return Catalog.Format(msgs.locale, "recStop", nil)
+}
+
+// RecOpenFolder says "Open Recordings Folder"
+// in the language the app shows.
+func RecOpenFolder() string { return In(i18n.Locale()).RecOpenFolder() }
+
+// RecOpenFolder says "Open Recordings Folder"
+// in the language of msgs.
+func (msgs Messages) RecOpenFolder() string {
+	return Catalog.Format(msgs.locale, "recOpenFolder", nil)
+}
+
+// RecAutomatic says "Record new SSH terminal panes automatically"
+// in the language the app shows.
+func RecAutomatic() string { return In(i18n.Locale()).RecAutomatic() }
+
+// RecAutomatic says "Record new SSH terminal panes automatically"
+// in the language of msgs.
+func (msgs Messages) RecAutomatic() string {
+	return Catalog.Format(msgs.locale, "recAutomatic", nil)
+}
+
+// RecPlain says "Also save a plain-text log"
+// in the language the app shows.
+func RecPlain() string { return In(i18n.Locale()).RecPlain() }
+
+// RecPlain says "Also save a plain-text log"
+// in the language of msgs.
+func (msgs Messages) RecPlain() string {
+	return Catalog.Format(msgs.locale, "recPlain", nil)
+}
+
+// RecFolder says "Recordings folder"
+// in the language the app shows.
+func RecFolder() string { return In(i18n.Locale()).RecFolder() }
+
+// RecFolder says "Recordings folder"
+// in the language of msgs.
+func (msgs Messages) RecFolder() string {
+	return Catalog.Format(msgs.locale, "recFolder", nil)
+}
+
+// RecLimit says "Maximum file size (MiB)"
+// in the language the app shows.
+func RecLimit() string { return In(i18n.Locale()).RecLimit() }
+
+// RecLimit says "Maximum file size (MiB)"
+// in the language of msgs.
+func (msgs Messages) RecLimit() string {
+	return Catalog.Format(msgs.locale, "recLimit", nil)
+}
+
+// RecRotation says "A new file starts at the size limit; previous files are kept."
+// in the language the app shows.
+func RecRotation() string { return In(i18n.Locale()).RecRotation() }
+
+// RecRotation says "A new file starts at the size limit; previous files are kept."
+// in the language of msgs.
+func (msgs Messages) RecRotation() string {
+	return Catalog.Format(msgs.locale, "recRotation", nil)
+}
+
+// RecPrivacy says "Recording saves visible terminal output locally, not keyboard input. Stop recording before displaying passwords, keys…"
+// in the language the app shows.
+func RecPrivacy() string { return In(i18n.Locale()).RecPrivacy() }
+
+// RecPrivacy says "Recording saves visible terminal output locally, not keyboard input. Stop recording before displaying passwords, keys…"
+// in the language of msgs.
+func (msgs Messages) RecPrivacy() string {
+	return Catalog.Format(msgs.locale, "recPrivacy", nil)
+}
+
+// RecConfirm says "Record terminal output for {host}?"
+// in the language the app shows.
+func RecConfirm(host string) string { return In(i18n.Locale()).RecConfirm(host) }
+
+// RecConfirm says "Record terminal output for {host}?"
+// in the language of msgs.
+func (msgs Messages) RecConfirm(host string) string {
+	return Catalog.Format(msgs.locale, "recConfirm", map[string]any{"host": host})
+}
+
+// RecConfirmDetail says "The focused pane’s visible output is saved to {path}. Do not display secrets while recording."
+// in the language the app shows.
+func RecConfirmDetail(path string) string { return In(i18n.Locale()).RecConfirmDetail(path) }
+
+// RecConfirmDetail says "The focused pane’s visible output is saved to {path}. Do not display secrets while recording."
+// in the language of msgs.
+func (msgs Messages) RecConfirmDetail(path string) string {
+	return Catalog.Format(msgs.locale, "recConfirmDetail", map[string]any{"path": path})
+}
+
+// RecPreparing says "Waiting for recording setup"
+// in the language the app shows.
+func RecPreparing() string { return In(i18n.Locale()).RecPreparing() }
+
+// RecPreparing says "Waiting for recording setup"
+// in the language of msgs.
+func (msgs Messages) RecPreparing() string {
+	return Catalog.Format(msgs.locale, "recPreparing", nil)
+}
+
+// RecSSHOnly says "Recording is available in SSH terminals"
+// in the language the app shows.
+func RecSSHOnly() string { return In(i18n.Locale()).RecSSHOnly() }
+
+// RecSSHOnly says "Recording is available in SSH terminals"
+// in the language of msgs.
+func (msgs Messages) RecSSHOnly() string {
+	return Catalog.Format(msgs.locale, "recSSHOnly", nil)
+}
+
+// RecFailed says "Could not open or write recordings. Check folder access and available space."
+// in the language the app shows.
+func RecFailed() string { return In(i18n.Locale()).RecFailed() }
+
+// RecFailed says "Could not open or write recordings. Check folder access and available space."
+// in the language of msgs.
+func (msgs Messages) RecFailed() string {
+	return Catalog.Format(msgs.locale, "recFailed", nil)
+}
+
+// RecSettingsFailed says "Could not back up or save terminal settings."
+// in the language the app shows.
+func RecSettingsFailed() string { return In(i18n.Locale()).RecSettingsFailed() }
+
+// RecSettingsFailed says "Could not back up or save terminal settings."
+// in the language of msgs.
+func (msgs Messages) RecSettingsFailed() string {
+	return Catalog.Format(msgs.locale, "recSettingsFailed", nil)
+}
+
+// RecEnable says "Enable"
+// in the language the app shows.
+func RecEnable() string { return In(i18n.Locale()).RecEnable() }
+
+// RecEnable says "Enable"
+// in the language of msgs.
+func (msgs Messages) RecEnable() string {
+	return Catalog.Format(msgs.locale, "recEnable", nil)
+}
+
 // OptionsMouse says "Mouse"
 // in the language the app shows.
 func OptionsMouse() string { return In(i18n.Locale()).OptionsMouse() }

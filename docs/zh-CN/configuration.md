@@ -186,6 +186,12 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 
 每个选项的详细说明在 [features.md](features.md)：见[常规](features.md#常规)、[传输](features.md#传输)、[终端](features.md#terminal-defaults)、[终端 › 鼠标](features.md#终端--鼠标)、[终端 › 快捷键](features.md#终端--快捷键)、[终端 › 命令输入框](features.md#终端--命令输入框)、[网络监控](features.md#网络监控)、[外观](features.md#外观字体配色背景图片)、[文件图标主题](features.md#文件图标主题)、[连接管理器](features.md#连接管理器)、[“连接”页](features.md#连接页)、[命令编辑器](features.md#命令编辑器)和[布局和分隔条](features.md#布局和分隔条)。
 
+### 终端数据流设置
+
+- `terminalHighlight`：本机可选设置对象，含 `disabled`、`useCustom` 和 `rules`。未开启 `useCustom` 时用内置规则。每条自定义规则含 `pattern`、`regex`、`caseSensitive`、`color`、`bold`、`underline` 以及可选的 `host` 主机 ID；`host` 为空时应用于所有主机。
+- `terminalRecording`：本机可选设置对象，含 `automatic`、`text`、`folder` 和 `limitMiB`。自动录制和纯文本日志默认关闭。默认保存在配置目录下的 `recordings/`，单个文件默认 64 MiB 轮转，可设为 1–512 MiB。
+- `.cast` 和可选的 `.txt` 文件保存在对应主机的子目录中。文件名以本地日期和时间开头（`yyyy-mm-dd_HH-MM-SS`），后续分段加序号，不覆盖已有文件。保存终端数据流设置前会将现有设置备份为 `settings.json.bak-<yyyymmddHHMMSS>`。
+
 ## 同步
 
 选项里的“同步”页（见[同步](features.md#同步)）是 `settings.json` 的 `sync` 对象，从没设置过同步时没有这个键：

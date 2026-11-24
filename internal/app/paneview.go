@@ -108,6 +108,7 @@ func (a *App) startPane(s *Session, p *pane, spec shellSpec) {
 	p.stop = stop
 	a.startShellDir(ctx, s, p, s.client, p.term, spec.exec)
 	a.updateTerminal(p.term, spec.topts)
+	a.autoRecord(s, p)
 }
 
 // end ends p's shell and its follower, keeping its place in the tree.
@@ -120,6 +121,7 @@ func (p *pane) end() {
 		p.term.Close()
 		p.term = nil
 	}
+	p.stream.Store(nil)
 }
 
 // paneExited takes the end of the shell of p, one of s's panes. While
@@ -282,6 +284,7 @@ func (a *App) paneArea(c *ui.Context, s *Session) {
 	if !s.split() || t.zoomed {
 		a.terminalBackdrop(c, 0).Grow(1).Padding(4, 0, 0, 6).Children(func() {
 			a.paneTerminal(c, s, t.focus)
+			a.recordingBadge(c, s, t.focus)
 		})
 		return
 	}
@@ -366,6 +369,7 @@ func (a *App) paneBox(c *ui.Context, s *Session, p *pane) {
 	box.Children(func() {
 		a.paneTerminal(c, s, p)
 		moving = a.paneGrip(c, s, p, show)
+		a.recordingBadge(c, s, p)
 	})
 }
 
@@ -617,6 +621,8 @@ func (a *App) paneTerminal(c *ui.Context, s *Session, p *pane) {
 // innermost element's: an app cannot add to it, so these items are on
 // the session's row and the bar's button.
 func (a *App) paneMenu(m *ui.Menu, s *Session) {
+	a.recordingMenu(m, s)
+	m.Separator()
 	item := func(label string, id shortcutID) *ui.MenuItem {
 		it := m.Item(label)
 		if k := a.shortcut(id); !k.none() {

@@ -12,7 +12,6 @@ import (
 	"finallyshell/internal/monitor"
 	"finallyshell/internal/remotefs"
 	"finallyshell/internal/sshx"
-	"finallyshell/internal/termenc"
 	"finallyshell/locales"
 
 	"github.com/egoist/mygo/plugins/terminal"
@@ -257,18 +256,23 @@ type shellSpec struct {
 	bs    config.BackspaceKey
 	del   config.DeleteKey
 	exec  bool // the host allows exec channels: the monitor, the shell's follower
+
+	highlight []compiledHighlight
+	hostID    string
 }
 
 // shellSpec is the spec of h's shells as the settings have it now.
 func (a *App) shellSpec(h *config.Host) shellSpec {
 	bs, del := a.settings.HostBackspace(h), a.settings.HostDelete(h)
 	return shellSpec{
-		topts: a.terminalOptions(h),
-		pty:   sshx.PTY{Term: h.TermTypeOrDefault(), Erase: eraseChar(bs)},
-		enc:   a.settings.HostEncoding(h),
-		bs:    bs,
-		del:   del,
-		exec:  execAllowed(h),
+		topts:     a.terminalOptions(h),
+		pty:       sshx.PTY{Term: h.TermTypeOrDefault(), Erase: eraseChar(bs)},
+		enc:       a.settings.HostEncoding(h),
+		highlight: highlightRules(a.settings, h.ID),
+		hostID:    h.ID,
+		bs:        bs,
+		del:       del,
+		exec:      execAllowed(h),
 	}
 }
 
@@ -281,7 +285,8 @@ func (a *App) openPaneShell(s *Session, p *pane, client *ssh.Client, spec shellS
 		return nil, &stepError{"shell", err}
 	}
 	topts := spec.topts
-	topts.Conn = termenc.Wrap(shell, spec.enc)
+	stream := a.remoteTerminalStream(s, spec, shell)
+	topts.Conn = stream
 	keys := keySequences(spec.bs, spec.del, func() *terminal.Terminal { return p.term })
 	topts.OnKey = func(mods ui.Modifiers, key ui.Key) bool {
 		p.shellKey(mods, key) // for the file panel to follow a cd, and the tab its agent
@@ -290,9 +295,10 @@ func (a *App) openPaneShell(s *Session, p *pane, client *ssh.Client, spec shellS
 	topts.OnExit = func(int) { a.post(func() { a.paneExited(s, p) }) }
 	term, err := terminal.New(topts)
 	if err != nil {
-		shell.Close()
+		stream.Close()
 		return nil, &stepError{"terminal", err}
 	}
+	p.stream.Store(stream)
 	return term, nil
 }
 

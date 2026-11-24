@@ -130,6 +130,10 @@ func (p *platform) ChooseFolder(parent app.WindowKind, title string) (string, er
 	return p.openOne(parent, mygo.OpenDialogOptions{Title: title, Directory: true, CreateDirectories: true})
 }
 
+func (p *platform) ChooseFolderAt(parent app.WindowKind, title, dir string) (string, error) {
+	return p.openOne(parent, mygo.OpenDialogOptions{Title: title, DefaultPath: dir, Directory: true, CreateDirectories: true})
+}
+
 func (p *platform) OpenFile(parent app.WindowKind, title, dir string) (string, error) {
 	return p.openOne(parent, mygo.OpenDialogOptions{Title: title, DefaultPath: dir, ShowHiddenFiles: true})
 }

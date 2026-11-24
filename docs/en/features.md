@@ -1062,6 +1062,13 @@ does not free memory held by running apps. The result compares observed
 before and after readings, not a guaranteed amount freed. Swap is
 read-only in this card.
 
+### Docker tab › Networks, volumes and system
+
+- **Networks:** Filter or sort the list, open details to see IP ranges and connected containers, and create networks with IPv4/IPv6, driver options and labels. From the row menu you can connect or disconnect a container, copy network values, or remove selected networks. Pruning in this section removes only the listed unused local networks; built-in, ingress and attached networks are protected.
+- **Volumes:** Show only unused volumes, inspect their labels, options and referencing containers, or measure sizes on demand. Browse local-engine mountpoints in Files if the SSH user has SFTP access. Removal and pruning permanently delete data; the app rechecks the volume’s identity before removal. On Docker 23 or later (API 1.42+), pruning in this section targets the displayed unused anonymous volumes by default; explicitly opt in to include named volumes.
+- **System:** Inspect engine information and disk usage, stream and filter recent events, or choose cleanup categories with estimates. Cleanup runs each confirmed step in order and streams the output. Network and volume removal is limited to the named resources. Container, image and build cache pruning applies to all resources the engine considers eligible at execution time. Stopping the wait does not undo changes.
+- **Registries and daemon:** Registry management uses the SSH user’s Docker configuration and shows only registry keys and helper names, not credentials. Login requires a configured credential helper; the password goes over standard input. The daemon editor is for a recognized Linux Docker system service using the default socket and configuration path. Saving requires Python 3 to validate the file against the running service’s flags and backs up any existing file. Restarting needs separate confirmation. Root or non-interactive sudo is required to write or restart. Podman does not expose Docker-specific operations such as daemon editing, registry management, or volume pruning.
+
 <a id="terminal-section"></a>
 
 ## Terminal

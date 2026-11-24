@@ -166,7 +166,9 @@ func TestConnTreeHostKinds(t *testing.T) {
 	rdp := rdpHost(a)
 	a.restoreLeftPanel()
 	a.setLeftPage(leftConnections)
-	tt := ui.NewTester(a.View, 1280, 820)
+	// Tall enough for every row whole: fonts, and so row heights, differ
+	// between systems, and a row cut by the window's edge shows no icon.
+	tt := ui.NewTester(a.View, 1280, 1400)
 	p.tt = tt
 	tt.Frame()
 	checkTreeKindIcon(t, tt, a.hosts.Host("pg"), 53)

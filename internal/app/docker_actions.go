@@ -37,7 +37,7 @@ func (target dockerTarget) available() bool {
 		return false
 	}
 	state := &s.overview.docker
-	return state.dataClient == target.client && state.d.Tool != "" && state.d.State == monitor.DockerOK && (target.client != nil || state.run != nil)
+	return state.connection == s.ctx && state.dataClient == target.client && state.d.Tool != "" && state.d.State == monitor.DockerOK && (target.client != nil || state.run != nil || s.overview.memory.privilegeRunner != nil)
 }
 
 func (target dockerTarget) projectInfo() (monitor.Compose, []*monitor.Container) {
@@ -272,9 +272,6 @@ func (a *App) dockerActionItem(m *ui.Menu, target dockerTarget, action dockerAct
 	}
 	dialog := &dockerActionDialog{action: action, target: target}
 	switch action {
-	case dockerStart, dockerStop, dockerRestart, dockerPause, dockerUnpause:
-		a.runDockerAction(dialog)
-		return
 	case dockerRename:
 		dialog.value = target.name
 	case dockerPolicy:
@@ -323,6 +320,9 @@ func (a *App) openDockerTerminal(target dockerTarget, tool monitor.DockerCmd) {
 	if err != nil {
 		a.notify(err.Error())
 		return
+	}
+	if tool.Root {
+		line = a.sessionPrivilege(s).runner.TerminalCommand(line)
 	}
 	at, pane := s.pane(), newPane()
 	spec := a.shellSpec(s.Host)
@@ -383,10 +383,7 @@ func (a *App) runDockerAction(dialog *dockerActionDialog) {
 	if dialog.action != dockerRecreate && a.ctrDlg != nil && a.ctrDlg.action == dialog {
 		a.ctrDlg = nil
 	}
-	run := state.run
-	if run == nil {
-		run = monitor.RunDockerProgress
-	}
+	run := a.dockerExec(s, monitor.RunDockerProgress, nil, false).command
 	parent := s.ctx
 	if parent == nil {
 		parent = context.Background()

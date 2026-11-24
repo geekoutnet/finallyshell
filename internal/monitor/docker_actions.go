@@ -25,10 +25,11 @@ import (
 type DockerCmd struct {
 	Tool string
 	Sudo bool
+	Root bool
 }
 
 // CmdOf is the command that reads d.
-func CmdOf(d *Docker) DockerCmd { return DockerCmd{Tool: d.Tool, Sudo: d.Sudo} }
+func CmdOf(d *Docker) DockerCmd { return DockerCmd{Tool: d.Tool, Sudo: d.Sudo, Root: d.Root} }
 
 // prefix is the command's words before its arguments: docker, or
 // sudo -n docker.
@@ -583,4 +584,19 @@ func RunDockerProgress(ctx context.Context, client *ssh.Client, script string, p
 		return out, &DockerExit{Status: exit.ExitStatus()}
 	}
 	return out, err
+}
+
+type DockerRootRunner func(context.Context, string, PrivilegeOptions) (string, string, error)
+
+func RunDockerRoot(ctx context.Context, run DockerRootRunner, script string, progress func(string)) (string, error) {
+	return runDockerRoot(ctx, run, script, PrivilegeOptions{Progress: progress, ScriptStdin: true, Interrupt: progress != nil})
+}
+
+func runDockerRoot(ctx context.Context, run DockerRootRunner, script string, opts PrivilegeOptions) (string, error) {
+	out, stderr, err := run(ctx, script, opts)
+	var exit *ssh.ExitError
+	if errors.As(err, &exit) {
+		err = &DockerExit{Status: exit.ExitStatus()}
+	}
+	return strings.ReplaceAll(out+stderr, "\r\n", "\n"), err
 }

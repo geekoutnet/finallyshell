@@ -104,6 +104,12 @@ func (cmd DockerCmd) CtrFileScript(op CtrFileOp, id, first, second string) (stri
 			source, dest = dest, source
 		}
 		line = cmd.Line("cp", "--", source, dest)
+		guard := `parent=${1%/*}; [ -x "${parent:-/}" ] && [ ! -e "$1" ] && [ ! -L "$1" ]`
+		check := "sh '-c' " + dockerQuote(guard) + " 'docker-copy' " + dockerQuote(second)
+		if op == CtrFileFromServer {
+			check = cmd.ctrExec(id, "sh", "-c", guard, "docker-copy", first)
+		}
+		line = check + " || exit 73\n" + line
 	case CtrFileDelete:
 		line = cmd.ctrExec(id, "rm", "-r", "--", first)
 	case CtrFileMkdir:

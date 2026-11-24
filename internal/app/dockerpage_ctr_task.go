@@ -322,12 +322,9 @@ func (a *App) ctrTaskView(c *ui.Context, modal *ctrModal, height float32, open *
 	})
 }
 
-func ctrRunner(target dockerTarget, timeout time.Duration) (dockerRunner, context.Context, context.CancelFunc) {
+func (a *App) ctrRunner(target dockerTarget, timeout time.Duration) (dockerRunner, context.Context, context.CancelFunc) {
 	s := target.session
-	run := s.overview.docker.run
-	if run == nil {
-		run = monitor.RunDockerProgress
-	}
+	run := a.dockerExec(s, monitor.RunDockerProgress, nil, false).command
 	parent := s.ctx
 	if parent == nil {
 		parent = context.Background()
@@ -349,7 +346,7 @@ func (a *App) runCtrTask(task *ctrTask, script string) {
 	if task.kind != "" {
 		timeout = 30 * time.Minute
 	}
-	run, ctx, cancel := ctrRunner(target, timeout)
+	run, ctx, cancel := a.ctrRunner(target, timeout)
 	if task.kind == "create" || task.kind == "export" || task.kind == "files" && task.file.copying() {
 		work.cancel = cancel
 	}
@@ -364,6 +361,10 @@ func (a *App) runCtrTask(task *ctrTask, script string) {
 	go func() {
 		defer cancel()
 		output, err := run(ctx, target.client, script, report)
+		var exit *monitor.DockerExit
+		if task.file != nil && task.file.copying() && errors.As(err, &exit) && exit.Status == 73 {
+			err = errors.New(locales.DockerPrivCopyDestination())
+		}
 		if redactor != nil {
 			output = redactor.Replace(output)
 		}

@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"net/netip"
 	"net/url"
@@ -467,6 +468,19 @@ func (input DockerInput) Run(ctx context.Context, client *ssh.Client, report fun
 	return runResourceExec(ctx, client, input.script, input.input, report, false)
 }
 
+func (input DockerInput) RunRoot(ctx context.Context, run DockerRootRunner, report func(string)) (string, error) {
+	if input.private {
+		_, _, err := run(ctx, input.script, PrivilegeOptions{Stdin: strings.NewReader(input.input)})
+		if err == nil || errors.Is(err, ErrPrivilegeNotCached) || errors.Is(err, ErrPrivilegeDenied) ||
+			errors.Is(err, ErrPrivilegeCancelled) || errors.Is(err, ErrPrivilegeWrongPassword) ||
+			errors.Is(err, context.Canceled) || errors.Is(err, context.DeadlineExceeded) {
+			return "", err
+		}
+		return "", ErrDockerResourceInput
+	}
+	return runDockerRoot(ctx, run, input.script, PrivilegeOptions{Stdin: strings.NewReader(input.input), Progress: report, Interrupt: report != nil})
+}
+
 func runResourceExec(ctx context.Context, client *ssh.Client, script, input string, report func(string), stopRemote bool) (string, error) {
 	if err := ctx.Err(); err != nil {
 		return "", err
@@ -489,10 +503,9 @@ func runResourceExec(ctx context.Context, client *ssh.Client, script, input stri
 	session.Stdin = strings.NewReader(input)
 	var output, stderr bytes.Buffer
 	session.Stderr = &limitWriter{w: &stderr, n: 64 << 10}
+	session.Stdout = &limitWriter{w: &output, n: procOutputLimit}
 	if report != nil {
-		session.Stdout = scriptProgress(report)
-	} else {
-		session.Stdout = &limitWriter{w: &output, n: procOutputLimit}
+		session.Stdout = io.MultiWriter(session.Stdout, scriptProgress(report))
 	}
 	err = session.Run("sh -c " + dockerQuote(script))
 	if ctx.Err() != nil {
@@ -537,11 +550,12 @@ const daemonPath = "/etc/docker/daemon.json"
 const daemonGuard = `set -eu
 export LC_ALL=C
 exec 2>&1
-asroot() { if [ "$(id -u)" = 0 ]; then "$@"; else sudo -n "$@"; fi; }
+asroot() { "$@"; }
 fail() { printf '%s\n' "$*" >&2; exit 1; }
 `
 
 func (cmd DockerCmd) daemonHead() string {
+	cmd.Sudo = false
 	return daemonGuard + `
 [ "$(uname -s)" = Linux ] || fail 'The system daemon configuration requires Linux.'
 endpoint=$(` + cmd.Line("context", "inspect", "--format", "{{.Endpoints.docker.Host}}") + `) || fail 'Could not inspect the Docker context.'
@@ -637,7 +651,7 @@ func (cmd DockerCmd) DaemonSave(original, raw string, now time.Time) (DockerInpu
 	if _, err := DaemonMirrors(raw); err != nil {
 		return DockerInput{}, err
 	}
-	backup := daemonPath + ".bak-" + now.UTC().Format("20060102T150405.000000000Z")
+	backup := daemonPath + ".bak-" + now.UTC().Format("20060102150405")
 	hash := fmt.Sprintf("%x", sha256.Sum256([]byte(original)))
 	return DockerInput{script: cmd.daemonHead() + "file=" + dockerQuote(daemonPath) + " backup=" + dockerQuote(backup) + " expected=" + dockerQuote(hash) + "\n" + `
 asroot 'test' '!' '-L' '/etc/docker' || fail 'Refusing to write through a symbolic link.'

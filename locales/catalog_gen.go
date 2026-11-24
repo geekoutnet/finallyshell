@@ -470,6 +470,118 @@ func (msgs Messages) MemoryNeedsRoot() string {
 	return Catalog.Format(msgs.locale, "memoryNeedsRoot", nil)
 }
 
+// DockerPrivNeedsRoot says "{engine} needs root"
+// in the language the app shows.
+func DockerPrivNeedsRoot(engine string) string { return In(i18n.Locale()).DockerPrivNeedsRoot(engine) }
+
+// DockerPrivNeedsRoot says "{engine} needs root"
+// in the language of msgs.
+func (msgs Messages) DockerPrivNeedsRoot(engine string) string {
+	return Catalog.Format(msgs.locale, "dockerPrivNeedsRoot", map[string]any{"engine": engine})
+}
+
+// DockerPrivDenied says "Could not access {engine} with root privileges."
+// in the language the app shows.
+func DockerPrivDenied(engine string) string { return In(i18n.Locale()).DockerPrivDenied(engine) }
+
+// DockerPrivDenied says "Could not access {engine} with root privileges."
+// in the language of msgs.
+func (msgs Messages) DockerPrivDenied(engine string) string {
+	return Catalog.Format(msgs.locale, "dockerPrivDenied", map[string]any{"engine": engine})
+}
+
+// DockerPrivUseRoot says "Use root / sudo"
+// in the language the app shows.
+func DockerPrivUseRoot() string { return In(i18n.Locale()).DockerPrivUseRoot() }
+
+// DockerPrivUseRoot says "Use root / sudo"
+// in the language of msgs.
+func (msgs Messages) DockerPrivUseRoot() string {
+	return Catalog.Format(msgs.locale, "dockerPrivUseRoot", nil)
+}
+
+// DockerPrivHint says "The SSH user cannot access the engine. Continue to connect with root privileges."
+// in the language the app shows.
+func DockerPrivHint() string { return In(i18n.Locale()).DockerPrivHint() }
+
+// DockerPrivHint says "The SSH user cannot access the engine. Continue to connect with root privileges."
+// in the language of msgs.
+func (msgs Messages) DockerPrivHint() string {
+	return Catalog.Format(msgs.locale, "dockerPrivHint", nil)
+}
+
+// DockerPrivViaRoot says "read as root"
+// in the language the app shows.
+func DockerPrivViaRoot() string { return In(i18n.Locale()).DockerPrivViaRoot() }
+
+// DockerPrivViaRoot says "read as root"
+// in the language of msgs.
+func (msgs Messages) DockerPrivViaRoot() string {
+	return Catalog.Format(msgs.locale, "dockerPrivViaRoot", nil)
+}
+
+// DockerPrivGroupHint says "For Docker socket access without sudo, an administrator can add this user to the docker group. Reconnect afterward. T…"
+// in the language the app shows.
+func DockerPrivGroupHint() string { return In(i18n.Locale()).DockerPrivGroupHint() }
+
+// DockerPrivGroupHint says "For Docker socket access without sudo, an administrator can add this user to the docker group. Reconnect afterward. T…"
+// in the language of msgs.
+func (msgs Messages) DockerPrivGroupHint() string {
+	return Catalog.Format(msgs.locale, "dockerPrivGroupHint", nil)
+}
+
+// DockerPrivComposeFiles says "Some project files required root access on the server."
+// in the language the app shows.
+func DockerPrivComposeFiles() string { return In(i18n.Locale()).DockerPrivComposeFiles() }
+
+// DockerPrivComposeFiles says "Some project files required root access on the server."
+// in the language of msgs.
+func (msgs Messages) DockerPrivComposeFiles() string {
+	return Catalog.Format(msgs.locale, "dockerPrivComposeFiles", nil)
+}
+
+// DockerPrivRegistryHint says "Registry metadata for the root account used by Docker. Credential values are not loaded."
+// in the language the app shows.
+func DockerPrivRegistryHint() string { return In(i18n.Locale()).DockerPrivRegistryHint() }
+
+// DockerPrivRegistryHint says "Registry metadata for the root account used by Docker. Credential values are not loaded."
+// in the language of msgs.
+func (msgs Messages) DockerPrivRegistryHint() string {
+	return Catalog.Format(msgs.locale, "dockerPrivRegistryHint", nil)
+}
+
+// DockerPrivRegistryLogout says "Remove the saved credentials for this registry from the root account’s Docker configuration."
+// in the language the app shows.
+func DockerPrivRegistryLogout() string { return In(i18n.Locale()).DockerPrivRegistryLogout() }
+
+// DockerPrivRegistryLogout says "Remove the saved credentials for this registry from the root account’s Docker configuration."
+// in the language of msgs.
+func (msgs Messages) DockerPrivRegistryLogout() string {
+	return Catalog.Format(msgs.locale, "dockerPrivRegistryLogout", nil)
+}
+
+// DockerPrivActionWarning says "Apply {action} to {target}. This changes the state of the selected containers and can affect their services."
+// in the language the app shows.
+func DockerPrivActionWarning(action string, target string) string {
+	return In(i18n.Locale()).DockerPrivActionWarning(action, target)
+}
+
+// DockerPrivActionWarning says "Apply {action} to {target}. This changes the state of the selected containers and can affect their services."
+// in the language of msgs.
+func (msgs Messages) DockerPrivActionWarning(action string, target string) string {
+	return Catalog.Format(msgs.locale, "dockerPrivActionWarning", map[string]any{"action": action, "target": target})
+}
+
+// DockerPrivCopyDestination says "Could not verify that the copy destination is free. Nothing was copied."
+// in the language the app shows.
+func DockerPrivCopyDestination() string { return In(i18n.Locale()).DockerPrivCopyDestination() }
+
+// DockerPrivCopyDestination says "Could not verify that the copy destination is free. Nothing was copied."
+// in the language of msgs.
+func (msgs Messages) DockerPrivCopyDestination() string {
+	return Catalog.Format(msgs.locale, "dockerPrivCopyDestination", nil)
+}
+
 // PrivTitle says "Run as root"
 // in the language the app shows.
 func PrivTitle() string { return In(i18n.Locale()).PrivTitle() }

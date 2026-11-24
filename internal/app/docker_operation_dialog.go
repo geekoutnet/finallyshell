@@ -100,6 +100,8 @@ func (a *App) dockerActionView(c *ui.Context, dialog *containerDialog) {
 func dockerActionFields(c *ui.Context, d *dockerActionDialog) bool {
 	warning := ""
 	switch d.action {
+	case dockerStart, dockerStop, dockerRestart, dockerPause, dockerUnpause:
+		warning = locales.DockerPrivActionWarning(d.action.title(d.target.id == ""), d.target.name)
 	case dockerKill:
 		warning = locales.DockerKillWarning()
 	case dockerRemove:
@@ -202,10 +204,7 @@ func (a *App) loadDockerLogs(d *dockerLogsDialog, tail int) {
 		d.err = err
 		return
 	}
-	run := state.run
-	if run == nil {
-		run = monitor.RunDockerProgress
-	}
+	run := a.dockerExec(d.target.session, monitor.RunDockerProgress, nil, false).command
 	parent := d.target.session.ctx
 	if parent == nil {
 		parent = context.Background()

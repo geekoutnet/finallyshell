@@ -43,13 +43,6 @@ type dockerImagesPage struct {
 
 func dockerImgTarget(s *Session) dockerTarget { return dockerTarget{session: s, client: s.client} }
 
-func dockerImgRunner(s *Session) dockerRunner {
-	if run := s.overview.docker.run; run != nil {
-		return run
-	}
-	return monitor.RunImageProgress
-}
-
 func dockerImgContext(s *Session, timeout time.Duration) (context.Context, context.CancelFunc) {
 	parent := s.ctx
 	if parent == nil {
@@ -77,7 +70,7 @@ func (a *App) refreshDockerImages(s *Session) {
 	gen := page.gen
 	ctx, cancel := dockerImgContext(s, dockerTimeout)
 	page.cancel, page.loading = cancel, true
-	run := dockerImgRunner(s)
+	run := a.dockerExec(s, monitor.RunImageProgress, nil, false).command
 	go func() {
 		defer cancel()
 		output, err := run(ctx, target.client, tool.ImageList(), nil)

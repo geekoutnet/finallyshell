@@ -96,8 +96,30 @@ func (a *App) dockerPageOf(c *ui.Context, s *Session) {
 	case d.Tool == "":
 		overviewMessage(c, "container", locales.DockerPageNone(), func() { a.dockerRetry(c, s) })
 		return
+	case d.State == monitor.DockerNeedsRoot:
+		overviewMessage(c, "container", locales.DockerPrivNeedsRoot(dockerName(d)), func() {
+			if ds.err != nil {
+				dockerProblem(c, locales.DockerFailed(describeSysInfoError(ds.err)), "")
+			} else {
+				widgets.Muted(c, locales.DockerPrivHint()).TextAlign(ui.Center).MaxWidth(520)
+			}
+			if ds.loading {
+				ui.Spinner(c).Label(locales.DockerReading())
+			} else {
+				ui.Row(c).Justify(ui.Center).Children(func() { a.dockerPrivilegeButton(c, s) })
+			}
+		})
+		return
 	case d.State == monitor.DockerDenied:
-		overviewMessage(c, "container", locales.DockerDenied(), func() { a.dockerRetry(c, s) })
+		ui.Scroll(c).Grow(1).MinHeight(0).FillWidth().Children(func() {
+			ui.Column(c).FillWidth().AlignItems(ui.Center).Padding(12, 16).Children(func() {
+				ui.Column(c).FillWidth().MaxWidth(520).Gap(8).Children(func() {
+					ui.Text(c, dockerDeniedText(d)).Bold()
+					dockerPrivilegeHelp(c, s)
+					a.dockerPrivilegeButton(c, s)
+				})
+			})
+		})
 		return
 	case d.State == monitor.DockerDown:
 		overviewMessage(c, "container", locales.DockerDown(), func() { a.dockerRetry(c, s) })

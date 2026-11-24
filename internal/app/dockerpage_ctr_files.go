@@ -42,7 +42,7 @@ func (a *App) ctrReadFiles(modal *ctrModal, dir string) {
 		files.err = ctrErrorText(err)
 		return
 	}
-	run, ctx, cancel := ctrRunner(target, dockerTimeout)
+	run, ctx, cancel := a.ctrRunner(target, dockerTimeout)
 	files.cancel = cancel
 	go func() {
 		defer cancel()

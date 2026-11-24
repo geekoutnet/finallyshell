@@ -19,8 +19,9 @@ import (
 // ReadDocker; Podman, where there is no docker command, is read the same
 // way.
 type Docker struct {
-	Tool  string      // "docker" or "podman"; "" when neither is installed
-	Sudo  bool        // read with sudo -n, as the user could not reach the socket
+	Tool  string // "docker" or "podman"; "" when neither is installed
+	Sudo  bool   // read with sudo -n, as the user could not reach the socket
+	Root  bool
 	State DockerState // whether the engine answered; the rest is empty unless DockerOK
 	// Error is what the engine said when it did not answer.
 	Error string
@@ -52,9 +53,10 @@ type DockerState int
 
 const (
 	DockerOK     DockerState = iota
-	DockerDenied             // permission denied on the socket, also with sudo -n
+	DockerDenied             // permission denied even after escalation
 	DockerDown               // the daemon does not run
 	DockerFailed             // another error; Docker.Error says
+	DockerNeedsRoot
 )
 
 // Container is a container as docker inspect and docker stats tell of
@@ -219,32 +221,45 @@ const dockerMark = procMark
 // for a password. timeout, where there is one, keeps a stuck engine from
 // hanging docker stats or system df past the app's own timeout, which
 // would lose all the rest.
-const dockerScript = `export LC_ALL=C
-m() { echo "` + dockerMark + `$1---"; }
-d=
+const dockerScript = `d=
 if command -v docker >/dev/null 2>&1; then d=docker
 elif command -v podman >/dev/null 2>&1; then d=podman; fi
-m tool; echo "$d"
+` + dockerReadHead + `
 if [ -n "$d" ]; then
-  t=
-  timeout 5 true >/dev/null 2>&1 && t="timeout 20"
-  info=$($t $d info --format '{{json .}}' 2>&1); st=$?
-  if [ $st -ne 0 ] && $t sudo -n $d info --format '{{json .}}' >/dev/null 2>&1; then
+  info=$($t "$d" 'info' '--format' '{{json .}}' 2>&1); st=$?
+  if [ $st -ne 0 ] && $t sudo '-n' "$d" 'info' '--format' '{{json .}}' >/dev/null 2>&1; then
     m sudo; echo yes
-    d="sudo -n $d"
-    info=$($t $d info --format '{{json .}}' 2>&1); st=$?
+    engine() { $t sudo '-n' "$d" "$@"; }
+    info=$(engine 'info' '--format' '{{json .}}' 2>&1); st=$?
   fi
+` + dockerReadBody
+
+const dockerReadHead = `export LC_ALL=C
+m() { echo "` + dockerMark + `$1---"; }
+engine() { $t "$d" "$@"; }
+m tool; echo "$d"
+t=
+if [ -n "$d" ]; then timeout 5 true >/dev/null 2>&1 && t="timeout 20"; fi
+`
+
+const dockerReadBody = `
   m info; printf '%s\n' "$info"
   m status; echo $st
   if [ $st -eq 0 ]; then
-    m version; $t $d version --format '{{json .}}' 2>/dev/null
-    ids=$($t $d ps -aq --no-trunc 2>/dev/null)
-    m inspect; [ -n "$ids" ] && $t $d inspect --format '{{json .}}' $ids 2>/dev/null
-    m images; $t $d images --format '{{json .}}' 2>/dev/null
-    m volumes; $t $d volume ls --format '{{json .}}' 2>/dev/null
-    m networks; $t $d network ls --format '{{json .}}' 2>/dev/null
-    m stats; [ -n "$ids" ] && $t $d stats --no-stream --no-trunc --format '{{json .}}' 2>/dev/null
-    m df; $t $d system df --format '{{json .}}' 2>/dev/null
+    m version; engine 'version' '--format' '{{json .}}' 2>/dev/null
+    ids=$(engine 'ps' '-aq' '--no-trunc' 2>/dev/null)
+    set -f
+    set --
+    for id in $ids; do
+      case "$id" in *[!0-9a-f]*) continue ;; esac
+      set -- "$@" "$id"
+    done
+    m inspect; [ "$#" -eq 0 ] || engine 'inspect' '--format' '{{json .}}' "$@" 2>/dev/null
+    m images; engine 'images' '--format' '{{json .}}' 2>/dev/null
+    m volumes; engine 'volume' 'ls' '--format' '{{json .}}' 2>/dev/null
+    m networks; engine 'network' 'ls' '--format' '{{json .}}' 2>/dev/null
+    m stats; [ "$#" -eq 0 ] || engine 'stats' '--no-stream' '--no-trunc' '--format' '{{json .}}' 2>/dev/null
+    m df; engine 'system' 'df' '--format' '{{json .}}' 2>/dev/null
   fi
 fi
 m end
@@ -254,7 +269,40 @@ m end
 // stops it when ctx ends. On an error, what the output had until then
 // is returned with it: at least whether Docker is installed.
 func ReadDocker(ctx context.Context, client *ssh.Client) (Docker, error) {
-	out, _, err := RunScript(ctx, client, dockerScript)
+	return ReadDockerWith(ctx, func(ctx context.Context, script string) (string, string, error) {
+		return RunScript(ctx, client, script)
+	})
+}
+
+func ReadDockerWith(ctx context.Context, run func(context.Context, string) (string, string, error)) (Docker, error) {
+	d, err := readDockerScript(ctx, dockerScript, run)
+	if d.State == DockerDenied {
+		d.State = DockerNeedsRoot
+	}
+	return d, err
+}
+
+func ReadDockerRoot(ctx context.Context, tool string, run func(context.Context, string) (string, string, error)) (Docker, error) {
+	if tool != "docker" && tool != "podman" {
+		return Docker{}, ErrDockerResourceUnsupported
+	}
+	script := "d=" + dockerQuote(tool) + "\n" + dockerReadHead + `
+if [ -n "$d" ]; then
+  info=$(engine 'info' '--format' '{{json .}}' 2>&1); st=$?
+` + dockerReadBody
+	d, err := readDockerScript(ctx, script, run)
+	if err == nil {
+		if d.Tool != tool {
+			return d, ErrScriptOutput
+		}
+		d.Root, d.Sudo = d.State != DockerDenied, false
+	}
+	return d, err
+}
+
+func readDockerScript(ctx context.Context, script string, run func(context.Context, string) (string, string, error)) (Docker, error) {
+	out, _, err := run(ctx, script)
+	out = strings.ReplaceAll(out, "\r\n", "\n")
 	d := ParseDocker(out)
 	if ctx.Err() != nil {
 		return d, ctx.Err()
@@ -282,6 +330,9 @@ func ParseDocker(out string) Docker {
 			msg = append(info.ServerErrors, msg...)
 		}
 		d.State, d.Error = dockerError(strings.Join(msg, "\n"))
+		if d.Tool == "podman" && strings.Contains(strings.ToLower(d.Error), "cannot clone: operation not permitted") {
+			d.State = DockerDenied
+		}
 		return d
 	}
 	info.apply(&d)

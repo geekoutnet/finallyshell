@@ -18612,6 +18612,858 @@ func (msgs Messages) DesktopAppAI() string {
 	return Catalog.Format(msgs.locale, "desktopAppAI", nil)
 }
 
+// DesktopAISetupTitle says "Connect your AI provider"
+// in the language the app shows.
+func DesktopAISetupTitle() string { return In(i18n.Locale()).DesktopAISetupTitle() }
+
+// DesktopAISetupTitle says "Connect your AI provider"
+// in the language of msgs.
+func (msgs Messages) DesktopAISetupTitle() string {
+	return Catalog.Format(msgs.locale, "desktopAISetupTitle", nil)
+}
+
+// DesktopAISetupBody says "Configure an endpoint, model and API key to start. No server data is sent without your review."
+// in the language the app shows.
+func DesktopAISetupBody() string { return In(i18n.Locale()).DesktopAISetupBody() }
+
+// DesktopAISetupBody says "Configure an endpoint, model and API key to start. No server data is sent without your review."
+// in the language of msgs.
+func (msgs Messages) DesktopAISetupBody() string {
+	return Catalog.Format(msgs.locale, "desktopAISetupBody", nil)
+}
+
+// DesktopAISettings says "AI settings"
+// in the language the app shows.
+func DesktopAISettings() string { return In(i18n.Locale()).DesktopAISettings() }
+
+// DesktopAISettings says "AI settings"
+// in the language of msgs.
+func (msgs Messages) DesktopAISettings() string {
+	return Catalog.Format(msgs.locale, "desktopAISettings", nil)
+}
+
+// DesktopAINoModel says "No model configured"
+// in the language the app shows.
+func DesktopAINoModel() string { return In(i18n.Locale()).DesktopAINoModel() }
+
+// DesktopAINoModel says "No model configured"
+// in the language of msgs.
+func (msgs Messages) DesktopAINoModel() string {
+	return Catalog.Format(msgs.locale, "desktopAINoModel", nil)
+}
+
+// DesktopAIHistory says "History"
+// in the language the app shows.
+func DesktopAIHistory() string { return In(i18n.Locale()).DesktopAIHistory() }
+
+// DesktopAIHistory says "History"
+// in the language of msgs.
+func (msgs Messages) DesktopAIHistory() string {
+	return Catalog.Format(msgs.locale, "desktopAIHistory", nil)
+}
+
+// DesktopAIEmptyHistory says "No chats yet"
+// in the language the app shows.
+func DesktopAIEmptyHistory() string { return In(i18n.Locale()).DesktopAIEmptyHistory() }
+
+// DesktopAIEmptyHistory says "No chats yet"
+// in the language of msgs.
+func (msgs Messages) DesktopAIEmptyHistory() string {
+	return Catalog.Format(msgs.locale, "desktopAIEmptyHistory", nil)
+}
+
+// DesktopAIHistoryFailed says "Could not read or save local chat history."
+// in the language the app shows.
+func DesktopAIHistoryFailed() string { return In(i18n.Locale()).DesktopAIHistoryFailed() }
+
+// DesktopAIHistoryFailed says "Could not read or save local chat history."
+// in the language of msgs.
+func (msgs Messages) DesktopAIHistoryFailed() string {
+	return Catalog.Format(msgs.locale, "desktopAIHistoryFailed", nil)
+}
+
+// DesktopAINew says "New chat"
+// in the language the app shows.
+func DesktopAINew() string { return In(i18n.Locale()).DesktopAINew() }
+
+// DesktopAINew says "New chat"
+// in the language of msgs.
+func (msgs Messages) DesktopAINew() string {
+	return Catalog.Format(msgs.locale, "desktopAINew", nil)
+}
+
+// DesktopAIWelcome says "What are you working on?"
+// in the language the app shows.
+func DesktopAIWelcome() string { return In(i18n.Locale()).DesktopAIWelcome() }
+
+// DesktopAIWelcome says "What are you working on?"
+// in the language of msgs.
+func (msgs Messages) DesktopAIWelcome() string {
+	return Catalog.Format(msgs.locale, "desktopAIWelcome", nil)
+}
+
+// DesktopAIWelcomeBody says "Troubleshoot, interpret output or draft a shell command. You stay in control of the terminal."
+// in the language the app shows.
+func DesktopAIWelcomeBody() string { return In(i18n.Locale()).DesktopAIWelcomeBody() }
+
+// DesktopAIWelcomeBody says "Troubleshoot, interpret output or draft a shell command. You stay in control of the terminal."
+// in the language of msgs.
+func (msgs Messages) DesktopAIWelcomeBody() string {
+	return Catalog.Format(msgs.locale, "desktopAIWelcomeBody", nil)
+}
+
+// DesktopAIQuickError says "Explain the last error"
+// in the language the app shows.
+func DesktopAIQuickError() string { return In(i18n.Locale()).DesktopAIQuickError() }
+
+// DesktopAIQuickError says "Explain the last error"
+// in the language of msgs.
+func (msgs Messages) DesktopAIQuickError() string {
+	return Catalog.Format(msgs.locale, "desktopAIQuickError", nil)
+}
+
+// DesktopAIQuickSlow says "Why is the server slow?"
+// in the language the app shows.
+func DesktopAIQuickSlow() string { return In(i18n.Locale()).DesktopAIQuickSlow() }
+
+// DesktopAIQuickSlow says "Why is the server slow?"
+// in the language of msgs.
+func (msgs Messages) DesktopAIQuickSlow() string {
+	return Catalog.Format(msgs.locale, "desktopAIQuickSlow", nil)
+}
+
+// DesktopAIQuickCommand says "Write a command to…"
+// in the language the app shows.
+func DesktopAIQuickCommand() string { return In(i18n.Locale()).DesktopAIQuickCommand() }
+
+// DesktopAIQuickCommand says "Write a command to…"
+// in the language of msgs.
+func (msgs Messages) DesktopAIQuickCommand() string {
+	return Catalog.Format(msgs.locale, "desktopAIQuickCommand", nil)
+}
+
+// DesktopAIQuickLog says "Explain this log"
+// in the language the app shows.
+func DesktopAIQuickLog() string { return In(i18n.Locale()).DesktopAIQuickLog() }
+
+// DesktopAIQuickLog says "Explain this log"
+// in the language of msgs.
+func (msgs Messages) DesktopAIQuickLog() string {
+	return Catalog.Format(msgs.locale, "desktopAIQuickLog", nil)
+}
+
+// DesktopAIYou says "You"
+// in the language the app shows.
+func DesktopAIYou() string { return In(i18n.Locale()).DesktopAIYou() }
+
+// DesktopAIYou says "You"
+// in the language of msgs.
+func (msgs Messages) DesktopAIYou() string {
+	return Catalog.Format(msgs.locale, "desktopAIYou", nil)
+}
+
+// DesktopAIReceiving says "Waiting for the model…"
+// in the language the app shows.
+func DesktopAIReceiving() string { return In(i18n.Locale()).DesktopAIReceiving() }
+
+// DesktopAIReceiving says "Waiting for the model…"
+// in the language of msgs.
+func (msgs Messages) DesktopAIReceiving() string {
+	return Catalog.Format(msgs.locale, "desktopAIReceiving", nil)
+}
+
+// DesktopAIStopped says "Request stopped."
+// in the language the app shows.
+func DesktopAIStopped() string { return In(i18n.Locale()).DesktopAIStopped() }
+
+// DesktopAIStopped says "Request stopped."
+// in the language of msgs.
+func (msgs Messages) DesktopAIStopped() string {
+	return Catalog.Format(msgs.locale, "desktopAIStopped", nil)
+}
+
+// DesktopAIContextSent says "Included a reviewed context attachment"
+// in the language the app shows.
+func DesktopAIContextSent() string { return In(i18n.Locale()).DesktopAIContextSent() }
+
+// DesktopAIContextSent says "Included a reviewed context attachment"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextSent() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextSent", nil)
+}
+
+// DesktopAIContextHeading says "Attachment preview · secrets masked where detected"
+// in the language the app shows.
+func DesktopAIContextHeading() string { return In(i18n.Locale()).DesktopAIContextHeading() }
+
+// DesktopAIContextHeading says "Attachment preview · secrets masked where detected"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextHeading() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextHeading", nil)
+}
+
+// DesktopAIContextOS says "Operating system"
+// in the language the app shows.
+func DesktopAIContextOS() string { return In(i18n.Locale()).DesktopAIContextOS() }
+
+// DesktopAIContextOS says "Operating system"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextOS() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextOS", nil)
+}
+
+// DesktopAIContextDir says "Current directory"
+// in the language the app shows.
+func DesktopAIContextDir() string { return In(i18n.Locale()).DesktopAIContextDir() }
+
+// DesktopAIContextDir says "Current directory"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextDir() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextDir", nil)
+}
+
+// DesktopAIContextLoad says "Load (1/5/15 min)"
+// in the language the app shows.
+func DesktopAIContextLoad() string { return In(i18n.Locale()).DesktopAIContextLoad() }
+
+// DesktopAIContextLoad says "Load (1/5/15 min)"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextLoad() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextLoad", nil)
+}
+
+// DesktopAIContextMemory says "Memory used / total"
+// in the language the app shows.
+func DesktopAIContextMemory() string { return In(i18n.Locale()).DesktopAIContextMemory() }
+
+// DesktopAIContextMemory says "Memory used / total"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextMemory() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextMemory", nil)
+}
+
+// DesktopAIContextProcess says "Process"
+// in the language the app shows.
+func DesktopAIContextProcess() string { return In(i18n.Locale()).DesktopAIContextProcess() }
+
+// DesktopAIContextProcess says "Process"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextProcess() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextProcess", nil)
+}
+
+// DesktopAIContextSelected says "Selected text"
+// in the language the app shows.
+func DesktopAIContextSelected() string { return In(i18n.Locale()).DesktopAIContextSelected() }
+
+// DesktopAIContextSelected says "Selected text"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextSelected() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextSelected", nil)
+}
+
+// DesktopAIContextLogs says "Selected log lines"
+// in the language the app shows.
+func DesktopAIContextLogs() string { return In(i18n.Locale()).DesktopAIContextLogs() }
+
+// DesktopAIContextLogs says "Selected log lines"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextLogs() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextLogs", nil)
+}
+
+// DesktopAIContextTerminal says "Recent terminal output"
+// in the language the app shows.
+func DesktopAIContextTerminal() string { return In(i18n.Locale()).DesktopAIContextTerminal() }
+
+// DesktopAIContextTerminal says "Recent terminal output"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextTerminal() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextTerminal", nil)
+}
+
+// DesktopAIExplainClipboard says "Explain copied text with AI…"
+// in the language the app shows.
+func DesktopAIExplainClipboard() string { return In(i18n.Locale()).DesktopAIExplainClipboard() }
+
+// DesktopAIExplainClipboard says "Explain copied text with AI…"
+// in the language of msgs.
+func (msgs Messages) DesktopAIExplainClipboard() string {
+	return Catalog.Format(msgs.locale, "desktopAIExplainClipboard", nil)
+}
+
+// DesktopAIExplainSelectionQuestion says "Explain this selected output and suggest what to check next."
+// in the language the app shows.
+func DesktopAIExplainSelectionQuestion() string {
+	return In(i18n.Locale()).DesktopAIExplainSelectionQuestion()
+}
+
+// DesktopAIExplainSelectionQuestion says "Explain this selected output and suggest what to check next."
+// in the language of msgs.
+func (msgs Messages) DesktopAIExplainSelectionQuestion() string {
+	return Catalog.Format(msgs.locale, "desktopAIExplainSelectionQuestion", nil)
+}
+
+// DesktopAINoContext says "No current server context is available."
+// in the language the app shows.
+func DesktopAINoContext() string { return In(i18n.Locale()).DesktopAINoContext() }
+
+// DesktopAINoContext says "No current server context is available."
+// in the language of msgs.
+func (msgs Messages) DesktopAINoContext() string {
+	return Catalog.Format(msgs.locale, "desktopAINoContext", nil)
+}
+
+// DesktopAIAttach says "Attach context"
+// in the language the app shows.
+func DesktopAIAttach() string { return In(i18n.Locale()).DesktopAIAttach() }
+
+// DesktopAIAttach says "Attach context"
+// in the language of msgs.
+func (msgs Messages) DesktopAIAttach() string {
+	return Catalog.Format(msgs.locale, "desktopAIAttach", nil)
+}
+
+// DesktopAIUseHistory says "Include chat history"
+// in the language the app shows.
+func DesktopAIUseHistory() string { return In(i18n.Locale()).DesktopAIUseHistory() }
+
+// DesktopAIUseHistory says "Include chat history"
+// in the language of msgs.
+func (msgs Messages) DesktopAIUseHistory() string {
+	return Catalog.Format(msgs.locale, "desktopAIUseHistory", nil)
+}
+
+// DesktopAIUseHistoryNote says "Send up to eight recent messages. Attachments and replies based on them are not included."
+// in the language the app shows.
+func DesktopAIUseHistoryNote() string { return In(i18n.Locale()).DesktopAIUseHistoryNote() }
+
+// DesktopAIUseHistoryNote says "Send up to eight recent messages. Attachments and replies based on them are not included."
+// in the language of msgs.
+func (msgs Messages) DesktopAIUseHistoryNote() string {
+	return Catalog.Format(msgs.locale, "desktopAIUseHistoryNote", nil)
+}
+
+// DesktopAIQuestion says "Ask about this server…"
+// in the language the app shows.
+func DesktopAIQuestion() string { return In(i18n.Locale()).DesktopAIQuestion() }
+
+// DesktopAIQuestion says "Ask about this server…"
+// in the language of msgs.
+func (msgs Messages) DesktopAIQuestion() string {
+	return Catalog.Format(msgs.locale, "desktopAIQuestion", nil)
+}
+
+// DesktopAIQuestionTooLong says "The question is too long. Shorten it and try again."
+// in the language the app shows.
+func DesktopAIQuestionTooLong() string { return In(i18n.Locale()).DesktopAIQuestionTooLong() }
+
+// DesktopAIQuestionTooLong says "The question is too long. Shorten it and try again."
+// in the language of msgs.
+func (msgs Messages) DesktopAIQuestionTooLong() string {
+	return Catalog.Format(msgs.locale, "desktopAIQuestionTooLong", nil)
+}
+
+// DesktopAIReplyTooLong says "The reply exceeded the size limit. Ask for a shorter answer."
+// in the language the app shows.
+func DesktopAIReplyTooLong() string { return In(i18n.Locale()).DesktopAIReplyTooLong() }
+
+// DesktopAIReplyTooLong says "The reply exceeded the size limit. Ask for a shorter answer."
+// in the language of msgs.
+func (msgs Messages) DesktopAIReplyTooLong() string {
+	return Catalog.Format(msgs.locale, "desktopAIReplyTooLong", nil)
+}
+
+// DesktopAIStop says "Stop"
+// in the language the app shows.
+func DesktopAIStop() string { return In(i18n.Locale()).DesktopAIStop() }
+
+// DesktopAIStop says "Stop"
+// in the language of msgs.
+func (msgs Messages) DesktopAIStop() string {
+	return Catalog.Format(msgs.locale, "desktopAIStop", nil)
+}
+
+// DesktopAISend says "Send"
+// in the language the app shows.
+func DesktopAISend() string { return In(i18n.Locale()).DesktopAISend() }
+
+// DesktopAISend says "Send"
+// in the language of msgs.
+func (msgs Messages) DesktopAISend() string {
+	return Catalog.Format(msgs.locale, "desktopAISend", nil)
+}
+
+// DesktopAICode says "Code"
+// in the language the app shows.
+func DesktopAICode() string { return In(i18n.Locale()).DesktopAICode() }
+
+// DesktopAICode says "Code"
+// in the language of msgs.
+func (msgs Messages) DesktopAICode() string {
+	return Catalog.Format(msgs.locale, "desktopAICode", nil)
+}
+
+// DesktopAIInsert says "Insert into terminal"
+// in the language the app shows.
+func DesktopAIInsert() string { return In(i18n.Locale()).DesktopAIInsert() }
+
+// DesktopAIInsert says "Insert into terminal"
+// in the language of msgs.
+func (msgs Messages) DesktopAIInsert() string {
+	return Catalog.Format(msgs.locale, "desktopAIInsert", nil)
+}
+
+// DesktopAIRun says "Run…"
+// in the language the app shows.
+func DesktopAIRun() string { return In(i18n.Locale()).DesktopAIRun() }
+
+// DesktopAIRun says "Run…"
+// in the language of msgs.
+func (msgs Messages) DesktopAIRun() string {
+	return Catalog.Format(msgs.locale, "desktopAIRun", nil)
+}
+
+// DesktopAIRunTitle says "Run this command in the terminal?"
+// in the language the app shows.
+func DesktopAIRunTitle() string { return In(i18n.Locale()).DesktopAIRunTitle() }
+
+// DesktopAIRunTitle says "Run this command in the terminal?"
+// in the language of msgs.
+func (msgs Messages) DesktopAIRunTitle() string {
+	return Catalog.Format(msgs.locale, "desktopAIRunTitle", nil)
+}
+
+// DesktopAIRunTarget says "Target session"
+// in the language the app shows.
+func DesktopAIRunTarget() string { return In(i18n.Locale()).DesktopAIRunTarget() }
+
+// DesktopAIRunTarget says "Target session"
+// in the language of msgs.
+func (msgs Messages) DesktopAIRunTarget() string {
+	return Catalog.Format(msgs.locale, "desktopAIRunTarget", nil)
+}
+
+// DesktopAIRunWarning says "Only continue at an empty shell prompt. The command runs with the terminal account’s permissions."
+// in the language the app shows.
+func DesktopAIRunWarning() string { return In(i18n.Locale()).DesktopAIRunWarning() }
+
+// DesktopAIRunWarning says "Only continue at an empty shell prompt. The command runs with the terminal account’s permissions."
+// in the language of msgs.
+func (msgs Messages) DesktopAIRunWarning() string {
+	return Catalog.Format(msgs.locale, "desktopAIRunWarning", nil)
+}
+
+// DesktopAIHighRisk says "This command may permanently erase data or change a disk. Verify the device and backups before continuing."
+// in the language the app shows.
+func DesktopAIHighRisk() string { return In(i18n.Locale()).DesktopAIHighRisk() }
+
+// DesktopAIHighRisk says "This command may permanently erase data or change a disk. Verify the device and backups before continuing."
+// in the language of msgs.
+func (msgs Messages) DesktopAIHighRisk() string {
+	return Catalog.Format(msgs.locale, "desktopAIHighRisk", nil)
+}
+
+// DesktopAITypeRun says "Type RUN to confirm"
+// in the language the app shows.
+func DesktopAITypeRun() string { return In(i18n.Locale()).DesktopAITypeRun() }
+
+// DesktopAITypeRun says "Type RUN to confirm"
+// in the language of msgs.
+func (msgs Messages) DesktopAITypeRun() string {
+	return Catalog.Format(msgs.locale, "desktopAITypeRun", nil)
+}
+
+// DesktopAIRunConfirm says "Run command"
+// in the language the app shows.
+func DesktopAIRunConfirm() string { return In(i18n.Locale()).DesktopAIRunConfirm() }
+
+// DesktopAIRunConfirm says "Run command"
+// in the language of msgs.
+func (msgs Messages) DesktopAIRunConfirm() string {
+	return Catalog.Format(msgs.locale, "desktopAIRunConfirm", nil)
+}
+
+// DesktopAITargetChanged says "The target terminal changed or disconnected. Nothing was sent."
+// in the language the app shows.
+func DesktopAITargetChanged() string { return In(i18n.Locale()).DesktopAITargetChanged() }
+
+// DesktopAITargetChanged says "The target terminal changed or disconnected. Nothing was sent."
+// in the language of msgs.
+func (msgs Messages) DesktopAITargetChanged() string {
+	return Catalog.Format(msgs.locale, "desktopAITargetChanged", nil)
+}
+
+// DesktopAIRunLogged says "Submitted an AI-suggested command to the terminal after confirmation"
+// in the language the app shows.
+func DesktopAIRunLogged() string { return In(i18n.Locale()).DesktopAIRunLogged() }
+
+// DesktopAIRunLogged says "Submitted an AI-suggested command to the terminal after confirmation"
+// in the language of msgs.
+func (msgs Messages) DesktopAIRunLogged() string {
+	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
+}
+
+// AiConnection says "Model connection"
+// in the language the app shows.
+func AiConnection() string { return In(i18n.Locale()).AiConnection() }
+
+// AiConnection says "Model connection"
+// in the language of msgs.
+func (msgs Messages) AiConnection() string {
+	return Catalog.Format(msgs.locale, "aiConnection", nil)
+}
+
+// AiPrivacyNote says "Requests go directly to the endpoint you choose. The API key stays in the system credential store. Local Ollama can r…"
+// in the language the app shows.
+func AiPrivacyNote() string { return In(i18n.Locale()).AiPrivacyNote() }
+
+// AiPrivacyNote says "Requests go directly to the endpoint you choose. The API key stays in the system credential store. Local Ollama can r…"
+// in the language of msgs.
+func (msgs Messages) AiPrivacyNote() string {
+	return Catalog.Format(msgs.locale, "aiPrivacyNote", nil)
+}
+
+// AiProvider says "Provider preset"
+// in the language the app shows.
+func AiProvider() string { return In(i18n.Locale()).AiProvider() }
+
+// AiProvider says "Provider preset"
+// in the language of msgs.
+func (msgs Messages) AiProvider() string {
+	return Catalog.Format(msgs.locale, "aiProvider", nil)
+}
+
+// AiCustom says "Custom"
+// in the language the app shows.
+func AiCustom() string { return In(i18n.Locale()).AiCustom() }
+
+// AiCustom says "Custom"
+// in the language of msgs.
+func (msgs Messages) AiCustom() string {
+	return Catalog.Format(msgs.locale, "aiCustom", nil)
+}
+
+// AiEndpoint says "API base URL"
+// in the language the app shows.
+func AiEndpoint() string { return In(i18n.Locale()).AiEndpoint() }
+
+// AiEndpoint says "API base URL"
+// in the language of msgs.
+func (msgs Messages) AiEndpoint() string {
+	return Catalog.Format(msgs.locale, "aiEndpoint", nil)
+}
+
+// AiEndpointInvalid says "Use an HTTPS API base URL, or a local HTTP URL. Do not put credentials in the URL."
+// in the language the app shows.
+func AiEndpointInvalid() string { return In(i18n.Locale()).AiEndpointInvalid() }
+
+// AiEndpointInvalid says "Use an HTTPS API base URL, or a local HTTP URL. Do not put credentials in the URL."
+// in the language of msgs.
+func (msgs Messages) AiEndpointInvalid() string {
+	return Catalog.Format(msgs.locale, "aiEndpointInvalid", nil)
+}
+
+// AiKey says "API key"
+// in the language the app shows.
+func AiKey() string { return In(i18n.Locale()).AiKey() }
+
+// AiKey says "API key"
+// in the language of msgs.
+func (msgs Messages) AiKey() string {
+	return Catalog.Format(msgs.locale, "aiKey", nil)
+}
+
+// AiKeyHint says "Enter a key, or leave blank to keep a saved key"
+// in the language the app shows.
+func AiKeyHint() string { return In(i18n.Locale()).AiKeyHint() }
+
+// AiKeyHint says "Enter a key, or leave blank to keep a saved key"
+// in the language of msgs.
+func (msgs Messages) AiKeyHint() string {
+	return Catalog.Format(msgs.locale, "aiKeyHint", nil)
+}
+
+// AiKeyRequired says "Enter and save an API key for this endpoint first."
+// in the language the app shows.
+func AiKeyRequired() string { return In(i18n.Locale()).AiKeyRequired() }
+
+// AiKeyRequired says "Enter and save an API key for this endpoint first."
+// in the language of msgs.
+func (msgs Messages) AiKeyRequired() string {
+	return Catalog.Format(msgs.locale, "aiKeyRequired", nil)
+}
+
+// AiKeyStoreError says "Could not access the system credential store."
+// in the language the app shows.
+func AiKeyStoreError() string { return In(i18n.Locale()).AiKeyStoreError() }
+
+// AiKeyStoreError says "Could not access the system credential store."
+// in the language of msgs.
+func (msgs Messages) AiKeyStoreError() string {
+	return Catalog.Format(msgs.locale, "aiKeyStoreError", nil)
+}
+
+// AiKeyFieldOnly says "The API key belongs only in its credential field. Remove it from other fields or the question."
+// in the language the app shows.
+func AiKeyFieldOnly() string { return In(i18n.Locale()).AiKeyFieldOnly() }
+
+// AiKeyFieldOnly says "The API key belongs only in its credential field. Remove it from other fields or the question."
+// in the language of msgs.
+func (msgs Messages) AiKeyFieldOnly() string {
+	return Catalog.Format(msgs.locale, "aiKeyFieldOnly", nil)
+}
+
+// AiModel says "Model ID"
+// in the language the app shows.
+func AiModel() string { return In(i18n.Locale()).AiModel() }
+
+// AiModel says "Model ID"
+// in the language of msgs.
+func (msgs Messages) AiModel() string {
+	return Catalog.Format(msgs.locale, "aiModel", nil)
+}
+
+// AiModelHint says "Enter the exact model ID"
+// in the language the app shows.
+func AiModelHint() string { return In(i18n.Locale()).AiModelHint() }
+
+// AiModelHint says "Enter the exact model ID"
+// in the language of msgs.
+func (msgs Messages) AiModelHint() string {
+	return Catalog.Format(msgs.locale, "aiModelHint", nil)
+}
+
+// AiModelRequired says "Enter a model ID of up to 256 bytes."
+// in the language the app shows.
+func AiModelRequired() string { return In(i18n.Locale()).AiModelRequired() }
+
+// AiModelRequired says "Enter a model ID of up to 256 bytes."
+// in the language of msgs.
+func (msgs Messages) AiModelRequired() string {
+	return Catalog.Format(msgs.locale, "aiModelRequired", nil)
+}
+
+// AiChooseModel says "Choose a fetched model"
+// in the language the app shows.
+func AiChooseModel() string { return In(i18n.Locale()).AiChooseModel() }
+
+// AiChooseModel says "Choose a fetched model"
+// in the language of msgs.
+func (msgs Messages) AiChooseModel() string {
+	return Catalog.Format(msgs.locale, "aiChooseModel", nil)
+}
+
+// AiFetchModels says "Fetch models"
+// in the language the app shows.
+func AiFetchModels() string { return In(i18n.Locale()).AiFetchModels() }
+
+// AiFetchModels says "Fetch models"
+// in the language of msgs.
+func (msgs Messages) AiFetchModels() string {
+	return Catalog.Format(msgs.locale, "aiFetchModels", nil)
+}
+
+// AiModelsFound says "{count, plural, one {Found # model.} other {Found # models.}}"
+// in the language the app shows.
+func AiModelsFound(count int) string { return In(i18n.Locale()).AiModelsFound(count) }
+
+// AiModelsFound says "{count, plural, one {Found # model.} other {Found # models.}}"
+// in the language of msgs.
+func (msgs Messages) AiModelsFound(count int) string {
+	return Catalog.Format(msgs.locale, "aiModelsFound", map[string]any{"count": count})
+}
+
+// AiSystemPrompt says "System prompt"
+// in the language the app shows.
+func AiSystemPrompt() string { return In(i18n.Locale()).AiSystemPrompt() }
+
+// AiSystemPrompt says "System prompt"
+// in the language of msgs.
+func (msgs Messages) AiSystemPrompt() string {
+	return Catalog.Format(msgs.locale, "aiSystemPrompt", nil)
+}
+
+// AiSystemHint says "Optional instructions for chat replies"
+// in the language the app shows.
+func AiSystemHint() string { return In(i18n.Locale()).AiSystemHint() }
+
+// AiSystemHint says "Optional instructions for chat replies"
+// in the language of msgs.
+func (msgs Messages) AiSystemHint() string {
+	return Catalog.Format(msgs.locale, "aiSystemHint", nil)
+}
+
+// AiSendContext says "Attach server context by default"
+// in the language the app shows.
+func AiSendContext() string { return In(i18n.Locale()).AiSendContext() }
+
+// AiSendContext says "Attach server context by default"
+// in the language of msgs.
+func (msgs Messages) AiSendContext() string {
+	return Catalog.Format(msgs.locale, "aiSendContext", nil)
+}
+
+// AiSave says "Save AI settings"
+// in the language the app shows.
+func AiSave() string { return In(i18n.Locale()).AiSave() }
+
+// AiSave says "Save AI settings"
+// in the language of msgs.
+func (msgs Messages) AiSave() string {
+	return Catalog.Format(msgs.locale, "aiSave", nil)
+}
+
+// AiTest says "Test connection"
+// in the language the app shows.
+func AiTest() string { return In(i18n.Locale()).AiTest() }
+
+// AiTest says "Test connection"
+// in the language of msgs.
+func (msgs Messages) AiTest() string {
+	return Catalog.Format(msgs.locale, "aiTest", nil)
+}
+
+// AiTestOK says "Connection passed"
+// in the language the app shows.
+func AiTestOK() string { return In(i18n.Locale()).AiTestOK() }
+
+// AiTestOK says "Connection passed"
+// in the language of msgs.
+func (msgs Messages) AiTestOK() string {
+	return Catalog.Format(msgs.locale, "aiTestOK", nil)
+}
+
+// AiTurnOff says "Turn off"
+// in the language the app shows.
+func AiTurnOff() string { return In(i18n.Locale()).AiTurnOff() }
+
+// AiTurnOff says "Turn off"
+// in the language of msgs.
+func (msgs Messages) AiTurnOff() string {
+	return Catalog.Format(msgs.locale, "aiTurnOff", nil)
+}
+
+// AiSaved says "AI settings saved."
+// in the language the app shows.
+func AiSaved() string { return In(i18n.Locale()).AiSaved() }
+
+// AiSaved says "AI settings saved."
+// in the language of msgs.
+func (msgs Messages) AiSaved() string {
+	return Catalog.Format(msgs.locale, "aiSaved", nil)
+}
+
+// AiBusy says "Working…"
+// in the language the app shows.
+func AiBusy() string { return In(i18n.Locale()).AiBusy() }
+
+// AiBusy says "Working…"
+// in the language of msgs.
+func (msgs Messages) AiBusy() string {
+	return Catalog.Format(msgs.locale, "aiBusy", nil)
+}
+
+// AiRequestError says "Could not complete the AI request."
+// in the language the app shows.
+func AiRequestError() string { return In(i18n.Locale()).AiRequestError() }
+
+// AiRequestError says "Could not complete the AI request."
+// in the language of msgs.
+func (msgs Messages) AiRequestError() string {
+	return Catalog.Format(msgs.locale, "aiRequestError", nil)
+}
+
+// AiSettingsChanged says "AI settings changed. Try again with the current settings."
+// in the language the app shows.
+func AiSettingsChanged() string { return In(i18n.Locale()).AiSettingsChanged() }
+
+// AiSettingsChanged says "AI settings changed. Try again with the current settings."
+// in the language of msgs.
+func (msgs Messages) AiSettingsChanged() string {
+	return Catalog.Format(msgs.locale, "aiSettingsChanged", nil)
+}
+
+// AiEmptyReply says "The model returned no text."
+// in the language the app shows.
+func AiEmptyReply() string { return In(i18n.Locale()).AiEmptyReply() }
+
+// AiEmptyReply says "The model returned no text."
+// in the language of msgs.
+func (msgs Messages) AiEmptyReply() string {
+	return Catalog.Format(msgs.locale, "aiEmptyReply", nil)
+}
+
+// AiGenerate says "Generate command with AI"
+// in the language the app shows.
+func AiGenerate() string { return In(i18n.Locale()).AiGenerate() }
+
+// AiGenerate says "Generate command with AI"
+// in the language of msgs.
+func (msgs Messages) AiGenerate() string {
+	return Catalog.Format(msgs.locale, "aiGenerate", nil)
+}
+
+// AiGenerateButton says "Generate"
+// in the language the app shows.
+func AiGenerateButton() string { return In(i18n.Locale()).AiGenerateButton() }
+
+// AiGenerateButton says "Generate"
+// in the language of msgs.
+func (msgs Messages) AiGenerateButton() string {
+	return Catalog.Format(msgs.locale, "aiGenerateButton", nil)
+}
+
+// AiCommandHint says "Describe what the command should do…"
+// in the language the app shows.
+func AiCommandHint() string { return In(i18n.Locale()).AiCommandHint() }
+
+// AiCommandHint says "Describe what the command should do…"
+// in the language of msgs.
+func (msgs Messages) AiCommandHint() string {
+	return Catalog.Format(msgs.locale, "aiCommandHint", nil)
+}
+
+// AiAttachOS says "Include the detected operating system"
+// in the language the app shows.
+func AiAttachOS() string { return In(i18n.Locale()).AiAttachOS() }
+
+// AiAttachOS says "Include the detected operating system"
+// in the language of msgs.
+func (msgs Messages) AiAttachOS() string {
+	return Catalog.Format(msgs.locale, "aiAttachOS", nil)
+}
+
+// AiReview says "Review before inserting · Enter is not sent"
+// in the language the app shows.
+func AiReview() string { return In(i18n.Locale()).AiReview() }
+
+// AiReview says "Review before inserting · Enter is not sent"
+// in the language of msgs.
+func (msgs Messages) AiReview() string {
+	return Catalog.Format(msgs.locale, "aiReview", nil)
+}
+
+// AiInsertCommand says "Insert"
+// in the language the app shows.
+func AiInsertCommand() string { return In(i18n.Locale()).AiInsertCommand() }
+
+// AiInsertCommand says "Insert"
+// in the language of msgs.
+func (msgs Messages) AiInsertCommand() string {
+	return Catalog.Format(msgs.locale, "aiInsertCommand", nil)
+}
+
+// AiInvalidCommand says "The model did not return a usable single-line command. Try rephrasing your request."
+// in the language the app shows.
+func AiInvalidCommand() string { return In(i18n.Locale()).AiInvalidCommand() }
+
+// AiInvalidCommand says "The model did not return a usable single-line command. Try rephrasing your request."
+// in the language of msgs.
+func (msgs Messages) AiInvalidCommand() string {
+	return Catalog.Format(msgs.locale, "aiInvalidCommand", nil)
+}
+
 // HidePanel says "Hide panel"
 // in the language the app shows.
 func HidePanel() string { return In(i18n.Locale()).HidePanel() }

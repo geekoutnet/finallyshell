@@ -65,6 +65,10 @@ var optionPages = []optionPage{
 		view: (*App).transfersPage,
 	},
 	{
+		id: pageAI, title: locales.DesktopAppAI,
+		view: (*App).aiOptionsPage,
+	},
+	{
 		id: pageTerminal, title: locales.OptionsTerminal,
 		view: (*App).terminalDefaultsPage,
 	},
@@ -129,7 +133,10 @@ var optionPages = []optionPage{
 // openOptions opens the options window, or brings it to the front.
 func (a *App) openOptions() {
 	spec := optionsWindow
-	spec.Closed = func() { a.lock.options = nil }
+	spec.Closed = func() {
+		a.lock.options = nil
+		a.aiCloseOptions()
+	}
 	a.openWindow(spec, a.optionsView)
 }
 

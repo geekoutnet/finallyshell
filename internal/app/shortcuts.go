@@ -61,6 +61,7 @@ const (
 	scMovePaneRight
 	scMovePaneUp
 	scMovePaneDown
+	scGenerateAI
 )
 
 // shortcutAction is an action of the shortcuts page.
@@ -227,6 +228,11 @@ var shortcutActions = []shortcutAction{
 	{
 		id: scMovePaneDown, title: locales.ScMovePaneDown, alt: true,
 		field: func(s *config.Shortcuts) *string { return &s.MovePaneDown },
+	},
+	{
+		id: scGenerateAI, title: locales.AiGenerate,
+		field: func(s *config.Shortcuts) *string { return &s.GenerateAI },
+		mac:   keyCombo{ui.Super, ui.KeyI}, other: keyCombo{ui.Ctrl, ui.KeyI},
 	},
 }
 
@@ -420,7 +426,7 @@ func checkShortcut(goos string, id shortcutID, k keyCombo) shortcutProblem {
 			return keyAltGr
 		}
 		return keyOK
-	case m == ui.Ctrl && shellKey:
+	case m == ui.Ctrl && shellKey && !(id == scGenerateAI && key == ui.KeyI):
 		return keyShellCtrl
 	case m&ui.Alt != 0 && m&ui.Ctrl == 0:
 		if goos == "darwin" && shellKey {

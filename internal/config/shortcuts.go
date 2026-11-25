@@ -44,4 +44,5 @@ type Shortcuts struct {
 	MovePaneRight  string `json:"movePaneRight,omitempty"`
 	MovePaneUp     string `json:"movePaneUp,omitempty"`
 	MovePaneDown   string `json:"movePaneDown,omitempty"`
+	GenerateAI     string `json:"generateAI,omitempty"`
 }

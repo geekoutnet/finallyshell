@@ -38,6 +38,7 @@ instead.
 | `hosts.v1.json` | The original file, kept when a version 1 `hosts.json` is migrated. |
 | `hosts.json.broken-<date-time>` | A copy of a `hosts.json` that could not be read. |
 | `settings.json` | The options (see below). |
+| `chats.json` | Local AI conversations by host ID; no context attachments, replies based on attachments, or API keys. Does not sync. |
 | `sysproxy-backup.json` | Local recovery snapshot of this computer’s system proxy before a tunnel replaces it. |
 | `db.json` | Local database connection profiles by SSH host ID; no credentials or query history. |
 | `log-paths/<host-hash>.json` | Up to 12 recently entered remote log paths per connection; local only. No log contents are stored here. Previous versions use the `.bak-YYYYMMDDHHMMSS` suffix. |
@@ -317,6 +318,10 @@ an existing `settings.json` as `settings.json.bak-<yyyymmddHHMMSS>`.
 ### Website and certificate files
 
 The Websites section adds no host or application settings. It reads Nginx configuration on the remote server, creates site files under `/etc/nginx/sites-available/` or `/etc/nginx/conf.d/`, and manages corresponding Debian links under `/etc/nginx/sites-enabled/`. Backups use the sibling name `<file>.bak-<YYYYMMDDHHMMSS>`. The app reads public certificates configured by Nginx and `/etc/letsencrypt/live/*/fullchain.pem`; it does not download private keys or cache configuration locally.
+
+### AI assistant settings
+
+`ai` stores `provider`, `endpoint`, `model`, `systemPrompt`, and `sendContext`. These preferences can sync; the per-endpoint API key and the explicit opt-in for keyless local Ollama live only in the system credential store. `shortcuts.generateAI` overrides the default Ctrl+I (Cmd+I on macOS), or disables it with `none`. `chats.json` keeps up to 24 recent conversations and 48 messages per conversation on this device.
 
 ## db.json
 

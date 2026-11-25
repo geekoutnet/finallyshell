@@ -23,10 +23,10 @@ import (
 func TestShortcutDefaults(t *testing.T) {
 	want := map[string][]string{
 		"darwin": {"⌘C", "⌘V", "⌘F", "⌘↩", "↩", "⌘[", "⌘]", "⌘W", "⌘O", "⌘T", "⌘1…9", "⇧⌘L", "⇧⌘E", "⌘J",
-			"⌘D", "⇧⌘D", "⇧⌘↩", "⌥⌘←", "⌥⌘→", "⌥⌘↑", "⌥⌘↓", "—", "—", "—", "—"},
+			"⌘D", "⇧⌘D", "⇧⌘↩", "⌥⌘←", "⌥⌘→", "⌥⌘↑", "⌥⌘↓", "—", "—", "—", "—", "⌘I"},
 		"linux": {"Ctrl+Shift+C", "Ctrl+Shift+V", "Ctrl+Shift+F", "Ctrl+Shift+Enter", "Enter", "Ctrl+Shift+Tab", "Ctrl+Tab",
 			"Ctrl+Shift+W", "Ctrl+Shift+O", "Ctrl+Shift+T", "Alt+1…9", "Ctrl+Shift+L", "Ctrl+Shift+E", "Ctrl+Shift+J",
-			"Alt+Shift+=", "Alt+Shift+-", "Ctrl+Shift+X", "Alt+Left", "Alt+Right", "Alt+Up", "Alt+Down", "—", "—", "—", "—"},
+			"Alt+Shift+=", "Alt+Shift+-", "Ctrl+Shift+X", "Alt+Left", "Alt+Right", "Alt+Up", "Alt+Down", "—", "—", "—", "—", "Ctrl+I"},
 	}
 	want["windows"] = want["linux"]
 	for goos, labels := range want {

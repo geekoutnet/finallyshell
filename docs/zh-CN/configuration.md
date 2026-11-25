@@ -31,6 +31,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `hosts.v1.json` | 迁移第 1 版的 `hosts.json` 时保留的原文件。 |
 | `hosts.json.broken-<日期-时间>` | 读不出来的 `hosts.json` 的副本。 |
 | `settings.json` | 选项（见下面）。 |
+| `chats.json` | 按主机 ID 保存的本地 AI 对话，不含上下文附件、基于附件生成的回复或 API 密钥，不参与同步。 |
 | `sysproxy-backup.json` | 隧道接管系统代理前的本机设置恢复快照。 |
 | `db.json` | 按 SSH 主机 ID 保存的本机数据库连接配置，不含凭据和查询历史。 |
 | `log-paths/<连接哈希>.json` | 每个连接最近输入的最多 12 个远程日志路径，仅存本机，不保存日志内容。旧版本以 `.bak-YYYYMMDDHHMMSS` 为后缀。 |
@@ -236,6 +237,10 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 ### 网站与证书文件
 
 “网站”模块不添加主机或应用设置项。它读取远程服务器的 Nginx 配置，在 `/etc/nginx/sites-available/` 或 `/etc/nginx/conf.d/` 下创建网站，并管理 Debian 风格布局中 `/etc/nginx/sites-enabled/` 下的对应链接。备份放在原目录，文件名为 `<file>.bak-<YYYYMMDDHHMMSS>`。客户端只读取 Nginx 配置所引用的公开证书及 `/etc/letsencrypt/live/*/fullchain.pem`，不会下载私钥或在本机缓存配置。
+
+### AI 助手设置
+
+`ai` 保存 `provider`、`endpoint`、`model`、`systemPrompt` 和 `sendContext`。这些偏好可以同步；每个接口的 API 密钥以及对本机 Ollama 免密钥访问的授权仅存系统凭据库。`shortcuts.generateAI` 可覆盖默认的 Ctrl+I（macOS 为 Cmd+I），也可设为 `none` 禁用。`chats.json` 在本机保留最近 24 个对话，每个最多 48 条消息。
 
 ## db.json
 

@@ -2003,6 +2003,14 @@ file is saved through another connected session to the same host.
 Not supported: saving with sudo. A file without write permission fails to
 save with "permission denied".
 
+### Desktop mode › AI Assistant
+
+Configure your own OpenAI-compatible service in **Options › AI Assistant**. Pick a provider preset, enter the base URL and model ID, and test the connection or fetch models. Only loopback Ollama can be enabled without a key. Requests use the same system or environment proxy as the updater.
+
+Open **AI Assistant** on a server desktop to chat, stop a streaming reply or switch between that server’s local conversations. By default a request sends the question and the assistant’s instructions, not server data or previous messages. Opt in separately to recent chat messages or to a previewed attachment: the detected OS, working directory, up to 20 terminal lines and selected log lines, when available. The performance prompt can also attach current load, CPU, memory and top processes. Recognizable secrets are masked, but always check the preview before sending. Attachments and replies based on them are not written to chat history.
+
+Copy a shell snippet or insert a single line without pressing Enter. **Run** shows the exact line and asks for confirmation; obvious disk-destructive commands also require typing `RUN`. Use an empty shell prompt: the assistant cannot verify what program or input is currently in the terminal. **Ctrl+I** (**Cmd+I** on macOS) opens a terminal popover that suggests one command and never runs it. To explain a terminal selection, copy it and use **Explain copied text with AI** from the command bar’s context menu, then review and send it in the assistant. The model has no tools, direct shell access, managed built-in service or knowledge base.
+
 ## System tab
 
 The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.

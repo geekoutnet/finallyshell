@@ -95,6 +95,16 @@ func TestDockerSystemFormats(t *testing.T) {
 	}
 }
 
+func TestDockerEventsStopOnEOF(t *testing.T) {
+	script := (DockerCmd{Tool: "docker"}).Events("30m")
+	for _, want := range []string{`'events' '--since' '30m'`, `read -r unused <&3`, `kill -TERM "$engine"`, `wait "$engine"`} {
+		if !strings.Contains(script, want) {
+			t.Fatalf("events script missing %q", want)
+		}
+	}
+	checkSyntax(t, script)
+}
+
 func TestDockerSystemCommandSafety(t *testing.T) {
 	cmd := DockerCmd{Tool: "docker", Sudo: true}
 	login, err := cmd.RegistryLogin("docker.io", "reader", "synthetic-secret")

@@ -81,8 +81,16 @@ func (cmd DockerCmd) CtrListScript(id, dir string) (string, error) {
 		return "", CtrConfigError("path")
 	}
 	dir = strings.TrimSuffix(dir, "/") + "/."
+	const fallback = `for entry in "$1"/* "$1"/.[!.]* "$1"/..?*; do
+  case "${entry##*/}" in *[![:print:]]*) exit 1 ;; esac
+  if [ -L "$entry" ]; then
+    target=$(readlink -n -- "$entry" && printf .) || exit 1
+    case "$target" in *[![:print:]]*) exit 1 ;; esac
+  fi
+done
+exec ls -lan -- "$1"`
 	return scriptHead + cmd.ctrExec(id, "ls", "-lan", "--quoting-style=c", "--time-style=+%s", "--", dir) + " 2>/dev/null || " +
-		cmd.ctrExec(id, "ls", "-lanq", "--", dir) + "\n", nil
+		cmd.ctrExec(id, "sh", "-c", fallback, "docker-list", dir) + "\n", nil
 }
 
 func (cmd DockerCmd) CtrFileScript(op CtrFileOp, id, first, second string) (string, error) {
@@ -118,7 +126,13 @@ func (cmd DockerCmd) CtrFileScript(op CtrFileOp, id, first, second string) (stri
 		if first == second {
 			return "", CtrConfigError("path")
 		}
-		line = cmd.ctrExec(id, "mv", "-nT", "--", first, second)
+		const rename = `if [ ! -e "$2" ] && [ ! -L "$2" ]; then
+  mv -nT -- "$1" "$2" || exit $?
+  if [ ! -e "$1" ] && [ ! -L "$1" ]; then exit 0; fi
+fi
+printf '%s\n' 'The rename destination already exists.' >&2
+exit 73`
+		line = cmd.ctrExec(id, "sh", "-c", rename, "docker-rename", first, second)
 	default:
 		return "", errors.New("unknown container file operation")
 	}

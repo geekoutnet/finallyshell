@@ -17,6 +17,7 @@ type dockerInputRunner func(context.Context, *ssh.Client, monitor.DockerInput, f
 type dockerExec struct {
 	command dockerRunner
 	input   dockerInputRunner
+	events  dockerRunner
 }
 
 func (a *App) dockerExec(s *Session, direct dockerRunner, input dockerInputRunner, forceRoot bool) dockerExec {
@@ -30,7 +31,7 @@ func (a *App) dockerExec(s *Session, direct dockerRunner, input dockerInputRunne
 		}
 	}
 	if !state.d.Root && !forceRoot {
-		return dockerExec{command: direct, input: input}
+		return dockerExec{command: direct, input: input, events: direct}
 	}
 	priv := a.sessionPrivilege(s)
 	run := priv.runner.RunCached
@@ -58,6 +59,11 @@ func (a *App) dockerExec(s *Session, direct dockerRunner, input dockerInputRunne
 		},
 		input: func(ctx context.Context, _ *ssh.Client, input monitor.DockerInput, report func(string)) (string, error) {
 			out, err := input.RunRoot(ctx, run, report)
+			failed(err)
+			return out, err
+		},
+		events: func(ctx context.Context, _ *ssh.Client, script string, report func(string)) (string, error) {
+			out, err := monitor.StreamDockerEventsRoot(ctx, run, script, report)
 			failed(err)
 			return out, err
 		},

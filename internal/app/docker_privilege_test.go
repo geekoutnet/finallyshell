@@ -85,9 +85,13 @@ func TestDockerPrivilegePasswordAndActions(t *testing.T) {
 			result.Stdout = dockerPrivFixture
 		case strings.Contains(script, "'events'"):
 			request.ReportProgress(`{"Type":"container","Action":"start","time":1700000000,"Actor":{"ID":"a12345","Attributes":{"name":"web-demo"}}}` + "\n")
-			<-ctx.Done()
+			if request.Stdin == nil {
+				t.Error("privileged event stream has no shutdown channel")
+			} else if _, err := io.Copy(io.Discard, request.Stdin); err != nil {
+				t.Errorf("privileged event shutdown: %v", err)
+			}
 			eventCanceled <- struct{}{}
-			return result, ctx.Err()
+			return result, nil
 		case strings.Contains(script, "'--password-stdin'"):
 			data, err := io.ReadAll(request.Stdin)
 			if err != nil || len(data) == 0 || strings.Contains(request.Command, strings.TrimSuffix(string(data), "\n")) {

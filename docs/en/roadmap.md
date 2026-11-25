@@ -40,22 +40,11 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 | v2.0.15 | The System tab's websites and certificates (Nginx sites, a refused config put back at once, certificate expiry, certbot); server-to-server transfers; alerts; app lock; SSH verification codes filled in; the Database tab (MySQL / MariaDB, PostgreSQL, Redis); Telnet and serial connections |
 | v2.0.16 | Professional tunnels: HTTP proxies, mixed SOCKS5/HTTP ports with authentication, reverse SOCKS5/HTTP proxies (the server uses this computer's network, optionally through its proxy), Unix sockets (remote Docker), access lists, connection and rate limits, connection logs; the tunnel manager (background connections, autostart, auto-reconnect); 21 recipes; system proxy with PAC; `ssh -L/-R/-D` import and export; public access helper (GatewayPorts, a server relay, firewall, outside test); LAN sharing; Remote Desktop through SSH |
 | v2.0.17 | The Caddy tab: detection of every install (packages, static binary, Docker, custom units), one-click install (official repositories, SHA-512-checked binaries) and update (rolled back on failure), uninstall; start, stop, restart, reload, validate, autostart; site forms and 11 templates (static, reverse proxy, PHP, SPA, redirect, basic auth, IP allow lists, security headers, TLS…); global options and snippets; certificates, logs; config backups and restore; migration to one file per site, from a hand-installed binary to the official package, and from Nginx (switched back on failure). The code editor: file tree and tabs, Caddyfile/Nginx/systemd highlighting, directive completion, a diff before saving, validation before saving, root reads and writes |
+| v2.0.18 | Desktop mode (after GMSSH): every SSH session can open a "Desktop" with wallpapers, icons and icon folders, windows (move, resize from eight directions, maximize, minimize, snap, keep on top), a dock and launcher, context menus, shortcuts and personalization; This PC and an Explorer-like file manager (views, favorites, recent, search, notes, properties and permissions, compress and extract, remote download, copy and paste between servers); a trash (freedesktop specification); a task manager (performance, processes and their details, releasing memory); settings (system info, operation log, DNS, time zone and time sync); terminal windows with a shell each; a local browser through the server; an app center and 17 built-in tools as apps; an AI assistant (the user's own OpenAI-compatible API, Ctrl+Shift+I for commands, confirmation before running) |
 
 ## In progress
 
-**Desktop mode** (after GMSSH): every SSH session can open a "Desktop" row that manages the server like a Windows desktop. Branch `feature/desktop`, seven modules built in parallel:
-
-| Module | Content |
-|---|---|
-| Desktop shell | Wallpapers (built-in and custom images), icon grid and icon folders, windows (move, resize from eight directions, maximize, minimize, snap to halves, keep on top), dock (launcher, pinned and running apps, show desktop, clock, switching servers), context menus, shortcuts, personalization |
-| This PC and Files | Drives and quick access, an Explorer-like file manager (views, breadcrumb, favorites, recent, search, notes, properties and permissions, compress and extract, remote download, copy and paste between servers) |
-| Trash | Deleting moves to the trash (freedesktop specification): restore, delete permanently, empty, search |
-| Task Manager | Performance (load, CPU, memory, disk, network with history), processes and their details, releasing memory |
-| Settings | System info, personalization, operation log, DNS, time zone and time sync, security links |
-| Terminal, browser, app center | A shell of its own per window, a local browser through the server, the built-in tools (Docker, databases, sites, services...) as desktop apps |
-| AI assistant | The user's own OpenAI-compatible API: chat, command generation (Ctrl+Shift+I), log explanations; nothing is sent until it is configured, and commands run only after confirmation |
-
-GMSSH's app store (installing software on the server in one click) stays under "Not doing": the app center lists only the client's built-in tools.
+Nothing.
 
 ## Next
 

@@ -318,6 +318,10 @@ an existing `settings.json` as `settings.json.bak-<yyyymmddHHMMSS>`.
 
 The Websites section adds no host or application settings. It reads Nginx configuration on the remote server, creates site files under `/etc/nginx/sites-available/` or `/etc/nginx/conf.d/`, and manages corresponding Debian links under `/etc/nginx/sites-enabled/`. Backups use the sibling name `<file>.bak-<YYYYMMDDHHMMSS>`. The app reads public certificates configured by Nginx and `/etc/letsencrypt/live/*/fullchain.pem`; it does not download private keys or cache configuration locally.
 
+### Caddy files
+
+The Caddy tab adds no host or application settings. It uses the detected configuration, environment file and data directory on the remote server. Typical defaults are `/etc/caddy/Caddyfile`, a `sites/` directory for the managed layout, backups under `/etc/caddy/.backups/`, and `/var/lib/caddy/.local/share/caddy` for service data. Docker paths and service overrides can differ. The local CA export contains only its public certificate.
+
 ## db.json
 
 This optional file maps SSH host IDs to arrays of Database tab connection

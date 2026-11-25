@@ -237,6 +237,10 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 
 “网站”模块不添加主机或应用设置项。它读取远程服务器的 Nginx 配置，在 `/etc/nginx/sites-available/` 或 `/etc/nginx/conf.d/` 下创建网站，并管理 Debian 风格布局中 `/etc/nginx/sites-enabled/` 下的对应链接。备份放在原目录，文件名为 `<file>.bak-<YYYYMMDDHHMMSS>`。客户端只读取 Nginx 配置所引用的公开证书及 `/etc/letsencrypt/live/*/fullchain.pem`，不会下载私钥或在本机缓存配置。
 
+### Caddy 文件
+
+Caddy 页不添加主机或应用设置。它使用远程服务器上检测到的配置、环境变量文件和数据目录。常见路径有 `/etc/caddy/Caddyfile`、用于托管布局的 `sites/` 目录、`/etc/caddy/.backups/` 下的备份，以及 `/var/lib/caddy/.local/share/caddy` 下的服务数据。Docker 或自定义服务的路径可能不同。导出的本地根证书不包含私钥。
+
 ## db.json
 
 此文件可以不存在，按 SSH 主机 ID 保存数据库页的连接配置列表。每条配置包含

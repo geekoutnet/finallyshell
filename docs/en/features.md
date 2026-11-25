@@ -2027,6 +2027,26 @@ The System tab of the bottom panel manages the connected server itself: a row at
 - **Certificates:** View public certificates used by Nginx and Let's Encrypt `fullchain.pem` files, including the subject, SANs, issuer, public-key type and validity dates. Expiry turns yellow under 30 days and red under 7 days, including expired certificates. **Check domain** compares the certificate presented on port 443 from the SSH server with the certificate and trust result from this computer; the server-side probe does not verify trust.
 - **ACME:** Inspect Certbot lineages and common renewal timers or cron entries. `acme.sh` is detected only. Certbot renewal and its staging dry run both ask first because existing hooks may run. Issuing a certificate requires the Certbot Nginx plugin and asks before publishing names to an ACME CA and letting the plugin change Nginx. Supported Nginx configurations are backed up before running these tools. A canceled stream does not guarantee that the remote operation has been undone; refresh and inspect its state before retrying.
 
+## Caddy tab
+
+The Caddy tab manages the web server of an SSH connection. It includes Overview, Sites, Global options, Config files, Certificates, Logs, and Install & migrate. Open it as a full-size tab for more room. Server operations that need root use the connection's privilege escalation. Configuration changes are backed up, written atomically, and validated against the complete configuration before reload; if validation or reload fails, the previous files are restored.
+
+### Caddy tab › Overview and service
+
+The Overview detects an existing installation automatically and shows its service or container, version and available update, config and data directories, custom modules, admin API reachability, listening addresses and port conflicts. When the data is available it also shows service resource usage, websites, expiring certificates and reverse proxy upstream failures. Start, stop, restart, graceful reload, validate and boot settings each show a confirmation before running. Stopping Caddy takes its websites offline; port conflicts link to the System tab's Websites section.
+
+### Caddy tab › Config files
+
+Browse the main config and its imports, and open them together in the code editor. Formatting and backup restoration show a diff before applying. A file that changed after it was read is not overwritten. Adapt a Caddyfile to JSON or view the running configuration from the admin API; both previews are read-only. The service's environment file can also be opened if detected. Keep private values out of shared screenshots.
+
+### Caddy tab › Certificates and logs
+
+The certificate list includes the issuer, key type, location and time remaining; less than seven days is red, and less than 30 days is amber. Caddy renews its managed certificates automatically. Copy the public local CA certificate or download it when its file is available via SFTP. The log viewer follows the service journal, container logs, or a detected access log file. Pause, clear, filter with text or a regular expression, or inspect JSON access logs in columns and view individual entries in full.
+
+### Caddy tab › Install, update and migrate
+
+The wizard recommends an installation method for the detected OS and shows the service, boot and firewall choices before applying. If another web service holds ports 80/443, leave Caddy stopped or separately confirm replacing the conflicting services. Updates show the target version; uninstall keeps configuration and data by default. Deleting them requires typing `caddy`. Adopt an existing installation without editing it, review a diff for a managed-layout conversion, or review changes before replacing a standalone binary with a supported official package. When importing Nginx websites, choose and edit the generated sites before applying them. An optional cutover stops and disables Nginx but never deletes its configuration. Migration between Docker and a host service is not supported.
+
 ## Tunnels tab
 
 The session's **Tunnels** tab shows each listener (including its assigned

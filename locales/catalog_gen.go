@@ -23348,6 +23348,1576 @@ func (msgs Messages) RdpAdminHint() string {
 	return Catalog.Format(msgs.locale, "rdpAdminHint", nil)
 }
 
+// CpanelUnavailable says "This Caddy operation is not available in this build."
+// in the language the app shows.
+func CpanelUnavailable() string { return In(i18n.Locale()).CpanelUnavailable() }
+
+// CpanelUnavailable says "This Caddy operation is not available in this build."
+// in the language of msgs.
+func (msgs Messages) CpanelUnavailable() string {
+	return Catalog.Format(msgs.locale, "cpanelUnavailable", nil)
+}
+
+// CpanelChanged says "A file changed on the server. Refresh and review it before trying again."
+// in the language the app shows.
+func CpanelChanged() string { return In(i18n.Locale()).CpanelChanged() }
+
+// CpanelChanged says "A file changed on the server. Refresh and review it before trying again."
+// in the language of msgs.
+func (msgs Messages) CpanelChanged() string {
+	return Catalog.Format(msgs.locale, "cpanelChanged", nil)
+}
+
+// CpanelDetecting says "Detecting Caddy…"
+// in the language the app shows.
+func CpanelDetecting() string { return In(i18n.Locale()).CpanelDetecting() }
+
+// CpanelDetecting says "Detecting Caddy…"
+// in the language of msgs.
+func (msgs Messages) CpanelDetecting() string {
+	return Catalog.Format(msgs.locale, "cpanelDetecting", nil)
+}
+
+// CpanelNotInstalled says "Caddy is not installed on this server."
+// in the language the app shows.
+func CpanelNotInstalled() string { return In(i18n.Locale()).CpanelNotInstalled() }
+
+// CpanelNotInstalled says "Caddy is not installed on this server."
+// in the language of msgs.
+func (msgs Messages) CpanelNotInstalled() string {
+	return Catalog.Format(msgs.locale, "cpanelNotInstalled", nil)
+}
+
+// CpanelInstall says "Install Caddy"
+// in the language the app shows.
+func CpanelInstall() string { return In(i18n.Locale()).CpanelInstall() }
+
+// CpanelInstall says "Install Caddy"
+// in the language of msgs.
+func (msgs Messages) CpanelInstall() string {
+	return Catalog.Format(msgs.locale, "cpanelInstall", nil)
+}
+
+// CpanelReading says "Reading from the server…"
+// in the language the app shows.
+func CpanelReading() string { return In(i18n.Locale()).CpanelReading() }
+
+// CpanelReading says "Reading from the server…"
+// in the language of msgs.
+func (msgs Messages) CpanelReading() string {
+	return Catalog.Format(msgs.locale, "cpanelReading", nil)
+}
+
+// CpanelUnknown says "Unknown"
+// in the language the app shows.
+func CpanelUnknown() string { return In(i18n.Locale()).CpanelUnknown() }
+
+// CpanelUnknown says "Unknown"
+// in the language of msgs.
+func (msgs Messages) CpanelUnknown() string {
+	return Catalog.Format(msgs.locale, "cpanelUnknown", nil)
+}
+
+// CpanelYes says "Yes"
+// in the language the app shows.
+func CpanelYes() string { return In(i18n.Locale()).CpanelYes() }
+
+// CpanelYes says "Yes"
+// in the language of msgs.
+func (msgs Messages) CpanelYes() string {
+	return Catalog.Format(msgs.locale, "cpanelYes", nil)
+}
+
+// CpanelNo says "No"
+// in the language the app shows.
+func CpanelNo() string { return In(i18n.Locale()).CpanelNo() }
+
+// CpanelNo says "No"
+// in the language of msgs.
+func (msgs Messages) CpanelNo() string {
+	return Catalog.Format(msgs.locale, "cpanelNo", nil)
+}
+
+// CpanelActive says "Running"
+// in the language the app shows.
+func CpanelActive() string { return In(i18n.Locale()).CpanelActive() }
+
+// CpanelActive says "Running"
+// in the language of msgs.
+func (msgs Messages) CpanelActive() string {
+	return Catalog.Format(msgs.locale, "cpanelActive", nil)
+}
+
+// CpanelInactive says "Stopped"
+// in the language the app shows.
+func CpanelInactive() string { return In(i18n.Locale()).CpanelInactive() }
+
+// CpanelInactive says "Stopped"
+// in the language of msgs.
+func (msgs Messages) CpanelInactive() string {
+	return Catalog.Format(msgs.locale, "cpanelInactive", nil)
+}
+
+// CpanelFailed says "Failed"
+// in the language the app shows.
+func CpanelFailed() string { return In(i18n.Locale()).CpanelFailed() }
+
+// CpanelFailed says "Failed"
+// in the language of msgs.
+func (msgs Messages) CpanelFailed() string {
+	return Catalog.Format(msgs.locale, "cpanelFailed", nil)
+}
+
+// CpanelMethodApt says "Official APT repository"
+// in the language the app shows.
+func CpanelMethodApt() string { return In(i18n.Locale()).CpanelMethodApt() }
+
+// CpanelMethodApt says "Official APT repository"
+// in the language of msgs.
+func (msgs Messages) CpanelMethodApt() string {
+	return Catalog.Format(msgs.locale, "cpanelMethodApt", nil)
+}
+
+// CpanelMethodDnf says "COPR via DNF"
+// in the language the app shows.
+func CpanelMethodDnf() string { return In(i18n.Locale()).CpanelMethodDnf() }
+
+// CpanelMethodDnf says "COPR via DNF"
+// in the language of msgs.
+func (msgs Messages) CpanelMethodDnf() string {
+	return Catalog.Format(msgs.locale, "cpanelMethodDnf", nil)
+}
+
+// CpanelMethodPacman says "Pacman package"
+// in the language the app shows.
+func CpanelMethodPacman() string { return In(i18n.Locale()).CpanelMethodPacman() }
+
+// CpanelMethodPacman says "Pacman package"
+// in the language of msgs.
+func (msgs Messages) CpanelMethodPacman() string {
+	return Catalog.Format(msgs.locale, "cpanelMethodPacman", nil)
+}
+
+// CpanelMethodApk says "Alpine package"
+// in the language the app shows.
+func CpanelMethodApk() string { return In(i18n.Locale()).CpanelMethodApk() }
+
+// CpanelMethodApk says "Alpine package"
+// in the language of msgs.
+func (msgs Messages) CpanelMethodApk() string {
+	return Catalog.Format(msgs.locale, "cpanelMethodApk", nil)
+}
+
+// CpanelMethodBinary says "Standalone binary"
+// in the language the app shows.
+func CpanelMethodBinary() string { return In(i18n.Locale()).CpanelMethodBinary() }
+
+// CpanelMethodBinary says "Standalone binary"
+// in the language of msgs.
+func (msgs Messages) CpanelMethodBinary() string {
+	return Catalog.Format(msgs.locale, "cpanelMethodBinary", nil)
+}
+
+// CpanelService says "Service or container"
+// in the language the app shows.
+func CpanelService() string { return In(i18n.Locale()).CpanelService() }
+
+// CpanelService says "Service or container"
+// in the language of msgs.
+func (msgs Messages) CpanelService() string {
+	return Catalog.Format(msgs.locale, "cpanelService", nil)
+}
+
+// CpanelAutostart says "Start at boot"
+// in the language the app shows.
+func CpanelAutostart() string { return In(i18n.Locale()).CpanelAutostart() }
+
+// CpanelAutostart says "Start at boot"
+// in the language of msgs.
+func (msgs Messages) CpanelAutostart() string {
+	return Catalog.Format(msgs.locale, "cpanelAutostart", nil)
+}
+
+// CpanelBinary says "Binary path"
+// in the language the app shows.
+func CpanelBinary() string { return In(i18n.Locale()).CpanelBinary() }
+
+// CpanelBinary says "Binary path"
+// in the language of msgs.
+func (msgs Messages) CpanelBinary() string {
+	return Catalog.Format(msgs.locale, "cpanelBinary", nil)
+}
+
+// CpanelConfigPath says "Configuration path"
+// in the language the app shows.
+func CpanelConfigPath() string { return In(i18n.Locale()).CpanelConfigPath() }
+
+// CpanelConfigPath says "Configuration path"
+// in the language of msgs.
+func (msgs Messages) CpanelConfigPath() string {
+	return Catalog.Format(msgs.locale, "cpanelConfigPath", nil)
+}
+
+// CpanelAdapter says "Configuration adapter"
+// in the language the app shows.
+func CpanelAdapter() string { return In(i18n.Locale()).CpanelAdapter() }
+
+// CpanelAdapter says "Configuration adapter"
+// in the language of msgs.
+func (msgs Messages) CpanelAdapter() string {
+	return Catalog.Format(msgs.locale, "cpanelAdapter", nil)
+}
+
+// CpanelManaged says "Managed layout"
+// in the language the app shows.
+func CpanelManaged() string { return In(i18n.Locale()).CpanelManaged() }
+
+// CpanelManaged says "Managed layout"
+// in the language of msgs.
+func (msgs Messages) CpanelManaged() string {
+	return Catalog.Format(msgs.locale, "cpanelManaged", nil)
+}
+
+// CpanelAdmin says "Admin API"
+// in the language the app shows.
+func CpanelAdmin() string { return In(i18n.Locale()).CpanelAdmin() }
+
+// CpanelAdmin says "Admin API"
+// in the language of msgs.
+func (msgs Messages) CpanelAdmin() string {
+	return Catalog.Format(msgs.locale, "cpanelAdmin", nil)
+}
+
+// CpanelDataDir says "Data directory"
+// in the language the app shows.
+func CpanelDataDir() string { return In(i18n.Locale()).CpanelDataDir() }
+
+// CpanelDataDir says "Data directory"
+// in the language of msgs.
+func (msgs Messages) CpanelDataDir() string {
+	return Catalog.Format(msgs.locale, "cpanelDataDir", nil)
+}
+
+// CpanelUser says "Service user"
+// in the language the app shows.
+func CpanelUser() string { return In(i18n.Locale()).CpanelUser() }
+
+// CpanelUser says "Service user"
+// in the language of msgs.
+func (msgs Messages) CpanelUser() string {
+	return Catalog.Format(msgs.locale, "cpanelUser", nil)
+}
+
+// CpanelListening says "Listening addresses"
+// in the language the app shows.
+func CpanelListening() string { return In(i18n.Locale()).CpanelListening() }
+
+// CpanelListening says "Listening addresses"
+// in the language of msgs.
+func (msgs Messages) CpanelListening() string {
+	return Catalog.Format(msgs.locale, "cpanelListening", nil)
+}
+
+// CpanelModules says "Custom modules"
+// in the language the app shows.
+func CpanelModules() string { return In(i18n.Locale()).CpanelModules() }
+
+// CpanelModules says "Custom modules"
+// in the language of msgs.
+func (msgs Messages) CpanelModules() string {
+	return Catalog.Format(msgs.locale, "cpanelModules", nil)
+}
+
+// CpanelSince says "Running since"
+// in the language the app shows.
+func CpanelSince() string { return In(i18n.Locale()).CpanelSince() }
+
+// CpanelSince says "Running since"
+// in the language of msgs.
+func (msgs Messages) CpanelSince() string {
+	return Catalog.Format(msgs.locale, "cpanelSince", nil)
+}
+
+// CpanelMemory says "Memory"
+// in the language the app shows.
+func CpanelMemory() string { return In(i18n.Locale()).CpanelMemory() }
+
+// CpanelMemory says "Memory"
+// in the language of msgs.
+func (msgs Messages) CpanelMemory() string {
+	return Catalog.Format(msgs.locale, "cpanelMemory", nil)
+}
+
+// CpanelUpstreams says "Reverse proxy upstreams"
+// in the language the app shows.
+func CpanelUpstreams() string { return In(i18n.Locale()).CpanelUpstreams() }
+
+// CpanelUpstreams says "Reverse proxy upstreams"
+// in the language of msgs.
+func (msgs Messages) CpanelUpstreams() string {
+	return Catalog.Format(msgs.locale, "cpanelUpstreams", nil)
+}
+
+// CpanelUpstreamCount says "{healthy, number} with no failures · {failed, number} with failures"
+// in the language the app shows.
+func CpanelUpstreamCount(healthy int, failed int) string {
+	return In(i18n.Locale()).CpanelUpstreamCount(healthy, failed)
+}
+
+// CpanelUpstreamCount says "{healthy, number} with no failures · {failed, number} with failures"
+// in the language of msgs.
+func (msgs Messages) CpanelUpstreamCount(healthy int, failed int) string {
+	return Catalog.Format(msgs.locale, "cpanelUpstreamCount", map[string]any{"healthy": healthy, "failed": failed})
+}
+
+// CpanelCertificateCount says "{total, plural, one {# certificate} other {# certificates}} · {expiring, number} expiring within 30 days"
+// in the language the app shows.
+func CpanelCertificateCount(total int, expiring int) string {
+	return In(i18n.Locale()).CpanelCertificateCount(total, expiring)
+}
+
+// CpanelCertificateCount says "{total, plural, one {# certificate} other {# certificates}} · {expiring, number} expiring within 30 days"
+// in the language of msgs.
+func (msgs Messages) CpanelCertificateCount(total int, expiring int) string {
+	return Catalog.Format(msgs.locale, "cpanelCertificateCount", map[string]any{"total": total, "expiring": expiring})
+}
+
+// CpanelReachable says "reachable"
+// in the language the app shows.
+func CpanelReachable() string { return In(i18n.Locale()).CpanelReachable() }
+
+// CpanelReachable says "reachable"
+// in the language of msgs.
+func (msgs Messages) CpanelReachable() string {
+	return Catalog.Format(msgs.locale, "cpanelReachable", nil)
+}
+
+// CpanelUnreachable says "unreachable"
+// in the language the app shows.
+func CpanelUnreachable() string { return In(i18n.Locale()).CpanelUnreachable() }
+
+// CpanelUnreachable says "unreachable"
+// in the language of msgs.
+func (msgs Messages) CpanelUnreachable() string {
+	return Catalog.Format(msgs.locale, "cpanelUnreachable", nil)
+}
+
+// CpanelUpdateAvailable says "Update available: {version}"
+// in the language the app shows.
+func CpanelUpdateAvailable(version string) string {
+	return In(i18n.Locale()).CpanelUpdateAvailable(version)
+}
+
+// CpanelUpdateAvailable says "Update available: {version}"
+// in the language of msgs.
+func (msgs Messages) CpanelUpdateAvailable(version string) string {
+	return Catalog.Format(msgs.locale, "cpanelUpdateAvailable", map[string]any{"version": version})
+}
+
+// CpanelConflicts says "Ports 80 or 443 are in use by: {processes}"
+// in the language the app shows.
+func CpanelConflicts(processes string) string { return In(i18n.Locale()).CpanelConflicts(processes) }
+
+// CpanelConflicts says "Ports 80 or 443 are in use by: {processes}"
+// in the language of msgs.
+func (msgs Messages) CpanelConflicts(processes string) string {
+	return Catalog.Format(msgs.locale, "cpanelConflicts", map[string]any{"processes": processes})
+}
+
+// CpanelNoTarget says "No supported service or path was detected."
+// in the language the app shows.
+func CpanelNoTarget() string { return In(i18n.Locale()).CpanelNoTarget() }
+
+// CpanelNoTarget says "No supported service or path was detected."
+// in the language of msgs.
+func (msgs Messages) CpanelNoTarget() string {
+	return Catalog.Format(msgs.locale, "cpanelNoTarget", nil)
+}
+
+// CpanelStopWarning says "Stopping Caddy takes its websites offline immediately."
+// in the language the app shows.
+func CpanelStopWarning() string { return In(i18n.Locale()).CpanelStopWarning() }
+
+// CpanelStopWarning says "Stopping Caddy takes its websites offline immediately."
+// in the language of msgs.
+func (msgs Messages) CpanelStopWarning() string {
+	return Catalog.Format(msgs.locale, "cpanelStopWarning", nil)
+}
+
+// CpanelReload says "Graceful reload"
+// in the language the app shows.
+func CpanelReload() string { return In(i18n.Locale()).CpanelReload() }
+
+// CpanelReload says "Graceful reload"
+// in the language of msgs.
+func (msgs Messages) CpanelReload() string {
+	return Catalog.Format(msgs.locale, "cpanelReload", nil)
+}
+
+// CpanelValidate says "Validate config"
+// in the language the app shows.
+func CpanelValidate() string { return In(i18n.Locale()).CpanelValidate() }
+
+// CpanelValidate says "Validate config"
+// in the language of msgs.
+func (msgs Messages) CpanelValidate() string {
+	return Catalog.Format(msgs.locale, "cpanelValidate", nil)
+}
+
+// CpanelValidateNote says "Validate the complete configuration without changing files or reloading Caddy."
+// in the language the app shows.
+func CpanelValidateNote() string { return In(i18n.Locale()).CpanelValidateNote() }
+
+// CpanelValidateNote says "Validate the complete configuration without changing files or reloading Caddy."
+// in the language of msgs.
+func (msgs Messages) CpanelValidateNote() string {
+	return Catalog.Format(msgs.locale, "cpanelValidateNote", nil)
+}
+
+// CpanelOpenConfig says "Open config files"
+// in the language the app shows.
+func CpanelOpenConfig() string { return In(i18n.Locale()).CpanelOpenConfig() }
+
+// CpanelOpenConfig says "Open config files"
+// in the language of msgs.
+func (msgs Messages) CpanelOpenConfig() string {
+	return Catalog.Format(msgs.locale, "cpanelOpenConfig", nil)
+}
+
+// CpanelOpenData says "Open data directory"
+// in the language the app shows.
+func CpanelOpenData() string { return In(i18n.Locale()).CpanelOpenData() }
+
+// CpanelOpenData says "Open data directory"
+// in the language of msgs.
+func (msgs Messages) CpanelOpenData() string {
+	return Catalog.Format(msgs.locale, "cpanelOpenData", nil)
+}
+
+// CpanelBackupLocation says "Backup: {path}"
+// in the language the app shows.
+func CpanelBackupLocation(path string) string { return In(i18n.Locale()).CpanelBackupLocation(path) }
+
+// CpanelBackupLocation says "Backup: {path}"
+// in the language of msgs.
+func (msgs Messages) CpanelBackupLocation(path string) string {
+	return Catalog.Format(msgs.locale, "cpanelBackupLocation", map[string]any{"path": path})
+}
+
+// CpanelRolledBack says "The previous configuration was restored."
+// in the language the app shows.
+func CpanelRolledBack() string { return In(i18n.Locale()).CpanelRolledBack() }
+
+// CpanelRolledBack says "The previous configuration was restored."
+// in the language of msgs.
+func (msgs Messages) CpanelRolledBack() string {
+	return Catalog.Format(msgs.locale, "cpanelRolledBack", nil)
+}
+
+// CpanelNoFiles says "No configuration files have been read."
+// in the language the app shows.
+func CpanelNoFiles() string { return In(i18n.Locale()).CpanelNoFiles() }
+
+// CpanelNoFiles says "No configuration files have been read."
+// in the language of msgs.
+func (msgs Messages) CpanelNoFiles() string {
+	return Catalog.Format(msgs.locale, "cpanelNoFiles", nil)
+}
+
+// CpanelCaddyfileOnly says "Available only for Caddyfile configurations."
+// in the language the app shows.
+func CpanelCaddyfileOnly() string { return In(i18n.Locale()).CpanelCaddyfileOnly() }
+
+// CpanelCaddyfileOnly says "Available only for Caddyfile configurations."
+// in the language of msgs.
+func (msgs Messages) CpanelCaddyfileOnly() string {
+	return Catalog.Format(msgs.locale, "cpanelCaddyfileOnly", nil)
+}
+
+// CpanelNoEnv says "No environment file was detected for the service."
+// in the language the app shows.
+func CpanelNoEnv() string { return In(i18n.Locale()).CpanelNoEnv() }
+
+// CpanelNoEnv says "No environment file was detected for the service."
+// in the language of msgs.
+func (msgs Messages) CpanelNoEnv() string {
+	return Catalog.Format(msgs.locale, "cpanelNoEnv", nil)
+}
+
+// CpanelAdminOff says "The admin API is disabled or its address is unknown."
+// in the language the app shows.
+func CpanelAdminOff() string { return In(i18n.Locale()).CpanelAdminOff() }
+
+// CpanelAdminOff says "The admin API is disabled or its address is unknown."
+// in the language of msgs.
+func (msgs Messages) CpanelAdminOff() string {
+	return Catalog.Format(msgs.locale, "cpanelAdminOff", nil)
+}
+
+// CpanelEditor says "Open in code editor"
+// in the language the app shows.
+func CpanelEditor() string { return In(i18n.Locale()).CpanelEditor() }
+
+// CpanelEditor says "Open in code editor"
+// in the language of msgs.
+func (msgs Messages) CpanelEditor() string {
+	return Catalog.Format(msgs.locale, "cpanelEditor", nil)
+}
+
+// CpanelFormatAll says "Format all"
+// in the language the app shows.
+func CpanelFormatAll() string { return In(i18n.Locale()).CpanelFormatAll() }
+
+// CpanelFormatAll says "Format all"
+// in the language of msgs.
+func (msgs Messages) CpanelFormatAll() string {
+	return Catalog.Format(msgs.locale, "cpanelFormatAll", nil)
+}
+
+// CpanelAdapt says "Adapt to JSON"
+// in the language the app shows.
+func CpanelAdapt() string { return In(i18n.Locale()).CpanelAdapt() }
+
+// CpanelAdapt says "Adapt to JSON"
+// in the language of msgs.
+func (msgs Messages) CpanelAdapt() string {
+	return Catalog.Format(msgs.locale, "cpanelAdapt", nil)
+}
+
+// CpanelRunningConfig says "Show running config"
+// in the language the app shows.
+func CpanelRunningConfig() string { return In(i18n.Locale()).CpanelRunningConfig() }
+
+// CpanelRunningConfig says "Show running config"
+// in the language of msgs.
+func (msgs Messages) CpanelRunningConfig() string {
+	return Catalog.Format(msgs.locale, "cpanelRunningConfig", nil)
+}
+
+// CpanelBackups says "Backups"
+// in the language the app shows.
+func CpanelBackups() string { return In(i18n.Locale()).CpanelBackups() }
+
+// CpanelBackups says "Backups"
+// in the language of msgs.
+func (msgs Messages) CpanelBackups() string {
+	return Catalog.Format(msgs.locale, "cpanelBackups", nil)
+}
+
+// CpanelEnvironment says "Environment file"
+// in the language the app shows.
+func CpanelEnvironment() string { return In(i18n.Locale()).CpanelEnvironment() }
+
+// CpanelEnvironment says "Environment file"
+// in the language of msgs.
+func (msgs Messages) CpanelEnvironment() string {
+	return Catalog.Format(msgs.locale, "cpanelEnvironment", nil)
+}
+
+// CpanelMain says "Main file"
+// in the language the app shows.
+func CpanelMain() string { return In(i18n.Locale()).CpanelMain() }
+
+// CpanelMain says "Main file"
+// in the language of msgs.
+func (msgs Messages) CpanelMain() string {
+	return Catalog.Format(msgs.locale, "cpanelMain", nil)
+}
+
+// CpanelImport says "Imported file"
+// in the language the app shows.
+func CpanelImport() string { return In(i18n.Locale()).CpanelImport() }
+
+// CpanelImport says "Imported file"
+// in the language of msgs.
+func (msgs Messages) CpanelImport() string {
+	return Catalog.Format(msgs.locale, "cpanelImport", nil)
+}
+
+// CpanelKind says "Type"
+// in the language the app shows.
+func CpanelKind() string { return In(i18n.Locale()).CpanelKind() }
+
+// CpanelKind says "Type"
+// in the language of msgs.
+func (msgs Messages) CpanelKind() string {
+	return Catalog.Format(msgs.locale, "cpanelKind", nil)
+}
+
+// CpanelSize says "Size"
+// in the language the app shows.
+func CpanelSize() string { return In(i18n.Locale()).CpanelSize() }
+
+// CpanelSize says "Size"
+// in the language of msgs.
+func (msgs Messages) CpanelSize() string {
+	return Catalog.Format(msgs.locale, "cpanelSize", nil)
+}
+
+// CpanelModified says "Modified"
+// in the language the app shows.
+func CpanelModified() string { return In(i18n.Locale()).CpanelModified() }
+
+// CpanelModified says "Modified"
+// in the language of msgs.
+func (msgs Messages) CpanelModified() string {
+	return Catalog.Format(msgs.locale, "cpanelModified", nil)
+}
+
+// CpanelNoChanges says "There are no changes to apply."
+// in the language the app shows.
+func CpanelNoChanges() string { return In(i18n.Locale()).CpanelNoChanges() }
+
+// CpanelNoChanges says "There are no changes to apply."
+// in the language of msgs.
+func (msgs Messages) CpanelNoChanges() string {
+	return Catalog.Format(msgs.locale, "cpanelNoChanges", nil)
+}
+
+// CpanelApplyNote says "Back up the listed files, validate the complete configuration and reload Caddy. If validation or reload fails, restor…"
+// in the language the app shows.
+func CpanelApplyNote() string { return In(i18n.Locale()).CpanelApplyNote() }
+
+// CpanelApplyNote says "Back up the listed files, validate the complete configuration and reload Caddy. If validation or reload fails, restor…"
+// in the language of msgs.
+func (msgs Messages) CpanelApplyNote() string {
+	return Catalog.Format(msgs.locale, "cpanelApplyNote", nil)
+}
+
+// CpanelNoBackups says "No Caddy configuration backups found."
+// in the language the app shows.
+func CpanelNoBackups() string { return In(i18n.Locale()).CpanelNoBackups() }
+
+// CpanelNoBackups says "No Caddy configuration backups found."
+// in the language of msgs.
+func (msgs Messages) CpanelNoBackups() string {
+	return Catalog.Format(msgs.locale, "cpanelNoBackups", nil)
+}
+
+// CpanelRestore says "Preview restore"
+// in the language the app shows.
+func CpanelRestore() string { return In(i18n.Locale()).CpanelRestore() }
+
+// CpanelRestore says "Preview restore"
+// in the language of msgs.
+func (msgs Messages) CpanelRestore() string {
+	return Catalog.Format(msgs.locale, "cpanelRestore", nil)
+}
+
+// CpanelDeleteBackup says "Delete backup…"
+// in the language the app shows.
+func CpanelDeleteBackup() string { return In(i18n.Locale()).CpanelDeleteBackup() }
+
+// CpanelDeleteBackup says "Delete backup…"
+// in the language of msgs.
+func (msgs Messages) CpanelDeleteBackup() string {
+	return Catalog.Format(msgs.locale, "cpanelDeleteBackup", nil)
+}
+
+// CpanelDeleteBackupNote says "Permanently delete the selected backup. The active configuration is not changed."
+// in the language the app shows.
+func CpanelDeleteBackupNote() string { return In(i18n.Locale()).CpanelDeleteBackupNote() }
+
+// CpanelDeleteBackupNote says "Permanently delete the selected backup. The active configuration is not changed."
+// in the language of msgs.
+func (msgs Messages) CpanelDeleteBackupNote() string {
+	return Catalog.Format(msgs.locale, "cpanelDeleteBackupNote", nil)
+}
+
+// CpanelNoRootCA says "No local root certificate was found."
+// in the language the app shows.
+func CpanelNoRootCA() string { return In(i18n.Locale()).CpanelNoRootCA() }
+
+// CpanelNoRootCA says "No local root certificate was found."
+// in the language of msgs.
+func (msgs Messages) CpanelNoRootCA() string {
+	return Catalog.Format(msgs.locale, "cpanelNoRootCA", nil)
+}
+
+// CpanelNoRootDownload says "The local root certificate is not available over SFTP."
+// in the language the app shows.
+func CpanelNoRootDownload() string { return In(i18n.Locale()).CpanelNoRootDownload() }
+
+// CpanelNoRootDownload says "The local root certificate is not available over SFTP."
+// in the language of msgs.
+func (msgs Messages) CpanelNoRootDownload() string {
+	return Catalog.Format(msgs.locale, "cpanelNoRootDownload", nil)
+}
+
+// CpanelSelectCert says "Select a certificate whose public PEM was read."
+// in the language the app shows.
+func CpanelSelectCert() string { return In(i18n.Locale()).CpanelSelectCert() }
+
+// CpanelSelectCert says "Select a certificate whose public PEM was read."
+// in the language of msgs.
+func (msgs Messages) CpanelSelectCert() string {
+	return Catalog.Format(msgs.locale, "cpanelSelectCert", nil)
+}
+
+// CpanelOpenCert says "View certificate"
+// in the language the app shows.
+func CpanelOpenCert() string { return In(i18n.Locale()).CpanelOpenCert() }
+
+// CpanelOpenCert says "View certificate"
+// in the language of msgs.
+func (msgs Messages) CpanelOpenCert() string {
+	return Catalog.Format(msgs.locale, "cpanelOpenCert", nil)
+}
+
+// CpanelCopyRoot says "Copy root certificate PEM"
+// in the language the app shows.
+func CpanelCopyRoot() string { return In(i18n.Locale()).CpanelCopyRoot() }
+
+// CpanelCopyRoot says "Copy root certificate PEM"
+// in the language of msgs.
+func (msgs Messages) CpanelCopyRoot() string {
+	return Catalog.Format(msgs.locale, "cpanelCopyRoot", nil)
+}
+
+// CpanelDownloadRoot says "Download root certificate"
+// in the language the app shows.
+func CpanelDownloadRoot() string { return In(i18n.Locale()).CpanelDownloadRoot() }
+
+// CpanelDownloadRoot says "Download root certificate"
+// in the language of msgs.
+func (msgs Messages) CpanelDownloadRoot() string {
+	return Catalog.Format(msgs.locale, "cpanelDownloadRoot", nil)
+}
+
+// CpanelRootSummary says "Local root CA: {subject} · expires {expiry}"
+// in the language the app shows.
+func CpanelRootSummary(subject string, expiry string) string {
+	return In(i18n.Locale()).CpanelRootSummary(subject, expiry)
+}
+
+// CpanelRootSummary says "Local root CA: {subject} · expires {expiry}"
+// in the language of msgs.
+func (msgs Messages) CpanelRootSummary(subject string, expiry string) string {
+	return Catalog.Format(msgs.locale, "cpanelRootSummary", map[string]any{"subject": subject, "expiry": expiry})
+}
+
+// CpanelOnDemand says "On-demand TLS is enabled. Some certificates appear only after the first TLS connection."
+// in the language the app shows.
+func CpanelOnDemand() string { return In(i18n.Locale()).CpanelOnDemand() }
+
+// CpanelOnDemand says "On-demand TLS is enabled. Some certificates appear only after the first TLS connection."
+// in the language of msgs.
+func (msgs Messages) CpanelOnDemand() string {
+	return Catalog.Format(msgs.locale, "cpanelOnDemand", nil)
+}
+
+// CpanelAutoRenew says "Caddy renews managed certificates automatically. The next check is not reported here."
+// in the language the app shows.
+func CpanelAutoRenew() string { return In(i18n.Locale()).CpanelAutoRenew() }
+
+// CpanelAutoRenew says "Caddy renews managed certificates automatically. The next check is not reported here."
+// in the language of msgs.
+func (msgs Messages) CpanelAutoRenew() string {
+	return Catalog.Format(msgs.locale, "cpanelAutoRenew", nil)
+}
+
+// CpanelNoCerts says "No managed certificates found."
+// in the language the app shows.
+func CpanelNoCerts() string { return In(i18n.Locale()).CpanelNoCerts() }
+
+// CpanelNoCerts says "No managed certificates found."
+// in the language of msgs.
+func (msgs Messages) CpanelNoCerts() string {
+	return Catalog.Format(msgs.locale, "cpanelNoCerts", nil)
+}
+
+// CpanelDomains says "Domains"
+// in the language the app shows.
+func CpanelDomains() string { return In(i18n.Locale()).CpanelDomains() }
+
+// CpanelDomains says "Domains"
+// in the language of msgs.
+func (msgs Messages) CpanelDomains() string {
+	return Catalog.Format(msgs.locale, "cpanelDomains", nil)
+}
+
+// CpanelIssuer says "Issuer"
+// in the language the app shows.
+func CpanelIssuer() string { return In(i18n.Locale()).CpanelIssuer() }
+
+// CpanelIssuer says "Issuer"
+// in the language of msgs.
+func (msgs Messages) CpanelIssuer() string {
+	return Catalog.Format(msgs.locale, "cpanelIssuer", nil)
+}
+
+// CpanelExpiry says "Expiration"
+// in the language the app shows.
+func CpanelExpiry() string { return In(i18n.Locale()).CpanelExpiry() }
+
+// CpanelExpiry says "Expiration"
+// in the language of msgs.
+func (msgs Messages) CpanelExpiry() string {
+	return Catalog.Format(msgs.locale, "cpanelExpiry", nil)
+}
+
+// CpanelKeyType says "Key type"
+// in the language the app shows.
+func CpanelKeyType() string { return In(i18n.Locale()).CpanelKeyType() }
+
+// CpanelKeyType says "Key type"
+// in the language of msgs.
+func (msgs Messages) CpanelKeyType() string {
+	return Catalog.Format(msgs.locale, "cpanelKeyType", nil)
+}
+
+// CpanelCertPath says "Storage path"
+// in the language the app shows.
+func CpanelCertPath() string { return In(i18n.Locale()).CpanelCertPath() }
+
+// CpanelCertPath says "Storage path"
+// in the language of msgs.
+func (msgs Messages) CpanelCertPath() string {
+	return Catalog.Format(msgs.locale, "cpanelCertPath", nil)
+}
+
+// CpanelDaysLeft says "{days, plural, one {# day left} other {# days left}}"
+// in the language the app shows.
+func CpanelDaysLeft(days int) string { return In(i18n.Locale()).CpanelDaysLeft(days) }
+
+// CpanelDaysLeft says "{days, plural, one {# day left} other {# days left}}"
+// in the language of msgs.
+func (msgs Messages) CpanelDaysLeft(days int) string {
+	return Catalog.Format(msgs.locale, "cpanelDaysLeft", map[string]any{"days": days})
+}
+
+// CpanelExpired says "Expired"
+// in the language the app shows.
+func CpanelExpired() string { return In(i18n.Locale()).CpanelExpired() }
+
+// CpanelExpired says "Expired"
+// in the language of msgs.
+func (msgs Messages) CpanelExpired() string {
+	return Catalog.Format(msgs.locale, "cpanelExpired", nil)
+}
+
+// CpanelDockerLogs says "Container logs"
+// in the language the app shows.
+func CpanelDockerLogs() string { return In(i18n.Locale()).CpanelDockerLogs() }
+
+// CpanelDockerLogs says "Container logs"
+// in the language of msgs.
+func (msgs Messages) CpanelDockerLogs() string {
+	return Catalog.Format(msgs.locale, "cpanelDockerLogs", nil)
+}
+
+// CpanelJournal says "Service journal"
+// in the language the app shows.
+func CpanelJournal() string { return In(i18n.Locale()).CpanelJournal() }
+
+// CpanelJournal says "Service journal"
+// in the language of msgs.
+func (msgs Messages) CpanelJournal() string {
+	return Catalog.Format(msgs.locale, "cpanelJournal", nil)
+}
+
+// CpanelNoLogSource says "No supported log source detected."
+// in the language the app shows.
+func CpanelNoLogSource() string { return In(i18n.Locale()).CpanelNoLogSource() }
+
+// CpanelNoLogSource says "No supported log source detected."
+// in the language of msgs.
+func (msgs Messages) CpanelNoLogSource() string {
+	return Catalog.Format(msgs.locale, "cpanelNoLogSource", nil)
+}
+
+// CpanelLogSource says "Log source"
+// in the language the app shows.
+func CpanelLogSource() string { return In(i18n.Locale()).CpanelLogSource() }
+
+// CpanelLogSource says "Log source"
+// in the language of msgs.
+func (msgs Messages) CpanelLogSource() string {
+	return Catalog.Format(msgs.locale, "cpanelLogSource", nil)
+}
+
+// CpanelPause says "Pause"
+// in the language the app shows.
+func CpanelPause() string { return In(i18n.Locale()).CpanelPause() }
+
+// CpanelPause says "Pause"
+// in the language of msgs.
+func (msgs Messages) CpanelPause() string {
+	return Catalog.Format(msgs.locale, "cpanelPause", nil)
+}
+
+// CpanelFollow says "Follow"
+// in the language the app shows.
+func CpanelFollow() string { return In(i18n.Locale()).CpanelFollow() }
+
+// CpanelFollow says "Follow"
+// in the language of msgs.
+func (msgs Messages) CpanelFollow() string {
+	return Catalog.Format(msgs.locale, "cpanelFollow", nil)
+}
+
+// CpanelClear says "Clear"
+// in the language the app shows.
+func CpanelClear() string { return In(i18n.Locale()).CpanelClear() }
+
+// CpanelClear says "Clear"
+// in the language of msgs.
+func (msgs Messages) CpanelClear() string {
+	return Catalog.Format(msgs.locale, "cpanelClear", nil)
+}
+
+// CpanelColumns says "Access log columns"
+// in the language the app shows.
+func CpanelColumns() string { return In(i18n.Locale()).CpanelColumns() }
+
+// CpanelColumns says "Access log columns"
+// in the language of msgs.
+func (msgs Messages) CpanelColumns() string {
+	return Catalog.Format(msgs.locale, "cpanelColumns", nil)
+}
+
+// CpanelFilter says "Filter logs"
+// in the language the app shows.
+func CpanelFilter() string { return In(i18n.Locale()).CpanelFilter() }
+
+// CpanelFilter says "Filter logs"
+// in the language of msgs.
+func (msgs Messages) CpanelFilter() string {
+	return Catalog.Format(msgs.locale, "cpanelFilter", nil)
+}
+
+// CpanelRegex says "Regular expression"
+// in the language the app shows.
+func CpanelRegex() string { return In(i18n.Locale()).CpanelRegex() }
+
+// CpanelRegex says "Regular expression"
+// in the language of msgs.
+func (msgs Messages) CpanelRegex() string {
+	return Catalog.Format(msgs.locale, "cpanelRegex", nil)
+}
+
+// CpanelLogTime says "Time"
+// in the language the app shows.
+func CpanelLogTime() string { return In(i18n.Locale()).CpanelLogTime() }
+
+// CpanelLogTime says "Time"
+// in the language of msgs.
+func (msgs Messages) CpanelLogTime() string {
+	return Catalog.Format(msgs.locale, "cpanelLogTime", nil)
+}
+
+// CpanelLogHost says "Host"
+// in the language the app shows.
+func CpanelLogHost() string { return In(i18n.Locale()).CpanelLogHost() }
+
+// CpanelLogHost says "Host"
+// in the language of msgs.
+func (msgs Messages) CpanelLogHost() string {
+	return Catalog.Format(msgs.locale, "cpanelLogHost", nil)
+}
+
+// CpanelLogMethod says "Method"
+// in the language the app shows.
+func CpanelLogMethod() string { return In(i18n.Locale()).CpanelLogMethod() }
+
+// CpanelLogMethod says "Method"
+// in the language of msgs.
+func (msgs Messages) CpanelLogMethod() string {
+	return Catalog.Format(msgs.locale, "cpanelLogMethod", nil)
+}
+
+// CpanelLogStatus says "Status"
+// in the language the app shows.
+func CpanelLogStatus() string { return In(i18n.Locale()).CpanelLogStatus() }
+
+// CpanelLogStatus says "Status"
+// in the language of msgs.
+func (msgs Messages) CpanelLogStatus() string {
+	return Catalog.Format(msgs.locale, "cpanelLogStatus", nil)
+}
+
+// CpanelLogDuration says "Duration"
+// in the language the app shows.
+func CpanelLogDuration() string { return In(i18n.Locale()).CpanelLogDuration() }
+
+// CpanelLogDuration says "Duration"
+// in the language of msgs.
+func (msgs Messages) CpanelLogDuration() string {
+	return Catalog.Format(msgs.locale, "cpanelLogDuration", nil)
+}
+
+// CpanelViewLog says "View log entry"
+// in the language the app shows.
+func CpanelViewLog() string { return In(i18n.Locale()).CpanelViewLog() }
+
+// CpanelViewLog says "View log entry"
+// in the language of msgs.
+func (msgs Messages) CpanelViewLog() string {
+	return Catalog.Format(msgs.locale, "cpanelViewLog", nil)
+}
+
+// CpanelRecommended says "{method} (recommended)"
+// in the language the app shows.
+func CpanelRecommended(method string) string { return In(i18n.Locale()).CpanelRecommended(method) }
+
+// CpanelRecommended says "{method} (recommended)"
+// in the language of msgs.
+func (msgs Messages) CpanelRecommended(method string) string {
+	return Catalog.Format(msgs.locale, "cpanelRecommended", map[string]any{"method": method})
+}
+
+// CpanelOS says "Detected OS: {os}"
+// in the language the app shows.
+func CpanelOS(os string) string { return In(i18n.Locale()).CpanelOS(os) }
+
+// CpanelOS says "Detected OS: {os}"
+// in the language of msgs.
+func (msgs Messages) CpanelOS(os string) string {
+	return Catalog.Format(msgs.locale, "cpanelOS", map[string]any{"os": os})
+}
+
+// CpanelMethod says "Install method"
+// in the language the app shows.
+func CpanelMethod() string { return In(i18n.Locale()).CpanelMethod() }
+
+// CpanelMethod says "Install method"
+// in the language of msgs.
+func (msgs Messages) CpanelMethod() string {
+	return Catalog.Format(msgs.locale, "cpanelMethod", nil)
+}
+
+// CpanelLatest says "Latest release"
+// in the language the app shows.
+func CpanelLatest() string { return In(i18n.Locale()).CpanelLatest() }
+
+// CpanelLatest says "Latest release"
+// in the language of msgs.
+func (msgs Messages) CpanelLatest() string {
+	return Catalog.Format(msgs.locale, "cpanelLatest", nil)
+}
+
+// CpanelVersion says "Version"
+// in the language the app shows.
+func CpanelVersion() string { return In(i18n.Locale()).CpanelVersion() }
+
+// CpanelVersion says "Version"
+// in the language of msgs.
+func (msgs Messages) CpanelVersion() string {
+	return Catalog.Format(msgs.locale, "cpanelVersion", nil)
+}
+
+// CpanelReplaceConflicts says "Stop conflicting web services and turn off their autostart"
+// in the language the app shows.
+func CpanelReplaceConflicts() string { return In(i18n.Locale()).CpanelReplaceConflicts() }
+
+// CpanelReplaceConflicts says "Stop conflicting web services and turn off their autostart"
+// in the language of msgs.
+func (msgs Messages) CpanelReplaceConflicts() string {
+	return Catalog.Format(msgs.locale, "cpanelReplaceConflicts", nil)
+}
+
+// CpanelStartNow says "Start now"
+// in the language the app shows.
+func CpanelStartNow() string { return In(i18n.Locale()).CpanelStartNow() }
+
+// CpanelStartNow says "Start now"
+// in the language of msgs.
+func (msgs Messages) CpanelStartNow() string {
+	return Catalog.Format(msgs.locale, "cpanelStartNow", nil)
+}
+
+// CpanelOpenPorts says "Open HTTP, HTTPS and HTTP/3 ports"
+// in the language the app shows.
+func CpanelOpenPorts() string { return In(i18n.Locale()).CpanelOpenPorts() }
+
+// CpanelOpenPorts says "Open HTTP, HTTPS and HTTP/3 ports"
+// in the language of msgs.
+func (msgs Messages) CpanelOpenPorts() string {
+	return Catalog.Format(msgs.locale, "cpanelOpenPorts", nil)
+}
+
+// CpanelFirewallHint says "Requires an active UFW or firewalld firewall."
+// in the language the app shows.
+func CpanelFirewallHint() string { return In(i18n.Locale()).CpanelFirewallHint() }
+
+// CpanelFirewallHint says "Requires an active UFW or firewalld firewall."
+// in the language of msgs.
+func (msgs Messages) CpanelFirewallHint() string {
+	return Catalog.Format(msgs.locale, "cpanelFirewallHint", nil)
+}
+
+// CpanelReviewInstall says "Review installation"
+// in the language the app shows.
+func CpanelReviewInstall() string { return In(i18n.Locale()).CpanelReviewInstall() }
+
+// CpanelReviewInstall says "Review installation"
+// in the language of msgs.
+func (msgs Messages) CpanelReviewInstall() string {
+	return Catalog.Format(msgs.locale, "cpanelReviewInstall", nil)
+}
+
+// CpanelStepsApt says "Set up the official Cloudsmith repository and its signing key, refresh APT metadata, then install caddy with package …"
+// in the language the app shows.
+func CpanelStepsApt() string { return In(i18n.Locale()).CpanelStepsApt() }
+
+// CpanelStepsApt says "Set up the official Cloudsmith repository and its signing key, refresh APT metadata, then install caddy with package …"
+// in the language of msgs.
+func (msgs Messages) CpanelStepsApt() string {
+	return Catalog.Format(msgs.locale, "cpanelStepsApt", nil)
+}
+
+// CpanelStepsDnf says "Install {plugin}, enable COPR @caddy/caddy, then install the signed caddy package."
+// in the language the app shows.
+func CpanelStepsDnf(plugin string) string { return In(i18n.Locale()).CpanelStepsDnf(plugin) }
+
+// CpanelStepsDnf says "Install {plugin}, enable COPR @caddy/caddy, then install the signed caddy package."
+// in the language of msgs.
+func (msgs Messages) CpanelStepsDnf(plugin string) string {
+	return Catalog.Format(msgs.locale, "cpanelStepsDnf", map[string]any{"plugin": plugin})
+}
+
+// CpanelStepsPacman says "Synchronize repositories and upgrade system packages as needed with pacman -Syu caddy. Verify package signatures."
+// in the language the app shows.
+func CpanelStepsPacman() string { return In(i18n.Locale()).CpanelStepsPacman() }
+
+// CpanelStepsPacman says "Synchronize repositories and upgrade system packages as needed with pacman -Syu caddy. Verify package signatures."
+// in the language of msgs.
+func (msgs Messages) CpanelStepsPacman() string {
+	return Catalog.Format(msgs.locale, "cpanelStepsPacman", nil)
+}
+
+// CpanelStepsApk says "Install the signed caddy package using apk add caddy and use OpenRC for service control."
+// in the language the app shows.
+func CpanelStepsApk() string { return In(i18n.Locale()).CpanelStepsApk() }
+
+// CpanelStepsApk says "Install the signed caddy package using apk add caddy and use OpenRC for service control."
+// in the language of msgs.
+func (msgs Messages) CpanelStepsApk() string {
+	return Catalog.Format(msgs.locale, "cpanelStepsApk", nil)
+}
+
+// CpanelStepsBinary says "Detect the CPU architecture, download the official release archive, verify its SHA-512 checksum, then install the bin…"
+// in the language the app shows.
+func CpanelStepsBinary() string { return In(i18n.Locale()).CpanelStepsBinary() }
+
+// CpanelStepsBinary says "Detect the CPU architecture, download the official release archive, verify its SHA-512 checksum, then install the bin…"
+// in the language of msgs.
+func (msgs Messages) CpanelStepsBinary() string {
+	return Catalog.Format(msgs.locale, "cpanelStepsBinary", nil)
+}
+
+// CpanelStepsDocker says "Pull the official Caddy image and create the caddy container with HTTP/HTTPS port mappings and persistent configurati…"
+// in the language the app shows.
+func CpanelStepsDocker() string { return In(i18n.Locale()).CpanelStepsDocker() }
+
+// CpanelStepsDocker says "Pull the official Caddy image and create the caddy container with HTTP/HTTPS port mappings and persistent configurati…"
+// in the language of msgs.
+func (msgs Messages) CpanelStepsDocker() string {
+	return Catalog.Format(msgs.locale, "cpanelStepsDocker", nil)
+}
+
+// CpanelVersionTarget says "Target: {version}"
+// in the language the app shows.
+func CpanelVersionTarget(version string) string {
+	return In(i18n.Locale()).CpanelVersionTarget(version)
+}
+
+// CpanelVersionTarget says "Target: {version}"
+// in the language of msgs.
+func (msgs Messages) CpanelVersionTarget(version string) string {
+	return Catalog.Format(msgs.locale, "cpanelVersionTarget", map[string]any{"version": version})
+}
+
+// CpanelReplaceWarning says "Stop these services and disable their autostart: {services}. Their websites can go offline."
+// in the language the app shows.
+func CpanelReplaceWarning(services string) string {
+	return In(i18n.Locale()).CpanelReplaceWarning(services)
+}
+
+// CpanelReplaceWarning says "Stop these services and disable their autostart: {services}. Their websites can go offline."
+// in the language of msgs.
+func (msgs Messages) CpanelReplaceWarning(services string) string {
+	return Catalog.Format(msgs.locale, "cpanelReplaceWarning", map[string]any{"services": services})
+}
+
+// CpanelStartOption says "Start Caddy now: {choice}"
+// in the language the app shows.
+func CpanelStartOption(choice string) string { return In(i18n.Locale()).CpanelStartOption(choice) }
+
+// CpanelStartOption says "Start Caddy now: {choice}"
+// in the language of msgs.
+func (msgs Messages) CpanelStartOption(choice string) string {
+	return Catalog.Format(msgs.locale, "cpanelStartOption", map[string]any{"choice": choice})
+}
+
+// CpanelBootOption says "Start Caddy at boot: {choice}"
+// in the language the app shows.
+func CpanelBootOption(choice string) string { return In(i18n.Locale()).CpanelBootOption(choice) }
+
+// CpanelBootOption says "Start Caddy at boot: {choice}"
+// in the language of msgs.
+func (msgs Messages) CpanelBootOption(choice string) string {
+	return Catalog.Format(msgs.locale, "cpanelBootOption", map[string]any{"choice": choice})
+}
+
+// CpanelFirewallSteps says "Open 80/tcp, 443/tcp and 443/udp in {firewall}."
+// in the language the app shows.
+func CpanelFirewallSteps(firewall string) string {
+	return In(i18n.Locale()).CpanelFirewallSteps(firewall)
+}
+
+// CpanelFirewallSteps says "Open 80/tcp, 443/tcp and 443/udp in {firewall}."
+// in the language of msgs.
+func (msgs Messages) CpanelFirewallSteps(firewall string) string {
+	return Catalog.Format(msgs.locale, "cpanelFirewallSteps", map[string]any{"firewall": firewall})
+}
+
+// CpanelInstallNote says "This changes the remote server and requires root access. Review the install method, service and firewall choices befo…"
+// in the language the app shows.
+func CpanelInstallNote() string { return In(i18n.Locale()).CpanelInstallNote() }
+
+// CpanelInstallNote says "This changes the remote server and requires root access. Review the install method, service and firewall choices befo…"
+// in the language of msgs.
+func (msgs Messages) CpanelInstallNote() string {
+	return Catalog.Format(msgs.locale, "cpanelInstallNote", nil)
+}
+
+// CpanelInstalledVia says "Caddy installed via {method}"
+// in the language the app shows.
+func CpanelInstalledVia(method string) string { return In(i18n.Locale()).CpanelInstalledVia(method) }
+
+// CpanelInstalledVia says "Caddy installed via {method}"
+// in the language of msgs.
+func (msgs Messages) CpanelInstalledVia(method string) string {
+	return Catalog.Format(msgs.locale, "cpanelInstalledVia", map[string]any{"method": method})
+}
+
+// CpanelNoUpdate says "No newer version has been confirmed."
+// in the language the app shows.
+func CpanelNoUpdate() string { return In(i18n.Locale()).CpanelNoUpdate() }
+
+// CpanelNoUpdate says "No newer version has been confirmed."
+// in the language of msgs.
+func (msgs Messages) CpanelNoUpdate() string {
+	return Catalog.Format(msgs.locale, "cpanelNoUpdate", nil)
+}
+
+// CpanelReleaseNotes says "Release notes"
+// in the language the app shows.
+func CpanelReleaseNotes() string { return In(i18n.Locale()).CpanelReleaseNotes() }
+
+// CpanelReleaseNotes says "Release notes"
+// in the language of msgs.
+func (msgs Messages) CpanelReleaseNotes() string {
+	return Catalog.Format(msgs.locale, "cpanelReleaseNotes", nil)
+}
+
+// CpanelUpdate says "Update Caddy…"
+// in the language the app shows.
+func CpanelUpdate() string { return In(i18n.Locale()).CpanelUpdate() }
+
+// CpanelUpdate says "Update Caddy…"
+// in the language of msgs.
+func (msgs Messages) CpanelUpdate() string {
+	return Catalog.Format(msgs.locale, "cpanelUpdate", nil)
+}
+
+// CpanelRepair says "Reinstall or repair…"
+// in the language the app shows.
+func CpanelRepair() string { return In(i18n.Locale()).CpanelRepair() }
+
+// CpanelRepair says "Reinstall or repair…"
+// in the language of msgs.
+func (msgs Messages) CpanelRepair() string {
+	return Catalog.Format(msgs.locale, "cpanelRepair", nil)
+}
+
+// CpanelUninstall says "Uninstall, keep data…"
+// in the language the app shows.
+func CpanelUninstall() string { return In(i18n.Locale()).CpanelUninstall() }
+
+// CpanelUninstall says "Uninstall, keep data…"
+// in the language of msgs.
+func (msgs Messages) CpanelUninstall() string {
+	return Catalog.Format(msgs.locale, "cpanelUninstall", nil)
+}
+
+// CpanelPurge says "Uninstall and delete data…"
+// in the language the app shows.
+func CpanelPurge() string { return In(i18n.Locale()).CpanelPurge() }
+
+// CpanelPurge says "Uninstall and delete data…"
+// in the language of msgs.
+func (msgs Messages) CpanelPurge() string {
+	return Catalog.Format(msgs.locale, "cpanelPurge", nil)
+}
+
+// CpanelUpdateTarget says "{current} → {target} via {method}"
+// in the language the app shows.
+func CpanelUpdateTarget(current string, target string, method string) string {
+	return In(i18n.Locale()).CpanelUpdateTarget(current, target, method)
+}
+
+// CpanelUpdateTarget says "{current} → {target} via {method}"
+// in the language of msgs.
+func (msgs Messages) CpanelUpdateTarget(current string, target string, method string) string {
+	return Catalog.Format(msgs.locale, "cpanelUpdateTarget", map[string]any{"current": current, "target": target, "method": method})
+}
+
+// CpanelUpdateNote says "Keep the previous binary or image and configuration, install the verified replacement, validate and restart. Report r…"
+// in the language the app shows.
+func CpanelUpdateNote() string { return In(i18n.Locale()).CpanelUpdateNote() }
+
+// CpanelUpdateNote says "Keep the previous binary or image and configuration, install the verified replacement, validate and restart. Report r…"
+// in the language of msgs.
+func (msgs Messages) CpanelUpdateNote() string {
+	return Catalog.Format(msgs.locale, "cpanelUpdateNote", nil)
+}
+
+// CpanelUninstallNote says "Stop and remove this Caddy installation. Keep its configuration, certificates and data. Websites served by Caddy go o…"
+// in the language the app shows.
+func CpanelUninstallNote() string { return In(i18n.Locale()).CpanelUninstallNote() }
+
+// CpanelUninstallNote says "Stop and remove this Caddy installation. Keep its configuration, certificates and data. Websites served by Caddy go o…"
+// in the language of msgs.
+func (msgs Messages) CpanelUninstallNote() string {
+	return Catalog.Format(msgs.locale, "cpanelUninstallNote", nil)
+}
+
+// CpanelPurgeNote says "Stop and remove Caddy, then delete the listed configuration and data, including managed certificates. Websites go off…"
+// in the language the app shows.
+func CpanelPurgeNote() string { return In(i18n.Locale()).CpanelPurgeNote() }
+
+// CpanelPurgeNote says "Stop and remove Caddy, then delete the listed configuration and data, including managed certificates. Websites go off…"
+// in the language of msgs.
+func (msgs Messages) CpanelPurgeNote() string {
+	return Catalog.Format(msgs.locale, "cpanelPurgeNote", nil)
+}
+
+// CpanelTypePurge says "Type caddy to confirm permanent deletion."
+// in the language the app shows.
+func CpanelTypePurge() string { return In(i18n.Locale()).CpanelTypePurge() }
+
+// CpanelTypePurge says "Type caddy to confirm permanent deletion."
+// in the language of msgs.
+func (msgs Messages) CpanelTypePurge() string {
+	return Catalog.Format(msgs.locale, "cpanelTypePurge", nil)
+}
+
+// CpanelTypeCutover says "Type caddy to confirm taking existing web services offline."
+// in the language the app shows.
+func CpanelTypeCutover() string { return In(i18n.Locale()).CpanelTypeCutover() }
+
+// CpanelTypeCutover says "Type caddy to confirm taking existing web services offline."
+// in the language of msgs.
+func (msgs Messages) CpanelTypeCutover() string {
+	return Catalog.Format(msgs.locale, "cpanelTypeCutover", nil)
+}
+
+// CpanelMigration says "Adopt or migrate"
+// in the language the app shows.
+func CpanelMigration() string { return In(i18n.Locale()).CpanelMigration() }
+
+// CpanelMigration says "Adopt or migrate"
+// in the language of msgs.
+func (msgs Messages) CpanelMigration() string {
+	return Catalog.Format(msgs.locale, "cpanelMigration", nil)
+}
+
+// CpanelAdoptNote says "Use the detected installation as it is, or review a migration before changing the server."
+// in the language the app shows.
+func CpanelAdoptNote() string { return In(i18n.Locale()).CpanelAdoptNote() }
+
+// CpanelAdoptNote says "Use the detected installation as it is, or review a migration before changing the server."
+// in the language of msgs.
+func (msgs Messages) CpanelAdoptNote() string {
+	return Catalog.Format(msgs.locale, "cpanelAdoptNote", nil)
+}
+
+// CpanelAdopted says "Adopted the existing installation without changing the server."
+// in the language the app shows.
+func CpanelAdopted() string { return In(i18n.Locale()).CpanelAdopted() }
+
+// CpanelAdopted says "Adopted the existing installation without changing the server."
+// in the language of msgs.
+func (msgs Messages) CpanelAdopted() string {
+	return Catalog.Format(msgs.locale, "cpanelAdopted", nil)
+}
+
+// CpanelAlreadyManaged says "The configuration already uses the managed layout."
+// in the language the app shows.
+func CpanelAlreadyManaged() string { return In(i18n.Locale()).CpanelAlreadyManaged() }
+
+// CpanelAlreadyManaged says "The configuration already uses the managed layout."
+// in the language of msgs.
+func (msgs Messages) CpanelAlreadyManaged() string {
+	return Catalog.Format(msgs.locale, "cpanelAlreadyManaged", nil)
+}
+
+// CpanelDockerMigration says "Migration between Docker and a host service is not supported."
+// in the language the app shows.
+func CpanelDockerMigration() string { return In(i18n.Locale()).CpanelDockerMigration() }
+
+// CpanelDockerMigration says "Migration between Docker and a host service is not supported."
+// in the language of msgs.
+func (msgs Messages) CpanelDockerMigration() string {
+	return Catalog.Format(msgs.locale, "cpanelDockerMigration", nil)
+}
+
+// CpanelNoPackageMigration says "Requires a standalone binary without custom modules on an APT or DNF system."
+// in the language the app shows.
+func CpanelNoPackageMigration() string { return In(i18n.Locale()).CpanelNoPackageMigration() }
+
+// CpanelNoPackageMigration says "Requires a standalone binary without custom modules on an APT or DNF system."
+// in the language of msgs.
+func (msgs Messages) CpanelNoPackageMigration() string {
+	return Catalog.Format(msgs.locale, "cpanelNoPackageMigration", nil)
+}
+
+// CpanelAdopt says "Adopt as is"
+// in the language the app shows.
+func CpanelAdopt() string { return In(i18n.Locale()).CpanelAdopt() }
+
+// CpanelAdopt says "Adopt as is"
+// in the language of msgs.
+func (msgs Messages) CpanelAdopt() string {
+	return Catalog.Format(msgs.locale, "cpanelAdopt", nil)
+}
+
+// CpanelConvertManaged says "Convert to managed layout…"
+// in the language the app shows.
+func CpanelConvertManaged() string { return In(i18n.Locale()).CpanelConvertManaged() }
+
+// CpanelConvertManaged says "Convert to managed layout…"
+// in the language of msgs.
+func (msgs Messages) CpanelConvertManaged() string {
+	return Catalog.Format(msgs.locale, "cpanelConvertManaged", nil)
+}
+
+// CpanelBinaryToPackage says "Move binary to official package…"
+// in the language the app shows.
+func CpanelBinaryToPackage() string { return In(i18n.Locale()).CpanelBinaryToPackage() }
+
+// CpanelBinaryToPackage says "Move binary to official package…"
+// in the language of msgs.
+func (msgs Messages) CpanelBinaryToPackage() string {
+	return Catalog.Format(msgs.locale, "cpanelBinaryToPackage", nil)
+}
+
+// CpanelPackageSteps says "Stop Caddy, save the binary and service unit, install via {method}, point the new unit to {config}, keep {data}, then…"
+// in the language the app shows.
+func CpanelPackageSteps(method string, config string, data string) string {
+	return In(i18n.Locale()).CpanelPackageSteps(method, config, data)
+}
+
+// CpanelPackageSteps says "Stop Caddy, save the binary and service unit, install via {method}, point the new unit to {config}, keep {data}, then…"
+// in the language of msgs.
+func (msgs Messages) CpanelPackageSteps(method string, config string, data string) string {
+	return Catalog.Format(msgs.locale, "cpanelPackageSteps", map[string]any{"method": method, "config": config, "data": data})
+}
+
+// CpanelPackageNote says "This can interrupt websites. Restore the old binary and unit if the new service fails."
+// in the language the app shows.
+func CpanelPackageNote() string { return In(i18n.Locale()).CpanelPackageNote() }
+
+// CpanelPackageNote says "This can interrupt websites. Restore the old binary and unit if the new service fails."
+// in the language of msgs.
+func (msgs Messages) CpanelPackageNote() string {
+	return Catalog.Format(msgs.locale, "cpanelPackageNote", nil)
+}
+
+// CpanelImportNginx says "Import Nginx websites…"
+// in the language the app shows.
+func CpanelImportNginx() string { return In(i18n.Locale()).CpanelImportNginx() }
+
+// CpanelImportNginx says "Import Nginx websites…"
+// in the language of msgs.
+func (msgs Messages) CpanelImportNginx() string {
+	return Catalog.Format(msgs.locale, "cpanelImportNginx", nil)
+}
+
+// CpanelNoNginxSites says "No active Nginx website was converted."
+// in the language the app shows.
+func CpanelNoNginxSites() string { return In(i18n.Locale()).CpanelNoNginxSites() }
+
+// CpanelNoNginxSites says "No active Nginx website was converted."
+// in the language of msgs.
+func (msgs Messages) CpanelNoNginxSites() string {
+	return Catalog.Format(msgs.locale, "cpanelNoNginxSites", nil)
+}
+
+// CpanelNginxSiteNumber says "{index, number}. {name}"
+// in the language the app shows.
+func CpanelNginxSiteNumber(index int, name string) string {
+	return In(i18n.Locale()).CpanelNginxSiteNumber(index, name)
+}
+
+// CpanelNginxSiteNumber says "{index, number}. {name}"
+// in the language of msgs.
+func (msgs Messages) CpanelNginxSiteNumber(index int, name string) string {
+	return Catalog.Format(msgs.locale, "cpanelNginxSiteNumber", map[string]any{"index": index, "name": name})
+}
+
+// CpanelIncludeSite says "Import this website"
+// in the language the app shows.
+func CpanelIncludeSite() string { return In(i18n.Locale()).CpanelIncludeSite() }
+
+// CpanelIncludeSite says "Import this website"
+// in the language of msgs.
+func (msgs Messages) CpanelIncludeSite() string {
+	return Catalog.Format(msgs.locale, "cpanelIncludeSite", nil)
+}
+
+// CpanelGeneratedSite says "Generated Caddyfile"
+// in the language the app shows.
+func CpanelGeneratedSite() string { return In(i18n.Locale()).CpanelGeneratedSite() }
+
+// CpanelGeneratedSite says "Generated Caddyfile"
+// in the language of msgs.
+func (msgs Messages) CpanelGeneratedSite() string {
+	return Catalog.Format(msgs.locale, "cpanelGeneratedSite", nil)
+}
+
+// CpanelCutoverNginx says "Stop and disable Nginx, then start Caddy"
+// in the language the app shows.
+func CpanelCutoverNginx() string { return In(i18n.Locale()).CpanelCutoverNginx() }
+
+// CpanelCutoverNginx says "Stop and disable Nginx, then start Caddy"
+// in the language of msgs.
+func (msgs Messages) CpanelCutoverNginx() string {
+	return Catalog.Format(msgs.locale, "cpanelCutoverNginx", nil)
+}
+
+// CpanelReviewImport says "Review import ({count, plural, one {# website} other {# websites}})"
+// in the language the app shows.
+func CpanelReviewImport(count int) string { return In(i18n.Locale()).CpanelReviewImport(count) }
+
+// CpanelReviewImport says "Review import ({count, plural, one {# website} other {# websites}})"
+// in the language of msgs.
+func (msgs Messages) CpanelReviewImport(count int) string {
+	return Catalog.Format(msgs.locale, "cpanelReviewImport", map[string]any{"count": count})
+}
+
+// CpanelNginxCutoverNote says "Back up and validate the proposed Caddy configuration, stop and disable Nginx and start Caddy on ports 80/443. Nginx …"
+// in the language the app shows.
+func CpanelNginxCutoverNote() string { return In(i18n.Locale()).CpanelNginxCutoverNote() }
+
+// CpanelNginxCutoverNote says "Back up and validate the proposed Caddy configuration, stop and disable Nginx and start Caddy on ports 80/443. Nginx …"
+// in the language of msgs.
+func (msgs Messages) CpanelNginxCutoverNote() string {
+	return Catalog.Format(msgs.locale, "cpanelNginxCutoverNote", nil)
+}
+
+// CpanelImportWithoutStart says "Back up and validate the new Caddy configuration. Leave Nginx unchanged and Caddy stopped."
+// in the language the app shows.
+func CpanelImportWithoutStart() string { return In(i18n.Locale()).CpanelImportWithoutStart() }
+
+// CpanelImportWithoutStart says "Back up and validate the new Caddy configuration. Leave Nginx unchanged and Caddy stopped."
+// in the language of msgs.
+func (msgs Messages) CpanelImportWithoutStart() string {
+	return Catalog.Format(msgs.locale, "cpanelImportWithoutStart", nil)
+}
+
 // TexpPublic says "Public access…"
 // in the language the app shows.
 func TexpPublic() string { return In(i18n.Locale()).TexpPublic() }

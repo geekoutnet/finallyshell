@@ -30,6 +30,7 @@ const (
 // each, which their files keep.
 type caddyPage struct {
 	section  int
+	state    caddyState
 	overview caddyOverviewPage // caddypage_overview.go
 	sites    caddySitesPage    // caddypage_sites.go
 	global   caddyGlobalPage   // caddypage_global.go
@@ -86,12 +87,17 @@ func (a *App) caddyPanel(c *ui.Context) {
 // sections over the one chosen.
 func (a *App) caddyPageOf(c *ui.Context, s *Session) {
 	page := &s.caddy
+	width, _ := c.Size()
 	ui.Row(c).FillWidth().Padding(6, 10).Gap(10).AlignItems(ui.Center).BorderWidth(0, 0, 1, 0).BorderColor(colors.line).Children(func() {
 		ui.Icon(c, icons.Get("globe")).FontSize(14).TextColor(theme.Accent).Shrink(0)
 		ui.Text(c, "Caddy").Bold().SingleLine().Shrink(0)
-		ui.ScrollHorizontal(c).Grow(1).MinWidth(0).Scrollbars(false).Children(func() {
-			ui.Segmented(c, &page.section, caddySectionNames()...).Label(locales.TabCaddy())
-		})
+		if a.opsNarrow() || width < 850 {
+			caddyCompactSections(c, &page.section)
+		} else {
+			ui.ScrollHorizontal(c).Grow(1).MinWidth(0).Scrollbars(false).Children(func() {
+				ui.Segmented(c, &page.section, caddySectionNames()...).Label(locales.TabCaddy())
+			})
+		}
 		if widgets.IconButton(c, "refresh-cw", locales.CaddyRefresh()).Shrink(0).Clicked() {
 			a.refreshCaddySection(s)
 		}
@@ -114,6 +120,7 @@ func (a *App) caddyPageOf(c *ui.Context, s *Session) {
 			a.caddyOverviewSection(c, s)
 		}
 	})
+	a.caddyDialogView(c.Key("caddy-panel-dialog"), s, &page.state.dialog)
 }
 
 // refreshCaddySection reads again what the section shown reads.

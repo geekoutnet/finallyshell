@@ -103,6 +103,7 @@ type DesktopFolder struct {
 // AISettings is the AI assistant's settings (internal/app/desktop_ai*.go).
 // The API key is in the system's credential store, never here.
 type AISettings struct {
+	Provider string `json:"provider,omitempty"`
 	// Endpoint is the base URL of an OpenAI-compatible API, such as
 	// https://api.openai.com/v1; "" turns the assistant off.
 	Endpoint string `json:"endpoint,omitempty"`

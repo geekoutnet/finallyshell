@@ -246,6 +246,7 @@ type App struct {
 
 	// The options window's page.
 	optionsNav widgets.NavState
+	ai         desktopAIRuntime
 	// The Check of the SSH agent's address on the General page (agent.go).
 	agentOptionCheck agentCheck
 	// Quitting: asking whether to, or told to go ahead.
@@ -363,9 +364,12 @@ func (a *App) current() *Session {
 // View builds the window.
 func (a *App) View(c *ui.Context) {
 	defer a.stopUnseenPolls()
+	defer a.aiStopUnseenCommand()
+	defer a.aiStopUnseenChats()
 	a.frame++
 	useTheme(c)
 	if a.lockGate(c, WindowMain) {
+		a.aiCloseOptions()
 		return
 	}
 	a.showNotices(c)

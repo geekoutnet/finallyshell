@@ -612,6 +612,7 @@ func (a *App) paneTerminal(c *ui.Context, s *Session, p *pane) {
 	a.findBar(c, p, view)
 	if focused {
 		a.barFocus(s, view)
+		a.desktopAITerminal(c, s, nil, p.term, view)
 	}
 }
 

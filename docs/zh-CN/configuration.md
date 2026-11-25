@@ -31,6 +31,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `hosts.v1.json` | 迁移第 1 版的 `hosts.json` 时保留的原文件。 |
 | `hosts.json.broken-<日期-时间>` | 读不出来的 `hosts.json` 的副本。 |
 | `settings.json` | 选项（见下面）。 |
+| `chats.json` | 按主机 ID 保存的本地 AI 对话，不含上下文附件、基于附件生成的回复或 API 密钥，不参与同步。 |
 | `sysproxy-backup.json` | 隧道接管系统代理前的本机设置恢复快照。 |
 | `db.json` | 按 SSH 主机 ID 保存的本机数据库连接配置，不含凭据和查询历史。 |
 | `browser-profiles/` | 服务器浏览器的本机配置目录，按 SSH 主机 ID 隔离。基于 Chromium 的浏览器在对应配置中保存常规浏览数据；Firefox 使用停止后删除的临时配置。不参与同步。 |
@@ -261,6 +262,10 @@ DNS 页不新增本地设置键。服务器上的普通 `/etc/resolv.conf` 会�
 `.bak.absent` 文件记录原始状态。对于 NetworkManager，
 `/etc/NetworkManager/finallyshell-dns-<profile-uuid>.bak` 保存被修改的六项
 DNS 属性。恢复后仍保留首次备份。这些文件不会复制到本机，也不会同步。
+
+### AI 助手设置
+
+`ai` 保存 `provider`、`endpoint`、`model`、`systemPrompt` 和 `sendContext`。这些偏好可以同步；每个接口的 API 密钥以及对本机 Ollama 免密钥访问的授权仅存系统凭据库。`shortcuts.generateAI` 可覆盖默认的 Ctrl+Shift+I（macOS 为 Cmd+I），也可设为 `none` 禁用。`chats.json` 在本机保留最近 24 个对话，每个最多 48 条消息。
 
 ## db.json
 

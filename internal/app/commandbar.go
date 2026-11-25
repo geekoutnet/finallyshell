@@ -8,6 +8,7 @@ import (
 
 	"finallyshell/internal/config"
 	"finallyshell/internal/icons"
+	"finallyshell/internal/widgets"
 	"finallyshell/locales"
 
 	"github.com/egoist/mygo/ui"
@@ -144,8 +145,20 @@ func (a *App) commandBar(c *ui.Context, s *Session) {
 			// FinalShell's History button, at the bar's end.
 			button = ui.Button(c, locales.CmdBarHistory()).Shrink(0).Disabled(!live).Clicked()
 		}
+		if a.aiSettings().Endpoint != "" && !s.isLocal() && widgets.IconButton(c, "sparkles", locales.AiGenerate()).Shrink(0).Disabled(!live).Clicked() {
+			a.aiOpenCommand(s, aiTerminalTarget{term: s.term()})
+			a.ai.command.seen = a.frame
+		}
 		a.splitButton(c, s) // the panes' menu (paneview.go)
 	})
+	if live && canOpenDesktop(s) {
+		row.ContextMenu(func(menu *ui.Menu) {
+			menu.EditItems()
+			if menu.Item(locales.DesktopAIExplainClipboard()).Chosen() {
+				a.aiExplainTerminalText(s, c.ReadClipboard())
+			}
+		})
+	}
 	if !live {
 		b.popup, b.focused = popupNone, false
 		return

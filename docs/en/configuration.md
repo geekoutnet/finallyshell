@@ -38,6 +38,7 @@ instead.
 | `hosts.v1.json` | The original file, kept when a version 1 `hosts.json` is migrated. |
 | `hosts.json.broken-<date-time>` | A copy of a `hosts.json` that could not be read. |
 | `settings.json` | The options (see below). |
+| `chats.json` | Local AI conversations by host ID; no context attachments, replies based on attachments, or API keys. Does not sync. |
 | `sysproxy-backup.json` | Local recovery snapshot of this computer’s system proxy before a tunnel replaces it. |
 | `db.json` | Local database connection profiles by SSH host ID; no credentials or query history. |
 | `browser-profiles/` | Local Server Browser profiles, isolated by SSH host ID. Chromium-family browsers retain their ordinary browser data in that profile; Firefox uses a temporary profile removed after it stops. Profiles are not synced. |
@@ -348,6 +349,10 @@ recorded in the adjacent `.bak` or `.bak.absent` file. For NetworkManager,
 `/etc/NetworkManager/finallyshell-dns-<profile-uuid>.bak` stores the six
 DNS properties the page changes. Restoring leaves the first backup in
 place. These files are not copied to this computer or synced.
+
+### AI assistant settings
+
+`ai` stores `provider`, `endpoint`, `model`, `systemPrompt`, and `sendContext`. These preferences can sync; the per-endpoint API key and the explicit opt-in for keyless local Ollama live only in the system credential store. `shortcuts.generateAI` overrides the default Ctrl+Shift+I (Cmd+I on macOS), or disables it with `none`. `chats.json` keeps up to 24 recent conversations and 48 messages per conversation on this device.
 
 ## db.json
 

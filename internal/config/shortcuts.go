@@ -53,4 +53,5 @@ type Shortcuts struct {
 	DesktopCycle     string `json:"desktopCycle,omitempty"`
 	DesktopShow      string `json:"desktopShow,omitempty"`
 	DesktopLauncher  string `json:"desktopLauncher,omitempty"`
+	GenerateAI       string `json:"generateAI,omitempty"`
 }

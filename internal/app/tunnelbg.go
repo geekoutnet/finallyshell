@@ -365,7 +365,7 @@ func (a *App) listenBackgroundTunnel(key tunnelKey, run *tunnelBackground, state
 	if start == nil {
 		start = startTunnelManagerForward
 	}
-	a.tunnelOptions(key.host, settings, a.redraw, func(opts sshx.TunnelOptions) {
+	a.tunnelOptions(key.host, settings, func() { a.post(a.redraw) }, func(opts sshx.TunnelOptions) {
 		if ctx.Err() != nil {
 			return
 		}

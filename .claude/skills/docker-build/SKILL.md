@@ -29,3 +29,10 @@ pack=.claude/skills/docker-build/build.sh
 - No upload, update signing key, or macOS notarization. The Mac bundles use ad-hoc signatures, including the Ghostty library; `--no-dmg` saves them as `.app.tar` to preserve Unix permissions on Windows. See [development](../../../docs/en/development.md#building-with-docker) for first launch and the verification limits.
 - The pinned `rcodesign verify` works on Mach-O files, not bundle directories. It reports an empty CMS slot as an error even for its own ad-hoc signatures; `verify` allows only that exact diagnostic and also checks code pages, the sealed `Info.plist` and `CodeResources`, and resource hashes independently.
 - `GOPROXY`, `GOFLAGS`, and HTTP(S)/no-proxy settings are passed through when set. Failed downloads use the CI retry script. Do not substitute an Apple SDK or a remote Docker engine.
+
+## How to run it
+
+Run the build yourself from this session: start `build.sh build` in the
+background, watch its per-platform status lines with a monitor, and report
+each platform as it finishes and the final artifact folder. Do not hand
+packaging to another agent or to Codex CLI.

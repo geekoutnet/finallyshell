@@ -592,7 +592,7 @@ func TestManagerMenu(t *testing.T) {
 			tt.Frame()
 			tt.RightClickAt(rowCenter(t, tt, "web-1"))
 			tt.Frame()
-			want := []string{locales.Connect(), locales.Edit(), locales.Duplicate(), locales.Rename(), locales.MoveToFolder(), locales.CopyHost(), locales.Delete()}
+			want := []string{locales.Connect(), locales.Edit(), locales.TmgrHostMenu(), locales.Duplicate(), locales.Rename(), locales.MoveToFolder(), locales.CopyHost(), locales.Delete()}
 			for _, s := range want {
 				if !tt.HasText(s) {
 					t.Errorf("menu without %q; texts %q", s, tt.Texts())

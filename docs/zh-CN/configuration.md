@@ -91,6 +91,8 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - `kind` 为 `local`（`-L`）、`remote`（`-R`）或 `dynamic`（`-D`，没有 `targetHost`、`targetPort`）。
 - 没有 `listenHost` 就是只监听 `127.0.0.1`。
 - `disabled` 为 `true` 时，这条隧道不随会话启动。
+- `id` 是隧道在同一主机下的标识。旧条目在加载时取得标识，保存主机时会保留。
+- `background: true` 将隧道标记为通过独立 SSH 连接自动启动，而不是随终端会话启动。本设备可在 `settings.json` 中通过 `"tunnelManager": {"noAutostart": true}` 禁用后台自动启动；该设置不参与同步。后台 SSH 沿用交互式 SSH 的 `known_hosts`、既有主机凭据键和 `keepAliveSeconds`，管理器不另外存储 SSH 凭据。
 - 隧道里不认识的字段也原样保留。
 
 远程隧道的监听地址只能是 IP 地址或 `localhost`，见[隧道](features.md#tunnels-page)。
@@ -144,6 +146,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `minimizeToTray` | `true` 时关闭主窗口会把它隐藏到托盘。 | 关闭就退出。 |
 | `noConfirmClose` | `true` 时有会话打开也不问，直接关闭、退出。 | 先问。 |
 | `keepAliveSeconds` | 每个连接发送 SSH 保活消息的间隔秒数，1 到 3600（更大按 3600）；`-1`（任何负数）关闭保活，选项里显示为 0。对新建的连接生效。 | 30（`0` 也是） |
+| `tunnelManager.noAutostart` | 设为 `true` 时，本设备启动应用不自动启动后台隧道，仍可手动启动。不参与同步。 | `false` |
 | `sshAgent` | `"auth": "agent"` 的主机用的 SSH Agent：Unix socket 的路径（`~` 表示主目录），比如 `~/.bitwarden-ssh-agent.sock`，Windows 上也可以是命名管道 `\\.\pipe\<名字>`。这台电脑自己的，不同步。对新建的连接生效。 | `SSH_AUTH_SOCK`；Windows 上是 `\\.\pipe\openssh-ssh-agent`。 |
 | `x11Display` | X11 转发使用的本地显示地址，例如 `localhost:1`。仅保存在本机，不同步。 | `$DISPLAY`；Windows 未设置时为 `localhost:0`。 |
 | `downloadDir` | 下载存到的文件夹。 | 系统的下载文件夹。 |

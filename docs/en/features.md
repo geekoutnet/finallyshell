@@ -1971,6 +1971,40 @@ listening.
   connection to the host itself.
 - "Edit tunnels…" opens the Tunnels page of the connection editor.
 
+## Tunnel manager
+
+Open **Tunnel manager** from the command palette, the Tunnels tab's network
+button, or the tray menu. **Tunnels…** in an SSH host's context menu opens
+the manager filtered to that host.
+
+- Tunnels are grouped by host. Search by tunnel or host name, or filter by
+  host, type and state. The table shows the actual address once listening
+  (including a dynamically assigned port), target or egress, operating mode,
+  active and total connections, traffic history and uptime. On narrow windows,
+  scroll the table horizontally for the remaining columns.
+- Select rows to start, stop or restart them together. **Start all background**
+  applies to tunnels marked for background autostart; **Stop all** stops
+  managed listeners and pending retries across hosts without disconnecting any
+  terminal. The context menu copies the active address, shows the latest error
+  and next retry, or opens the host's terminal. Add and edit open the host's
+  connection editor. Editing or deleting an active background tunnel stops it;
+  start it again to apply the new configuration.
+- Background tunnels share a separate SSH connection per host, without a
+  shell or monitoring. They reuse the host's saved credentials, jump hosts,
+  proxy and SSH keepalive settings. An unknown or changed host key never opens
+  a prompt or gets accepted automatically: connect once in a terminal, verify
+  the key, then retry. Network failures and listener refusals retry with
+  jittered exponential backoff, from about two seconds to at most one minute.
+  Waking the computer or regaining network access checks the connection early.
+- Background autostart runs marked tunnels at app launch, even if they are
+  not set to start with the terminal. The manager's checkbox controls autostart
+  on this device; its row menu changes which tunnels are marked. Neither change
+  starts or stops a running tunnel immediately. **Start without a terminal**
+  starts the selected tunnel in the background without changing its saved flag.
+- Closing the main window to the tray keeps background tunnels alive. Quitting
+  closes them and cancels retries. A dot on the main **Tunnels** tab indicates
+  background listeners; an exclamation mark signals a failure or a pending retry.
+
 ## Processes tab
 
 The "Processes" tab at the bottom right is the process manager of the

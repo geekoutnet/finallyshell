@@ -175,6 +175,7 @@ func (a *App) tunnelPanel(c *ui.Context) {
 			if ui.Button(c, locales.TunnelsConfigure()).Clicked() {
 				a.editTunnels(s.Host)
 			}
+			a.tunnelManagerButton(c)
 		})
 		runs := ts.runs
 		ts.table.Key = func(i int) any { return runs[i] }

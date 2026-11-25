@@ -59,7 +59,7 @@ func (a *App) QuitRequested() bool {
 		if a.lock.busy || a.lock.confirming {
 			return false
 		}
-		if a.liveSessions() == 0 && a.unsavedFiles() == 0 {
+		if a.liveSessions() == 0 && a.unsavedFiles() == 0 && a.tunnelManagerCount() == 0 {
 			a.quitApproved = true
 			return true
 		}
@@ -79,8 +79,8 @@ func (a *App) QuitRequested() bool {
 		}
 		return false
 	}
-	n, unsaved := a.liveSessions(), a.unsavedFiles()
-	if n == 0 && unsaved == 0 || a.settings.NoConfirmClose && unsaved == 0 {
+	n, unsaved, tunnels := a.liveSessions(), a.unsavedFiles(), a.tunnelManagerCount()
+	if n == 0 && unsaved == 0 && tunnels == 0 || a.settings.NoConfirmClose && unsaved == 0 {
 		a.quitApproved = true
 		return true
 	}
@@ -97,6 +97,9 @@ func (a *App) QuitRequested() bool {
 		}
 		if unsaved > 0 {
 			detail = append(detail, locales.ConfirmQuitUnsaved(unsaved))
+		}
+		if tunnels > 0 && !a.settings.NoConfirmClose {
+			detail = append(detail, locales.TmgrQuit(tunnels))
 		}
 		q := Confirmation{
 			Title:   locales.AppTitle(),

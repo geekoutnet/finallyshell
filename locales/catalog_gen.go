@@ -3800,6 +3800,702 @@ func (msgs Messages) TabTunnels() string {
 	return Catalog.Format(msgs.locale, "tabTunnels", nil)
 }
 
+// TmgrTitle says "Tunnel manager"
+// in the language the app shows.
+func TmgrTitle() string { return In(i18n.Locale()).TmgrTitle() }
+
+// TmgrTitle says "Tunnel manager"
+// in the language of msgs.
+func (msgs Messages) TmgrTitle() string {
+	return Catalog.Format(msgs.locale, "tmgrTitle", nil)
+}
+
+// TmgrHostMenu says "Tunnels…"
+// in the language the app shows.
+func TmgrHostMenu() string { return In(i18n.Locale()).TmgrHostMenu() }
+
+// TmgrHostMenu says "Tunnels…"
+// in the language of msgs.
+func (msgs Messages) TmgrHostMenu() string {
+	return Catalog.Format(msgs.locale, "tmgrHostMenu", nil)
+}
+
+// TmgrName says "Tunnel / Type"
+// in the language the app shows.
+func TmgrName() string { return In(i18n.Locale()).TmgrName() }
+
+// TmgrName says "Tunnel / Type"
+// in the language of msgs.
+func (msgs Messages) TmgrName() string {
+	return Catalog.Format(msgs.locale, "tmgrName", nil)
+}
+
+// TmgrHost says "Host"
+// in the language the app shows.
+func TmgrHost() string { return In(i18n.Locale()).TmgrHost() }
+
+// TmgrHost says "Host"
+// in the language of msgs.
+func (msgs Messages) TmgrHost() string {
+	return Catalog.Format(msgs.locale, "tmgrHost", nil)
+}
+
+// TmgrTarget says "Target / Egress"
+// in the language the app shows.
+func TmgrTarget() string { return In(i18n.Locale()).TmgrTarget() }
+
+// TmgrTarget says "Target / Egress"
+// in the language of msgs.
+func (msgs Messages) TmgrTarget() string {
+	return Catalog.Format(msgs.locale, "tmgrTarget", nil)
+}
+
+// TmgrMode says "Mode"
+// in the language the app shows.
+func TmgrMode() string { return In(i18n.Locale()).TmgrMode() }
+
+// TmgrMode says "Mode"
+// in the language of msgs.
+func (msgs Messages) TmgrMode() string {
+	return Catalog.Format(msgs.locale, "tmgrMode", nil)
+}
+
+// TmgrUptime says "Uptime"
+// in the language the app shows.
+func TmgrUptime() string { return In(i18n.Locale()).TmgrUptime() }
+
+// TmgrUptime says "Uptime"
+// in the language of msgs.
+func (msgs Messages) TmgrUptime() string {
+	return Catalog.Format(msgs.locale, "tmgrUptime", nil)
+}
+
+// TmgrHTTP says "HTTP proxy"
+// in the language the app shows.
+func TmgrHTTP() string { return In(i18n.Locale()).TmgrHTTP() }
+
+// TmgrHTTP says "HTTP proxy"
+// in the language of msgs.
+func (msgs Messages) TmgrHTTP() string {
+	return Catalog.Format(msgs.locale, "tmgrHTTP", nil)
+}
+
+// TmgrRemoteSOCKS says "Reverse SOCKS5 proxy"
+// in the language the app shows.
+func TmgrRemoteSOCKS() string { return In(i18n.Locale()).TmgrRemoteSOCKS() }
+
+// TmgrRemoteSOCKS says "Reverse SOCKS5 proxy"
+// in the language of msgs.
+func (msgs Messages) TmgrRemoteSOCKS() string {
+	return Catalog.Format(msgs.locale, "tmgrRemoteSOCKS", nil)
+}
+
+// TmgrRemoteHTTP says "Reverse HTTP proxy"
+// in the language the app shows.
+func TmgrRemoteHTTP() string { return In(i18n.Locale()).TmgrRemoteHTTP() }
+
+// TmgrRemoteHTTP says "Reverse HTTP proxy"
+// in the language of msgs.
+func (msgs Messages) TmgrRemoteHTTP() string {
+	return Catalog.Format(msgs.locale, "tmgrRemoteHTTP", nil)
+}
+
+// TmgrAutoPort says "{host}: auto port"
+// in the language the app shows.
+func TmgrAutoPort(host string) string { return In(i18n.Locale()).TmgrAutoPort(host) }
+
+// TmgrAutoPort says "{host}: auto port"
+// in the language of msgs.
+func (msgs Messages) TmgrAutoPort(host string) string {
+	return Catalog.Format(msgs.locale, "tmgrAutoPort", map[string]any{"host": host})
+}
+
+// TmgrServerExit says "Via the SSH server"
+// in the language the app shows.
+func TmgrServerExit() string { return In(i18n.Locale()).TmgrServerExit() }
+
+// TmgrServerExit says "Via the SSH server"
+// in the language of msgs.
+func (msgs Messages) TmgrServerExit() string {
+	return Catalog.Format(msgs.locale, "tmgrServerExit", nil)
+}
+
+// TmgrLocalExit says "Via this computer"
+// in the language the app shows.
+func TmgrLocalExit() string { return In(i18n.Locale()).TmgrLocalExit() }
+
+// TmgrLocalExit says "Via this computer"
+// in the language of msgs.
+func (msgs Messages) TmgrLocalExit() string {
+	return Catalog.Format(msgs.locale, "tmgrLocalExit", nil)
+}
+
+// TmgrUpstream says "Via {address}"
+// in the language the app shows.
+func TmgrUpstream(address string) string { return In(i18n.Locale()).TmgrUpstream(address) }
+
+// TmgrUpstream says "Via {address}"
+// in the language of msgs.
+func (msgs Messages) TmgrUpstream(address string) string {
+	return Catalog.Format(msgs.locale, "tmgrUpstream", map[string]any{"address": address})
+}
+
+// TmgrSearch says "Search tunnels or hosts"
+// in the language the app shows.
+func TmgrSearch() string { return In(i18n.Locale()).TmgrSearch() }
+
+// TmgrSearch says "Search tunnels or hosts"
+// in the language of msgs.
+func (msgs Messages) TmgrSearch() string {
+	return Catalog.Format(msgs.locale, "tmgrSearch", nil)
+}
+
+// TmgrAnyHost says "All hosts"
+// in the language the app shows.
+func TmgrAnyHost() string { return In(i18n.Locale()).TmgrAnyHost() }
+
+// TmgrAnyHost says "All hosts"
+// in the language of msgs.
+func (msgs Messages) TmgrAnyHost() string {
+	return Catalog.Format(msgs.locale, "tmgrAnyHost", nil)
+}
+
+// TmgrAnyKind says "All types"
+// in the language the app shows.
+func TmgrAnyKind() string { return In(i18n.Locale()).TmgrAnyKind() }
+
+// TmgrAnyKind says "All types"
+// in the language of msgs.
+func (msgs Messages) TmgrAnyKind() string {
+	return Catalog.Format(msgs.locale, "tmgrAnyKind", nil)
+}
+
+// TmgrAnyState says "All states"
+// in the language the app shows.
+func TmgrAnyState() string { return In(i18n.Locale()).TmgrAnyState() }
+
+// TmgrAnyState says "All states"
+// in the language of msgs.
+func (msgs Messages) TmgrAnyState() string {
+	return Catalog.Format(msgs.locale, "tmgrAnyState", nil)
+}
+
+// TmgrReconnecting says "Reconnecting"
+// in the language the app shows.
+func TmgrReconnecting() string { return In(i18n.Locale()).TmgrReconnecting() }
+
+// TmgrReconnecting says "Reconnecting"
+// in the language of msgs.
+func (msgs Messages) TmgrReconnecting() string {
+	return Catalog.Format(msgs.locale, "tmgrReconnecting", nil)
+}
+
+// TmgrError says "Error"
+// in the language the app shows.
+func TmgrError() string { return In(i18n.Locale()).TmgrError() }
+
+// TmgrError says "Error"
+// in the language of msgs.
+func (msgs Messages) TmgrError() string {
+	return Catalog.Format(msgs.locale, "tmgrError", nil)
+}
+
+// TmgrBackground says "Background"
+// in the language the app shows.
+func TmgrBackground() string { return In(i18n.Locale()).TmgrBackground() }
+
+// TmgrBackground says "Background"
+// in the language of msgs.
+func (msgs Messages) TmgrBackground() string {
+	return Catalog.Format(msgs.locale, "tmgrBackground", nil)
+}
+
+// TmgrWithSession says "With session"
+// in the language the app shows.
+func TmgrWithSession() string { return In(i18n.Locale()).TmgrWithSession() }
+
+// TmgrWithSession says "With session"
+// in the language of msgs.
+func (msgs Messages) TmgrWithSession() string {
+	return Catalog.Format(msgs.locale, "tmgrWithSession", nil)
+}
+
+// TmgrRestart says "Restart"
+// in the language the app shows.
+func TmgrRestart() string { return In(i18n.Locale()).TmgrRestart() }
+
+// TmgrRestart says "Restart"
+// in the language of msgs.
+func (msgs Messages) TmgrRestart() string {
+	return Catalog.Format(msgs.locale, "tmgrRestart", nil)
+}
+
+// TmgrStartAll says "Start all background"
+// in the language the app shows.
+func TmgrStartAll() string { return In(i18n.Locale()).TmgrStartAll() }
+
+// TmgrStartAll says "Start all background"
+// in the language of msgs.
+func (msgs Messages) TmgrStartAll() string {
+	return Catalog.Format(msgs.locale, "tmgrStartAll", nil)
+}
+
+// TmgrStopAll says "Stop all"
+// in the language the app shows.
+func TmgrStopAll() string { return In(i18n.Locale()).TmgrStopAll() }
+
+// TmgrStopAll says "Stop all"
+// in the language of msgs.
+func (msgs Messages) TmgrStopAll() string {
+	return Catalog.Format(msgs.locale, "tmgrStopAll", nil)
+}
+
+// TmgrStartWithoutTerminal says "Start without a terminal"
+// in the language the app shows.
+func TmgrStartWithoutTerminal() string { return In(i18n.Locale()).TmgrStartWithoutTerminal() }
+
+// TmgrStartWithoutTerminal says "Start without a terminal"
+// in the language of msgs.
+func (msgs Messages) TmgrStartWithoutTerminal() string {
+	return Catalog.Format(msgs.locale, "tmgrStartWithoutTerminal", nil)
+}
+
+// TmgrEnableBackground says "Enable background autostart"
+// in the language the app shows.
+func TmgrEnableBackground() string { return In(i18n.Locale()).TmgrEnableBackground() }
+
+// TmgrEnableBackground says "Enable background autostart"
+// in the language of msgs.
+func (msgs Messages) TmgrEnableBackground() string {
+	return Catalog.Format(msgs.locale, "tmgrEnableBackground", nil)
+}
+
+// TmgrDisableBackground says "Disable background autostart"
+// in the language the app shows.
+func TmgrDisableBackground() string { return In(i18n.Locale()).TmgrDisableBackground() }
+
+// TmgrDisableBackground says "Disable background autostart"
+// in the language of msgs.
+func (msgs Messages) TmgrDisableBackground() string {
+	return Catalog.Format(msgs.locale, "tmgrDisableBackground", nil)
+}
+
+// TmgrAlreadyActive says "Already running or waiting to retry"
+// in the language the app shows.
+func TmgrAlreadyActive() string { return In(i18n.Locale()).TmgrAlreadyActive() }
+
+// TmgrAlreadyActive says "Already running or waiting to retry"
+// in the language of msgs.
+func (msgs Messages) TmgrAlreadyActive() string {
+	return Catalog.Format(msgs.locale, "tmgrAlreadyActive", nil)
+}
+
+// TmgrNotRunning says "Already stopped"
+// in the language the app shows.
+func TmgrNotRunning() string { return In(i18n.Locale()).TmgrNotRunning() }
+
+// TmgrNotRunning says "Already stopped"
+// in the language of msgs.
+func (msgs Messages) TmgrNotRunning() string {
+	return Catalog.Format(msgs.locale, "tmgrNotRunning", nil)
+}
+
+// TmgrNotListening says "No active listener"
+// in the language the app shows.
+func TmgrNotListening() string { return In(i18n.Locale()).TmgrNotListening() }
+
+// TmgrNotListening says "No active listener"
+// in the language of msgs.
+func (msgs Messages) TmgrNotListening() string {
+	return Catalog.Format(msgs.locale, "tmgrNotListening", nil)
+}
+
+// TmgrEditorOpen says "Close this host’s editor first"
+// in the language the app shows.
+func TmgrEditorOpen() string { return In(i18n.Locale()).TmgrEditorOpen() }
+
+// TmgrEditorOpen says "Close this host’s editor first"
+// in the language of msgs.
+func (msgs Messages) TmgrEditorOpen() string {
+	return Catalog.Format(msgs.locale, "tmgrEditorOpen", nil)
+}
+
+// TmgrSelectOne says "Select one tunnel"
+// in the language the app shows.
+func TmgrSelectOne() string { return In(i18n.Locale()).TmgrSelectOne() }
+
+// TmgrSelectOne says "Select one tunnel"
+// in the language of msgs.
+func (msgs Messages) TmgrSelectOne() string {
+	return Catalog.Format(msgs.locale, "tmgrSelectOne", nil)
+}
+
+// TmgrSelectRows says "Select tunnels first"
+// in the language the app shows.
+func TmgrSelectRows() string { return In(i18n.Locale()).TmgrSelectRows() }
+
+// TmgrSelectRows says "Select tunnels first"
+// in the language of msgs.
+func (msgs Messages) TmgrSelectRows() string {
+	return Catalog.Format(msgs.locale, "tmgrSelectRows", nil)
+}
+
+// TmgrSelectAll says "Select all visible tunnels"
+// in the language the app shows.
+func TmgrSelectAll() string { return In(i18n.Locale()).TmgrSelectAll() }
+
+// TmgrSelectAll says "Select all visible tunnels"
+// in the language of msgs.
+func (msgs Messages) TmgrSelectAll() string {
+	return Catalog.Format(msgs.locale, "tmgrSelectAll", nil)
+}
+
+// TmgrCopyAddress says "Copy listen address"
+// in the language the app shows.
+func TmgrCopyAddress() string { return In(i18n.Locale()).TmgrCopyAddress() }
+
+// TmgrCopyAddress says "Copy listen address"
+// in the language of msgs.
+func (msgs Messages) TmgrCopyAddress() string {
+	return Catalog.Format(msgs.locale, "tmgrCopyAddress", nil)
+}
+
+// TmgrOpenTerminal says "Open host terminal"
+// in the language the app shows.
+func TmgrOpenTerminal() string { return In(i18n.Locale()).TmgrOpenTerminal() }
+
+// TmgrOpenTerminal says "Open host terminal"
+// in the language of msgs.
+func (msgs Messages) TmgrOpenTerminal() string {
+	return Catalog.Format(msgs.locale, "tmgrOpenTerminal", nil)
+}
+
+// TmgrLog says "Connection log"
+// in the language the app shows.
+func TmgrLog() string { return In(i18n.Locale()).TmgrLog() }
+
+// TmgrLog says "Connection log"
+// in the language of msgs.
+func (msgs Messages) TmgrLog() string {
+	return Catalog.Format(msgs.locale, "tmgrLog", nil)
+}
+
+// TmgrLastError says "Last error"
+// in the language the app shows.
+func TmgrLastError() string { return In(i18n.Locale()).TmgrLastError() }
+
+// TmgrLastError says "Last error"
+// in the language of msgs.
+func (msgs Messages) TmgrLastError() string {
+	return Catalog.Format(msgs.locale, "tmgrLastError", nil)
+}
+
+// TmgrNoError says "No error recorded."
+// in the language the app shows.
+func TmgrNoError() string { return In(i18n.Locale()).TmgrNoError() }
+
+// TmgrNoError says "No error recorded."
+// in the language of msgs.
+func (msgs Messages) TmgrNoError() string {
+	return Catalog.Format(msgs.locale, "tmgrNoError", nil)
+}
+
+// TmgrUntrusted says "Host key not trusted. Connect once interactively, verify the key, then retry here."
+// in the language the app shows.
+func TmgrUntrusted() string { return In(i18n.Locale()).TmgrUntrusted() }
+
+// TmgrUntrusted says "Host key not trusted. Connect once interactively, verify the key, then retry here."
+// in the language of msgs.
+func (msgs Messages) TmgrUntrusted() string {
+	return Catalog.Format(msgs.locale, "tmgrUntrusted", nil)
+}
+
+// TmgrLoginError says "Background SSH authentication failed. Check saved credentials or connect interactively, then retry here."
+// in the language the app shows.
+func TmgrLoginError() string { return In(i18n.Locale()).TmgrLoginError() }
+
+// TmgrLoginError says "Background SSH authentication failed. Check saved credentials or connect interactively, then retry here."
+// in the language of msgs.
+func (msgs Messages) TmgrLoginError() string {
+	return Catalog.Format(msgs.locale, "tmgrLoginError", nil)
+}
+
+// TmgrEngineError says "The tunnel engine in this build cannot apply this tunnel’s options."
+// in the language the app shows.
+func TmgrEngineError() string { return In(i18n.Locale()).TmgrEngineError() }
+
+// TmgrEngineError says "The tunnel engine in this build cannot apply this tunnel’s options."
+// in the language of msgs.
+func (msgs Messages) TmgrEngineError() string {
+	return Catalog.Format(msgs.locale, "tmgrEngineError", nil)
+}
+
+// TmgrEmpty says "No matching tunnels. Use Add tunnel to configure a host."
+// in the language the app shows.
+func TmgrEmpty() string { return In(i18n.Locale()).TmgrEmpty() }
+
+// TmgrEmpty says "No matching tunnels. Use Add tunnel to configure a host."
+// in the language of msgs.
+func (msgs Messages) TmgrEmpty() string {
+	return Catalog.Format(msgs.locale, "tmgrEmpty", nil)
+}
+
+// TmgrChooseHost says "Choose an SSH host for the new tunnel"
+// in the language the app shows.
+func TmgrChooseHost() string { return In(i18n.Locale()).TmgrChooseHost() }
+
+// TmgrChooseHost says "Choose an SSH host for the new tunnel"
+// in the language of msgs.
+func (msgs Messages) TmgrChooseHost() string {
+	return Catalog.Format(msgs.locale, "tmgrChooseHost", nil)
+}
+
+// TmgrRetryIn says "Retry in {seconds, plural, one {# second} other {# seconds}}"
+// in the language the app shows.
+func TmgrRetryIn(seconds int) string { return In(i18n.Locale()).TmgrRetryIn(seconds) }
+
+// TmgrRetryIn says "Retry in {seconds, plural, one {# second} other {# seconds}}"
+// in the language of msgs.
+func (msgs Messages) TmgrRetryIn(seconds int) string {
+	return Catalog.Format(msgs.locale, "tmgrRetryIn", map[string]any{"seconds": seconds})
+}
+
+// TmgrAttempt says "Attempt {count}"
+// in the language the app shows.
+func TmgrAttempt(count string) string { return In(i18n.Locale()).TmgrAttempt(count) }
+
+// TmgrAttempt says "Attempt {count}"
+// in the language of msgs.
+func (msgs Messages) TmgrAttempt(count string) string {
+	return Catalog.Format(msgs.locale, "tmgrAttempt", map[string]any{"count": count})
+}
+
+// TmgrNextRetry says "Next retry at {time} · Attempt {count}"
+// in the language the app shows.
+func TmgrNextRetry(time_ string, count string) string {
+	return In(i18n.Locale()).TmgrNextRetry(time_, count)
+}
+
+// TmgrNextRetry says "Next retry at {time} · Attempt {count}"
+// in the language of msgs.
+func (msgs Messages) TmgrNextRetry(time_ string, count string) string {
+	return Catalog.Format(msgs.locale, "tmgrNextRetry", map[string]any{"time": time_, "count": count})
+}
+
+// TmgrConnectionCount says "{active} / {total}"
+// in the language the app shows.
+func TmgrConnectionCount(active string, total string) string {
+	return In(i18n.Locale()).TmgrConnectionCount(active, total)
+}
+
+// TmgrConnectionCount says "{active} / {total}"
+// in the language of msgs.
+func (msgs Messages) TmgrConnectionCount(active string, total string) string {
+	return Catalog.Format(msgs.locale, "tmgrConnectionCount", map[string]any{"active": active, "total": total})
+}
+
+// TmgrConnectionsHint says "Open / total connections"
+// in the language the app shows.
+func TmgrConnectionsHint() string { return In(i18n.Locale()).TmgrConnectionsHint() }
+
+// TmgrConnectionsHint says "Open / total connections"
+// in the language of msgs.
+func (msgs Messages) TmgrConnectionsHint() string {
+	return Catalog.Format(msgs.locale, "tmgrConnectionsHint", nil)
+}
+
+// TmgrRate says "Peak: {size}/s"
+// in the language the app shows.
+func TmgrRate(size string) string { return In(i18n.Locale()).TmgrRate(size) }
+
+// TmgrRate says "Peak: {size}/s"
+// in the language of msgs.
+func (msgs Messages) TmgrRate(size string) string {
+	return Catalog.Format(msgs.locale, "tmgrRate", map[string]any{"size": size})
+}
+
+// TmgrListeningTotal says "{count, plural, one {# listening tunnel} other {# listening tunnels}}"
+// in the language the app shows.
+func TmgrListeningTotal(count int) string { return In(i18n.Locale()).TmgrListeningTotal(count) }
+
+// TmgrListeningTotal says "{count, plural, one {# listening tunnel} other {# listening tunnels}}"
+// in the language of msgs.
+func (msgs Messages) TmgrListeningTotal(count int) string {
+	return Catalog.Format(msgs.locale, "tmgrListeningTotal", map[string]any{"count": count})
+}
+
+// TmgrActiveTotal says "{count, plural, one {# open connection} other {# open connections}}"
+// in the language the app shows.
+func TmgrActiveTotal(count int) string { return In(i18n.Locale()).TmgrActiveTotal(count) }
+
+// TmgrActiveTotal says "{count, plural, one {# open connection} other {# open connections}}"
+// in the language of msgs.
+func (msgs Messages) TmgrActiveTotal(count int) string {
+	return Catalog.Format(msgs.locale, "tmgrActiveTotal", map[string]any{"count": count})
+}
+
+// TmgrTrafficTotal says "Traffic: {size}"
+// in the language the app shows.
+func TmgrTrafficTotal(size string) string { return In(i18n.Locale()).TmgrTrafficTotal(size) }
+
+// TmgrTrafficTotal says "Traffic: {size}"
+// in the language of msgs.
+func (msgs Messages) TmgrTrafficTotal(size string) string {
+	return Catalog.Format(msgs.locale, "tmgrTrafficTotal", map[string]any{"size": size})
+}
+
+// TmgrConfirmAction says "{action}: {count, plural, one {# tunnel} other {# tunnels}}"
+// in the language the app shows.
+func TmgrConfirmAction(action string, count int) string {
+	return In(i18n.Locale()).TmgrConfirmAction(action, count)
+}
+
+// TmgrConfirmAction says "{action}: {count, plural, one {# tunnel} other {# tunnels}}"
+// in the language of msgs.
+func (msgs Messages) TmgrConfirmAction(action string, count int) string {
+	return Catalog.Format(msgs.locale, "tmgrConfirmAction", map[string]any{"action": action, "count": count})
+}
+
+// TmgrConfirm says "Confirm"
+// in the language the app shows.
+func TmgrConfirm() string { return In(i18n.Locale()).TmgrConfirm() }
+
+// TmgrConfirm says "Confirm"
+// in the language of msgs.
+func (msgs Messages) TmgrConfirm() string {
+	return Catalog.Format(msgs.locale, "tmgrConfirm", nil)
+}
+
+// TmgrStartNote says "Use a matching connected terminal session when available; otherwise start without a terminal."
+// in the language the app shows.
+func TmgrStartNote() string { return In(i18n.Locale()).TmgrStartNote() }
+
+// TmgrStartNote says "Use a matching connected terminal session when available; otherwise start without a terminal."
+// in the language of msgs.
+func (msgs Messages) TmgrStartNote() string {
+	return Catalog.Format(msgs.locale, "tmgrStartNote", nil)
+}
+
+// TmgrStartBackgroundNote says "Open or reuse a dedicated SSH connection without starting a terminal."
+// in the language the app shows.
+func TmgrStartBackgroundNote() string { return In(i18n.Locale()).TmgrStartBackgroundNote() }
+
+// TmgrStartBackgroundNote says "Open or reuse a dedicated SSH connection without starting a terminal."
+// in the language of msgs.
+func (msgs Messages) TmgrStartBackgroundNote() string {
+	return Catalog.Format(msgs.locale, "tmgrStartBackgroundNote", nil)
+}
+
+// TmgrDisconnectNote says "Open connections through these tunnels will be closed."
+// in the language the app shows.
+func TmgrDisconnectNote() string { return In(i18n.Locale()).TmgrDisconnectNote() }
+
+// TmgrDisconnectNote says "Open connections through these tunnels will be closed."
+// in the language of msgs.
+func (msgs Messages) TmgrDisconnectNote() string {
+	return Catalog.Format(msgs.locale, "tmgrDisconnectNote", nil)
+}
+
+// TmgrBackgroundNote says "This changes startup behavior. It does not stop or start any tunnel now."
+// in the language the app shows.
+func TmgrBackgroundNote() string { return In(i18n.Locale()).TmgrBackgroundNote() }
+
+// TmgrBackgroundNote says "This changes startup behavior. It does not stop or start any tunnel now."
+// in the language of msgs.
+func (msgs Messages) TmgrBackgroundNote() string {
+	return Catalog.Format(msgs.locale, "tmgrBackgroundNote", nil)
+}
+
+// TmgrAutostart says "Start background tunnels when the app starts"
+// in the language the app shows.
+func TmgrAutostart() string { return In(i18n.Locale()).TmgrAutostart() }
+
+// TmgrAutostart says "Start background tunnels when the app starts"
+// in the language of msgs.
+func (msgs Messages) TmgrAutostart() string {
+	return Catalog.Format(msgs.locale, "tmgrAutostart", nil)
+}
+
+// TmgrAutostartOn says "Enable background tunnel autostart on this device?"
+// in the language the app shows.
+func TmgrAutostartOn() string { return In(i18n.Locale()).TmgrAutostartOn() }
+
+// TmgrAutostartOn says "Enable background tunnel autostart on this device?"
+// in the language of msgs.
+func (msgs Messages) TmgrAutostartOn() string {
+	return Catalog.Format(msgs.locale, "tmgrAutostartOn", nil)
+}
+
+// TmgrAutostartOff says "Disable background tunnel autostart on this device?"
+// in the language the app shows.
+func TmgrAutostartOff() string { return In(i18n.Locale()).TmgrAutostartOff() }
+
+// TmgrAutostartOff says "Disable background tunnel autostart on this device?"
+// in the language of msgs.
+func (msgs Messages) TmgrAutostartOff() string {
+	return Catalog.Format(msgs.locale, "tmgrAutostartOff", nil)
+}
+
+// TmgrPublicLocal says "Anyone who can reach {address} on this computer may connect, subject to firewall and tunnel access rules."
+// in the language the app shows.
+func TmgrPublicLocal(address string) string { return In(i18n.Locale()).TmgrPublicLocal(address) }
+
+// TmgrPublicLocal says "Anyone who can reach {address} on this computer may connect, subject to firewall and tunnel access rules."
+// in the language of msgs.
+func (msgs Messages) TmgrPublicLocal(address string) string {
+	return Catalog.Format(msgs.locale, "tmgrPublicLocal", map[string]any{"address": address})
+}
+
+// TmgrPublicRemote says "Anyone who can reach {address} on the SSH server may connect, subject to firewall, SSH server and tunnel access rules."
+// in the language the app shows.
+func TmgrPublicRemote(address string) string { return In(i18n.Locale()).TmgrPublicRemote(address) }
+
+// TmgrPublicRemote says "Anyone who can reach {address} on the SSH server may connect, subject to firewall, SSH server and tunnel access rules."
+// in the language of msgs.
+func (msgs Messages) TmgrPublicRemote(address string) string {
+	return Catalog.Format(msgs.locale, "tmgrPublicRemote", map[string]any{"address": address})
+}
+
+// TmgrPublicProxy says "Warning: this proxy has no authentication. Untrusted clients may use the egress network."
+// in the language the app shows.
+func TmgrPublicProxy() string { return In(i18n.Locale()).TmgrPublicProxy() }
+
+// TmgrPublicProxy says "Warning: this proxy has no authentication. Untrusted clients may use the egress network."
+// in the language of msgs.
+func (msgs Messages) TmgrPublicProxy() string {
+	return Catalog.Format(msgs.locale, "tmgrPublicProxy", nil)
+}
+
+// TmgrTabLive says "{label} •"
+// in the language the app shows.
+func TmgrTabLive(label string) string { return In(i18n.Locale()).TmgrTabLive(label) }
+
+// TmgrTabLive says "{label} •"
+// in the language of msgs.
+func (msgs Messages) TmgrTabLive(label string) string {
+	return Catalog.Format(msgs.locale, "tmgrTabLive", map[string]any{"label": label})
+}
+
+// TmgrTabAttention says "{label} !"
+// in the language the app shows.
+func TmgrTabAttention(label string) string { return In(i18n.Locale()).TmgrTabAttention(label) }
+
+// TmgrTabAttention says "{label} !"
+// in the language of msgs.
+func (msgs Messages) TmgrTabAttention(label string) string {
+	return Catalog.Format(msgs.locale, "tmgrTabAttention", map[string]any{"label": label})
+}
+
+// TmgrQuit says "{count, plural, one {# background tunnel will stop} other {# background tunnels will stop}}."
+// in the language the app shows.
+func TmgrQuit(count int) string { return In(i18n.Locale()).TmgrQuit(count) }
+
+// TmgrQuit says "{count, plural, one {# background tunnel will stop} other {# background tunnels will stop}}."
+// in the language of msgs.
+func (msgs Messages) TmgrQuit(count int) string {
+	return Catalog.Format(msgs.locale, "tmgrQuit", map[string]any{"count": count})
+}
+
 // TabTunnelsActive says "Tunnels ({count})"
 // in the language the app shows.
 func TabTunnelsActive(count int) string { return In(i18n.Locale()).TabTunnelsActive(count) }

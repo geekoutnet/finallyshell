@@ -241,6 +241,25 @@ func TestPrivilegePTYAndRedaction(t *testing.T) {
 	}
 }
 
+func TestPrivilegeSudoPromptIsNotCommandStderr(t *testing.T) {
+	for _, beforeReady := range []bool{true, false} {
+		request := PrivilegeRequest{method: PrivilegeSudo, prompt: "prompt-test:", ready: "ready-test"}
+		stream := newPrivilegeStream(request)
+		if beforeReady {
+			stream.write(false, []byte(request.prompt))
+		}
+		stream.write(true, []byte(request.ready+"\n"))
+		if !beforeReady {
+			stream.write(false, []byte("prompt-"))
+			stream.write(false, []byte("test: "))
+		}
+		stream.write(false, []byte("no crontab for root\n"))
+		if stderr := stream.result().Stderr; stderr != "no crontab for root\n" || !CronMissing(stderr) {
+			t.Errorf("beforeReady=%v: command stderr = %q", beforeReady, stderr)
+		}
+	}
+}
+
 func TestPrivilegePTYPromptTimeout(t *testing.T) {
 	input, output := io.Pipe()
 	defer input.Close()

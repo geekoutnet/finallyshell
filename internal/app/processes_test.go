@@ -324,6 +324,9 @@ func TestProcessesSignals(t *testing.T) {
 	if !tt.HasText("The server refused: Operation not permitted") {
 		t.Errorf("no refusal; texts %q", tt.Texts())
 	}
+	if !tt.HasText("Run as root") {
+		t.Error("missing explicit elevation option")
+	}
 	saveShot(t, tt, "signal-refused-en.png")
 	f.set(func() { f.sigErr = nil })
 	tt.Click("Send")

@@ -1,12 +1,24 @@
 package monitor
 
 import (
+	"context"
 	"errors"
 	"math"
 	"reflect"
 	"strings"
 	"testing"
 )
+
+func TestRootSignalRequiresProcessIdentity(t *testing.T) {
+	calls := 0
+	priv := NewPrivilege(t.Context(), func(context.Context, PrivilegeRequest) (PrivilegeResult, error) {
+		calls++
+		return PrivilegeResult{}, nil
+	}, PrivilegeCredentials{})
+	if err := SendSignalAsRoot(t.Context(), priv, 42, 0, "TERM"); !errors.Is(err, ErrNoProcess) || calls != 0 {
+		t.Fatalf("unguarded signal: %v, remote calls: %d", err, calls)
+	}
+}
 
 func TestParseProcsProcps(t *testing.T) {
 	var l ProcessLister

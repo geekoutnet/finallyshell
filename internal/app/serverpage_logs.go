@@ -145,7 +145,7 @@ func (a *App) pollSystemLog(s *Session) {
 	run, buffer := systemReader(s), page.buffer
 	var root systemRunner
 	if source.File != "" {
-		root = a.systemRoot(s)
+		root = a.systemRootRunner(s, true)
 	}
 	first := true
 	a.keepPolling(&page.poll, s, 150*time.Millisecond, func() pollRead {

@@ -34,9 +34,13 @@ func systemReader(s *Session) systemRunner {
 }
 
 func (a *App) systemRoot(s *Session) systemRunner {
+	return a.systemRootRunner(s, false)
+}
+
+func (a *App) systemRootRunner(s *Session, interrupt bool) systemRunner {
 	priv := a.sessionPrivilege(s).runner
 	return func(ctx context.Context, script string, input io.Reader, progress func(string)) (string, string, error) {
-		return priv.Run(ctx, script, monitor.PrivilegeOptions{Stdin: input, Progress: progress})
+		return priv.Run(ctx, script, monitor.PrivilegeOptions{Stdin: input, Progress: progress, Interrupt: interrupt})
 	}
 }
 

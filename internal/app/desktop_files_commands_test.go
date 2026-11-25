@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"errors"
+	"io"
 	"slices"
 	"strings"
 	"testing"
@@ -82,7 +83,7 @@ func TestDesktopFilesArchiveInventory(t *testing.T) {
 }
 
 func TestDesktopFilesMounts(t *testing.T) {
-	fixture := "Filesystem Type 1024-blocks Used Available Capacity Mounted on\n/dev/sda1 ext4 1024 512 500 51% /\ntmpfs tmpfs 2048 0 2048 0% /run\n/dev/sdb1 xfs 8192 1 8191 1% /data with space\n/dev/bad xfs 12 bogus 2 80% /bad\n"
+	fixture := "Filesystem Type 1024-blocks Used Available Capacity Mounted on\noverlay overlay 1024 512 500 51% /\ntmpfs tmpfs 2048 0 2048 0% /run\noverlay overlay 1024 512 500 51% /var/lib/container\n/dev/sdb1 xfs 8192 1 8191 1% /data with space\n/dev/bad xfs 12 bogus 2 80% /bad\n"
 	drives := desktopFilesParseMounts(fixture)
 	var paths []string
 	for _, drive := range drives {
@@ -90,5 +91,17 @@ func TestDesktopFilesMounts(t *testing.T) {
 	}
 	if !slices.Equal(paths, []string{"/", "/data with space"}) || drives[0].free != 500*1024 || drives[0].used != 51 {
 		t.Fatalf("mounts = %+v", drives)
+	}
+}
+
+func TestDesktopFilesSSHOutput(t *testing.T) {
+	const fixture = "\r### 100.0%\n"
+	var streamed strings.Builder
+	output := &desktopFilesOutput{limit: 5, emit: func(chunk string) { streamed.WriteString(chunk) }}
+	if _, err := io.Copy(output, struct{ io.Reader }{strings.NewReader(fixture)}); err != nil {
+		t.Fatal(err)
+	}
+	if streamed.String() != fixture || output.String() != fixture[:5] {
+		t.Fatalf("streamed %q, buffered %q", streamed.String(), output.String())
 	}
 }

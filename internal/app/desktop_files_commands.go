@@ -36,10 +36,6 @@ func desktopFilesParseMounts(text string) []desktopFilesDrive {
 			continue
 		}
 		kind := fields[1]
-		switch kind {
-		case "tmpfs", "devtmpfs", "ramfs", "overlay", "proc", "squashfs", "sysfs", "cgroup", "cgroup2", "devpts", "autofs", "tracefs", "debugfs", "mqueue", "securityfs", "pstore", "fusectl":
-			continue
-		}
 		capacity := fields[5]
 		remaining := strings.TrimSpace(line)
 		for _, field := range fields[:6] {
@@ -47,6 +43,12 @@ func desktopFilesParseMounts(text string) []desktopFilesDrive {
 		}
 		mount := strings.TrimSuffix(remaining, "\r")
 		mount = strings.NewReplacer(`\040`, " ", `\134`, `\`).Replace(mount)
+		if mount != "/" {
+			switch kind {
+			case "tmpfs", "devtmpfs", "ramfs", "overlay", "proc", "squashfs", "sysfs", "cgroup", "cgroup2", "devpts", "autofs", "tracefs", "debugfs", "mqueue", "securityfs", "pstore", "fusectl":
+				continue
+			}
+		}
 		total, totalErr := strconv.ParseInt(fields[2], 10, 64)
 		usedBlocks, usedErr := strconv.ParseInt(fields[3], 10, 64)
 		free, freeErr := strconv.ParseInt(fields[4], 10, 64)
@@ -159,20 +161,22 @@ func desktopFilesCommandError(stderr string, err error) error {
 }
 
 type desktopFilesOutput struct {
-	bytes.Buffer
-	limit int
-	emit  func(string)
+	buffer bytes.Buffer
+	limit  int
+	emit   func(string)
 }
 
 func (output *desktopFilesOutput) Write(chunk []byte) (int, error) {
 	if output.emit != nil {
 		output.emit(string(chunk))
 	}
-	if remaining := output.limit - output.Len(); remaining > 0 {
-		_, _ = output.Buffer.Write(chunk[:min(remaining, len(chunk))])
+	if remaining := output.limit - output.buffer.Len(); remaining > 0 {
+		_, _ = output.buffer.Write(chunk[:min(remaining, len(chunk))])
 	}
 	return len(chunk), nil
 }
+
+func (output *desktopFilesOutput) String() string { return output.buffer.String() }
 
 func desktopFilesSSHExec(ctx context.Context, client *ssh.Client, script string, report func(string)) (string, string, error) {
 	if err := ctx.Err(); err != nil {

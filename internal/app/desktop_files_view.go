@@ -340,7 +340,7 @@ func (a *App) desktopFilesBanners(c *ui.Context, w *desktopWindow) {
 					label = label + " · " + f.job.progress
 				}
 			} else if f.readCancel != nil && f.searching {
-				stop = f.readCancel
+				stop = f.cancelSearch
 			}
 			ui.Text(c, label).Grow(1).MinWidth(0).SingleLine().Tooltip(label).TextColor(theme.TextMuted)
 			if stop != nil && ui.Button(c, locales.Cancel()).Clicked() {

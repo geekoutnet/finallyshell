@@ -58,6 +58,21 @@ DNS 文件，而是在测试箱内的临时可写副本上验证应用和恢复�
 可以不设置写入开关。将 `SHOT_DIR` 指向已有的本地目录即可保存截图；逐窗
 巡检会为每个窗口运行约 20 秒，以捕捉缓慢的读取或界面卡死。
 
+要联机验证桌面模式的文件、此电脑、回收站和终端，请在 Bash 中对已经运行的测试箱执行以下命令。两个账号各运行一次；`tester` 用例会验证 sudo 提示。压缩和互操作用例使用 `zip`、`unzip` 和 `trash-cli`，远程下载用例使用 Caddy 示例站点。将 `SHOT_DIR` 设置为已存在的本地目录即可保存截图。如果凭据不在默认位置，请先设置 `TESTBOX_ENV`。
+
+```bash
+for account in root tester; do
+    (
+        set -e
+        set +x
+        ssh_export=$(.claude/skills/testbox/testbox.sh ssh-env "$account")
+        eval "$ssh_export"
+        unset ssh_export
+        FINALLYSHELL_TEST_MUTATE=1 go test ./internal/app -run '^TestDesktopLive(Files|Trash|Terminal)' -count=1 -v -timeout 900s
+    ) || exit 1
+done
+```
+
 ## 添加组件
 
 额外组件装在可随时重建的容器里，不要装到宿主机上：

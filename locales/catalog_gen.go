@@ -21634,6 +21634,96 @@ func (msgs Messages) TabDocker() string {
 	return Catalog.Format(msgs.locale, "tabDocker", nil)
 }
 
+// TabCaddy says "Caddy"
+// in the language the app shows.
+func TabCaddy() string { return In(i18n.Locale()).TabCaddy() }
+
+// TabCaddy says "Caddy"
+// in the language of msgs.
+func (msgs Messages) TabCaddy() string {
+	return Catalog.Format(msgs.locale, "tabCaddy", nil)
+}
+
+// CaddyOverview says "Overview"
+// in the language the app shows.
+func CaddyOverview() string { return In(i18n.Locale()).CaddyOverview() }
+
+// CaddyOverview says "Overview"
+// in the language of msgs.
+func (msgs Messages) CaddyOverview() string {
+	return Catalog.Format(msgs.locale, "caddyOverview", nil)
+}
+
+// CaddySites says "Sites"
+// in the language the app shows.
+func CaddySites() string { return In(i18n.Locale()).CaddySites() }
+
+// CaddySites says "Sites"
+// in the language of msgs.
+func (msgs Messages) CaddySites() string {
+	return Catalog.Format(msgs.locale, "caddySites", nil)
+}
+
+// CaddyGlobal says "Global options"
+// in the language the app shows.
+func CaddyGlobal() string { return In(i18n.Locale()).CaddyGlobal() }
+
+// CaddyGlobal says "Global options"
+// in the language of msgs.
+func (msgs Messages) CaddyGlobal() string {
+	return Catalog.Format(msgs.locale, "caddyGlobal", nil)
+}
+
+// CaddyConfig says "Config files"
+// in the language the app shows.
+func CaddyConfig() string { return In(i18n.Locale()).CaddyConfig() }
+
+// CaddyConfig says "Config files"
+// in the language of msgs.
+func (msgs Messages) CaddyConfig() string {
+	return Catalog.Format(msgs.locale, "caddyConfig", nil)
+}
+
+// CaddyCerts says "Certificates"
+// in the language the app shows.
+func CaddyCerts() string { return In(i18n.Locale()).CaddyCerts() }
+
+// CaddyCerts says "Certificates"
+// in the language of msgs.
+func (msgs Messages) CaddyCerts() string {
+	return Catalog.Format(msgs.locale, "caddyCerts", nil)
+}
+
+// CaddyLogs says "Logs"
+// in the language the app shows.
+func CaddyLogs() string { return In(i18n.Locale()).CaddyLogs() }
+
+// CaddyLogs says "Logs"
+// in the language of msgs.
+func (msgs Messages) CaddyLogs() string {
+	return Catalog.Format(msgs.locale, "caddyLogs", nil)
+}
+
+// CaddyInstall says "Install & migrate"
+// in the language the app shows.
+func CaddyInstall() string { return In(i18n.Locale()).CaddyInstall() }
+
+// CaddyInstall says "Install & migrate"
+// in the language of msgs.
+func (msgs Messages) CaddyInstall() string {
+	return Catalog.Format(msgs.locale, "caddyInstall", nil)
+}
+
+// CaddyRefresh says "Read again"
+// in the language the app shows.
+func CaddyRefresh() string { return In(i18n.Locale()).CaddyRefresh() }
+
+// CaddyRefresh says "Read again"
+// in the language of msgs.
+func (msgs Messages) CaddyRefresh() string {
+	return Catalog.Format(msgs.locale, "caddyRefresh", nil)
+}
+
 // TabSystem says "System"
 // in the language the app shows.
 func TabSystem() string { return In(i18n.Locale()).TabSystem() }

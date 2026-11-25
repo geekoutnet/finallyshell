@@ -463,6 +463,7 @@ const (
 	tabDocker
 	tabSystem
 	tabDatabase
+	tabCaddy
 )
 
 // bottomTab is a tab of the bottom panel: its label, and its page.
@@ -493,6 +494,7 @@ func (a *App) bottomTabs() []bottomTab {
 		tabDocker:    {locales.TabDocker(), a.dockerPanel},
 		tabSystem:    {locales.TabSystem(), a.serverPanel},
 		tabDatabase:  {locales.DbTab(), a.databasePanel},
+		tabCaddy:     {locales.TabCaddy(), a.caddyPanel},
 	}
 }
 

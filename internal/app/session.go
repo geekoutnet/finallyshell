@@ -5,6 +5,7 @@ import (
 	"crypto/x509"
 	"errors"
 	"net"
+	"sync"
 	"sync/atomic"
 	"time"
 
@@ -46,11 +47,15 @@ type Session struct {
 	ip              string
 	forwardWarnings map[string]error
 
-	client *ssh.Client
-	panes  paneTree // its terminals (panes.go)
-	stats  monitor.Stats
-	sftp   *sftp.Client
-	files  fileState
+	client             *ssh.Client
+	shellOpen          sync.Mutex
+	desktopToolsStops  map[*desktopWindow]*desktopToolsLifetime
+	desktopToolsRecent []desktopAppID
+	desktopToolsSSH    *desktopToolsSSHWatch
+	panes              paneTree // its terminals (panes.go)
+	stats              monitor.Stats
+	sftp               *sftp.Client
+	files              fileState
 
 	tunnels  tunnelState   // see tunnels.go
 	procs    procState     // the Processes tab, see processes.go
@@ -379,6 +384,18 @@ func (a *App) applyTerminalSettings() {
 				a.applyAppearance(p.term, look)
 			}
 		}
+		if s.isDesktopRow() {
+			for _, window := range s.desktop.windowsOf(appTerminal) {
+				state := window.state.(*desktopTerminalState)
+				if state.pane != nil {
+					a.applyMouse(state.pane.term)
+					a.applyAppearance(state.pane.term, look)
+					if look.font {
+						a.desktopTerminalFont(state)
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -392,6 +409,7 @@ func (a *App) noteConnected(h *config.Host) {
 // disconnect ends s's connection, keeping its tab and the layout of its
 // panes, whose shells end.
 func (s *Session) disconnect() {
+	s.stopDesktopTools()
 	if s.cancel != nil {
 		s.cancel()
 		s.cancel = nil

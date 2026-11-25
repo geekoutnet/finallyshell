@@ -2150,6 +2150,12 @@ confirmation, use shared privilege escalation and appear in the desktop
 operation log. Security links to the App lock, SSH key manager and the
 System tab’s security tools.
 
+### Desktop mode › Terminal, Browser and App Center
+
+- Each Terminal window opens its own shell channel on the existing SSH connection. Minimizing it keeps the shell running; closing a live shell asks first. The toolbar opens its current folder in Files, starts another shell after exit, changes font size, copies visible terminal text, pastes and finds text. Use the terminal's right-click menu or copy shortcut to copy a selection. Folder tracking uses the shell's reports or Linux process information when available.
+- Server Browser opens a local Chrome, Edge, Brave, Chromium or Firefox window through a loopback-only SOCKS5 proxy on this SSH connection, without changing the system proxy. Use the URL field or the suggested server-local ports to open pages. **Check exit IP** explicitly contacts `api.ipify.org` through the proxy. Stopping the browser, closing its desktop window, or losing the SSH connection stops the proxy. The listener is local to this computer; other local programs can use it while it is running.
+- App Center lists the client's built-in apps, not an installation store. Search or filter by category, reopen recently used apps, or use an app's menu to add it to this host's desktop or pin it to the dock. The server tools reuse the existing management pages and their confirmations, including Docker, databases, website and certificate management, system tools, networking and transfers. Docker and Database appear on the desktop by default.
+
 ## System tab
 
 The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.

@@ -40,6 +40,7 @@ instead.
 | `settings.json` | The options (see below). |
 | `sysproxy-backup.json` | Local recovery snapshot of this computer’s system proxy before a tunnel replaces it. |
 | `db.json` | Local database connection profiles by SSH host ID; no credentials or query history. |
+| `browser-profiles/` | Local Server Browser profiles, isolated by SSH host ID. Chromium-family browsers retain their ordinary browser data in that profile; Firefox uses a temporary profile removed after it stops. Profiles are not synced. |
 | `log-paths/<host-hash>.json` | Up to 12 recently entered remote log paths per connection; local only. No log contents are stored here. Previous versions use the `.bak-YYYYMMDDHHMMSS` suffix. |
 | `known_hosts` | Host keys you have trusted. |
 | `background-<time>.<extension>` | The copy of the terminal background image. |

@@ -33,6 +33,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `settings.json` | 选项（见下面）。 |
 | `sysproxy-backup.json` | 隧道接管系统代理前的本机设置恢复快照。 |
 | `db.json` | 按 SSH 主机 ID 保存的本机数据库连接配置，不含凭据和查询历史。 |
+| `browser-profiles/` | 服务器浏览器的本机配置目录，按 SSH 主机 ID 隔离。基于 Chromium 的浏览器在对应配置中保存常规浏览数据；Firefox 使用停止后删除的临时配置。不参与同步。 |
 | `log-paths/<连接哈希>.json` | 每个连接最近输入的最多 12 个远程日志路径，仅存本机，不保存日志内容。旧版本以 `.bak-YYYYMMDDHHMMSS` 为后缀。 |
 | `known_hosts` | 信任过的主机指纹。 |
 | `background-<时间>.<扩展名>` | 终端背景图片的副本。 |

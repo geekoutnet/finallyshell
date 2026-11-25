@@ -18602,6 +18602,818 @@ func (msgs Messages) DesktopAppAppCenter() string {
 	return Catalog.Format(msgs.locale, "desktopAppAppCenter", nil)
 }
 
+// DesktopToolsSites says "Sites & certificates"
+// in the language the app shows.
+func DesktopToolsSites() string { return In(i18n.Locale()).DesktopToolsSites() }
+
+// DesktopToolsSites says "Sites & certificates"
+// in the language of msgs.
+func (msgs Messages) DesktopToolsSites() string {
+	return Catalog.Format(msgs.locale, "desktopToolsSites", nil)
+}
+
+// DesktopToolsCaddy says "Caddy"
+// in the language the app shows.
+func DesktopToolsCaddy() string { return In(i18n.Locale()).DesktopToolsCaddy() }
+
+// DesktopToolsCaddy says "Caddy"
+// in the language of msgs.
+func (msgs Messages) DesktopToolsCaddy() string {
+	return Catalog.Format(msgs.locale, "desktopToolsCaddy", nil)
+}
+
+// DesktopToolsCaddyUnavailable says "Caddy management is not included in this build."
+// in the language the app shows.
+func DesktopToolsCaddyUnavailable() string { return In(i18n.Locale()).DesktopToolsCaddyUnavailable() }
+
+// DesktopToolsCaddyUnavailable says "Caddy management is not included in this build."
+// in the language of msgs.
+func (msgs Messages) DesktopToolsCaddyUnavailable() string {
+	return Catalog.Format(msgs.locale, "desktopToolsCaddyUnavailable", nil)
+}
+
+// DesktopToolsInvalidDirectory says "The working directory must be an absolute server path without line breaks."
+// in the language the app shows.
+func DesktopToolsInvalidDirectory() string { return In(i18n.Locale()).DesktopToolsInvalidDirectory() }
+
+// DesktopToolsInvalidDirectory says "The working directory must be an absolute server path without line breaks."
+// in the language of msgs.
+func (msgs Messages) DesktopToolsInvalidDirectory() string {
+	return Catalog.Format(msgs.locale, "desktopToolsInvalidDirectory", nil)
+}
+
+// DesktopToolsShellOpening says "Opening an SSH shell…"
+// in the language the app shows.
+func DesktopToolsShellOpening() string { return In(i18n.Locale()).DesktopToolsShellOpening() }
+
+// DesktopToolsShellOpening says "Opening an SSH shell…"
+// in the language of msgs.
+func (msgs Messages) DesktopToolsShellOpening() string {
+	return Catalog.Format(msgs.locale, "desktopToolsShellOpening", nil)
+}
+
+// DesktopToolsShellEnded says "This shell has ended. Reconnect to open another shell."
+// in the language the app shows.
+func DesktopToolsShellEnded() string { return In(i18n.Locale()).DesktopToolsShellEnded() }
+
+// DesktopToolsShellEnded says "This shell has ended. Reconnect to open another shell."
+// in the language of msgs.
+func (msgs Messages) DesktopToolsShellEnded() string {
+	return Catalog.Format(msgs.locale, "desktopToolsShellEnded", nil)
+}
+
+// DesktopToolsCloseShell says "Close shell"
+// in the language the app shows.
+func DesktopToolsCloseShell() string { return In(i18n.Locale()).DesktopToolsCloseShell() }
+
+// DesktopToolsCloseShell says "Close shell"
+// in the language of msgs.
+func (msgs Messages) DesktopToolsCloseShell() string {
+	return Catalog.Format(msgs.locale, "desktopToolsCloseShell", nil)
+}
+
+// DesktopToolsCloseShellNote says "This ends the SSH shell in this window and may interrupt programs running in it. Other windows stay connected."
+// in the language the app shows.
+func DesktopToolsCloseShellNote() string { return In(i18n.Locale()).DesktopToolsCloseShellNote() }
+
+// DesktopToolsCloseShellNote says "This ends the SSH shell in this window and may interrupt programs running in it. Other windows stay connected."
+// in the language of msgs.
+func (msgs Messages) DesktopToolsCloseShellNote() string {
+	return Catalog.Format(msgs.locale, "desktopToolsCloseShellNote", nil)
+}
+
+// DesktopToolsTerminalWorkspace says "Terminal workspace"
+// in the language the app shows.
+func DesktopToolsTerminalWorkspace() string { return In(i18n.Locale()).DesktopToolsTerminalWorkspace() }
+
+// DesktopToolsTerminalWorkspace says "Terminal workspace"
+// in the language of msgs.
+func (msgs Messages) DesktopToolsTerminalWorkspace() string {
+	return Catalog.Format(msgs.locale, "desktopToolsTerminalWorkspace", nil)
+}
+
+// DesktopToolsOpenFolder says "Open current folder in Files"
+// in the language the app shows.
+func DesktopToolsOpenFolder() string { return In(i18n.Locale()).DesktopToolsOpenFolder() }
+
+// DesktopToolsOpenFolder says "Open current folder in Files"
+// in the language of msgs.
+func (msgs Messages) DesktopToolsOpenFolder() string {
+	return Catalog.Format(msgs.locale, "desktopToolsOpenFolder", nil)
+}
+
+// DesktopToolsFontSmaller says "Decrease terminal font size"
+// in the language the app shows.
+func DesktopToolsFontSmaller() string { return In(i18n.Locale()).DesktopToolsFontSmaller() }
+
+// DesktopToolsFontSmaller says "Decrease terminal font size"
+// in the language of msgs.
+func (msgs Messages) DesktopToolsFontSmaller() string {
+	return Catalog.Format(msgs.locale, "desktopToolsFontSmaller", nil)
+}
+
+// DesktopToolsFontLarger says "Increase terminal font size"
+// in the language the app shows.
+func DesktopToolsFontLarger() string { return In(i18n.Locale()).DesktopToolsFontLarger() }
+
+// DesktopToolsFontLarger says "Increase terminal font size"
+// in the language of msgs.
+func (msgs Messages) DesktopToolsFontLarger() string {
+	return Catalog.Format(msgs.locale, "desktopToolsFontLarger", nil)
+}
+
+// DesktopToolsCopyScreen says "Copy visible terminal text"
+// in the language the app shows.
+func DesktopToolsCopyScreen() string { return In(i18n.Locale()).DesktopToolsCopyScreen() }
+
+// DesktopToolsCopyScreen says "Copy visible terminal text"
+// in the language of msgs.
+func (msgs Messages) DesktopToolsCopyScreen() string {
+	return Catalog.Format(msgs.locale, "desktopToolsCopyScreen", nil)
+}
+
+// DesktopBrowserHeading says "Browse from this server"
+// in the language the app shows.
+func DesktopBrowserHeading() string { return In(i18n.Locale()).DesktopBrowserHeading() }
+
+// DesktopBrowserHeading says "Browse from this server"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserHeading() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserHeading", nil)
+}
+
+// DesktopBrowserSubtitle says "Use an isolated local browser through this SSH connection."
+// in the language the app shows.
+func DesktopBrowserSubtitle() string { return In(i18n.Locale()).DesktopBrowserSubtitle() }
+
+// DesktopBrowserSubtitle says "Use an isolated local browser through this SSH connection."
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserSubtitle() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserSubtitle", nil)
+}
+
+// DesktopBrowserStopped says "Stopped"
+// in the language the app shows.
+func DesktopBrowserStopped() string { return In(i18n.Locale()).DesktopBrowserStopped() }
+
+// DesktopBrowserStopped says "Stopped"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserStopped() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserStopped", nil)
+}
+
+// DesktopBrowserStarting says "Starting browser…"
+// in the language the app shows.
+func DesktopBrowserStarting() string { return In(i18n.Locale()).DesktopBrowserStarting() }
+
+// DesktopBrowserStarting says "Starting browser…"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserStarting() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserStarting", nil)
+}
+
+// DesktopBrowserStopping says "Stopping browser…"
+// in the language the app shows.
+func DesktopBrowserStopping() string { return In(i18n.Locale()).DesktopBrowserStopping() }
+
+// DesktopBrowserStopping says "Stopping browser…"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserStopping() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserStopping", nil)
+}
+
+// DesktopBrowserRunning says "Running"
+// in the language the app shows.
+func DesktopBrowserRunning() string { return In(i18n.Locale()).DesktopBrowserRunning() }
+
+// DesktopBrowserRunning says "Running"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserRunning() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserRunning", nil)
+}
+
+// DesktopBrowserProxy says "SOCKS5"
+// in the language the app shows.
+func DesktopBrowserProxy() string { return In(i18n.Locale()).DesktopBrowserProxy() }
+
+// DesktopBrowserProxy says "SOCKS5"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserProxy() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserProxy", nil)
+}
+
+// DesktopBrowserStart says "Start browser"
+// in the language the app shows.
+func DesktopBrowserStart() string { return In(i18n.Locale()).DesktopBrowserStart() }
+
+// DesktopBrowserStart says "Start browser"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserStart() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserStart", nil)
+}
+
+// DesktopBrowserStop says "Stop browser"
+// in the language the app shows.
+func DesktopBrowserStop() string { return In(i18n.Locale()).DesktopBrowserStop() }
+
+// DesktopBrowserStop says "Stop browser"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserStop() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserStop", nil)
+}
+
+// DesktopBrowserAddress says "Website address"
+// in the language the app shows.
+func DesktopBrowserAddress() string { return In(i18n.Locale()).DesktopBrowserAddress() }
+
+// DesktopBrowserAddress says "Website address"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserAddress() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserAddress", nil)
+}
+
+// DesktopBrowserChoose says "Choose browser"
+// in the language the app shows.
+func DesktopBrowserChoose() string { return In(i18n.Locale()).DesktopBrowserChoose() }
+
+// DesktopBrowserChoose says "Choose browser"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserChoose() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserChoose", nil)
+}
+
+// DesktopBrowserNoChoice says "No supported browser found"
+// in the language the app shows.
+func DesktopBrowserNoChoice() string { return In(i18n.Locale()).DesktopBrowserNoChoice() }
+
+// DesktopBrowserNoChoice says "No supported browser found"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserNoChoice() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserNoChoice", nil)
+}
+
+// DesktopBrowserDiscovering says "Looking for browsers…"
+// in the language the app shows.
+func DesktopBrowserDiscovering() string { return In(i18n.Locale()).DesktopBrowserDiscovering() }
+
+// DesktopBrowserDiscovering says "Looking for browsers…"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserDiscovering() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserDiscovering", nil)
+}
+
+// DesktopBrowserBrowse says "Browse for an executable…"
+// in the language the app shows.
+func DesktopBrowserBrowse() string { return In(i18n.Locale()).DesktopBrowserBrowse() }
+
+// DesktopBrowserBrowse says "Browse for an executable…"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserBrowse() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserBrowse", nil)
+}
+
+// DesktopBrowserExecutable says "Browser executable"
+// in the language the app shows.
+func DesktopBrowserExecutable() string { return In(i18n.Locale()).DesktopBrowserExecutable() }
+
+// DesktopBrowserExecutable says "Browser executable"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserExecutable() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserExecutable", nil)
+}
+
+// DesktopBrowserCheckIP says "Check exit IP"
+// in the language the app shows.
+func DesktopBrowserCheckIP() string { return In(i18n.Locale()).DesktopBrowserCheckIP() }
+
+// DesktopBrowserCheckIP says "Check exit IP"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserCheckIP() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserCheckIP", nil)
+}
+
+// DesktopBrowserLocal says "Server localhost"
+// in the language the app shows.
+func DesktopBrowserLocal() string { return In(i18n.Locale()).DesktopBrowserLocal() }
+
+// DesktopBrowserLocal says "Server localhost"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserLocal() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserLocal", nil)
+}
+
+// DesktopBrowserLocalNote says "These ports refer to the server, not this computer. Suggested ports come from listening sockets; not every service sp…"
+// in the language the app shows.
+func DesktopBrowserLocalNote() string { return In(i18n.Locale()).DesktopBrowserLocalNote() }
+
+// DesktopBrowserLocalNote says "These ports refer to the server, not this computer. Suggested ports come from listening sockets; not every service sp…"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserLocalNote() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserLocalNote", nil)
+}
+
+// DesktopBrowserInvalidURL says "Enter a valid HTTP or HTTPS address without credentials."
+// in the language the app shows.
+func DesktopBrowserInvalidURL() string { return In(i18n.Locale()).DesktopBrowserInvalidURL() }
+
+// DesktopBrowserInvalidURL says "Enter a valid HTTP or HTTPS address without credentials."
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserInvalidURL() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserInvalidURL", nil)
+}
+
+// DesktopBrowserInvalidExecutable says "Choose an executable for Chrome, Edge, Brave, Chromium or Firefox."
+// in the language the app shows.
+func DesktopBrowserInvalidExecutable() string {
+	return In(i18n.Locale()).DesktopBrowserInvalidExecutable()
+}
+
+// DesktopBrowserInvalidExecutable says "Choose an executable for Chrome, Edge, Brave, Chromium or Firefox."
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserInvalidExecutable() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserInvalidExecutable", nil)
+}
+
+// DesktopBrowserProxyFailed says "The SSH proxy could not start or has stopped."
+// in the language the app shows.
+func DesktopBrowserProxyFailed() string { return In(i18n.Locale()).DesktopBrowserProxyFailed() }
+
+// DesktopBrowserProxyFailed says "The SSH proxy could not start or has stopped."
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserProxyFailed() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserProxyFailed", nil)
+}
+
+// DesktopBrowserProfileInUse says "This server's browser profile is already in use. Stop the other server browser first."
+// in the language the app shows.
+func DesktopBrowserProfileInUse() string { return In(i18n.Locale()).DesktopBrowserProfileInUse() }
+
+// DesktopBrowserProfileInUse says "This server's browser profile is already in use. Stop the other server browser first."
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserProfileInUse() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserProfileInUse", nil)
+}
+
+// DesktopBrowserProfileFailed says "Could not prepare an isolated browser profile."
+// in the language the app shows.
+func DesktopBrowserProfileFailed() string { return In(i18n.Locale()).DesktopBrowserProfileFailed() }
+
+// DesktopBrowserProfileFailed says "Could not prepare an isolated browser profile."
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserProfileFailed() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserProfileFailed", nil)
+}
+
+// DesktopBrowserLaunchFailed says "Could not start the chosen browser. Close any existing instance using this profile and try again."
+// in the language the app shows.
+func DesktopBrowserLaunchFailed() string { return In(i18n.Locale()).DesktopBrowserLaunchFailed() }
+
+// DesktopBrowserLaunchFailed says "Could not start the chosen browser. Close any existing instance using this profile and try again."
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserLaunchFailed() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserLaunchFailed", nil)
+}
+
+// DesktopBrowserOpenFailed says "Could not open a new tab in the server browser."
+// in the language the app shows.
+func DesktopBrowserOpenFailed() string { return In(i18n.Locale()).DesktopBrowserOpenFailed() }
+
+// DesktopBrowserOpenFailed says "Could not open a new tab in the server browser."
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserOpenFailed() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserOpenFailed", nil)
+}
+
+// DesktopBrowserIPFailed says "Could not check the public IP through this server."
+// in the language the app shows.
+func DesktopBrowserIPFailed() string { return In(i18n.Locale()).DesktopBrowserIPFailed() }
+
+// DesktopBrowserIPFailed says "Could not check the public IP through this server."
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserIPFailed() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserIPFailed", nil)
+}
+
+// DesktopCenterHeading says "Find your desktop apps"
+// in the language the app shows.
+func DesktopCenterHeading() string { return In(i18n.Locale()).DesktopCenterHeading() }
+
+// DesktopCenterHeading says "Find your desktop apps"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterHeading() string {
+	return Catalog.Format(msgs.locale, "desktopCenterHeading", nil)
+}
+
+// DesktopCenterSubtitle says "Open built-in tools and customize your desktop and dock."
+// in the language the app shows.
+func DesktopCenterSubtitle() string { return In(i18n.Locale()).DesktopCenterSubtitle() }
+
+// DesktopCenterSubtitle says "Open built-in tools and customize your desktop and dock."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterSubtitle() string {
+	return Catalog.Format(msgs.locale, "desktopCenterSubtitle", nil)
+}
+
+// DesktopCenterSearch says "Search apps"
+// in the language the app shows.
+func DesktopCenterSearch() string { return In(i18n.Locale()).DesktopCenterSearch() }
+
+// DesktopCenterSearch says "Search apps"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterSearch() string {
+	return Catalog.Format(msgs.locale, "desktopCenterSearch", nil)
+}
+
+// DesktopCenterAll says "All"
+// in the language the app shows.
+func DesktopCenterAll() string { return In(i18n.Locale()).DesktopCenterAll() }
+
+// DesktopCenterAll says "All"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterAll() string {
+	return Catalog.Format(msgs.locale, "desktopCenterAll", nil)
+}
+
+// DesktopCenterSystem says "System"
+// in the language the app shows.
+func DesktopCenterSystem() string { return In(i18n.Locale()).DesktopCenterSystem() }
+
+// DesktopCenterSystem says "System"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterSystem() string {
+	return Catalog.Format(msgs.locale, "desktopCenterSystem", nil)
+}
+
+// DesktopCenterTools says "Tools"
+// in the language the app shows.
+func DesktopCenterTools() string { return In(i18n.Locale()).DesktopCenterTools() }
+
+// DesktopCenterTools says "Tools"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterTools() string {
+	return Catalog.Format(msgs.locale, "desktopCenterTools", nil)
+}
+
+// DesktopCenterServer says "Server management"
+// in the language the app shows.
+func DesktopCenterServer() string { return In(i18n.Locale()).DesktopCenterServer() }
+
+// DesktopCenterServer says "Server management"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterServer() string {
+	return Catalog.Format(msgs.locale, "desktopCenterServer", nil)
+}
+
+// DesktopCenterRecent says "Recently used"
+// in the language the app shows.
+func DesktopCenterRecent() string { return In(i18n.Locale()).DesktopCenterRecent() }
+
+// DesktopCenterRecent says "Recently used"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterRecent() string {
+	return Catalog.Format(msgs.locale, "desktopCenterRecent", nil)
+}
+
+// DesktopCenterCount says "{count, plural, one {# app} other {# apps}}"
+// in the language the app shows.
+func DesktopCenterCount(count int) string { return In(i18n.Locale()).DesktopCenterCount(count) }
+
+// DesktopCenterCount says "{count, plural, one {# app} other {# apps}}"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterCount(count int) string {
+	return Catalog.Format(msgs.locale, "desktopCenterCount", map[string]any{"count": count})
+}
+
+// DesktopCenterEmpty says "No apps match your search."
+// in the language the app shows.
+func DesktopCenterEmpty() string { return In(i18n.Locale()).DesktopCenterEmpty() }
+
+// DesktopCenterEmpty says "No apps match your search."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterEmpty() string {
+	return Catalog.Format(msgs.locale, "desktopCenterEmpty", nil)
+}
+
+// DesktopCenterActions says "App actions"
+// in the language the app shows.
+func DesktopCenterActions() string { return In(i18n.Locale()).DesktopCenterActions() }
+
+// DesktopCenterActions says "App actions"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterActions() string {
+	return Catalog.Format(msgs.locale, "desktopCenterActions", nil)
+}
+
+// DesktopCenterAdd says "Add to desktop"
+// in the language the app shows.
+func DesktopCenterAdd() string { return In(i18n.Locale()).DesktopCenterAdd() }
+
+// DesktopCenterAdd says "Add to desktop"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterAdd() string {
+	return Catalog.Format(msgs.locale, "desktopCenterAdd", nil)
+}
+
+// DesktopCenterRemove says "Remove from desktop"
+// in the language the app shows.
+func DesktopCenterRemove() string { return In(i18n.Locale()).DesktopCenterRemove() }
+
+// DesktopCenterRemove says "Remove from desktop"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterRemove() string {
+	return Catalog.Format(msgs.locale, "desktopCenterRemove", nil)
+}
+
+// DesktopCenterPin says "Pin to dock"
+// in the language the app shows.
+func DesktopCenterPin() string { return In(i18n.Locale()).DesktopCenterPin() }
+
+// DesktopCenterPin says "Pin to dock"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterPin() string {
+	return Catalog.Format(msgs.locale, "desktopCenterPin", nil)
+}
+
+// DesktopCenterUnpin says "Unpin from dock"
+// in the language the app shows.
+func DesktopCenterUnpin() string { return In(i18n.Locale()).DesktopCenterUnpin() }
+
+// DesktopCenterUnpin says "Unpin from dock"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterUnpin() string {
+	return Catalog.Format(msgs.locale, "desktopCenterUnpin", nil)
+}
+
+// DesktopCenterPinned says "Pinned to dock"
+// in the language the app shows.
+func DesktopCenterPinned() string { return In(i18n.Locale()).DesktopCenterPinned() }
+
+// DesktopCenterPinned says "Pinned to dock"
+// in the language of msgs.
+func (msgs Messages) DesktopCenterPinned() string {
+	return Catalog.Format(msgs.locale, "desktopCenterPinned", nil)
+}
+
+// DesktopCenterThisPC says "Browse drives and favorite folders."
+// in the language the app shows.
+func DesktopCenterThisPC() string { return In(i18n.Locale()).DesktopCenterThisPC() }
+
+// DesktopCenterThisPC says "Browse drives and favorite folders."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterThisPC() string {
+	return Catalog.Format(msgs.locale, "desktopCenterThisPC", nil)
+}
+
+// DesktopCenterFiles says "Browse, edit and transfer remote files."
+// in the language the app shows.
+func DesktopCenterFiles() string { return In(i18n.Locale()).DesktopCenterFiles() }
+
+// DesktopCenterFiles says "Browse, edit and transfer remote files."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterFiles() string {
+	return Catalog.Format(msgs.locale, "desktopCenterFiles", nil)
+}
+
+// DesktopCenterTerminal says "Open an interactive SSH shell."
+// in the language the app shows.
+func DesktopCenterTerminal() string { return In(i18n.Locale()).DesktopCenterTerminal() }
+
+// DesktopCenterTerminal says "Open an interactive SSH shell."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterTerminal() string {
+	return Catalog.Format(msgs.locale, "desktopCenterTerminal", nil)
+}
+
+// DesktopCenterTrash says "Restore or permanently remove deleted files."
+// in the language the app shows.
+func DesktopCenterTrash() string { return In(i18n.Locale()).DesktopCenterTrash() }
+
+// DesktopCenterTrash says "Restore or permanently remove deleted files."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterTrash() string {
+	return Catalog.Format(msgs.locale, "desktopCenterTrash", nil)
+}
+
+// DesktopCenterSettings says "Manage desktop and server settings."
+// in the language the app shows.
+func DesktopCenterSettings() string { return In(i18n.Locale()).DesktopCenterSettings() }
+
+// DesktopCenterSettings says "Manage desktop and server settings."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterSettings() string {
+	return Catalog.Format(msgs.locale, "desktopCenterSettings", nil)
+}
+
+// DesktopCenterTaskMgr says "Monitor resource use and manage processes."
+// in the language the app shows.
+func DesktopCenterTaskMgr() string { return In(i18n.Locale()).DesktopCenterTaskMgr() }
+
+// DesktopCenterTaskMgr says "Monitor resource use and manage processes."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterTaskMgr() string {
+	return Catalog.Format(msgs.locale, "desktopCenterTaskMgr", nil)
+}
+
+// DesktopCenterBrowser says "Browse through the server's SSH connection."
+// in the language the app shows.
+func DesktopCenterBrowser() string { return In(i18n.Locale()).DesktopCenterBrowser() }
+
+// DesktopCenterBrowser says "Browse through the server's SSH connection."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterBrowser() string {
+	return Catalog.Format(msgs.locale, "desktopCenterBrowser", nil)
+}
+
+// DesktopCenterCenter says "Find tools and organize shortcuts."
+// in the language the app shows.
+func DesktopCenterCenter() string { return In(i18n.Locale()).DesktopCenterCenter() }
+
+// DesktopCenterCenter says "Find tools and organize shortcuts."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterCenter() string {
+	return Catalog.Format(msgs.locale, "desktopCenterCenter", nil)
+}
+
+// DesktopCenterAI says "Ask for help with server tasks."
+// in the language the app shows.
+func DesktopCenterAI() string { return In(i18n.Locale()).DesktopCenterAI() }
+
+// DesktopCenterAI says "Ask for help with server tasks."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterAI() string {
+	return Catalog.Format(msgs.locale, "desktopCenterAI", nil)
+}
+
+// DesktopCenterDocker says "Manage containers, images and Compose projects."
+// in the language the app shows.
+func DesktopCenterDocker() string { return In(i18n.Locale()).DesktopCenterDocker() }
+
+// DesktopCenterDocker says "Manage containers, images and Compose projects."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterDocker() string {
+	return Catalog.Format(msgs.locale, "desktopCenterDocker", nil)
+}
+
+// DesktopCenterDB says "Work with MySQL, PostgreSQL and Redis."
+// in the language the app shows.
+func DesktopCenterDB() string { return In(i18n.Locale()).DesktopCenterDB() }
+
+// DesktopCenterDB says "Work with MySQL, PostgreSQL and Redis."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterDB() string {
+	return Catalog.Format(msgs.locale, "desktopCenterDB", nil)
+}
+
+// DesktopCenterSites says "Manage Nginx sites and TLS certificates."
+// in the language the app shows.
+func DesktopCenterSites() string { return In(i18n.Locale()).DesktopCenterSites() }
+
+// DesktopCenterSites says "Manage Nginx sites and TLS certificates."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterSites() string {
+	return Catalog.Format(msgs.locale, "desktopCenterSites", nil)
+}
+
+// DesktopCenterCaddy says "Manage Caddy sites and reverse proxies."
+// in the language the app shows.
+func DesktopCenterCaddy() string { return In(i18n.Locale()).DesktopCenterCaddy() }
+
+// DesktopCenterCaddy says "Manage Caddy sites and reverse proxies."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterCaddy() string {
+	return Catalog.Format(msgs.locale, "desktopCenterCaddy", nil)
+}
+
+// DesktopCenterServices says "Inspect and manage system services."
+// in the language the app shows.
+func DesktopCenterServices() string { return In(i18n.Locale()).DesktopCenterServices() }
+
+// DesktopCenterServices says "Inspect and manage system services."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterServices() string {
+	return Catalog.Format(msgs.locale, "desktopCenterServices", nil)
+}
+
+// DesktopCenterLogs says "Read and follow server logs."
+// in the language the app shows.
+func DesktopCenterLogs() string { return In(i18n.Locale()).DesktopCenterLogs() }
+
+// DesktopCenterLogs says "Read and follow server logs."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterLogs() string {
+	return Catalog.Format(msgs.locale, "desktopCenterLogs", nil)
+}
+
+// DesktopCenterCron says "Inspect and edit scheduled jobs."
+// in the language the app shows.
+func DesktopCenterCron() string { return In(i18n.Locale()).DesktopCenterCron() }
+
+// DesktopCenterCron says "Inspect and edit scheduled jobs."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterCron() string {
+	return Catalog.Format(msgs.locale, "desktopCenterCron", nil)
+}
+
+// DesktopCenterDisk says "Inspect disk usage and mounts."
+// in the language the app shows.
+func DesktopCenterDisk() string { return In(i18n.Locale()).DesktopCenterDisk() }
+
+// DesktopCenterDisk says "Inspect disk usage and mounts."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterDisk() string {
+	return Catalog.Format(msgs.locale, "desktopCenterDisk", nil)
+}
+
+// DesktopCenterUpdates says "Review and install package updates."
+// in the language the app shows.
+func DesktopCenterUpdates() string { return In(i18n.Locale()).DesktopCenterUpdates() }
+
+// DesktopCenterUpdates says "Review and install package updates."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterUpdates() string {
+	return Catalog.Format(msgs.locale, "desktopCenterUpdates", nil)
+}
+
+// DesktopCenterSecurity says "Review sign-ins and SSH security."
+// in the language the app shows.
+func DesktopCenterSecurity() string { return In(i18n.Locale()).DesktopCenterSecurity() }
+
+// DesktopCenterSecurity says "Review sign-ins and SSH security."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterSecurity() string {
+	return Catalog.Format(msgs.locale, "desktopCenterSecurity", nil)
+}
+
+// DesktopCenterFirewall says "Inspect and manage firewall rules."
+// in the language the app shows.
+func DesktopCenterFirewall() string { return In(i18n.Locale()).DesktopCenterFirewall() }
+
+// DesktopCenterFirewall says "Inspect and manage firewall rules."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterFirewall() string {
+	return Catalog.Format(msgs.locale, "desktopCenterFirewall", nil)
+}
+
+// DesktopCenterProcesses says "Inspect and control running processes."
+// in the language the app shows.
+func DesktopCenterProcesses() string { return In(i18n.Locale()).DesktopCenterProcesses() }
+
+// DesktopCenterProcesses says "Inspect and control running processes."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterProcesses() string {
+	return Catalog.Format(msgs.locale, "desktopCenterProcesses", nil)
+}
+
+// DesktopCenterNetwork says "Inspect sockets and network connections."
+// in the language the app shows.
+func DesktopCenterNetwork() string { return In(i18n.Locale()).DesktopCenterNetwork() }
+
+// DesktopCenterNetwork says "Inspect sockets and network connections."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterNetwork() string {
+	return Catalog.Format(msgs.locale, "desktopCenterNetwork", nil)
+}
+
+// DesktopCenterTunnels says "Manage SSH port forwards and proxies."
+// in the language the app shows.
+func DesktopCenterTunnels() string { return In(i18n.Locale()).DesktopCenterTunnels() }
+
+// DesktopCenterTunnels says "Manage SSH port forwards and proxies."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterTunnels() string {
+	return Catalog.Format(msgs.locale, "desktopCenterTunnels", nil)
+}
+
+// DesktopCenterTransfers says "Track and manage file transfers."
+// in the language the app shows.
+func DesktopCenterTransfers() string { return In(i18n.Locale()).DesktopCenterTransfers() }
+
+// DesktopCenterTransfers says "Track and manage file transfers."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterTransfers() string {
+	return Catalog.Format(msgs.locale, "desktopCenterTransfers", nil)
+}
+
+// DesktopCenterCommands says "Organize and send saved commands."
+// in the language the app shows.
+func DesktopCenterCommands() string { return In(i18n.Locale()).DesktopCenterCommands() }
+
+// DesktopCenterCommands says "Organize and send saved commands."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterCommands() string {
+	return Catalog.Format(msgs.locale, "desktopCenterCommands", nil)
+}
+
+// DesktopCenterOverview says "See server resources and system information."
+// in the language the app shows.
+func DesktopCenterOverview() string { return In(i18n.Locale()).DesktopCenterOverview() }
+
+// DesktopCenterOverview says "See server resources and system information."
+// in the language of msgs.
+func (msgs Messages) DesktopCenterOverview() string {
+	return Catalog.Format(msgs.locale, "desktopCenterOverview", nil)
+}
+
 // DesktopAppAI says "AI Assistant"
 // in the language the app shows.
 func DesktopAppAI() string { return In(i18n.Locale()).DesktopAppAI() }

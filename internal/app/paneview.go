@@ -58,6 +58,8 @@ func (a *App) splitPane(s *Session, dir splitDir) {
 	}
 	client, spec := s.client, a.shellSpec(s.Host)
 	go func() {
+		s.shellOpen.Lock()
+		defer s.shellOpen.Unlock()
 		term, err := a.openPaneShell(s, p, client, spec)
 		a.post(func() { a.paneOpened(s, at, p, dir, client, spec, term, err) })
 	}()
@@ -172,6 +174,7 @@ func (a *App) paneExited(s *Session, p *pane) {
 // connectionLost marks s lost: its connection dropped.
 func (a *App) connectionLost(s *Session) {
 	s.status, s.err = statusClosed, errConnectionLost
+	s.stopDesktopTools()
 	s.stopTunnels()
 	a.transfers.cancelRelaySession(s)
 	a.syncAlertSessions()

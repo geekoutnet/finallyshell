@@ -175,6 +175,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `optionAsAlt` | `true` 时在 macOS 上把 Option 用作 Alt（Meta）键。 | 关。 |
 | `termFontFamily` | 终端字体，逗号隔开的列表。 | JetBrains Mono, Cascadia Mono, Consolas, Menlo, DejaVu Sans Mono, monospace |
 | `termFontSize` | 字号，6 到 48。 | 13.5 |
+| `codeEditorFontSize` | 代码编辑器字号，9 到 36 DIP，仅保存在本机。 | 13 |
 | `termLineHeight` | 行高，字体本身行高的倍数，0.8 到 2。 | 1 |
 | `termFontWeight` | 粗细：300、400、500、600 或 700。 | 400 |
 | `termNoLigatures` | `true` 时关掉连字。 | 开启连字。 |

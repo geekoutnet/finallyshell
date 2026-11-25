@@ -243,6 +243,7 @@ default.
 | `optionAsAlt` | `true` makes Option the Alt (Meta) key on macOS. | Off. |
 | `termFontFamily` | Terminal font, a comma-separated list. | JetBrains Mono, Cascadia Mono, Consolas, Menlo, DejaVu Sans Mono, monospace |
 | `termFontSize` | Font size, 6 to 48. | 13.5 |
+| `codeEditorFontSize` | Code editor font size, 9 to 36 DIPs. Stays on this computer. | 13 |
 | `termLineHeight` | Line height as a multiple of the font's, 0.8 to 2. | 1 |
 | `termFontWeight` | Font weight: 300, 400, 500, 600 or 700. | 400 |
 | `termNoLigatures` | `true` turns ligatures off. | Ligatures on. |
@@ -358,7 +359,7 @@ local: `sidebarWidth`, `monitorPercent`, `terminalPercent`, `treeWidth`,
 `monitorHidden`, `bottomPanelHidden`, `bottomPanelSide`, `rightPanelWidth`,
 `monitorSide`, `rightMonitorPercent`, `commandEditorShown`,
 `commandEditorWidth`, `commandEditorPercent`, `commandEditorNoEnter`,
-`commandEditorClear`, `termBackground`, `localShell`, `sshAgent`, `x11Display`, `downloadDir`,
+`commandEditorClear`, `codeEditorFontSize`, `termBackground`, `localShell`, `sshAgent`, `x11Display`, `downloadDir`,
 `askDownloadDir`, `sync`,
 `geoLocations`, `geoLocationsV6`, `geoOnline`, `leftPanelPage` and
 `connectionTreeExpanded` (the left panel's page and the folders open are

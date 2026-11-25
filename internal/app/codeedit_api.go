@@ -47,6 +47,8 @@ type CodeEditorSpec struct {
 	// up as <file>.bak-<yyyymmddHHMMSS> and refuses a file changed on
 	// the server since it was read.
 	Save func(ctx context.Context, files []monitor.CaddyFile, expect map[string]string) (string, error)
+	// AllowSaveAnyway lets the user explicitly bypass a failed Validate when Save is nil.
+	AllowSaveAnyway bool
 	// Saved is called on the UI thread after a save.
 	Saved func()
 }

@@ -2000,8 +2000,16 @@ there is no connection, and Save is disabled. After the session reconnects,
 saving uses its new SFTP connection. If the session's tab was closed, the
 file is saved through another connected session to the same host.
 
-Not supported: saving with sudo. A file without write permission fails to
-save with "permission denied".
+A file without write permission fails to save in the regular editor. Use
+the code editor to edit with elevated permissions.
+
+### Code editor
+
+- In the file list, choose **Open in code editor** or **Edit as root in code editor**. Each invocation opens a separate window. When a tool opens several files (such as a Caddyfile and its imports), a collapsible tree lets you open them in tabs. Modified files have a dot.
+- The editor highlights Caddyfile, Nginx, systemd units, dotenv and INI files, as well as MyGo's built-in languages. For Caddyfile, use `Ctrl+Space` for directives, global options and matchers, `Tab` to move between snippet fields, and `Ctrl+/` (`Cmd+/` on macOS) to toggle comments. The toolbar provides search, replace, line navigation, undo/redo, wrapping, folding and font sizing. The status bar lets you choose the language, indentation and LF or CRLF; UTF-8 BOMs are preserved.
+- **Save** (`Ctrl+S` / `Cmd+S`) and **Save All** show the exact paths and a split or unified diff before writing. The editor shows pending operations and their results, including validation output and backups. The Caddy save hook receives all modified files as one batch, with their original bytes for conflict detection. A rejected validation leaves edits unsaved; Caddy does not offer a bypass.
+- Without a save hook, the editor refuses changed files and symlinks, backs up each original as `<file>.bak-<yyyymmddHHMMSS>` and replaces it atomically, preserving owner and permissions. SSH-user saves require the SFTP server's atomic rename extension; root saves go through the shared escalation layer. Ordinary multi-file saves are atomic per file, not a single transaction. Files larger than 5 MiB open as a read-only preview of the first 256 KiB; non-UTF-8 text and binary files are not editable.
+- Disconnecting keeps edits in memory. Reconnect to the same host and retry; for an editor opened by a tool with its own checks, reconnect the original SSH session. A conflicting file is never overwritten. Closing a modified tab or window asks whether to save, discard or cancel.
 
 ## System tab
 

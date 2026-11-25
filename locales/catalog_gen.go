@@ -9926,6 +9926,456 @@ func (msgs Messages) TrayQuit() string {
 	return Catalog.Format(msgs.locale, "trayQuit", nil)
 }
 
+// CeditTitle says "Code editor"
+// in the language the app shows.
+func CeditTitle() string { return In(i18n.Locale()).CeditTitle() }
+
+// CeditTitle says "Code editor"
+// in the language of msgs.
+func (msgs Messages) CeditTitle() string {
+	return Catalog.Format(msgs.locale, "ceditTitle", nil)
+}
+
+// CeditOpen says "Open in code editor"
+// in the language the app shows.
+func CeditOpen() string { return In(i18n.Locale()).CeditOpen() }
+
+// CeditOpen says "Open in code editor"
+// in the language of msgs.
+func (msgs Messages) CeditOpen() string {
+	return Catalog.Format(msgs.locale, "ceditOpen", nil)
+}
+
+// CeditOpenRoot says "Edit as root in code editor…"
+// in the language the app shows.
+func CeditOpenRoot() string { return In(i18n.Locale()).CeditOpenRoot() }
+
+// CeditOpenRoot says "Edit as root in code editor…"
+// in the language of msgs.
+func (msgs Messages) CeditOpenRoot() string {
+	return Catalog.Format(msgs.locale, "ceditOpenRoot", nil)
+}
+
+// CeditFiles says "Files"
+// in the language the app shows.
+func CeditFiles() string { return In(i18n.Locale()).CeditFiles() }
+
+// CeditFiles says "Files"
+// in the language of msgs.
+func (msgs Messages) CeditFiles() string {
+	return Catalog.Format(msgs.locale, "ceditFiles", nil)
+}
+
+// CeditChooseFile says "Select a file from the tree."
+// in the language the app shows.
+func CeditChooseFile() string { return In(i18n.Locale()).CeditChooseFile() }
+
+// CeditChooseFile says "Select a file from the tree."
+// in the language of msgs.
+func (msgs Messages) CeditChooseFile() string {
+	return Catalog.Format(msgs.locale, "ceditChooseFile", nil)
+}
+
+// CeditReadFile says "Read file"
+// in the language the app shows.
+func CeditReadFile() string { return In(i18n.Locale()).CeditReadFile() }
+
+// CeditReadFile says "Read file"
+// in the language of msgs.
+func (msgs Messages) CeditReadFile() string {
+	return Catalog.Format(msgs.locale, "ceditReadFile", nil)
+}
+
+// CeditReading says "Reading {path}…"
+// in the language the app shows.
+func CeditReading(path string) string { return In(i18n.Locale()).CeditReading(path) }
+
+// CeditReading says "Reading {path}…"
+// in the language of msgs.
+func (msgs Messages) CeditReading(path string) string {
+	return Catalog.Format(msgs.locale, "ceditReading", map[string]any{"path": path})
+}
+
+// CeditFormat says "Format"
+// in the language the app shows.
+func CeditFormat() string { return In(i18n.Locale()).CeditFormat() }
+
+// CeditFormat says "Format"
+// in the language of msgs.
+func (msgs Messages) CeditFormat() string {
+	return Catalog.Format(msgs.locale, "ceditFormat", nil)
+}
+
+// CeditFormatted says "Formatted — changes not saved"
+// in the language the app shows.
+func CeditFormatted() string { return In(i18n.Locale()).CeditFormatted() }
+
+// CeditFormatted says "Formatted — changes not saved"
+// in the language of msgs.
+func (msgs Messages) CeditFormatted() string {
+	return Catalog.Format(msgs.locale, "ceditFormatted", nil)
+}
+
+// CeditValidate says "Validate"
+// in the language the app shows.
+func CeditValidate() string { return In(i18n.Locale()).CeditValidate() }
+
+// CeditValidate says "Validate"
+// in the language of msgs.
+func (msgs Messages) CeditValidate() string {
+	return Catalog.Format(msgs.locale, "ceditValidate", nil)
+}
+
+// CeditValid says "Validation passed — no files written"
+// in the language the app shows.
+func CeditValid() string { return In(i18n.Locale()).CeditValid() }
+
+// CeditValid says "Validation passed — no files written"
+// in the language of msgs.
+func (msgs Messages) CeditValid() string {
+	return Catalog.Format(msgs.locale, "ceditValid", nil)
+}
+
+// CeditCheckAndSave says "Validating and saving…"
+// in the language the app shows.
+func CeditCheckAndSave() string { return In(i18n.Locale()).CeditCheckAndSave() }
+
+// CeditCheckAndSave says "Validating and saving…"
+// in the language of msgs.
+func (msgs Messages) CeditCheckAndSave() string {
+	return Catalog.Format(msgs.locale, "ceditCheckAndSave", nil)
+}
+
+// CeditBack says "Back to editor"
+// in the language the app shows.
+func CeditBack() string { return In(i18n.Locale()).CeditBack() }
+
+// CeditBack says "Back to editor"
+// in the language of msgs.
+func (msgs Messages) CeditBack() string {
+	return Catalog.Format(msgs.locale, "ceditBack", nil)
+}
+
+// CeditReviewTitle says "{count, plural, one {Review changes to # file} other {Review changes to # files}}"
+// in the language the app shows.
+func CeditReviewTitle(count int) string { return In(i18n.Locale()).CeditReviewTitle(count) }
+
+// CeditReviewTitle says "{count, plural, one {Review changes to # file} other {Review changes to # files}}"
+// in the language of msgs.
+func (msgs Messages) CeditReviewTitle(count int) string {
+	return Catalog.Format(msgs.locale, "ceditReviewTitle", map[string]any{"count": count})
+}
+
+// CeditReviewNote says "Saving backs up each listed file before replacing it on the server."
+// in the language the app shows.
+func CeditReviewNote() string { return In(i18n.Locale()).CeditReviewNote() }
+
+// CeditReviewNote says "Saving backs up each listed file before replacing it on the server."
+// in the language of msgs.
+func (msgs Messages) CeditReviewNote() string {
+	return Catalog.Format(msgs.locale, "ceditReviewNote", nil)
+}
+
+// CeditReviewTransaction says "Saving applies all listed changes together using the tool’s save procedure."
+// in the language the app shows.
+func CeditReviewTransaction() string { return In(i18n.Locale()).CeditReviewTransaction() }
+
+// CeditReviewTransaction says "Saving applies all listed changes together using the tool’s save procedure."
+// in the language of msgs.
+func (msgs Messages) CeditReviewTransaction() string {
+	return Catalog.Format(msgs.locale, "ceditReviewTransaction", nil)
+}
+
+// CeditReviewStale says "The text changed after review. Review the changes again before saving."
+// in the language the app shows.
+func CeditReviewStale() string { return In(i18n.Locale()).CeditReviewStale() }
+
+// CeditReviewStale says "The text changed after review. Review the changes again before saving."
+// in the language of msgs.
+func (msgs Messages) CeditReviewStale() string {
+	return Catalog.Format(msgs.locale, "ceditReviewStale", nil)
+}
+
+// CeditSplit says "Side by side"
+// in the language the app shows.
+func CeditSplit() string { return In(i18n.Locale()).CeditSplit() }
+
+// CeditSplit says "Side by side"
+// in the language of msgs.
+func (msgs Messages) CeditSplit() string {
+	return Catalog.Format(msgs.locale, "ceditSplit", nil)
+}
+
+// CeditUnified says "Unified"
+// in the language the app shows.
+func CeditUnified() string { return In(i18n.Locale()).CeditUnified() }
+
+// CeditUnified says "Unified"
+// in the language of msgs.
+func (msgs Messages) CeditUnified() string {
+	return Catalog.Format(msgs.locale, "ceditUnified", nil)
+}
+
+// CeditNormalizeEndings says "Normalize mixed line endings"
+// in the language the app shows.
+func CeditNormalizeEndings() string { return In(i18n.Locale()).CeditNormalizeEndings() }
+
+// CeditNormalizeEndings says "Normalize mixed line endings"
+// in the language of msgs.
+func (msgs Messages) CeditNormalizeEndings() string {
+	return Catalog.Format(msgs.locale, "ceditNormalizeEndings", nil)
+}
+
+// CeditSaveAnyway says "Save anyway"
+// in the language the app shows.
+func CeditSaveAnyway() string { return In(i18n.Locale()).CeditSaveAnyway() }
+
+// CeditSaveAnyway says "Save anyway"
+// in the language of msgs.
+func (msgs Messages) CeditSaveAnyway() string {
+	return Catalog.Format(msgs.locale, "ceditSaveAnyway", nil)
+}
+
+// CeditFontLarger says "Increase editor font size"
+// in the language the app shows.
+func CeditFontLarger() string { return In(i18n.Locale()).CeditFontLarger() }
+
+// CeditFontLarger says "Increase editor font size"
+// in the language of msgs.
+func (msgs Messages) CeditFontLarger() string {
+	return Catalog.Format(msgs.locale, "ceditFontLarger", nil)
+}
+
+// CeditFontSmaller says "Decrease editor font size"
+// in the language the app shows.
+func CeditFontSmaller() string { return In(i18n.Locale()).CeditFontSmaller() }
+
+// CeditFontSmaller says "Decrease editor font size"
+// in the language of msgs.
+func (msgs Messages) CeditFontSmaller() string {
+	return Catalog.Format(msgs.locale, "ceditFontSmaller", nil)
+}
+
+// CeditFold says "Fold all"
+// in the language the app shows.
+func CeditFold() string { return In(i18n.Locale()).CeditFold() }
+
+// CeditFold says "Fold all"
+// in the language of msgs.
+func (msgs Messages) CeditFold() string {
+	return Catalog.Format(msgs.locale, "ceditFold", nil)
+}
+
+// CeditUnfold says "Unfold all"
+// in the language the app shows.
+func CeditUnfold() string { return In(i18n.Locale()).CeditUnfold() }
+
+// CeditUnfold says "Unfold all"
+// in the language of msgs.
+func (msgs Messages) CeditUnfold() string {
+	return Catalog.Format(msgs.locale, "ceditUnfold", nil)
+}
+
+// CeditIndent says "Indentation"
+// in the language the app shows.
+func CeditIndent() string { return In(i18n.Locale()).CeditIndent() }
+
+// CeditIndent says "Indentation"
+// in the language of msgs.
+func (msgs Messages) CeditIndent() string {
+	return Catalog.Format(msgs.locale, "ceditIndent", nil)
+}
+
+// CeditSpaces says "Spaces"
+// in the language the app shows.
+func CeditSpaces() string { return In(i18n.Locale()).CeditSpaces() }
+
+// CeditSpaces says "Spaces"
+// in the language of msgs.
+func (msgs Messages) CeditSpaces() string {
+	return Catalog.Format(msgs.locale, "ceditSpaces", nil)
+}
+
+// CeditTabs says "Tabs"
+// in the language the app shows.
+func CeditTabs() string { return In(i18n.Locale()).CeditTabs() }
+
+// CeditTabs says "Tabs"
+// in the language of msgs.
+func (msgs Messages) CeditTabs() string {
+	return Catalog.Format(msgs.locale, "ceditTabs", nil)
+}
+
+// CeditRoot says "Root"
+// in the language the app shows.
+func CeditRoot() string { return In(i18n.Locale()).CeditRoot() }
+
+// CeditRoot says "Root"
+// in the language of msgs.
+func (msgs Messages) CeditRoot() string {
+	return Catalog.Format(msgs.locale, "ceditRoot", nil)
+}
+
+// CeditUser says "SSH user"
+// in the language the app shows.
+func CeditUser() string { return In(i18n.Locale()).CeditUser() }
+
+// CeditUser says "SSH user"
+// in the language of msgs.
+func (msgs Messages) CeditUser() string {
+	return Catalog.Format(msgs.locale, "ceditUser", nil)
+}
+
+// CeditReadOnly says "Read-only"
+// in the language the app shows.
+func CeditReadOnly() string { return In(i18n.Locale()).CeditReadOnly() }
+
+// CeditReadOnly says "Read-only"
+// in the language of msgs.
+func (msgs Messages) CeditReadOnly() string {
+	return Catalog.Format(msgs.locale, "ceditReadOnly", nil)
+}
+
+// CeditTooLarge says "Larger than 5 MiB. Only the first 256 KiB are shown, read-only."
+// in the language the app shows.
+func CeditTooLarge() string { return In(i18n.Locale()).CeditTooLarge() }
+
+// CeditTooLarge says "Larger than 5 MiB. Only the first 256 KiB are shown, read-only."
+// in the language of msgs.
+func (msgs Messages) CeditTooLarge() string {
+	return Catalog.Format(msgs.locale, "ceditTooLarge", nil)
+}
+
+// CeditUTF8Only says "The code editor opens UTF-8 text only. This file looks binary or uses another encoding."
+// in the language the app shows.
+func CeditUTF8Only() string { return In(i18n.Locale()).CeditUTF8Only() }
+
+// CeditUTF8Only says "The code editor opens UTF-8 text only. This file looks binary or uses another encoding."
+// in the language of msgs.
+func (msgs Messages) CeditUTF8Only() string {
+	return Catalog.Format(msgs.locale, "ceditUTF8Only", nil)
+}
+
+// CeditCannotValidateFile says "The full file could not be loaded for validation."
+// in the language the app shows.
+func CeditCannotValidateFile() string { return In(i18n.Locale()).CeditCannotValidateFile() }
+
+// CeditCannotValidateFile says "The full file could not be loaded for validation."
+// in the language of msgs.
+func (msgs Messages) CeditCannotValidateFile() string {
+	return Catalog.Format(msgs.locale, "ceditCannotValidateFile", nil)
+}
+
+// CeditPathInvalid says "Use an absolute path without line breaks or NUL characters."
+// in the language the app shows.
+func CeditPathInvalid() string { return In(i18n.Locale()).CeditPathInvalid() }
+
+// CeditPathInvalid says "Use an absolute path without line breaks or NUL characters."
+// in the language of msgs.
+func (msgs Messages) CeditPathInvalid() string {
+	return Catalog.Format(msgs.locale, "ceditPathInvalid", nil)
+}
+
+// CeditRegularOnly says "Only regular files can be edited."
+// in the language the app shows.
+func CeditRegularOnly() string { return In(i18n.Locale()).CeditRegularOnly() }
+
+// CeditRegularOnly says "Only regular files can be edited."
+// in the language of msgs.
+func (msgs Messages) CeditRegularOnly() string {
+	return Catalog.Format(msgs.locale, "ceditRegularOnly", nil)
+}
+
+// CeditChanged says "The file changed on the server or is no longer a regular file. No changes were written to it. Reopen it to review the…"
+// in the language the app shows.
+func CeditChanged() string { return In(i18n.Locale()).CeditChanged() }
+
+// CeditChanged says "The file changed on the server or is no longer a regular file. No changes were written to it. Reopen it to review the…"
+// in the language of msgs.
+func (msgs Messages) CeditChanged() string {
+	return Catalog.Format(msgs.locale, "ceditChanged", nil)
+}
+
+// CeditAtomicUnavailable says "This SFTP server cannot replace files atomically. No changes were written."
+// in the language the app shows.
+func CeditAtomicUnavailable() string { return In(i18n.Locale()).CeditAtomicUnavailable() }
+
+// CeditAtomicUnavailable says "This SFTP server cannot replace files atomically. No changes were written."
+// in the language of msgs.
+func (msgs Messages) CeditAtomicUnavailable() string {
+	return Catalog.Format(msgs.locale, "ceditAtomicUnavailable", nil)
+}
+
+// CeditBackupExists says "A backup already exists with the same timestamp. No changes were written. Try again in a moment."
+// in the language the app shows.
+func CeditBackupExists() string { return In(i18n.Locale()).CeditBackupExists() }
+
+// CeditBackupExists says "A backup already exists with the same timestamp. No changes were written. Try again in a moment."
+// in the language of msgs.
+func (msgs Messages) CeditBackupExists() string {
+	return Catalog.Format(msgs.locale, "ceditBackupExists", nil)
+}
+
+// CeditIncompleteRead says "The server did not return a complete file."
+// in the language the app shows.
+func CeditIncompleteRead() string { return In(i18n.Locale()).CeditIncompleteRead() }
+
+// CeditIncompleteRead says "The server did not return a complete file."
+// in the language of msgs.
+func (msgs Messages) CeditIncompleteRead() string {
+	return Catalog.Format(msgs.locale, "ceditIncompleteRead", nil)
+}
+
+// CeditMissingBackup says "The server did not confirm the backup path. Check the remote file before retrying."
+// in the language the app shows.
+func CeditMissingBackup() string { return In(i18n.Locale()).CeditMissingBackup() }
+
+// CeditMissingBackup says "The server did not confirm the backup path. Check the remote file before retrying."
+// in the language of msgs.
+func (msgs Messages) CeditMissingBackup() string {
+	return Catalog.Format(msgs.locale, "ceditMissingBackup", nil)
+}
+
+// CeditInterrupted says "Operation canceled or connection interrupted. Check the server before trying again."
+// in the language the app shows.
+func CeditInterrupted() string { return In(i18n.Locale()).CeditInterrupted() }
+
+// CeditInterrupted says "Operation canceled or connection interrupted. Check the server before trying again."
+// in the language of msgs.
+func (msgs Messages) CeditInterrupted() string {
+	return Catalog.Format(msgs.locale, "ceditInterrupted", nil)
+}
+
+// CeditReconnectOriginal says "Your edits are kept. Reconnect the original SSH session to use this tool’s checks and save procedure."
+// in the language the app shows.
+func CeditReconnectOriginal() string { return In(i18n.Locale()).CeditReconnectOriginal() }
+
+// CeditReconnectOriginal says "Your edits are kept. Reconnect the original SSH session to use this tool’s checks and save procedure."
+// in the language of msgs.
+func (msgs Messages) CeditReconnectOriginal() string {
+	return Catalog.Format(msgs.locale, "ceditReconnectOriginal", nil)
+}
+
+// CeditNoChanges says "No unsaved changes"
+// in the language the app shows.
+func CeditNoChanges() string { return In(i18n.Locale()).CeditNoChanges() }
+
+// CeditNoChanges says "No unsaved changes"
+// in the language of msgs.
+func (msgs Messages) CeditNoChanges() string {
+	return Catalog.Format(msgs.locale, "ceditNoChanges", nil)
+}
+
+// CeditWorking says "An operation is in progress"
+// in the language the app shows.
+func CeditWorking() string { return In(i18n.Locale()).CeditWorking() }
+
+// CeditWorking says "An operation is in progress"
+// in the language of msgs.
+func (msgs Messages) CeditWorking() string {
+	return Catalog.Format(msgs.locale, "ceditWorking", nil)
+}
+
 // TrecTitle says "Tunnel recipes…"
 // in the language the app shows.
 func TrecTitle() string { return In(i18n.Locale()).TrecTitle() }

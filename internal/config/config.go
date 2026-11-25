@@ -171,7 +171,8 @@ type Settings struct {
 	// list of coding fonts (DefaultTermFontFamily).
 	TermFontFamily string `json:"termFontFamily,omitempty"`
 	// TermFontSize is the font's size in DIPs: 0 for DefaultTermFontSize.
-	TermFontSize float32 `json:"termFontSize,omitempty"`
+	TermFontSize       float32 `json:"termFontSize,omitempty"`
+	CodeEditorFontSize int     `json:"codeEditorFontSize,omitempty"`
 	// TermLineHeight is the height of rows as a multiple of the font's
 	// own line height: 0 for 1.
 	TermLineHeight float32 `json:"termLineHeight,omitempty"`

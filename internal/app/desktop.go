@@ -408,3 +408,8 @@ func desktopPlaceholder(a *App, c *ui.Context, w *desktopWindow) {
 		ui.Text(c, locales.DesktopComingSoon()).TextColor(theme.TextMuted)
 	})
 }
+
+// desktopAddShortcutHook, set by the shell, puts a shortcut to the remote
+// path on the desktop of s's connection: the file manager's "Send to
+// desktop". Nil hides that item.
+var desktopAddShortcutHook func(a *App, s *Session, path string)

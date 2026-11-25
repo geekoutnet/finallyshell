@@ -398,9 +398,12 @@ func (a *App) desktopMenuItem(m *ui.Menu, s *Session) {
 }
 
 // desktopCornerButton is the button beside the panel's corner button that
-// opens the session's desktop.
+// opens the session's desktop, under the terminal or in a panel row.
 func (a *App) desktopCornerButton(c *ui.Context) {
 	s := a.current()
+	if a.panelOnRight() && !s.isPanelTab() {
+		return // the narrow column keeps its room for the tabs; the session's menu opens the desktop
+	}
 	if s.isPanelTab() {
 		s = s.panelOf
 	}

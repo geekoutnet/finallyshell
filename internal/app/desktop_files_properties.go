@@ -125,15 +125,16 @@ func (a *App) desktopFilesAskProperties(w *desktopWindow, item desktopFilesItem)
 		if err != nil || !info.IsDir() || run == nil {
 			return
 		}
-		out, stderr, err := run(ctx, relayQuote("du", "-sb", "--", item.target), nil)
+		// Its own error: the post above still reads err.
+		out, stderr, duErr := run(ctx, relayQuote("du", "-sb", "--", item.target), nil)
 		size, _, found := strings.Cut(out, "\t")
 		amount, parseErr := strconv.ParseInt(strings.TrimSpace(size), 10, 64)
 		a.post(func() {
 			props.measuring = false
-			if err == nil && found && parseErr == nil && amount >= 0 {
+			if duErr == nil && found && parseErr == nil && amount >= 0 {
 				props.bytes, props.unknownSize = amount, false
-			} else if err != nil && !errors.Is(err, context.Canceled) {
-				props.problem = desktopFilesCommandError(stderr, err).Error()
+			} else if duErr != nil && !errors.Is(duErr, context.Canceled) {
+				props.problem = desktopFilesCommandError(stderr, duErr).Error()
 			}
 		})
 	}()

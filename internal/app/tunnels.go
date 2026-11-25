@@ -37,6 +37,9 @@ func (a *App) startTunnels(s *Session, tunnels []config.Tunnel) {
 	s.stopTunnels()
 	s.tunnels.runs = nil
 	for _, t := range tunnels {
+		if t.ID == "" {
+			t.ID = config.NewTunnelID()
+		}
 		run := &tunnelRun{spec: t}
 		s.tunnels.runs = append(s.tunnels.runs, run)
 		if t.Enabled() {
@@ -45,11 +48,43 @@ func (a *App) startTunnels(s *Session, tunnels []config.Tunnel) {
 	}
 }
 
+// sessionTunnelRuns returns the session's tunnel definitions and live state on the UI thread.
+func (s *Session) sessionTunnelRuns() []*tunnelRun { return s.tunnels.runs }
+
+func (s *Session) tunnelByID(id string) *tunnelRun {
+	for _, run := range s.sessionTunnelRuns() {
+		if run.spec.ID == id {
+			return run
+		}
+	}
+	return nil
+}
+
+// startSessionTunnel starts a known stopped tunnel on the UI thread.
+func (a *App) startSessionTunnel(s *Session, id string) bool {
+	run := s.tunnelByID(id)
+	if s.client == nil || run == nil || run.starting || run.fwd != nil {
+		return false
+	}
+	a.startTunnel(s, run)
+	return true
+}
+
+// stopSessionTunnel stops a known running or starting tunnel on the UI thread.
+func (a *App) stopSessionTunnel(s *Session, id string) bool {
+	run := s.tunnelByID(id)
+	if run == nil || !run.starting && run.fwd == nil {
+		return false
+	}
+	run.stop()
+	return true
+}
+
 // startTunnel starts run on s's connection, on a goroutine: asking the
 // server to listen takes a round trip.
 func (a *App) startTunnel(s *Session, run *tunnelRun) {
 	client := s.client
-	if client == nil || run.fwd != nil {
+	if client == nil || run.fwd != nil || run.starting {
 		return
 	}
 	run.gen++
@@ -59,7 +94,7 @@ func (a *App) startTunnel(s *Session, run *tunnelRun) {
 	// goroutines: posted, the windows draw them.
 	notify := func() { a.post(run.refresh) }
 	go func() {
-		fwd, err := sshx.StartTunnel(client, spec, notify)
+		fwd, err := sshx.StartTunnelWithOptions(client, spec, sshx.TunnelOptions{Notify: notify})
 		a.post(func() {
 			if run.gen != gen || s.client != client { // stopped meanwhile
 				if fwd != nil {

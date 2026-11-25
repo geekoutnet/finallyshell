@@ -579,6 +579,10 @@ How passwords are used:
   order on a background goroutine, and the results go back to the UI thread
   through `App.post`.
 
+## Caddy site and global files
+
+The Sites and Global options sections read the detected main Caddyfile (normally `/etc/caddy/Caddyfile`) and its imports. Existing sites are written back to their original file. New sites, new snippets and global options are written to the main file. A disabled site remains in its original file as a marked comment block, so it can be enabled again. These sections do not write plaintext site passwords to local configuration or sync data and have no app settings of their own.
+
 ## Where SSH keys are stored
 
 The key manager writes generated and imported OpenSSH key pairs to the user's `~/.ssh` directory, outside the app's configuration and sync storage. Only the path is saved in `hosts.json`. Private files and their backups are mode `0600` on Unix; on Windows their ACL grants access only to the current user. Backups end in `.bak-<yyyymmddHHMMSS>` and may still be valid private keys, so keep them protected. A saved private-key passphrase goes to the system credential store, never alongside the key.

@@ -2027,6 +2027,19 @@ The System tab of the bottom panel manages the connected server itself: a row at
 - **Certificates:** View public certificates used by Nginx and Let's Encrypt `fullchain.pem` files, including the subject, SANs, issuer, public-key type and validity dates. Expiry turns yellow under 30 days and red under 7 days, including expired certificates. **Check domain** compares the certificate presented on port 443 from the SSH server with the certificate and trust result from this computer; the server-side probe does not verify trust.
 - **ACME:** Inspect Certbot lineages and common renewal timers or cron entries. `acme.sh` is detected only. Certbot renewal and its staging dry run both ask first because existing hooks may run. Issuing a certificate requires the Certbot Nginx plugin and asks before publishing names to an ACME CA and letting the plugin change Nginx. Supported Nginx configurations are backed up before running these tools. A canceled stream does not guarantee that the remote operation has been undone; refresh and inspect its state before retrying.
 
+### Caddy tab › Sites
+
+- Filter sites by address, type, target or file. The full table shows TLS, the configuration file and line, and indicators for basic authentication, IP rules, headers and access logging. In a narrow panel, hover over an address for these details.
+- Create or duplicate a site with a live Caddyfile preview. Templates cover static files, reverse proxies, Node.js and Go applications, PHP/WordPress, SPAs, www redirects, authenticated file browsing, API gateways, Docker ports, WebSocket and load balancing. PHP-FPM can look up sockets on the server; the Docker template uses published TCP ports from the connection's Docker overview.
+- The form covers TLS, client certificates, IP and authentication rules, compression, headers and CORS, request size, access logs, path routes and proxy health checks. Caddy hashes new basic-auth passwords on the server; plaintext never appears in the preview or saved configuration. Use the code editor for sites with settings or comments the form cannot preserve.
+- Use the row menu to disable, enable or delete a site, open an HTTP(S) address, or test response headers from this computer or the server. Validate checks the full candidate configuration without saving. Changes name the addresses and files, then back up, validate and hot-reload the configuration; a failure restores the previous files.
+
+### Caddy tab › Global options
+
+- Browse settings grouped into general, binding and ports, admin API, logging, TLS/ACME, on-demand TLS, servers, local CA and metrics. Compound settings accept Caddyfile syntax with examples, and server settings can be edited individually in the draft. Unknown and sensitive entries are not rewritten by the forms.
+- For trusted proxies, use Caddy's private ranges or download Cloudflare's official IPv4 and IPv6 ranges from this computer. Review the draft before saving and only trust proxies that actually forward your requests.
+- Add, edit or remove named snippets. Use the code editor to change an existing snippet's name and its imports together. Saving asks for confirmation, checks for intervening edits, validates the entire configuration and hot-reloads; a failure restores the previous files.
+
 ## Tunnels tab
 
 The session's **Tunnels** tab shows each listener (including its assigned

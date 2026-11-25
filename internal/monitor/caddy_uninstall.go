@@ -26,6 +26,7 @@ func caddyUninstallScript(inst CaddyInstall, options CaddyUninstallOptions) (str
 		fmt.Fprintf(&script, `id=$(docker 'inspect' '--type' 'container' '--format' '{{.Id}}' %s)
 case "$id" in ''|*[!0-9a-f]*) exit '1' ;; esac
 if [ -n "$(docker 'inspect' '--format' '{{with index .Config.Labels "com.docker.compose.project"}}{{.}}{{end}}' "$id")" ]; then exit '1'; fi
+[ "$(docker 'inspect' '--format' '{{.HostConfig.AutoRemove}}' "$id")" = 'false' ]
 docker 'inspect' "$id" > "$backup/container.json"
 docker 'rm' '-f' "$id"
 `, name)
@@ -44,10 +45,10 @@ if [ -d '/etc/caddy' ]; then cp -a -- '/etc/caddy' "$backup/etc-caddy"; fi
 	if caddyPath(inst.UnitFile) {
 		fmt.Fprintf(&script, "if [ -f %s ]; then cp -pL -- %s \"$backup/service\"; fi\n", privilegeQuote(inst.UnitFile), privilegeQuote(inst.UnitFile))
 	}
-	if inst.Unit != "" {
+	if inst.ServiceManager == "openrc" {
+		script.WriteString("if rc-service 'caddy' 'status' >/dev/null 2>&1; then rc-service 'caddy' 'stop'; fi\nrc-update 'del' 'caddy' 'default' || :\n")
+	} else if inst.Unit != "" {
 		script.WriteString(SystemCommand("systemctl", "disable", "--now", inst.Unit) + "\n")
-	} else if inst.ServiceManager == "openrc" {
-		script.WriteString("rc-service 'caddy' 'stop'\nrc-update 'del' 'caddy' 'default' || :\n")
 	} else if inst.Active == "active" || len(inst.Listening) != 0 {
 		return "", fmt.Errorf("%w: stop the unmanaged Caddy process before uninstalling", ErrCaddyUnsafe)
 	}

@@ -19,16 +19,22 @@ type caddyAction struct {
 func caddyActions(c *ui.Context, actions ...caddyAction) {
 	bar := ui.Row(c).FillWidth().Shrink(0).Gap(5).AlignItems(ui.Center)
 	narrow := bar.LayoutBounds().W > 0 && bar.LayoutBounds().W < 640
+	bar.ContextMenu(func(menu *ui.Menu) { caddyMenu(menu, actions...) })
 	bar.Children(func() {
+		visible := actions
 		if narrow && len(actions) > 1 {
-			all := actions
-			ui.MenuButton(c, locales.SvcActions(), func(menu *ui.Menu) { caddyMenu(menu, all...) }).MarginStart(8).Shrink(0)
-			actions = actions[:1]
+			ui.MenuButton(c, locales.SvcActions(), func(menu *ui.Menu) { caddyMenu(menu, actions...) }).MarginStart(8).Shrink(0)
+			visible = actions[:1]
+			for index, action := range actions {
+				if action.reason == "" {
+					visible = actions[index : index+1]
+					break
+				}
+			}
 		}
 		row := ui.Row(c).Padding(4, 8).Gap(6)
-		row.ContextMenu(func(menu *ui.Menu) { caddyMenu(menu, actions...) })
 		row.Children(func() {
-			for _, action := range actions {
+			for _, action := range visible {
 				button := ui.Button(c, action.label).Shrink(0).Disabled(action.reason != "")
 				if action.reason != "" {
 					button.Tooltip(action.reason)

@@ -333,7 +333,7 @@ func (a *App) caddyGlobalApply(s *Session, dialog *systemDialog, file monitor.Ca
 	dialog.busy, dialog.cancel, dialog.body, dialog.back = true, cancel, nil, nil
 	change := monitor.CaddyChange{
 		Writes: []monitor.CaddyFile{{Path: file.Path, Content: update}},
-		Expect: map[string]string{file.Path: file.Content}, Reload: true,
+		Expect: map[string]string{file.Path: file.Content}, Reload: caddyServiceRunning(page.source.inst),
 	}
 	progress, _ := a.caddySectionProgress(dialog, func() bool { return page.work == dialog && page.dialog == dialog })
 	a.runCaddySectionApply(s, &page.source, change, func(result monitor.CaddyApplyResult, err error) {

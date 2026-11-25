@@ -33,7 +33,7 @@ func CaddyLogsScript(inst CaddyInstall, lines int, follow bool) (string, error) 
 		}
 		return SystemCommand(append(args, inst.Container)...), nil
 	}
-	if inst.Unit == "" {
+	if inst.Unit == "" || inst.ServiceManager == "openrc" {
 		return "", ErrCaddyUnsafe
 	}
 	args = []string{"journalctl", "-u", inst.Unit, "-o", "short-iso", "-n", count}
@@ -47,7 +47,7 @@ func CaddyLogsScript(inst CaddyInstall, lines int, follow bool) (string, error) 
 // For Docker, the path from CaddyLogFiles is interpreted inside the container.
 func CaddyLogFileScript(inst CaddyInstall, filename string, lines int, follow bool) (string, error) {
 	inst, err := caddyNormalize(inst)
-	if err != nil || !caddyPath(filename) {
+	if err != nil || !ValidLogPath(filename) || (inst.Method == CaddyDocker && inst.Active != "active" && inst.Active != "running") {
 		return "", ErrCaddyUnsafe
 	}
 	count, err := caddyLogCount(lines)

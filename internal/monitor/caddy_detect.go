@@ -211,6 +211,7 @@ func caddyParseUnit(text string) (CaddyInstall, map[string]string, bool) {
 		case "ActiveState":
 			inst.Active = value
 		case "UnitFileState":
+			inst.UnitFileState = value
 			inst.Enabled = value == "enabled" || value == "enabled-runtime"
 		case "User":
 			inst.User = value
@@ -271,15 +272,19 @@ type caddyDockerInspect struct {
 		Running bool
 	}
 	Config struct {
-		Image string
-		Env   []string
+		Image   string
+		Env     []string
+		Compose string
 	}
-	HostConfig      struct{ RestartPolicy struct{ Name string } }
+	HostConfig struct {
+		RestartPolicy struct{ Name string }
+		AutoRemove    bool
+	}
 	Mounts          []CaddyMount
 	NetworkSettings struct{ Ports json.RawMessage }
 }
 
-const caddyDockerInspectFormat = `{"Name":{{json .Name}},"Args":{{json .Args}},"State":{{json .State}},"Config":{"Image":{{json .Config.Image}},"Env":[{{range .Config.Env}}{{if or (eq (index (split . "=") 0) "CADDY_ADMIN") (eq (index (split . "=") 0) "XDG_DATA_HOME")}}{{json .}},{{end}}{{end}}""]},"HostConfig":{"RestartPolicy":{{json .HostConfig.RestartPolicy}}},"Mounts":{{json .Mounts}},"NetworkSettings":{"Ports":{{json .NetworkSettings.Ports}}}}`
+const caddyDockerInspectFormat = `{"Name":{{json .Name}},"Args":{{json .Args}},"State":{{json .State}},"Config":{"Image":{{json .Config.Image}},"Compose":{{json (index .Config.Labels "com.docker.compose.project")}},"Env":[{{range .Config.Env}}{{if or (eq (index (split . "=") 0) "CADDY_ADMIN") (eq (index (split . "=") 0) "XDG_DATA_HOME")}}{{json .}},{{end}}{{end}}""]},"HostConfig":{"RestartPolicy":{{json .HostConfig.RestartPolicy}},"AutoRemove":{{json .HostConfig.AutoRemove}}},"Mounts":{{json .Mounts}},"NetworkSettings":{"Ports":{{json .NetworkSettings.Ports}}}}`
 
 func caddyImage(image string) bool {
 	image = strings.SplitN(image, "@", 2)[0]
@@ -296,6 +301,8 @@ func caddyParseDocker(text string) (CaddyInstall, map[string]string, bool) {
 		return CaddyInstall{}, nil, false
 	}
 	inst := CaddyInstall{Method: CaddyDocker, Container: name, ContainerImage: info.Config.Image, Active: info.State.Status, Mounts: info.Mounts, Config: caddyContainerConfig, Ports: string(info.NetworkSettings.Ports), RestartPolicy: info.HostConfig.RestartPolicy.Name, ServiceManager: "docker"}
+	inst.ContainerCompose = info.Config.Compose != ""
+	inst.ContainerAutoRemove = info.HostConfig.AutoRemove
 	if info.State.Running {
 		inst.Active = "active"
 	} else if inst.Active == "" || inst.Active == "exited" || inst.Active == "created" {
@@ -497,7 +504,11 @@ func caddyDetectDetails(ctx context.Context, run CaddyRunner, inst CaddyInstall,
 	script.WriteString(caddyDetectPrelude + caddyShellEnvironment)
 	script.WriteString("unset CADDY_ADMIN XDG_DATA_HOME\n")
 	if inst.Method == CaddyDocker {
-		fmt.Fprintf(&script, "record 'version' \"$(%s 2>/dev/null)\"\nrecord 'modules' \"$(%s 2>/dev/null)\"\n", caddyCLI(inst, "version"), caddyCLI(inst, "list-modules", "--skip-standard"))
+		if inst.Active == "active" {
+			fmt.Fprintf(&script, "record 'version' \"$(%s 2>/dev/null)\"\nrecord 'modules' \"$(%s 2>/dev/null)\"\n", caddyCLI(inst, "version"), caddyCLI(inst, "list-modules", "--skip-standard"))
+		} else {
+			fmt.Fprintf(&script, "record 'version' \"$(%s 2>/dev/null)\"\n", SystemCommand("docker", "inspect", "--type", "container", "--format", `{{with index .Config.Labels "org.opencontainers.image.version"}}{{.}}{{end}}`, inst.Container))
+		}
 	} else {
 		user := inst.User
 		if user == "" {
@@ -584,6 +595,14 @@ func caddyDetectDetails(ctx context.Context, run CaddyRunner, inst CaddyInstall,
 			home = "/var/lib/caddy"
 		}
 		inst.DataDir = path.Join(home, ".local/share/caddy")
+	}
+	if inst.Method == CaddyDocker && inst.Version == "" {
+		if colon := strings.LastIndexByte(inst.ContainerImage, ':'); colon > strings.LastIndexByte(inst.ContainerImage, '/') && !strings.Contains(inst.ContainerImage, "@") {
+			version := "v" + strings.TrimPrefix(inst.ContainerImage[colon+1:], "v")
+			if caddyVersionTag.MatchString(version) {
+				inst.Version = version
+			}
+		}
 	}
 	if inst.Resume {
 		inst.Adapter = "json"

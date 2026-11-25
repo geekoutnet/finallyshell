@@ -57,7 +57,7 @@ func caddyNormalize(inst CaddyInstall) (CaddyInstall, error) {
 	}
 	if !caddyPath(inst.Config) || !caddyPath(inst.SitesDir) || !caddyIdentifier.MatchString(inst.Adapter) ||
 		(inst.Method != CaddyDocker && inst.Binary != "" && !caddyPath(inst.Binary)) ||
-		(inst.Envfile != "" && !caddyPath(inst.Envfile)) || (inst.Unit != "" && !ValidService(inst.Unit)) ||
+		(inst.Envfile != "" && !caddyPath(inst.Envfile)) || (inst.Unit != "" && !(inst.ServiceManager == "openrc" && inst.Unit == "caddy") && !ValidService(inst.Unit)) ||
 		(inst.Method == CaddyDocker && !caddyIdentifier.MatchString(inst.Container)) {
 		return inst, ErrCaddyUnsafe
 	}
@@ -70,6 +70,21 @@ func caddyNormalize(inst CaddyInstall) (CaddyInstall, error) {
 		return inst, ErrCaddyUnsafe
 	}
 	return inst, nil
+}
+
+func CaddyConfigWritable(inst CaddyInstall, name string) bool {
+	if inst.Resume || inst.ContainerConfigUnmapped || !caddyPath(name) {
+		return false
+	}
+	if inst.Method != CaddyDocker {
+		return true
+	}
+	_, _, err := caddyChangePaths(inst, CaddyChange{Writes: []CaddyFile{{Path: name}}})
+	return len(inst.Mounts) > 0 && err == nil
+}
+
+func CaddyConfigPreviewSupported(inst CaddyInstall) bool {
+	return !inst.Resume && (inst.Method != CaddyDocker || inst.Active == "active" || inst.Active == "running")
 }
 
 func caddyCLI(inst CaddyInstall, args ...string) string {

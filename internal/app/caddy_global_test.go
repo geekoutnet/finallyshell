@@ -145,7 +145,7 @@ func caddyGlobalUITest(t *testing.T) (*App, *fakePlatform, *ui.Tester, *Session,
 	page := &session.caddy.global
 	page.source.backend = caddySectionBackend{
 		detect: func(context.Context, monitor.CaddyRunner) (monitor.CaddyInstall, error) {
-			return monitor.CaddyInstall{Method: monitor.CaddyAPT, Config: "/etc/caddy/Caddyfile"}, nil
+			return monitor.CaddyInstall{Method: monitor.CaddyAPT, Config: "/etc/caddy/Caddyfile", Active: "active"}, nil
 		},
 		read: func(context.Context, monitor.CaddyRunner, monitor.CaddyInstall) ([]monitor.CaddyFile, error) {
 			return []monitor.CaddyFile{{Path: "/etc/caddy/Caddyfile", Content: cglobFixture}}, nil

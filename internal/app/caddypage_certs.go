@@ -51,7 +51,7 @@ func (a *App) caddyCertsSection(c *ui.Context, s *Session) {
 	if root.PEM == "" {
 		rootReason = locales.CpanelNoRootCA()
 	}
-	if s.sftp == nil || !caddyValidPath(root.Path) || !strings.HasSuffix(root.Path, "/root.crt") {
+	if s.sftp == nil || s.caddy.state.install.ContainerDataUnmapped || !caddyValidPath(root.Path) || !strings.HasSuffix(root.Path, "/root.crt") {
 		downloadReason = locales.CpanelNoRootDownload()
 	}
 	rows := page.data.Rows

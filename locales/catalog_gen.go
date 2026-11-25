@@ -27458,13 +27458,13 @@ func (msgs Messages) CpanelVersionTarget(version string) string {
 	return Catalog.Format(msgs.locale, "cpanelVersionTarget", map[string]any{"version": version})
 }
 
-// CpanelReplaceWarning says "Stop these services and disable their autostart: {services}. Their websites can go offline."
+// CpanelReplaceWarning says "Stop these services and disable their autostart: {services}. Their websites can go offline. Restore their original st…"
 // in the language the app shows.
 func CpanelReplaceWarning(services string) string {
 	return In(i18n.Locale()).CpanelReplaceWarning(services)
 }
 
-// CpanelReplaceWarning says "Stop these services and disable their autostart: {services}. Their websites can go offline."
+// CpanelReplaceWarning says "Stop these services and disable their autostart: {services}. Their websites can go offline. Restore their original st…"
 // in the language of msgs.
 func (msgs Messages) CpanelReplaceWarning(services string) string {
 	return Catalog.Format(msgs.locale, "cpanelReplaceWarning", map[string]any{"services": services})
@@ -27614,21 +27614,21 @@ func (msgs Messages) CpanelUninstallNote() string {
 	return Catalog.Format(msgs.locale, "cpanelUninstallNote", nil)
 }
 
-// CpanelPurgeNote says "Stop and remove Caddy, then delete the listed configuration and data, including managed certificates. Websites go off…"
+// CpanelPurgeNote says "Stop and remove Caddy, then move the listed configuration and data, including managed certificates, into a private re…"
 // in the language the app shows.
 func CpanelPurgeNote() string { return In(i18n.Locale()).CpanelPurgeNote() }
 
-// CpanelPurgeNote says "Stop and remove Caddy, then delete the listed configuration and data, including managed certificates. Websites go off…"
+// CpanelPurgeNote says "Stop and remove Caddy, then move the listed configuration and data, including managed certificates, into a private re…"
 // in the language of msgs.
 func (msgs Messages) CpanelPurgeNote() string {
 	return Catalog.Format(msgs.locale, "cpanelPurgeNote", nil)
 }
 
-// CpanelTypePurge says "Type caddy to confirm permanent deletion."
+// CpanelTypePurge says "Type caddy to confirm removing the configuration and data."
 // in the language the app shows.
 func CpanelTypePurge() string { return In(i18n.Locale()).CpanelTypePurge() }
 
-// CpanelTypePurge says "Type caddy to confirm permanent deletion."
+// CpanelTypePurge says "Type caddy to confirm removing the configuration and data."
 // in the language of msgs.
 func (msgs Messages) CpanelTypePurge() string {
 	return Catalog.Format(msgs.locale, "cpanelTypePurge", nil)
@@ -27694,11 +27694,11 @@ func (msgs Messages) CpanelDockerMigration() string {
 	return Catalog.Format(msgs.locale, "cpanelDockerMigration", nil)
 }
 
-// CpanelNoPackageMigration says "Requires a standalone binary without custom modules on an APT or DNF system."
+// CpanelNoPackageMigration says "Requires a standalone binary without custom modules, a local systemd unit, and a Caddy data directory on an APT or DN…"
 // in the language the app shows.
 func CpanelNoPackageMigration() string { return In(i18n.Locale()).CpanelNoPackageMigration() }
 
-// CpanelNoPackageMigration says "Requires a standalone binary without custom modules on an APT or DNF system."
+// CpanelNoPackageMigration says "Requires a standalone binary without custom modules, a local systemd unit, and a Caddy data directory on an APT or DN…"
 // in the language of msgs.
 func (msgs Messages) CpanelNoPackageMigration() string {
 	return Catalog.Format(msgs.locale, "cpanelNoPackageMigration", nil)
@@ -27828,11 +27828,11 @@ func (msgs Messages) CpanelReviewImport(count int) string {
 	return Catalog.Format(msgs.locale, "cpanelReviewImport", map[string]any{"count": count})
 }
 
-// CpanelNginxCutoverNote says "Back up and validate the proposed Caddy configuration, stop and disable Nginx and start Caddy on ports 80/443. Nginx …"
+// CpanelNginxCutoverNote says "Back up and validate the reviewed Caddy configuration without reloading. Stop Nginx and disable its autostart, then e…"
 // in the language the app shows.
 func CpanelNginxCutoverNote() string { return In(i18n.Locale()).CpanelNginxCutoverNote() }
 
-// CpanelNginxCutoverNote says "Back up and validate the proposed Caddy configuration, stop and disable Nginx and start Caddy on ports 80/443. Nginx …"
+// CpanelNginxCutoverNote says "Back up and validate the reviewed Caddy configuration without reloading. Stop Nginx and disable its autostart, then e…"
 // in the language of msgs.
 func (msgs Messages) CpanelNginxCutoverNote() string {
 	return Catalog.Format(msgs.locale, "cpanelNginxCutoverNote", nil)
@@ -27846,6 +27846,196 @@ func CpanelImportWithoutStart() string { return In(i18n.Locale()).CpanelImportWi
 // in the language of msgs.
 func (msgs Messages) CpanelImportWithoutStart() string {
 	return Catalog.Format(msgs.locale, "cpanelImportWithoutStart", nil)
+}
+
+// CwireCannotValidate says "Validation is unavailable for an API-resume service or stopped container."
+// in the language the app shows.
+func CwireCannotValidate() string { return In(i18n.Locale()).CwireCannotValidate() }
+
+// CwireCannotValidate says "Validation is unavailable for an API-resume service or stopped container."
+// in the language of msgs.
+func (msgs Messages) CwireCannotValidate() string {
+	return Catalog.Format(msgs.locale, "cwireCannotValidate", nil)
+}
+
+// CwireCannotWrite says "This configuration is not writable as regular files in a supported layout."
+// in the language the app shows.
+func CwireCannotWrite() string { return In(i18n.Locale()).CwireCannotWrite() }
+
+// CwireCannotWrite says "This configuration is not writable as regular files in a supported layout."
+// in the language of msgs.
+func (msgs Messages) CwireCannotWrite() string {
+	return Catalog.Format(msgs.locale, "cwireCannotWrite", nil)
+}
+
+// CwireDockerLifecycle says "Use the original Docker or Compose workflow for this container."
+// in the language the app shows.
+func CwireDockerLifecycle() string { return In(i18n.Locale()).CwireDockerLifecycle() }
+
+// CwireDockerLifecycle says "Use the original Docker or Compose workflow for this container."
+// in the language of msgs.
+func (msgs Messages) CwireDockerLifecycle() string {
+	return Catalog.Format(msgs.locale, "cwireDockerLifecycle", nil)
+}
+
+// CwireCannotUpdate says "This installation does not support a safe update from the panel."
+// in the language the app shows.
+func CwireCannotUpdate() string { return In(i18n.Locale()).CwireCannotUpdate() }
+
+// CwireCannotUpdate says "This installation does not support a safe update from the panel."
+// in the language of msgs.
+func (msgs Messages) CwireCannotUpdate() string {
+	return Catalog.Format(msgs.locale, "cwireCannotUpdate", nil)
+}
+
+// CwireNoRepair says "Repair requires a known standalone release or a replaceable Docker image."
+// in the language the app shows.
+func CwireNoRepair() string { return In(i18n.Locale()).CwireNoRepair() }
+
+// CwireNoRepair says "Repair requires a known standalone release or a replaceable Docker image."
+// in the language of msgs.
+func (msgs Messages) CwireNoRepair() string {
+	return Catalog.Format(msgs.locale, "cwireNoRepair", nil)
+}
+
+// CwireNoPurge says "Removing data is available only with the standard native configuration and data paths."
+// in the language the app shows.
+func CwireNoPurge() string { return In(i18n.Locale()).CwireNoPurge() }
+
+// CwireNoPurge says "Removing data is available only with the standard native configuration and data paths."
+// in the language of msgs.
+func (msgs Messages) CwireNoPurge() string {
+	return Catalog.Format(msgs.locale, "cwireNoPurge", nil)
+}
+
+// CwireNoCutover says "Cutover requires stopped systemd Caddy and Nginx as the only conflicting listener."
+// in the language the app shows.
+func CwireNoCutover() string { return In(i18n.Locale()).CwireNoCutover() }
+
+// CwireNoCutover says "Cutover requires stopped systemd Caddy and Nginx as the only conflicting listener."
+// in the language of msgs.
+func (msgs Messages) CwireNoCutover() string {
+	return Catalog.Format(msgs.locale, "cwireNoCutover", nil)
+}
+
+// CwireNoNginxDraft says "There is no draft to select. Enter and review a Caddy site first."
+// in the language the app shows.
+func CwireNoNginxDraft() string { return In(i18n.Locale()).CwireNoNginxDraft() }
+
+// CwireNoNginxDraft says "There is no draft to select. Enter and review a Caddy site first."
+// in the language of msgs.
+func (msgs Messages) CwireNoNginxDraft() string {
+	return Catalog.Format(msgs.locale, "cwireNoNginxDraft", nil)
+}
+
+// CwireDockerNeedsStart says "A Docker restart policy requires starting the new container first."
+// in the language the app shows.
+func CwireDockerNeedsStart() string { return In(i18n.Locale()).CwireDockerNeedsStart() }
+
+// CwireDockerNeedsStart says "A Docker restart policy requires starting the new container first."
+// in the language of msgs.
+func (msgs Messages) CwireDockerNeedsStart() string {
+	return Catalog.Format(msgs.locale, "cwireDockerNeedsStart", nil)
+}
+
+// CwireReplacementNeedsStart says "Start Caddy now when stopping conflicting web services."
+// in the language the app shows.
+func CwireReplacementNeedsStart() string { return In(i18n.Locale()).CwireReplacementNeedsStart() }
+
+// CwireReplacementNeedsStart says "Start Caddy now when stopping conflicting web services."
+// in the language of msgs.
+func (msgs Messages) CwireReplacementNeedsStart() string {
+	return Catalog.Format(msgs.locale, "cwireReplacementNeedsStart", nil)
+}
+
+// CwireReleaseUnavailable says "Could not confirm a standalone release. Refresh or choose another installation method."
+// in the language the app shows.
+func CwireReleaseUnavailable() string { return In(i18n.Locale()).CwireReleaseUnavailable() }
+
+// CwireReleaseUnavailable says "Could not confirm a standalone release. Refresh or choose another installation method."
+// in the language of msgs.
+func (msgs Messages) CwireReleaseUnavailable() string {
+	return Catalog.Format(msgs.locale, "cwireReleaseUnavailable", nil)
+}
+
+// CwireDockerRepair says "Pull the original image reference again and recreate the container with the same settings and mounts. A mutable tag m…"
+// in the language the app shows.
+func CwireDockerRepair() string { return In(i18n.Locale()).CwireDockerRepair() }
+
+// CwireDockerRepair says "Pull the original image reference again and recreate the container with the same settings and mounts. A mutable tag m…"
+// in the language of msgs.
+func (msgs Messages) CwireDockerRepair() string {
+	return Catalog.Format(msgs.locale, "cwireDockerRepair", nil)
+}
+
+// CwireCustomUpdate says "Run Caddy’s experimental upgrade to rebuild the binary with its installed modules. Keep the previous binary and con…"
+// in the language the app shows.
+func CwireCustomUpdate() string { return In(i18n.Locale()).CwireCustomUpdate() }
+
+// CwireCustomUpdate says "Run Caddy’s experimental upgrade to rebuild the binary with its installed modules. Keep the previous binary and con…"
+// in the language of msgs.
+func (msgs Messages) CwireCustomUpdate() string {
+	return Catalog.Format(msgs.locale, "cwireCustomUpdate", nil)
+}
+
+// CwirePackageUpdate says "Save a verified copy of the installed package and back up the configuration. Let the package manager select the avail…"
+// in the language the app shows.
+func CwirePackageUpdate() string { return In(i18n.Locale()).CwirePackageUpdate() }
+
+// CwirePackageUpdate says "Save a verified copy of the installed package and back up the configuration. Let the package manager select the avail…"
+// in the language of msgs.
+func (msgs Messages) CwirePackageUpdate() string {
+	return Catalog.Format(msgs.locale, "cwirePackageUpdate", nil)
+}
+
+// CwireValidateWithoutReload says "Back up the files, write the proposed changes and validate the complete configuration. Do not start or reload Caddy."
+// in the language the app shows.
+func CwireValidateWithoutReload() string { return In(i18n.Locale()).CwireValidateWithoutReload() }
+
+// CwireValidateWithoutReload says "Back up the files, write the proposed changes and validate the complete configuration. Do not start or reload Caddy."
+// in the language of msgs.
+func (msgs Messages) CwireValidateWithoutReload() string {
+	return Catalog.Format(msgs.locale, "cwireValidateWithoutReload", nil)
+}
+
+// CwireNeedsSystemd says "This option requires an active systemd service manager."
+// in the language the app shows.
+func CwireNeedsSystemd() string { return In(i18n.Locale()).CwireNeedsSystemd() }
+
+// CwireNeedsSystemd says "This option requires an active systemd service manager."
+// in the language of msgs.
+func (msgs Messages) CwireNeedsSystemd() string {
+	return Catalog.Format(msgs.locale, "cwireNeedsSystemd", nil)
+}
+
+// CwireNeedsOpenRC says "The Alpine package option requires OpenRC."
+// in the language the app shows.
+func CwireNeedsOpenRC() string { return In(i18n.Locale()).CwireNeedsOpenRC() }
+
+// CwireNeedsOpenRC says "The Alpine package option requires OpenRC."
+// in the language of msgs.
+func (msgs Messages) CwireNeedsOpenRC() string {
+	return Catalog.Format(msgs.locale, "cwireNeedsOpenRC", nil)
+}
+
+// CwireNoAutostart says "Autostart cannot be changed for a systemd unit in state {state}."
+// in the language the app shows.
+func CwireNoAutostart(state string) string { return In(i18n.Locale()).CwireNoAutostart(state) }
+
+// CwireNoAutostart says "Autostart cannot be changed for a systemd unit in state {state}."
+// in the language of msgs.
+func (msgs Messages) CwireNoAutostart(state string) string {
+	return Catalog.Format(msgs.locale, "cwireNoAutostart", map[string]any{"state": state})
+}
+
+// CwireFirewalldDefault says "the default firewalld zone"
+// in the language the app shows.
+func CwireFirewalldDefault() string { return In(i18n.Locale()).CwireFirewalldDefault() }
+
+// CwireFirewalldDefault says "the default firewalld zone"
+// in the language of msgs.
+func (msgs Messages) CwireFirewalldDefault() string {
+	return Catalog.Format(msgs.locale, "cwireFirewalldDefault", nil)
 }
 
 // TexpPublic says "Public access…"

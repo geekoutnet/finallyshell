@@ -21,17 +21,25 @@ func caddyValidateCommand(inst CaddyInstall, config string) string {
 }
 
 func caddyReloadCommand(inst CaddyInstall, config string) (string, error) {
-	if inst.Method != CaddyDocker && inst.Unit != "" {
-		return SystemCommand("systemctl", "reload", inst.Unit), nil
-	}
 	if inst.AdminAddr == "off" {
 		return "", ErrCaddyUnsafe
+	}
+	if inst.Method != CaddyDocker && inst.Unit != "" && inst.ServiceManager != "openrc" {
+		return SystemCommand("systemctl", "reload", inst.Unit), nil
 	}
 	args := append(caddyConfigArgs(inst, "reload", config), "--force")
 	if inst.AdminAddr != "" && inst.AdminAddr != "localhost:2019" && !strings.ContainsAny(inst.AdminAddr, "\x00\n\r") {
 		args = append(args, "--address", inst.AdminAddr)
 	}
 	return caddyEnvironment(inst, caddyCLI(inst, args...)), nil
+}
+
+func CaddyServiceCommand(inst CaddyInstall, action string) (string, error) {
+	inst, err := caddyNormalize(inst)
+	if err != nil {
+		return "", err
+	}
+	return caddyServiceScript(inst, action)
 }
 
 const caddyTransactionShell = `set -eu
@@ -181,7 +189,15 @@ func caddyPayload(script *strings.Builder, command, content string) {
 	script.WriteString(encoded + "\nCADDY_PAYLOAD\n")
 }
 
+type caddyTransactionHooks struct {
+	prepare, apply, beforeRestore, afterRestore string
+}
+
 func caddyTransactionScript(inst CaddyInstall, change CaddyChange) (string, error) {
+	return caddyTransactionWithHooks(inst, change, caddyTransactionHooks{})
+}
+
+func caddyTransactionWithHooks(inst CaddyInstall, change CaddyChange, hooks caddyTransactionHooks) (string, error) {
 	if inst.Resume || inst.ContainerConfigUnmapped {
 		return "", ErrCaddyUnsafe
 	}
@@ -206,6 +222,7 @@ func caddyTransactionScript(inst CaddyInstall, change CaddyChange) (string, erro
 	}
 	var script strings.Builder
 	script.WriteString(caddyTransactionShell)
+	script.WriteString(hooks.prepare)
 	base := path.Dir(inst.Config)
 	fmt.Fprintf(&script, "lock=%s\nbackups=%s\n", privilegeQuote(path.Join(base, ".finallyshell.lock")), privilegeQuote(path.Join(base, ".backups")))
 	fmt.Fprintf(&script, "check_path %s\n", privilegeQuote(inst.Config))
@@ -219,6 +236,7 @@ cleanup() {
   if [ -n "$dirty" ]; then
     failed=''
 `)
+	script.WriteString(hooks.beforeRestore)
 	for _, name := range touched {
 		fmt.Fprintf(&script, "    restore_one %s || failed='yes'\n", privilegeQuote(name))
 	}
@@ -230,6 +248,7 @@ cleanup() {
 	if reload != "" {
 		fmt.Fprintf(&script, "    if [ -z \"$failed\" ] && [ -n \"$reload_started\" ]; then { %s; } >&2 || failed='yes'; fi\n", reload)
 	}
+	script.WriteString(hooks.afterRestore)
 	script.WriteString(`    if [ -z "$failed" ]; then mark 'rolled-back'; else mark 'rollback-failed'; status='1'; fi
   fi
   rm -f -- "$lock/dirs" "$lock/validate"
@@ -299,6 +318,7 @@ printf '\n'
 [ -n "$valid" ] || { mark 'invalid'; exit '1'; }
 mark 'validated'
 `, caddyValidateCommand(inst, config))
+	script.WriteString(hooks.apply)
 	if reload != "" {
 		fmt.Fprintf(&script, "reload_started='yes'\n{ %s; } >&2 || { mark 'reload-failed'; exit '1'; }\n", reload)
 	}
@@ -311,16 +331,20 @@ mark 'validated'
 }
 
 func applyCaddyChange(ctx context.Context, run CaddyRunner, inst CaddyInstall, change CaddyChange) (CaddyApplyResult, error) {
+	return caddyRunChange(ctx, run, inst, change, caddyTransactionHooks{}, nil)
+}
+
+func caddyRunChange(ctx context.Context, run CaddyRunner, inst CaddyInstall, change CaddyChange, hooks caddyTransactionHooks, progress func(string)) (CaddyApplyResult, error) {
 	var result CaddyApplyResult
 	inst, err := caddyNormalize(inst)
 	if err != nil {
 		return result, err
 	}
-	script, err := caddyTransactionScript(inst, change)
+	script, err := caddyTransactionWithHooks(inst, change, hooks)
 	if err != nil {
 		return result, err
 	}
-	stdout, stderr, err := caddyRunPayload(ctx, run, script, nil)
+	stdout, stderr, err := caddyRunPayload(ctx, run, script, progress)
 	var state error
 	validated := false
 	for line := range strings.SplitSeq(stdout, "\n") {

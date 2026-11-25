@@ -32,22 +32,21 @@ func (a *App) refreshCaddyLogs(s *Session) { a.caddyRefresh(s) }
 
 func caddyLogSources(install monitor.CaddyInstall, files []string) []caddyLogSource {
 	var sources []caddyLogSource
-	if install.Method == monitor.CaddyDocker && caddyContainerName.MatchString(install.Container) {
-		sources = append(sources, caddyLogSource{locales.CpanelDockerLogs(), "exec " + monitor.SystemCommand("docker", "logs", "--follow", "--tail", "300", install.Container) + " 2>&1"})
-	} else if install.ServiceManager == "systemd" && monitor.ValidService(install.Unit) {
-		command, err := monitor.JournalCommand(monitor.JournalSource{Unit: install.Unit, Lines: 300})
-		if err == nil {
-			sources = append(sources, caddyLogSource{locales.CpanelJournal(), "exec " + command})
+	if command, err := monitor.CaddyLogsScript(install, 300, true); err == nil {
+		label := locales.CpanelJournal()
+		if install.Method == monitor.CaddyDocker {
+			label = locales.CpanelDockerLogs()
 		}
+		sources = append(sources, caddyLogSource{label, "exec " + command + " 2>&1"})
 	}
 	seen := map[string]bool{}
 	for _, file := range files {
-		if seen[file] || !monitor.ValidLogPath(file) {
+		if seen[file] {
 			continue
 		}
 		seen[file] = true
-		if command, err := monitor.JournalCommand(monitor.JournalSource{File: file, Lines: 300}); err == nil {
-			sources = append(sources, caddyLogSource{file, monitor.SystemCommand("test", "-f", file) + " || exit 1\nexec " + command})
+		if command, err := monitor.CaddyLogFileScript(install, file, 300, true); err == nil {
+			sources = append(sources, caddyLogSource{file, "exec " + command + " 2>&1"})
 		}
 	}
 	return sources

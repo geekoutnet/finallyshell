@@ -36,7 +36,7 @@ func caddySiteUI(t *testing.T, applyError, checkError error) (*App, *fakePlatfor
 	fixture := caddySiteFixture{make(chan monitor.CaddyChange, 4), make(chan []monitor.CaddyFile, 4), make(chan string, 4), applyError, checkError}
 	page.backend = caddySectionBackend{
 		detect: func(context.Context, monitor.CaddyRunner) (monitor.CaddyInstall, error) {
-			return monitor.CaddyInstall{Method: monitor.CaddyAPT, Config: caddySiteMainPath, Managed: true, SitesDir: "/etc/caddy/sites"}, nil
+			return monitor.CaddyInstall{Method: monitor.CaddyAPT, Config: caddySiteMainPath, Active: "active", Managed: true, SitesDir: "/etc/caddy/sites"}, nil
 		},
 		read: func(context.Context, monitor.CaddyRunner, monitor.CaddyInstall) ([]monitor.CaddyFile, error) {
 			return []monitor.CaddyFile{{Path: caddySiteMainPath, Content: caddySiteMain}, {Path: caddySiteImportedPath, Content: caddySiteImported}}, nil
@@ -222,8 +222,9 @@ func TestCaddySitesFormValidateAndHash(t *testing.T) {
 	platform.until(t, "saved Caddy site", func() bool { return page.dialog != nil && page.dialog.done })
 	<-fixture.passwords
 	change := <-fixture.changes
-	want := caddySiteMain + "\nnew.example.test {\n\tbasic_auth {\n\t\tuser " + caddySitePreviewHash + "\n\t}\n\treverse_proxy localhost:9090\n}\n"
-	if !change.Reload || change.Expect[caddySiteMainPath] != caddySiteMain || !reflect.DeepEqual(change.Writes, []monitor.CaddyFile{{Path: caddySiteMainPath, Content: want}}) {
+	want := "new.example.test {\n\tbasic_auth {\n\t\tuser " + caddySitePreviewHash + "\n\t}\n\treverse_proxy localhost:9090\n}\n"
+	newFile := "/etc/caddy/sites/new.example.test.caddy"
+	if !change.Reload || change.Expect[caddySiteMainPath] != caddySiteMain || !reflect.DeepEqual(change.ExpectMissing, []string{newFile}) || !reflect.DeepEqual(change.Writes, []monitor.CaddyFile{{Path: newFile, Content: want}}) {
 		t.Fatalf("wrong save payload: %+v", change)
 	}
 	if form.auth[0].password != "" || strings.Contains(page.dialog.output+page.dialog.failure, password) {
@@ -244,6 +245,42 @@ func TestCaddySitesChangedConfigAsksToRefresh(t *testing.T) {
 	<-fixture.changes
 	if page.dialog.failure != locales.CsiteChanged() {
 		t.Fatalf("wrong stale-configuration feedback: %q", page.dialog.failure)
+	}
+}
+
+func TestCaddySitesDuplicateDestination(t *testing.T) {
+	for _, managed := range []bool{true, false} {
+		name := "main"
+		if managed {
+			name = "managed"
+		}
+		t.Run(name, func(t *testing.T) {
+			a, platform, tester, session, fixture := caddySiteUI(t, nil, nil)
+			page := &session.caddy.sites
+			page.inst.Managed = managed
+			page.files = append(page.files, monitor.CaddyFile{Path: "/etc/caddy/sites/demo.example.test-8080.caddy"})
+			a.caddySiteOpenForm(session, &page.rows[0], true, false)
+			const address = "http://Demo.Example.Test:8080"
+			page.form.addresses = address
+			tester.Frame()
+			systemClick(t, tester, locales.Save())
+			want := caddySiteMainPath
+			if managed {
+				want = "/etc/caddy/sites/demo.example.test-8080-2.caddy"
+			}
+			if !strings.HasSuffix(page.dialog.target, "\n"+want) {
+				t.Fatalf("confirmation path = %q, want %s", page.dialog.target, want)
+			}
+			systemClick(t, tester, locales.SvcConfirm())
+			platform.until(t, "duplicated Caddy website", func() bool { return page.dialog != nil && page.dialog.done })
+			change := <-fixture.changes
+			if len(change.Writes) != 1 || change.Writes[0].Path != want || change.Expect[caddySiteMainPath] != caddySiteMain || !strings.Contains(change.Writes[0].Content, address) {
+				t.Fatalf("duplicate = %+v", change)
+			}
+			if managed && !reflect.DeepEqual(change.ExpectMissing, []string{want}) || !managed && !strings.HasPrefix(change.Writes[0].Content, caddySiteMain) {
+				t.Fatalf("missing guard or append: %+v", change)
+			}
+		})
 	}
 }
 

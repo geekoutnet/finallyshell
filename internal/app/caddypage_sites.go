@@ -180,7 +180,7 @@ func (a *App) caddySitesSection(c *ui.Context, s *Session) {
 			message := locales.CsiteNoConfig()
 			if file, ok := page.main(); ok {
 				message = locales.CsiteRawConfig()
-				if ui.Button(c, locales.CsiteCode()).AlignSelf(ui.Start).Margin(6, 8).Clicked() {
+				if reason := caddyConfigWriteReason(page.inst, file.Path); ui.Button(c, locales.CsiteCode()).Disabled(reason != "").Tooltip(reason).AlignSelf(ui.Start).Margin(6, 8).Clicked() {
 					a.caddySectionEditor(s, &page.caddySectionFiles, file, func() { a.refreshCaddySites(s) })
 				}
 			}
@@ -271,10 +271,10 @@ func (a *App) caddySitesTable(c *ui.Context, s *Session, narrow bool) {
 	actions := a.caddySiteActions(s, selected)
 	ui.Row(c).FillWidth().Gap(6).Padding(4, 8).Wrap().AlignItems(ui.Center).Children(func() {
 		ui.SearchField(c, &page.table.query).Grow(1).MinWidth(85).Placeholder(locales.CsiteFilter()).Label(locales.CsiteFilter())
-		if ui.PrimaryButton(c, locales.CsiteNew()).Disabled(page.blocked() != "").Tooltip(page.blocked()).Clicked() {
+		if reason := page.newSiteReason(); ui.PrimaryButton(c, locales.CsiteNew()).Disabled(reason != "").Tooltip(reason).Clicked() {
 			add()
 		}
-		if ui.Button(c, locales.CsiteTemplates()).Disabled(page.blocked() != "").Tooltip(page.blocked()).Clicked() {
+		if reason := page.newSiteReason(); ui.Button(c, locales.CsiteTemplates()).Disabled(reason != "").Tooltip(reason).Clicked() {
 			templates()
 		}
 		edit := actions[0]

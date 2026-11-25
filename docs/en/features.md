@@ -2037,7 +2037,7 @@ The System tab of the bottom panel manages the connected server itself: a row at
 
 ## Caddy tab
 
-The Caddy tab manages the web server of an SSH connection. It includes Overview, Sites, Global options, Config files, Certificates, Logs, and Install & migrate. Open it as a full-size tab for more room. Server operations that need root use the connection's privilege escalation. Configuration changes are backed up, written atomically, and validated against the complete configuration before reload; if validation or reload fails, the previous files are restored.
+The Caddy tab manages the web server of an SSH connection. It includes Overview, Sites, Global options, Config files, Certificates, Logs, and Install & migrate. Open it as a full-size tab for more room. Server operations that need root use the connection's privilege escalation. Configuration changes are backed up, written atomically, and validated against the complete configuration before reloading a running service. A stopped native service stays stopped. If validation or reload fails, the previous files are restored.
 
 ### Caddy tab › Overview and service
 
@@ -2046,7 +2046,7 @@ The Overview detects an existing installation automatically and shows its servic
 ### Caddy tab › Sites
 
 - Filter sites by address, type, target or file. The full table shows TLS, the configuration file and line, and indicators for basic authentication, IP rules, headers and access logging. In a narrow panel, hover over an address for these details.
-- Create or duplicate a site with a live Caddyfile preview. Templates cover static files, reverse proxies, Node.js and Go applications, PHP/WordPress, SPAs, www redirects, authenticated file browsing, API gateways, Docker ports, WebSocket and load balancing. PHP-FPM can look up sockets on the server; the Docker template uses published TCP ports from the connection's Docker overview.
+- Create or duplicate a site with a live Caddyfile preview. Managed layouts create a separate file for each new site; other layouts append to the main Caddyfile. Templates cover static files, reverse proxies, Node.js and Go applications, PHP/WordPress, SPAs, www redirects, authenticated file browsing, API gateways, Docker ports, WebSocket and load balancing. PHP-FPM can look up sockets on the server; the Docker template uses published TCP ports from the connection's Docker overview.
 - The form covers TLS, client certificates, IP and authentication rules, compression, headers and CORS, request size, access logs, path routes and proxy health checks. Caddy hashes new basic-auth passwords on the server; plaintext never appears in the preview or saved configuration. Use the code editor for sites with settings or comments the form cannot preserve.
 - Use the row menu to disable, enable or delete a site, open an HTTP(S) address, or test response headers from this computer or the server. Validate checks the full candidate configuration without saving. Changes name the addresses and files, then back up, validate and hot-reload the configuration; a failure restores the previous files.
 
@@ -2066,7 +2066,9 @@ The certificate list includes the issuer, key type, location and time remaining;
 
 ### Caddy tab › Install, update and migrate
 
-The wizard recommends an installation method for the detected OS and shows the service, boot and firewall choices before applying. If another web service holds ports 80/443, leave Caddy stopped or separately confirm replacing the conflicting services. Updates show the target version; uninstall keeps configuration and data by default. Deleting them requires typing `caddy`. Adopt an existing installation without editing it, review a diff for a managed-layout conversion, or review changes before replacing a standalone binary with a supported official package. When importing Nginx websites, choose and edit the generated sites before applying them. An optional cutover stops and disables Nginx but never deletes its configuration. Migration between Docker and a host service is not supported.
+The wizard recommends an installation method and previews startup, autostart and optional firewall changes (80/TCP, 443/TCP and 443/UDP in active UFW or the default firewalld zone). If another web service holds ports 80/443, leave Caddy stopped or explicitly confirm stopping and disabling recognized services. Failed installation attempts restore the affected firewall rules and service state. Updates use the detected installation method; Compose-managed containers should be updated through Compose. Uninstall keeps configuration and data by default. Removing them from a standard native installation requires typing `caddy`; the files are moved to a private recovery directory.
+
+Adopt an existing installation without editing it, review a diff for managed-layout conversion, or move a supported standalone binary to an official package. For Nginx, select and review editable drafts; complex rules are flagged for manual review. Optional cutover validates the reviewed config, stops and disables Nginx, enables and starts Caddy, and verifies that its service process owns both TCP ports 80 and 443. Failure restores the previous config and service states; Nginx files are never removed. Port checks do not verify individual websites. Migration between Docker and a host service is not supported.
 
 ## Tunnels tab
 

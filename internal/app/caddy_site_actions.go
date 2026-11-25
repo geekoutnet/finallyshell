@@ -30,6 +30,10 @@ func (a *App) caddySiteActions(s *Session, row *caddySiteRow) []caddySiteAction 
 		base, edit, enabled, address, code = locales.CsiteSelect(), locales.CsiteSelect(), locales.CsiteSelect(), locales.CsiteSelect(), locales.CsiteSelect()
 	} else {
 		name = row.id
+		code = caddyConfigWriteReason(page.inst, row.file.Path)
+		if base == "" {
+			base, edit, enabled = code, code, code
+		}
 		if edit == "" {
 			switch {
 			case !row.active():
@@ -55,9 +59,13 @@ func (a *App) caddySiteActions(s *Session, row *caddySiteRow) []caddySiteAction 
 	if row != nil && !row.active() {
 		toggle = locales.CsiteEnable()
 	}
+	duplicate := edit
+	if row != nil && row.active() && !row.raw && page.blocked() == "" {
+		duplicate = page.newSiteReason()
+	}
 	return []caddySiteAction{
 		{title: locales.Edit(), reason: edit, run: lookup(func(row *caddySiteRow) { a.caddySiteOpenForm(s, row, false, false) })},
-		{title: locales.CsiteDuplicate(), reason: edit, run: lookup(func(row *caddySiteRow) { a.caddySiteOpenForm(s, row, true, false) })},
+		{title: locales.CsiteDuplicate(), reason: duplicate, run: lookup(func(row *caddySiteRow) { a.caddySiteOpenForm(s, row, true, false) })},
 		{title: toggle, reason: enabled, run: lookup(func(row *caddySiteRow) { a.caddySiteConfirm(s, row, toggle, false) })},
 		{title: locales.Delete(), reason: base, danger: true, run: lookup(func(row *caddySiteRow) { a.caddySiteConfirm(s, row, locales.Delete(), true) })},
 		{title: locales.CsiteCode(), reason: code, run: lookup(func(row *caddySiteRow) {
@@ -72,6 +80,33 @@ func (a *App) caddySiteActions(s *Session, row *caddySiteRow) []caddySiteAction 
 	}
 }
 
+func (page *caddySitesPage) newSitePath(address string) string {
+	if !page.inst.Managed || page.inst.SitesDir == "" {
+		return page.inst.Config
+	}
+	if !caddyValidPath(page.inst.SitesDir) {
+		return ""
+	}
+	base := monitor.CaddySiteFileBase(address)
+	for index := 1; ; index++ {
+		name := base
+		if index > 1 {
+			name += "-" + strconv.Itoa(index)
+		}
+		filename := path.Join(page.inst.SitesDir, name+".caddy")
+		if filename != page.inst.Config && !slices.ContainsFunc(page.files, func(file monitor.CaddyFile) bool { return file.Path == filename }) {
+			return filename
+		}
+	}
+}
+
+func (page *caddySitesPage) newSiteReason() string {
+	if reason := page.blocked(); reason != "" {
+		return reason
+	}
+	return caddyConfigWriteReason(page.inst, page.newSitePath("site"))
+}
+
 func caddySiteChange(main, file monitor.CaddyFile, text string) monitor.CaddyChange {
 	expect := map[string]string{file.Path: file.Content}
 	if main.Path != "" {
@@ -82,7 +117,7 @@ func caddySiteChange(main, file monitor.CaddyFile, text string) monitor.CaddyCha
 
 func (a *App) caddySiteConfirm(s *Session, row *caddySiteRow, action string, remove bool) {
 	page := &s.caddy.sites
-	if page.blocked() != "" {
+	if page.blocked() != "" || caddyConfigWriteReason(page.inst, row.file.Path) != "" {
 		return
 	}
 	dialog := &systemDialog{client: s.client, title: action, target: row.name() + "\n" + row.file.Path}
@@ -105,6 +140,10 @@ func (a *App) caddySiteConfirm(s *Session, row *caddySiteRow, action string, rem
 	}
 	main, _ := page.main()
 	change := caddySiteChange(main, row.file, text)
+	change.Reload = caddyServiceRunning(page.inst)
+	if !change.Reload {
+		dialog.consequence += "\n" + locales.CwireValidateWithoutReload()
+	}
 	file := row.file
 	dialog.confirm = func() {
 		if page.blocked() == "" {
@@ -142,6 +181,9 @@ func (a *App) caddySiteOpenForm(s *Session, row *caddySiteRow, duplicate, templa
 			file, doc, node, title = row.file, row.doc, row.node, locales.Edit()
 		}
 	}
+	if node == nil && page.newSiteReason() != "" || node != nil && caddyConfigWriteReason(page.inst, file.Path) != "" {
+		return
+	}
 	form := newCaddySiteForm(spec)
 	if templates {
 		form = newCaddySiteTemplates()
@@ -161,6 +203,13 @@ func (a *App) caddySiteOpenForm(s *Session, row *caddySiteRow, duplicate, templa
 			return
 		}
 		blocked := page.blocked()
+		targetFile := file.Path
+		if node == nil && len(value.Addresses) != 0 {
+			targetFile = page.newSitePath(value.Addresses[0])
+		}
+		if blocked == "" {
+			blocked = caddyConfigWriteReason(page.inst, targetFile)
+		}
 		if blocked == "" && page.addressConflict(node, value.Addresses) {
 			blocked = locales.CsiteConflict()
 		}
@@ -176,9 +225,12 @@ func (a *App) caddySiteOpenForm(s *Session, row *caddySiteRow, duplicate, templa
 				if original != "" && target != original {
 					target = original + " → " + target
 				}
-				dialog.target = target + "\n" + file.Path
+				dialog.target = target + "\n" + targetFile
 				dialog.body, dialog.failure, dialog.output = nil, "", ""
 				dialog.consequence = locales.CsiteSaveWarning()
+				if !caddyServiceRunning(page.inst) {
+					dialog.consequence = locales.CwireValidateWithoutReload()
+				}
 				dialog.back = func() { dialog.body, dialog.target, dialog.consequence, dialog.confirm = body, "", "", nil }
 				dialog.confirm = func() {
 					a.caddySiteFormWork(s, dialog, body, form, main, file, doc, node, true)
@@ -210,6 +262,13 @@ func (a *App) caddySiteFormWork(s *Session, dialog *systemDialog, body func(*ui.
 		dialog.body, dialog.target, dialog.consequence = body, "", ""
 		return
 	}
+	targetFile := file.Path
+	if node == nil {
+		targetFile = page.newSitePath(value.Addresses[0])
+	}
+	if caddyConfigWriteReason(page.inst, targetFile) != "" {
+		return
+	}
 	backend, run := a.caddySectionOps(s, &page.caddySectionFiles)
 	inst := page.inst
 	invalid := errors.New(locales.CsiteRawConfig())
@@ -223,6 +282,12 @@ func (a *App) caddySiteFormWork(s *Session, dialog *systemDialog, body func(*ui.
 		if err != nil {
 			return monitor.CaddyChange{}, err
 		}
+		if node == nil && targetFile != main.Path {
+			return monitor.CaddyChange{
+				Writes: []monitor.CaddyFile{{Path: targetFile, Content: strings.TrimRight(text, "\r\n") + "\n"}},
+				Expect: map[string]string{main.Path: main.Content}, ExpectMissing: []string{targetFile}, Reload: caddyServiceRunning(inst),
+			}, nil
+		}
 		if node != nil {
 			text, err = doc.ReplaceSite(node, text)
 		} else {
@@ -231,7 +296,9 @@ func (a *App) caddySiteFormWork(s *Session, dialog *systemDialog, body func(*ui.
 		if err != nil {
 			return monitor.CaddyChange{}, invalid
 		}
-		return caddySiteChange(main, file, text), nil
+		change := caddySiteChange(main, file, text)
+		change.Reload = caddyServiceRunning(inst)
+		return change, nil
 	})
 }
 

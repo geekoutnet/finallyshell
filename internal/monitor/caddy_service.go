@@ -31,7 +31,7 @@ func caddyServiceScript(inst CaddyInstall, action string) (string, error) {
 		return "", ErrCaddyUnsafe
 	}
 	config := inst.Config
-	if inst.Method == CaddyDocker {
+	if inst.Method == CaddyDocker && (action == CaddyValidate || action == CaddyReload) {
 		var ok bool
 		config, ok = caddyContainerPath(inst, config)
 		if !ok {
@@ -67,7 +67,7 @@ func caddyServiceScript(inst CaddyInstall, action string) (string, error) {
 		default:
 			return SystemCommand("docker", action, inst.Container), nil
 		}
-	case inst.Unit != "":
+	case inst.Unit != "" && inst.ServiceManager != "openrc":
 		if action == CaddyStatus {
 			return SystemCommand("systemctl", "show", "-p", "MainPID,MemoryCurrent,ActiveEnterTimestamp,ActiveState", inst.Unit) + " || exit '1'\n" +
 				SystemCommand("systemctl", "status", "--no-pager", "--full", "--lines=0", inst.Unit) + " || { status=$?; [ \"$status\" = '3' ]; }", nil

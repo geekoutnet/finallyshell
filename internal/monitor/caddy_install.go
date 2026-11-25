@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 )
 
@@ -20,6 +21,8 @@ type CaddyInstallOptions struct {
 	Version, DockerTag string
 	WithoutStart       bool
 	WithoutEnable      bool
+	Firewall           string
+	ReplaceConflicting []string
 }
 
 const caddyDownload = `download() {
@@ -235,13 +238,13 @@ if [ -n "$listeners$quic" ]; then printf '%s\n' 'CADDY_PORT_CONFLICT'; exit '1';
 
 func caddyInstallScript(osinfo CaddyInstall, method string, options CaddyInstallOptions) (string, error) {
 	var script strings.Builder
-	script.WriteString(caddyInstallShell + caddyEnsureInstallAbsent(options.WithoutStart))
+	script.WriteString(caddyInstallShell + caddyEnsureInstallAbsent(options.WithoutStart && options.WithoutEnable))
 	switch method {
 	case CaddyBinary:
 		if !caddyVersionTag.MatchString(options.Version) {
 			return "", ErrCaddyUnsafe
 		}
-		script.WriteString(caddyDownload)
+		script.WriteString("[ -d '/run/systemd/system' ]\n" + caddyDownload)
 		fmt.Fprintf(&script, "fetch_binary %s\n", privilegeQuote(options.Version))
 		script.WriteString(`command -v 'systemctl' >/dev/null
 for file in '/etc/systemd/system/caddy.service' '/etc/systemd/system/caddy-api.service'; do
@@ -282,9 +285,14 @@ systemctl 'daemon-reload'
 				script.WriteString("systemctl 'enable' '--now' 'caddy.service'\n")
 			}
 			script.WriteString("systemctl 'is-active' '--quiet' 'caddy.service'\n")
+		} else if !options.WithoutEnable {
+			script.WriteString("systemctl 'enable' 'caddy.service'\n")
 		}
 		script.WriteString("installed=''\n")
 	case CaddyDocker:
+		if options.WithoutStart && !options.WithoutEnable {
+			return "", ErrCaddyUnsafe
+		}
 		tag := options.DockerTag
 		if tag == "" {
 			tag = "latest"
@@ -330,6 +338,11 @@ managed=$(` + SystemCommand(append(args, image)...) + `)
 		if err != nil {
 			return "", err
 		}
+		if method == CaddyAPK {
+			script.WriteString("command -v 'rc-service' >/dev/null\ncommand -v 'rc-update' >/dev/null\n")
+		} else {
+			script.WriteString("[ -d '/run/systemd/system' ]\n")
+		}
 		if method == CaddyAPT {
 			script.WriteString(caddyDownload)
 		}
@@ -359,14 +372,17 @@ managed=$(` + SystemCommand(append(args, image)...) + `)
 		script.WriteString("package_touched='yes'\n" + install + "\n")
 		script.WriteString(caddyValidationEnvironment(CaddyInstall{}, SystemCommand("caddy", "validate", "--config", caddyDefaultConfig, "--adapter", "caddyfile")) + "\n")
 		if method == CaddyAPK {
+			if !options.WithoutEnable {
+				script.WriteString("rc-update 'add' 'caddy' 'default'\n")
+			}
 			if !options.WithoutStart {
-				if !options.WithoutEnable {
-					script.WriteString("rc-update 'add' 'caddy' 'default'\n")
-				}
 				script.WriteString("rc-service 'caddy' 'start'\n")
 			}
 		} else if options.WithoutStart {
 			script.WriteString("systemctl 'disable' '--now' 'caddy.service'\n")
+			if !options.WithoutEnable {
+				script.WriteString("systemctl 'enable' 'caddy.service'\n")
+			}
 		} else if options.WithoutEnable {
 			script.WriteString("systemctl 'disable' 'caddy.service'\nsystemctl 'start' 'caddy.service'\nsystemctl 'is-active' '--quiet' 'caddy.service'\n")
 		} else {
@@ -395,7 +411,10 @@ func InstallCaddy(ctx context.Context, run CaddyRunner, osinfo CaddyInstall, met
 	if len(options) > 0 {
 		selected = options[0]
 	}
-	if len(current.Conflicts) > 0 && !selected.WithoutStart {
+	if len(selected.ReplaceConflicting) != 0 && (!slices.Equal(current.Conflicts, selected.ReplaceConflicting) || selected.WithoutStart) {
+		return current, ErrCaddyChanged
+	}
+	if len(current.Conflicts) > 0 && (!selected.WithoutStart || !selected.WithoutEnable) && len(selected.ReplaceConflicting) == 0 {
 		return current, fmt.Errorf("%w: %s", ErrCaddyPortConflict, strings.Join(current.Conflicts, ", "))
 	}
 	if current.OS != "" {
@@ -417,12 +436,21 @@ func InstallCaddy(ctx context.Context, run CaddyRunner, osinfo CaddyInstall, met
 	if err != nil {
 		return current, err
 	}
+	if selected.Firewall != "" || len(selected.ReplaceConflicting) != 0 {
+		script, err = caddyInstallWithHostChanges(script, selected)
+		if err != nil {
+			return current, err
+		}
+	}
 	stdout, stderr, err := run(ctx, script, nil, progress)
 	if err != nil {
+		if strings.Contains(stderr, "CADDY_RECOVERY_FAILED") {
+			return current, caddyLifecycleError(stdout, stderr, err)
+		}
 		if strings.Contains(stdout, "CADDY_EXISTING") || strings.Contains(stderr, "CADDY_EXISTING") {
 			return current, ErrCaddyAlreadyInstalled
 		}
-		if strings.Contains(stdout, "CADDY_PORT_CONFLICT") {
+		if strings.Contains(stdout, "CADDY_PORT_CONFLICT") || strings.Contains(stderr, "CADDY_PORT_CONFLICT") {
 			return current, ErrCaddyPortConflict
 		}
 		return current, caddyLifecycleError(stdout, stderr, err)

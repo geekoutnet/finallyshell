@@ -71,13 +71,41 @@ func NginxToCaddy(sites []NginxSite) (string, []string) {
 	return caddyConvertNginx(sites, nil)
 }
 
+type CaddyNginxDraft struct {
+	Name, Content string
+	Notes         []string
+}
+
+func NginxToCaddySites(sites []NginxSite) []CaddyNginxDraft {
+	return caddyNginxDrafts(sites, nil)
+}
+
 func caddyConvertNginx(sites []NginxSite, details map[string]caddyNginxDetail) (string, []string) {
+	return caddyJoinNginxDrafts(caddyNginxDrafts(sites, details))
+}
+
+func caddyJoinNginxDrafts(drafts []CaddyNginxDraft) (string, []string) {
 	var config strings.Builder
 	var notes []string
+	for _, draft := range drafts {
+		if draft.Content != "" {
+			config.WriteString(draft.Content + "\n")
+		}
+		notes = append(notes, draft.Notes...)
+	}
+	return strings.TrimSuffix(config.String(), "\n"), notes
+}
+
+func caddyNginxDrafts(sites []NginxSite, details map[string]caddyNginxDetail) []CaddyNginxDraft {
+	var drafts []CaddyNginxDraft
 	used := map[string]bool{}
 	for _, site := range sites {
 		source := fmt.Sprintf("%s:%d", site.File, site.Line)
-		note := func(text string) { notes = append(notes, source+": "+text) }
+		draft := CaddyNginxDraft{Name: strings.Join(site.Names, ", ")}
+		if draft.Name == "" {
+			draft.Name = source
+		}
+		note := func(text string) { draft.Notes = append(draft.Notes, source+": "+text) }
 		detail, full := details[source]
 		if detail.complex || (!full && len(site.Proxy) != 0) {
 			note("review location matching, upstream selection, headers and access controls; they were not converted")
@@ -85,6 +113,7 @@ func caddyConvertNginx(sites []NginxSite, details map[string]caddyNginxDetail) (
 		addresses := caddyNginxAddresses(site)
 		if len(addresses) == 0 {
 			note("no convertible site address")
+			drafts = append(drafts, draft)
 			continue
 		}
 		var safe []string
@@ -97,8 +126,10 @@ func caddyConvertNginx(sites []NginxSite, details map[string]caddyNginxDetail) (
 			safe = append(safe, address)
 		}
 		if len(safe) == 0 {
+			drafts = append(drafts, draft)
 			continue
 		}
+		var config strings.Builder
 		fmt.Fprintf(&config, "%s {\n", strings.Join(safe, ", "))
 		if len(detail.certs) == 1 && len(detail.keys) == 1 && caddyPath(detail.certs[0]) && caddyPath(detail.keys[0]) && caddyNginxLiteral(detail.certs[0]) && caddyNginxLiteral(detail.keys[0]) {
 			fmt.Fprintf(&config, "\ttls %s %s\n", caddyQuoteToken(detail.certs[0]), caddyQuoteToken(detail.keys[0]))
@@ -148,9 +179,11 @@ func caddyConvertNginx(sites []NginxSite, details map[string]caddyNginxDetail) (
 		case len(detail.redirect) == 0:
 			config.WriteString("\trespond 503\n")
 		}
-		config.WriteString("}\n\n")
+		config.WriteString("}\n")
+		draft.Content = config.String()
+		drafts = append(drafts, draft)
 	}
-	return strings.TrimSuffix(config.String(), "\n"), notes
+	return drafts
 }
 
 func caddyNginxDirectives(nodes []nginxNode) caddyNginxDetail {
@@ -198,9 +231,18 @@ func caddyNginxDirectives(nodes []nginxNode) caddyNginxDetail {
 // and enriches the draft with direct certificate/key, return 301 and
 // try_files directives. Unsupported behavior is noted, not silently applied.
 func NginxDumpToCaddy(dump string) (string, []string, error) {
-	tree, err := ParseNginx(dump)
+	drafts, err := NginxDumpToCaddySites(dump)
 	if err != nil {
 		return "", nil, err
+	}
+	config, notes := caddyJoinNginxDrafts(drafts)
+	return config, notes, nil
+}
+
+func NginxDumpToCaddySites(dump string) ([]CaddyNginxDraft, error) {
+	tree, err := ParseNginx(dump)
+	if err != nil {
+		return nil, err
 	}
 	details := map[string]caddyNginxDetail{}
 	var file string
@@ -235,7 +277,7 @@ func NginxDumpToCaddy(dump string) (string, []string, error) {
 	for line := range strings.SplitSeq(dump, "\n") {
 		if name, ok := strings.CutPrefix(strings.TrimSuffix(line, "\r"), "# configuration file "); ok && strings.HasSuffix(name, ":") {
 			if err := finish(); err != nil {
-				return "", nil, err
+				return nil, err
 			}
 			file = strings.TrimSuffix(name, ":")
 		} else if file != "" {
@@ -243,8 +285,7 @@ func NginxDumpToCaddy(dump string) (string, []string, error) {
 		}
 	}
 	if err := finish(); err != nil {
-		return "", nil, err
+		return nil, err
 	}
-	config, notes := caddyConvertNginx(tree.Sites, details)
-	return config, notes, nil
+	return caddyNginxDrafts(tree.Sites, details), nil
 }

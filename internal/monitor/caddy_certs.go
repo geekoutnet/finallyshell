@@ -106,3 +106,19 @@ fi`, privilegeQuote(root), privilegeQuote(ca))
 func CaddyLocalCA(ctx context.Context, run CaddyRunner, inst CaddyInstall) (string, error) {
 	return CaddyAdmin(ctx, run, inst, "GET", "/pki/ca/local/certificates", "")
 }
+
+func CaddyOnDemandTLS(files []CaddyFile) bool {
+	for _, file := range files {
+		tokens, err := caddyTokens(file.Content)
+		if err != nil {
+			continue
+		}
+		for index, token := range tokens {
+			if (token.is("on_demand_tls") || token.is("on_demand")) &&
+				(index == 0 || tokens[index-1].line != token.line || tokens[index-1].is("{")) {
+				return true
+			}
+		}
+	}
+	return false
+}

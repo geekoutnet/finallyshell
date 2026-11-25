@@ -26,12 +26,16 @@ func (a *App) caddyMigrateActions(c *ui.Context, s *Session, install monitor.Cad
 		managedReason = locales.CpanelAlreadyManaged()
 	case install.Method == monitor.CaddyDocker:
 		managedReason = locales.CpanelDockerMigration()
+	default:
+		managedReason = caddyConfigWriteReason(install, install.Config)
 	}
-	if install.Method != monitor.CaddyBinary || !slices.Contains([]string{monitor.CaddyAPT, monitor.CaddyDNF}, caddyNativeMethod(install.OS)) || len(install.Modules) != 0 {
+	if !monitor.CaddyCanMigrateBinary(install) {
 		packageReason = locales.CpanelNoPackageMigration()
 	}
 	if !caddyIsCaddyfile(install) {
 		nginxReason = locales.CpanelCaddyfileOnly()
+	} else {
+		nginxReason = caddyConfigWriteReason(install, install.Config)
 	}
 	caddyActions(c,
 		caddyAction{locales.CpanelAdopt(), "", func() {
@@ -40,7 +44,7 @@ func (a *App) caddyMigrateActions(c *ui.Context, s *Session, install monitor.Cad
 		}},
 		caddyAction{locales.CpanelConvertManaged(), managedReason, func() {
 			caddyReadDialog(a, s, locales.CpanelConvertManaged(), caddyBackend.managedPreview, func(dialog *systemDialog, preview caddyBackupPreview) {
-				preview.Change.Reload = true
+				preview.Change.Reload = caddyServiceRunning(install)
 				a.caddyReviewChange(s, dialog, preview)
 			})
 		}},
@@ -76,13 +80,18 @@ func (a *App) caddyImportNginx(s *Session) {
 		if preview.main.Path == "" {
 			return preview, errCaddyPanelTarget
 		}
+		var dump string
 		inventory, err := monitor.ReadNginxInventory(ctx, func(ctx context.Context, script string) (string, string, error) {
-			return run(ctx, monitor.NginxToolPath+script, nil, nil)
+			out, stderr, err := run(ctx, monitor.NginxToolPath+script, nil, nil)
+			if err == nil && strings.HasSuffix(script, monitor.NginxDumpCommand) {
+				dump = out
+			}
+			return out, stderr, err
 		})
 		if err != nil {
 			return preview, err
 		}
-		preview.sites, err = backend.nginxToCaddy(inventory.Sites)
+		preview.sites, err = backend.nginxToCaddy(inventory.Sites, dump)
 		return preview, err
 	}, func(dialog *systemDialog, preview caddyNginxPreview) { a.caddyNginxReview(s, dialog, preview) })
 }
@@ -101,26 +110,34 @@ func (a *App) caddyNginxReview(s *Session, dialog *systemDialog, preview caddyNg
 	index := 0
 	cutover := false
 	install := s.caddy.state.install
-	canCutover := install.ServiceManager == "systemd" && install.Method != monitor.CaddyDocker &&
-		monitor.ValidService(install.Unit) && len(install.Conflicts) == 1 && install.Conflicts[0] == "nginx"
+	canCutover := monitor.CaddyCanCutoverNginx(install)
 	dialog.body = func(c *ui.Context, height float32) {
 		systemSelect(c, &index, locales.CaddySites(), names)
-		ui.Checkbox(c, &selected[index], locales.CpanelIncludeSite())
+		includeReason := ""
+		if strings.TrimSpace(sites[index].Content) == "" {
+			includeReason = locales.CwireNoNginxDraft()
+		}
 		if len(sites[index].Notes) != 0 {
 			ui.Scroll(c).MaxHeight(64).FillWidth().Children(func() {
 				ui.Text(c, strings.Join(sites[index].Notes, "\n")).TextColor(theme.Warning).FillWidth()
 			})
 		}
 		ui.TextArea(c.Key(index), &sites[index].Content).Font("monospace").Height(min(245, height/3)).FillWidth().Label(locales.CpanelGeneratedSite())
-		if canCutover {
-			ui.Checkbox(c, &cutover, locales.CpanelCutoverNginx())
+		ui.Checkbox(c, &selected[index], locales.CpanelIncludeSite()).Disabled(includeReason != "").Tooltip(includeReason)
+		cutoverReason := ""
+		if !canCutover {
+			cutoverReason = locales.CwireNoCutover()
 		}
+		ui.Checkbox(c, &cutover, locales.CpanelCutoverNginx()).Disabled(!canCutover).Tooltip(cutoverReason)
 		count := caddyNginxSelection(sites, selected, nil)
-		if ui.Button(c, locales.CpanelReviewImport(count)).Disabled(count == 0).Clicked() {
+		if ui.Button(c, locales.CpanelReviewImport(count)).Disabled(count == 0).Tooltip(locales.CpanelIncludeSite()).Clicked() {
 			change, _ := caddyNginxChange(preview.main, sites, selected, caddyServiceRunning(install))
 			next := &systemDialog{client: s.client, title: locales.CpanelImportNginx(), target: preview.main.Path}
 			s.caddy.state.dialog = next
 			a.caddyReviewChange(s, next, caddyBackupPreview{Files: []monitor.CaddyFile{preview.main}, Change: change})
+			if next.confirm == nil {
+				return
+			}
 			if cutover && canCutover {
 				next.consequence = locales.CpanelNginxCutoverNote()
 				next.confirm = func() {
@@ -138,7 +155,7 @@ func (a *App) caddyNginxReview(s *Session, dialog *systemDialog, preview caddyNg
 }
 
 func caddyServiceRunning(install monitor.CaddyInstall) bool {
-	return install.Active == "active" || install.Active == "running"
+	return install.Active == "active" || install.Active == "running" || install.ServiceManager == "none" && len(install.Listening) != 0
 }
 
 func caddyNginxChange(main monitor.CaddyFile, sites []caddyNginxSite, chosen []bool, reload bool) (monitor.CaddyChange, int) {

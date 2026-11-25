@@ -40,6 +40,7 @@ type CaddyInstall struct {
 	// it starts at boot; or the container's restart policy.
 	Unit           string // caddy.service, caddy-api.service, or a custom unit
 	UnitFile       string
+	UnitFileState  string
 	Active         string // active, inactive, failed, activating…
 	Enabled        bool
 	ServiceManager string // systemd, openrc, none
@@ -71,6 +72,8 @@ type CaddyInstall struct {
 	ContainerConfigUnmapped bool              // the config has no known host mount
 	ContainerDataUnmapped   bool              // certificate paths are inside the container
 	ContainerImage          string
+	ContainerCompose        bool
+	ContainerAutoRemove     bool
 	RestartPolicy           string
 	Mounts                  []CaddyMount
 	Ports                   string

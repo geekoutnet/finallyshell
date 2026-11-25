@@ -11,6 +11,19 @@ import (
 // CaddyUpdateOptions optionally selects an exact release or Docker tag.
 type CaddyUpdateOptions struct{ Version, DockerTag string }
 
+func CaddyCanUpdate(inst CaddyInstall) bool {
+	if inst.Method == CaddyDocker {
+		return caddyIdentifier.MatchString(inst.Container) && !inst.Resume && !inst.ContainerCompose && !inst.ContainerAutoRemove && inst.Active != "paused" && inst.Active != "restarting"
+	}
+	if inst.Resume || inst.Method == CaddyNotInstalled || !caddyPath(inst.Binary) || !caddyPath(inst.Config) {
+		return false
+	}
+	if inst.Method == CaddyBinary && len(inst.Modules) > 0 && path.Base(inst.Binary) != "caddy" {
+		return false
+	}
+	return inst.Active != "active" && len(inst.Listening) == 0 || inst.ServiceManager == "systemd" || inst.ServiceManager == "openrc"
+}
+
 const caddyConfigSnapshot = `snapshot_config() {
   config_backup=$(mktemp -d "$1/.finallyshell-caddy-backup.XXXXXXXX") || return '1'
   if [ -f "$2" ] && [ ! -L "$2" ]; then cp -p -- "$2" "$config_backup/Caddyfile" || return '1'; fi

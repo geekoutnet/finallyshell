@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"strings"
 	"time"
 
 	"finallyshell/internal/monitor"
@@ -108,6 +109,8 @@ func caddyError(err error) string {
 		return locales.CpanelChanged()
 	case errors.Is(err, errCaddyPanelTarget):
 		return locales.CpanelNoTarget()
+	case errors.Is(err, monitor.ErrCaddyAdminOff):
+		return locales.CpanelAdminOff()
 	default:
 		return systemError("", err)
 	}
@@ -149,7 +152,19 @@ func (a *App) caddyWork(s *Session, dialog *systemDialog, work caddyOperation) {
 	backend, run := a.caddyAccess(s)
 	install := s.caddy.state.install
 	wrapped := func(ctx context.Context, _ string, _ io.Reader, progress func(string)) (string, string, error) {
-		out, err := work(ctx, backend, run, install, progress)
+		buffer := newSystemChunks(200)
+		flush := func(final bool) {
+			for _, line := range buffer.take(final) {
+				if !strings.HasPrefix(line, "CADDY_TX ") {
+					progress(line + "\n")
+				}
+			}
+		}
+		out, err := work(ctx, backend, run, install, func(chunk string) {
+			buffer.add(chunk)
+			flush(false)
+		})
+		flush(true)
 		if out != "" {
 			progress(systemRedact(out) + "\n")
 		}

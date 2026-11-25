@@ -58,7 +58,8 @@ func (a *App) caddyOverviewSection(c *ui.Context, s *Session) {
 					ui.Text(c, version[0]).SingleLine().Tooltip(install.Version)
 				}
 				if latest := caddyPanelLatest(s); latest != "" {
-					if ui.Button(c, locales.CpanelUpdateAvailable(latest)).Clicked() {
+					reason := caddyUpdateReason(install, false)
+					if ui.Button(c, locales.CpanelUpdateAvailable(latest)).Disabled(reason != "").Tooltip(reason).Clicked() {
 						a.openCaddyPage(s, caddySecInstall)
 					}
 				}
@@ -129,12 +130,18 @@ func caddyOverviewDetails(c *ui.Context, install monitor.CaddyInstall, data cadd
 	if data.upstreams >= 0 {
 		rows = append(rows, labelValue{locales.CpanelUpstreams(), locales.CpanelUpstreamCount(data.upstreams-data.unhealthy, data.unhealthy)})
 	}
-	ui.Row(c).Gap(8).Wrap().FillWidth().Children(func() {
+	grid := ui.Row(c).Gap(8).Wrap().FillWidth()
+	width := float32(238)
+	if available := grid.LayoutBounds().W; available > 0 {
+		columns := max(1, int((available+8)/205))
+		width = (available - float32(columns-1)*8) / float32(columns)
+	}
+	grid.Children(func() {
 		for _, row := range rows {
 			if strings.TrimSpace(row.value) == "" {
 				continue
 			}
-			ui.Column(c).Width(238).MinHeight(64).Padding(6, 8).Gap(3).BorderWidth(1).BorderColor(colors.line).Radius(5).Children(func() {
+			ui.Column(c).Width(width).MinHeight(64).Padding(6, 8).Gap(3).BorderWidth(1).BorderColor(colors.line).Radius(5).Children(func() {
 				ui.Text(c, row.label).FontSize(12).TextColor(theme.TextMuted).FillWidth()
 				ui.Text(c, row.value).FillWidth().Tooltip(row.value).Selectable()
 			})
@@ -155,7 +162,7 @@ func readCaddyOverview(backend caddyBackend, ctx context.Context, run monitor.Ca
 	if install.PackageLatest == "" && (install.Method == monitor.CaddyBinary || install.Method == monitor.CaddyDocker) {
 		data.latest, _ = backend.latest(ctx)
 	}
-	if install.AdminAddr != "" && install.AdminAddr != "off" {
+	if caddyAdminReason(install) == "" {
 		data.admin = locales.CpanelUnreachable()
 		if config, err := backend.admin(ctx, run, install, "GET", "/config/", ""); err == nil {
 			data.admin = locales.CpanelReachable()
@@ -251,8 +258,8 @@ func caddyServiceCommand(install monitor.CaddyInstall, action string) (string, e
 			return "", errCaddyPanelTarget
 		}
 		command := []string{install.Binary, "validate", "--config", install.Config}
-		if install.Method == monitor.CaddyDocker && caddyContainerName.MatchString(install.Container) {
-			command = []string{"docker", "exec", install.Container, "caddy", "validate", "--config", "/etc/caddy/Caddyfile"}
+		if install.Method == monitor.CaddyDocker && caddyContainerName.MatchString(install.Container) && caddyValidPath(install.ContainerConfig) {
+			command = []string{"docker", "exec", install.Container, "caddy", "validate", "--config", install.ContainerConfig}
 		} else if !caddyValidPath(install.Binary) || install.Method == monitor.CaddyDocker {
 			return "", errCaddyPanelTarget
 		}
@@ -269,41 +276,11 @@ func caddyServiceCommand(install monitor.CaddyInstall, action string) (string, e
 	default:
 		return "", errCaddyPanelTarget
 	}
-	if install.Method == monitor.CaddyDocker {
-		if !caddyContainerName.MatchString(install.Container) {
-			return "", errCaddyPanelTarget
-		}
-		switch action {
-		case "enable":
-			return monitor.SystemCommand("docker", "update", "--restart", "unless-stopped", install.Container), nil
-		case "disable":
-			return monitor.SystemCommand("docker", "update", "--restart", "no", install.Container), nil
-		case "reload":
-			return monitor.SystemCommand("docker", "exec", install.Container, "caddy", "reload", "--config", "/etc/caddy/Caddyfile", "--force"), nil
-		default:
-			return monitor.SystemCommand("docker", action, install.Container), nil
-		}
-	}
-	if install.ServiceManager == "openrc" && install.Unit == "caddy" {
-		switch action {
-		case "enable", "disable":
-			verb := "add"
-			if action == "disable" {
-				verb = "del"
-			}
-			return monitor.SystemCommand("rc-update", verb, "caddy", "default"), nil
-		default:
-			return monitor.SystemCommand("rc-service", "caddy", action), nil
-		}
-	}
-	if install.ServiceManager != "systemd" || !monitor.ValidService(install.Unit) {
-		return "", errCaddyPanelTarget
-	}
-	return monitor.SystemCommand("systemctl", action, install.Unit), nil
+	return monitor.CaddyServiceCommand(install, action)
 }
 
 func (a *App) caddyServiceActions(s *Session, install monitor.CaddyInstall) []caddyAction {
-	active := install.Active == "active" || install.Active == "running"
+	active := caddyServiceRunning(install)
 	busy := install.Active == "activating" || install.Active == "deactivating" || install.Active == "reloading"
 	actions := make([]caddyAction, 0, 9)
 	for _, item := range []struct {
@@ -320,7 +297,15 @@ func (a *App) caddyServiceActions(s *Session, install monitor.CaddyInstall) []ca
 	} {
 		command, err := caddyServiceCommand(install, item.id)
 		reason := ""
-		if err != nil {
+		if item.id == "reload" && install.AdminAddr == "off" {
+			reason = locales.CpanelAdminOff()
+		} else if item.id == "validate" && caddyValidateReason(install) != "" {
+			reason = caddyValidateReason(install)
+		} else if install.Method == monitor.CaddyDocker && install.ContainerAutoRemove && item.id != "validate" && item.id != "reload" {
+			reason = locales.CwireDockerLifecycle()
+		} else if install.ServiceManager == "systemd" && (item.id == "enable" || item.id == "disable") && install.UnitFileState != "" && install.UnitFileState != "enabled" && install.UnitFileState != "enabled-runtime" && install.UnitFileState != "disabled" {
+			reason = locales.CwireNoAutostart(install.UnitFileState)
+		} else if err != nil {
 			reason = locales.CpanelNoTarget()
 		} else if item.id == "start" && len(install.Conflicts) > 0 {
 			reason = locales.CpanelConflicts(strings.Join(install.Conflicts, ", "))

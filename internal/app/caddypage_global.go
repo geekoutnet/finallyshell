@@ -80,6 +80,9 @@ func (page *caddyGlobalPage) blocked() string {
 	if !page.source.loaded || page.source.failure != "" {
 		return locales.CglobSourceUnavailable()
 	}
+	if page.main.Path != "" {
+		return caddyConfigWriteReason(page.source.inst, page.main.Path)
+	}
 	return ""
 }
 
@@ -95,6 +98,9 @@ func (page *caddyGlobalPage) actionReason(row caddyGlobalRow, edit, removing boo
 	}
 	if removing && row.node == nil {
 		return locales.CglobSetFirst()
+	}
+	if reason := caddyConfigWriteReason(page.source.inst, row.file.Path); row.file.Path != "" && reason != "" {
+		return reason
 	}
 	if edit && row.protected {
 		return locales.CglobProtected()
@@ -122,7 +128,7 @@ func (a *App) caddyGlobalSection(c *ui.Context, s *Session) {
 	case page.main.Path != "" && page.doc == nil:
 		ui.Column(c).Padding(6, 10).Gap(5).Children(func() {
 			widgets.Muted(c, locales.CglobRawOnly()).FillWidth()
-			if ui.Button(c, locales.CglobCode()).Disabled(page.blocked() != "").AlignSelf(ui.Start).Clicked() {
+			if reason := page.blocked(); ui.Button(c, locales.CglobCode()).Disabled(reason != "").Tooltip(reason).AlignSelf(ui.Start).Clicked() {
 				a.caddyGlobalCode(s, page.main)
 			}
 		})

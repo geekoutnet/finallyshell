@@ -82,7 +82,7 @@ func caddyTopLevelBlocks(text string) ([]caddyBlock, error) {
 
 var caddySiteFilename = regexp.MustCompile(`[^a-zA-Z0-9._-]+`)
 
-func caddySiteBase(address string) string {
+func CaddySiteFileBase(address string) string {
 	address = strings.TrimPrefix(strings.TrimPrefix(address, "https://"), "http://")
 	address = strings.Trim(caddySiteFilename.ReplaceAllString(address, "-"), ".-")
 	if address == "" {
@@ -203,7 +203,7 @@ func caddyManagedChange(inst CaddyInstall, files []CaddyFile) (CaddyChange, erro
 		if err != nil {
 			return CaddyChange{}, err
 		}
-		base := caddySiteBase(block.address)
+		base := CaddySiteFileBase(block.address)
 		name := base + ".caddy"
 		for index := 2; used[name]; index++ {
 			name = base + "-" + strconv.Itoa(index) + ".caddy"
@@ -268,14 +268,18 @@ func caddySystemdWord(value string) (string, error) {
 	return `"` + strings.NewReplacer(`\`, `\\`, `"`, `\"`).Replace(value) + `"`, nil
 }
 
-func caddyPackageMigrationScript(inst CaddyInstall) (string, error) {
+func CaddyCanMigrateBinary(inst CaddyInstall) bool {
 	method := caddyPackageMethod(inst.OS)
-	if inst.Method != CaddyBinary || inst.Unit == "" || inst.Resume || len(inst.Modules) > 0 || !caddyPath(inst.Binary) || !caddyPath(inst.DataDir) || path.Base(inst.DataDir) != "caddy" || (method != CaddyAPT && method != CaddyDNF) {
+	return inst.Method == CaddyBinary && ValidService(inst.Unit) && !inst.Resume && len(inst.Modules) == 0 && caddyPath(inst.Binary) && caddyPath(inst.DataDir) &&
+		path.Base(inst.DataDir) == "caddy" && (method == CaddyAPT || method == CaddyDNF) &&
+		(inst.UnitFile == "" || caddyPath(inst.UnitFile) && strings.HasPrefix(inst.UnitFile, "/etc/systemd/system/"))
+}
+
+func caddyPackageMigrationScript(inst CaddyInstall) (string, error) {
+	if !CaddyCanMigrateBinary(inst) {
 		return "", ErrCaddyUnsafe
 	}
-	if inst.UnitFile != "" && (!caddyPath(inst.UnitFile) || !strings.HasPrefix(inst.UnitFile, "/etc/systemd/system/")) {
-		return "", fmt.Errorf("%w: the original systemd unit must be in /etc/systemd/system", ErrCaddyUnsafe)
-	}
+	method := caddyPackageMethod(inst.OS)
 	setup, install, err := caddyPackageInstallCommands(inst.OS, method)
 	if err != nil {
 		return "", err

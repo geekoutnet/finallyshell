@@ -40,31 +40,45 @@ func (a *App) caddyConfigSection(c *ui.Context, s *Session) {
 			}
 		})
 	}
-	fileReason, formatReason, envReason, adminReason := "", "", "", ""
+	fileReason, formatReason, envReason, backupsReason := "", "", "", ""
+	adminReason := caddyAdminReason(install)
+	if adminReason == "" && s.caddy.overview.data.admin == locales.CpanelUnreachable() {
+		adminReason = locales.CpanelUnreachable()
+	}
 	if len(page.files) == 0 {
 		fileReason = locales.CpanelNoFiles()
 	}
 	validateReason := fileReason
-	if _, err := caddyServiceCommand(install, "validate"); err != nil {
-		validateReason = locales.CpanelNoTarget()
+	if reason := caddyValidateReason(install); reason != "" {
+		validateReason = reason
 	}
-	formatReason = fileReason
+	formatReason = validateReason
+	adaptReason := formatReason
 	if !caddyIsCaddyfile(install) {
-		formatReason = locales.CpanelCaddyfileOnly()
+		formatReason, adaptReason = locales.CpanelCaddyfileOnly(), locales.CpanelCaddyfileOnly()
+	}
+	if formatReason == "" {
+		for _, file := range page.files {
+			if formatReason = caddyConfigWriteReason(install, file.Path); formatReason != "" {
+				break
+			}
+		}
 	}
 	if !caddyValidPath(install.Envfile) {
 		envReason = locales.CpanelNoEnv()
+	} else {
+		envReason = caddyConfigWriteReason(install, install.Envfile)
 	}
-	if install.AdminAddr == "off" || install.AdminAddr == "" {
-		adminReason = locales.CpanelAdminOff()
+	if install.ContainerConfigUnmapped {
+		backupsReason = locales.CwireCannotWrite()
 	}
 	actions := []caddyAction{
-		{locales.CpanelEditor(), fileReason, func() { a.caddyOpenConfigEditor(s, page.files, "") }},
+		{locales.CpanelEditor(), caddyEditorReason(install, page.files, "", fileReason), func() { a.caddyOpenConfigEditor(s, page.files, "") }},
 		{locales.CpanelFormatAll(), formatReason, func() { a.caddyFormatAll(s) }},
 		{locales.CpanelValidate(), validateReason, func() { a.caddyValidateDialog(s) }},
-		{locales.CpanelAdapt(), formatReason, func() { a.caddyShowJSON(s, false) }},
+		{locales.CpanelAdapt(), adaptReason, func() { a.caddyShowJSON(s, false) }},
 		{locales.CpanelRunningConfig(), adminReason, func() { a.caddyShowJSON(s, true) }},
-		{locales.CpanelBackups(), "", func() { a.caddyBackups(s) }},
+		{locales.CpanelBackups(), backupsReason, func() { a.caddyBackups(s) }},
 		{locales.CpanelEnvironment(), envReason, func() { a.caddyOpenConfigEditor(s, nil, install.Envfile) }},
 	}
 	caddyActions(c, actions...)
@@ -118,7 +132,7 @@ func (a *App) caddyConfigSection(c *ui.Context, s *Session) {
 		if rows[selected] == nil {
 			selected = ""
 		}
-		caddyMenu(menu, caddyAction{locales.CpanelEditor(), fileReason, func() { a.caddyOpenConfigEditor(s, page.files, selected) }})
+		caddyMenu(menu, caddyAction{locales.CpanelEditor(), caddyEditorReason(install, page.files, selected, fileReason), func() { a.caddyOpenConfigEditor(s, page.files, selected) }})
 		menu.Separator()
 		caddyMenu(menu, actions[1:]...)
 	}
@@ -133,12 +147,27 @@ func (a *App) caddyConfigSection(c *ui.Context, s *Session) {
 	}).Grow(1).MinHeight(0).FillWidth().Label(locales.CaddyConfig())
 	if table.Submitted() {
 		for _, file := range page.files {
-			if page.selected.Has(file.Path) {
+			if page.selected.Has(file.Path) && caddyConfigWriteReason(install, file.Path) == "" {
 				a.caddyOpenConfigEditor(s, page.files, file.Path)
 				break
 			}
 		}
 	}
+}
+
+func caddyEditorReason(install monitor.CaddyInstall, files []caddyFileInfo, selected, fallback string) string {
+	if selected != "" {
+		return caddyConfigWriteReason(install, selected)
+	}
+	for _, file := range files {
+		if caddyConfigWriteReason(install, file.Path) == "" {
+			return ""
+		}
+	}
+	if len(files) != 0 {
+		return caddyConfigWriteReason(install, files[0].Path)
+	}
+	return fallback
 }
 
 func caddyOrderFiles(files []caddyFileInfo, first string) []caddyFileInfo {
@@ -173,10 +202,11 @@ func (a *App) caddyOpenConfigEditor(s *Session, files []caddyFileInfo, first str
 		spec.Title = locales.CpanelEnvironment()
 		spec.Files = []CodeEditorFile{{Path: first}}
 	} else {
-		if first == "" {
-			first = install.Config
+		order := first
+		if order == "" {
+			order = install.Config
 		}
-		for _, file := range caddyOrderFiles(files, first) {
+		for _, file := range caddyOrderFiles(files, order) {
 			if caddyValidPath(file.Path) {
 				spec.Files = append(spec.Files, CodeEditorFile{Path: file.Path, Content: file.Content, Loaded: true})
 			}
@@ -193,6 +223,16 @@ func (a *App) caddyOpenConfigEditor(s *Session, files []caddyFileInfo, first str
 	if len(spec.Files) == 0 {
 		return
 	}
+	writable := spec.Files[:0]
+	for _, file := range spec.Files {
+		if caddyConfigWriteReason(install, file.Path) == "" {
+			writable = append(writable, file)
+		}
+	}
+	if len(writable) == 0 || first != "" && writable[0].Path != first {
+		return
+	}
+	spec.Files = writable
 	allowed := map[string]bool{}
 	for _, file := range spec.Files {
 		allowed[file.Path] = true
@@ -232,7 +272,7 @@ func (a *App) caddyOpenConfigEditor(s *Session, files []caddyFileInfo, first str
 				return "", errCaddyPanelTarget
 			}
 		}
-		result, err := backend.apply(ctx, run, install, monitor.CaddyChange{Writes: files, Expect: expect, Reload: true})
+		result, err := backend.apply(ctx, run, install, monitor.CaddyChange{Writes: files, Expect: expect, Reload: caddyServiceRunning(install)})
 		return caddyApplyOutput(result), err
 	}
 	spec.Saved = func() { a.refreshCaddyConfig(s) }
@@ -287,7 +327,7 @@ func (a *App) caddyShowJSON(s *Session, running bool) {
 func (a *App) caddyFormatAll(s *Session) {
 	files := slices.Clone(s.caddy.config.files)
 	caddyReadDialog(a, s, locales.CpanelFormatAll(), func(backend caddyBackend, ctx context.Context, run monitor.CaddyRunner, install monitor.CaddyInstall) (caddyBackupPreview, error) {
-		preview := caddyBackupPreview{Change: monitor.CaddyChange{Expect: map[string]string{}, Reload: true}}
+		preview := caddyBackupPreview{Change: monitor.CaddyChange{Expect: map[string]string{}, Reload: caddyServiceRunning(install)}}
 		for _, file := range files {
 			formatted, err := backend.format(ctx, run, install, file.Content)
 			if err != nil {
@@ -323,6 +363,19 @@ func (a *App) caddyReviewChange(s *Session, dialog *systemDialog, preview caddyB
 		}
 		return true
 	}
+	install := s.caddy.state.install
+	for _, file := range change.Writes {
+		if reason := caddyConfigWriteReason(install, file.Path); reason != "" {
+			dialog.failure = reason
+			return
+		}
+	}
+	for _, file := range change.Deletes {
+		if reason := caddyConfigWriteReason(install, file); reason != "" {
+			dialog.failure = reason
+			return
+		}
+	}
 	if slices.ContainsFunc(change.Writes, func(file monitor.CaddyFile) bool { return !valid(file.Path) }) ||
 		slices.ContainsFunc(change.Deletes, func(file string) bool { _, exists := old[file]; return !exists || !valid(file) }) {
 		dialog.failure = locales.CpanelChanged()
@@ -342,6 +395,9 @@ func (a *App) caddyReviewChange(s *Session, dialog *systemDialog, preview caddyB
 	}
 	index := 0
 	dialog.consequence = locales.CpanelApplyNote()
+	if !change.Reload {
+		dialog.consequence = locales.CwireValidateWithoutReload()
+	}
 	dialog.body = func(c *ui.Context, height float32) {
 		systemSelect(c, &index, locales.CpanelConfigPath(), names)
 		editor.DiffView(c.Key(index), states[index]).Height(min(360, height/2)).FillWidth()
@@ -367,15 +423,17 @@ func (a *App) caddyBackups(s *Session) {
 			return
 		}
 		index := 0
+		install := s.caddy.state.install
 		dialog.body = func(c *ui.Context, height float32) {
 			systemSelect(c, &index, locales.CpanelBackups(), names)
-			caddyActions(c, caddyAction{locales.CpanelRestore(), "", func() {
+			restoreReason := caddyConfigWriteReason(install, install.Config)
+			caddyActions(c, caddyAction{locales.CpanelRestore(), restoreReason, func() {
 				selected := names[index]
 				caddyReadDialog(a, s, locales.CpanelRestore(), func(backend caddyBackend, ctx context.Context, run monitor.CaddyRunner, install monitor.CaddyInstall) (caddyBackupPreview, error) {
 					return backend.backupPreview(ctx, run, install, selected)
 				}, func(dialog *systemDialog, preview caddyBackupPreview) {
 					dialog.target = selected
-					preview.Change.Reload = true
+					preview.Change.Reload = caddyServiceRunning(install)
 					a.caddyReviewChange(s, dialog, preview)
 				})
 			}}, caddyAction{locales.CpanelDeleteBackup(), "", func() {

@@ -187,7 +187,7 @@ func caddySectionProgressRunner(run monitor.CaddyRunner, progress func(string)) 
 }
 
 func (a *App) caddySectionEditor(s *Session, data *caddySectionFiles, file monitor.CaddyFile, saved func()) {
-	if !systemReady(s, data.client) || !caddySectionPath(file.Path) {
+	if !systemReady(s, data.client) || caddyConfigWriteReason(data.inst, file.Path) != "" {
 		return
 	}
 	backend, run := a.caddySectionOps(s, data)
@@ -203,7 +203,7 @@ func (a *App) caddySectionEditor(s *Session, data *caddySectionFiles, file monit
 			return backend.validate(ctx, run, inst, files)
 		},
 		Save: func(ctx context.Context, files []monitor.CaddyFile, expect map[string]string) (string, error) {
-			result, err := backend.apply(ctx, run, inst, monitor.CaddyChange{Writes: files, Expect: expect, Reload: true})
+			result, err := backend.apply(ctx, run, inst, monitor.CaddyChange{Writes: files, Expect: expect, Reload: caddyServiceRunning(inst)})
 			return strings.TrimSpace(result.Validate + "\n" + result.Backup), err
 		},
 		Saved: saved,

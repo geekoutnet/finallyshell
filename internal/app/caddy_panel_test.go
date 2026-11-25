@@ -68,6 +68,7 @@ func TestCaddyPanelReadCommands(t *testing.T) {
 	if _, err := backend.adapt(context.Background(), run, install); err == nil || len(calls) != 1 {
 		t.Fatalf("invalid path was not rejected: %v, %v", err, calls)
 	}
+	install.Config = caddyPanelDemo.Config
 	if got, err := backend.serviceInfo(context.Background(), run, install); err != nil || got != (caddyServiceInfo{PID: 28, Memory: 12345, Since: "timestamp"}) {
 		t.Fatalf("service info = %+v, %v", got, err)
 	}
@@ -131,6 +132,10 @@ func (fakeCaddyPanel) serviceInfo(context.Context, monitor.CaddyRunner, monitor.
 	return caddyServiceInfo{PID: 1028, Memory: 12 << 20, Since: "2026-11-25 10:14:20"}, nil
 }
 
+func (fakeCaddyPanel) adapt(context.Context, monitor.CaddyRunner, monitor.CaddyInstall) (string, error) {
+	return `{"apps":{"http":{"servers":{"srv0":{"routes":[{"match":[{"host":["app.example.test"]}]}]}}}}}`, nil
+}
+
 func (fake fakeCaddyPanel) service(ctx context.Context, run monitor.CaddyRunner, install monitor.CaddyInstall, action string, progress func(string)) (string, error) {
 	command, err := caddyServiceCommand(install, action)
 	if err != nil {
@@ -170,7 +175,7 @@ func (fake fakeCaddyPanel) managedPreview(ctx context.Context, run monitor.Caddy
 }
 
 func (fakeCaddyPanel) installFacts(context.Context, monitor.CaddyRunner, monitor.CaddyInstall) (caddyInstallFacts, error) {
-	return caddyInstallFacts{Docker: true, Firewall: "ufw", Versions: []string{"v2.11.1", "v2.10.0"}}, nil
+	return caddyInstallFacts{Docker: true, Systemd: true, OpenRC: true, Firewall: "ufw", Versions: []string{"v2.11.1", "v2.10.0"}}, nil
 }
 
 func (fake fakeCaddyPanel) install(_ context.Context, _ monitor.CaddyRunner, _ monitor.CaddyInstall, options caddyInstallOptions, _ func(string)) (string, error) {
@@ -254,7 +259,11 @@ func TestCaddyPanelOverview(t *testing.T) {
 			if method == monitor.CaddyBinary {
 				wantTexts(t, tester, "conflict", locales.CpanelConflicts("nginx"))
 			}
-			if s.caddy.overview.data.sites != 1 || s.caddy.overview.data.unhealthy != 1 || s.caddy.overview.data.expiring != 2 {
+			unhealthy := 1
+			if !caddyServiceRunning(install) {
+				unhealthy = 0
+			}
+			if s.caddy.overview.data.sites != 1 || s.caddy.overview.data.unhealthy != unhealthy || s.caddy.overview.data.expiring != 2 {
 				t.Fatalf("overview metrics: %+v", s.caddy.overview.data)
 			}
 		})
@@ -513,6 +522,7 @@ func TestCaddyPanelScreenshots(t *testing.T) {
 		for _, mode := range []string{"light", "dark"} {
 			t.Run(language+"/"+mode, func(t *testing.T) {
 				a, s, platform, tester, fake, _ := newCaddyPanelTest(t, caddyPanelDemo)
+				tester.SetSize(1280, 820)
 				platform.SetLocale(language)
 				tester.SetDark(mode == "dark")
 				shot := func(name string) {
@@ -558,6 +568,17 @@ func TestCaddyPanelScreenshots(t *testing.T) {
 				clickNamed(t, tester, locales.CpanelRestore())
 				platform.until(t, "restore diff", func() bool { return s.caddy.state.dialog != nil && s.caddy.state.dialog.confirm != nil })
 				shot("restore-dialog")
+				s.caddy.state.dialog = nil
+				s.caddy.state.install.Active, s.caddy.state.install.Conflicts = "inactive", []string{"nginx"}
+				dialog := &systemDialog{client: s.client, title: locales.CpanelImportNginx()}
+				s.caddy.state.dialog = dialog
+				a.caddyNginxReview(s, dialog, caddyNginxPreview{main: caddyTestFiles()[0].CaddyFile, sites: []caddyNginxSite{{Name: "demo.example.test", Content: "demo.example.test {\n\treverse_proxy localhost:8080\n}\n"}}})
+				shot("nginx-review-dialog")
+				clickNamed(t, tester, locales.CpanelIncludeSite())
+				clickNamed(t, tester, locales.CpanelCutoverNginx())
+				clickNamed(t, tester, locales.CpanelReviewImport(1))
+				clickNamed(t, tester, locales.SvcConfirm())
+				shot("nginx-cutover-dialog")
 				s.caddy.state.dialog = nil
 				s.caddy.state.install.Active, s.caddy.state.install.Conflicts = "failed", []string{"nginx"}
 				panel(caddySecOverview, "failed", func() bool { return true })

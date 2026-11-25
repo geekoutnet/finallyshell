@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"strings"
 )
 
 // This file is the contract of the Caddy panel's backend: what the app
@@ -60,14 +61,34 @@ type CaddyInstall struct {
 	Managed  bool
 	SitesDir string // /etc/caddy/sites by default
 
-	OS            string // ID from /etc/os-release
-	PackageLatest string // the newest version the package manager offers, "" when unknown
+	OS                      string // ID from /etc/os-release
+	PackageLatest           string // the newest version the package manager offers, "" when unknown
+	OSVersion               string
+	EnvironmentFiles        []string // a leading minus denotes an optional EnvironmentFile
+	WorkingDir              string
+	CaddyEnvironment        map[string]string // non-secret HOME, XDG and CADDY_ADMIN settings
+	ContainerConfig         string            // config path inside the container
+	ContainerConfigUnmapped bool              // the config has no known host mount
+	ContainerDataUnmapped   bool              // certificate paths are inside the container
+	ContainerImage          string
+	RestartPolicy           string
+	Mounts                  []CaddyMount
+	Ports                   string
+	Resume                  bool // the unit starts from the autosaved JSON config
+}
+
+// CaddyMount maps a container filesystem destination to its host source.
+type CaddyMount struct {
+	Type, Source, Destination, Name string
+	RW                              bool
 }
 
 // CaddyFile is a config file and its content.
 type CaddyFile struct {
 	Path    string
 	Content string
+	Size    int64
+	Adapter string
 }
 
 // CaddyChange is a set of config edits applied as one: written, checked
@@ -80,7 +101,11 @@ type CaddyChange struct {
 	// started editing; a file changed on the server since is not
 	// overwritten (ErrCaddyChanged).
 	Expect map[string]string
-	Reload bool
+	// ExpectMissing lists paths which must still be absent when the lock is taken.
+	ExpectMissing     []string
+	Reload            bool
+	requireEmptySites bool
+	importPatterns    []string
 }
 
 // CaddyApplyResult tells what ApplyCaddyChange did.
@@ -92,8 +117,7 @@ type CaddyApplyResult struct {
 }
 
 var (
-	// ErrCaddyNotImplemented is what the stubs return until the backend
-	// is built.
+	// ErrCaddyNotImplemented is reserved for unavailable optional panel actions.
 	ErrCaddyNotImplemented = errors.New("not implemented yet")
 	// ErrCaddyChanged is a file changed on the server since it was read.
 	ErrCaddyChanged = errors.New("the file changed on the server")
@@ -102,34 +126,55 @@ var (
 	ErrCaddyInvalid = errors.New("caddy refused the configuration")
 )
 
-// DetectCaddy finds Caddy on the server however it was installed.
+// DetectCaddy probes the distribution, binaries, package database, services,
+// containers and listening sockets. No install is reported as a zero Method,
+// not an error. A runner failure is returned as an error.
 func DetectCaddy(ctx context.Context, run CaddyRunner) (CaddyInstall, error) {
-	return CaddyInstall{}, ErrCaddyNotImplemented
+	return detectCaddy(ctx, run)
 }
 
-// ReadCaddyFiles reads the main config and every file it imports.
+// ReadCaddyFiles reads the main config and recursively expands Caddyfile imports
+// through root read-only scripts. It returns an error on missing literal paths,
+// malformed records or exceeded limits. A syntactically unfinished file remains
+// readable so the editor can repair it.
 func ReadCaddyFiles(ctx context.Context, run CaddyRunner, inst CaddyInstall) ([]CaddyFile, error) {
-	return nil, ErrCaddyNotImplemented
+	return readCaddyFiles(ctx, run, inst)
 }
 
-// ApplyCaddyChange applies change as one transaction (see CaddyChange).
+// ApplyCaddyChange runs one root script to lock, verify expectations, back up,
+// write, validate and optionally reload. It returns ErrCaddyChanged for stale
+// edits, ErrCaddyInvalid on failed validation, and ErrCaddyRollback when recovery
+// fails. Backup and rollback status are returned even when the command fails.
 func ApplyCaddyChange(ctx context.Context, run CaddyRunner, inst CaddyInstall, change CaddyChange) (CaddyApplyResult, error) {
-	return CaddyApplyResult{}, ErrCaddyNotImplemented
+	return applyCaddyChange(ctx, run, inst, change)
 }
 
-// ValidateCaddyConfig checks the config with files in place of the ones
-// on disk, without changing anything, and returns caddy's output.
+// ValidateCaddyConfig reads the import graph with the provided overlays and
+// writes it to a private temporary directory, inside the container for Docker.
+// Both absolute and relative file imports are rebased there. It adapts the
+// Caddyfile to JSON before validating, returning diagnostic
+// output and ErrCaddyInvalid if Caddy refuses the preview.
 func ValidateCaddyConfig(ctx context.Context, run CaddyRunner, inst CaddyInstall, files []CaddyFile) (string, error) {
-	return "", ErrCaddyNotImplemented
+	return validateCaddyPreview(ctx, run, inst, files)
 }
 
-// FormatCaddyfile returns content as `caddy fmt` formats it.
+// FormatCaddyfile runs `caddy fmt -` with content on stdin, returning stdout
+// verbatim. Caddy's nonzero "not formatted" status still carries valid output.
 func FormatCaddyfile(ctx context.Context, run CaddyRunner, inst CaddyInstall, content string) (string, error) {
-	return "", ErrCaddyNotImplemented
+	inst, err := caddyNormalize(inst)
+	if err != nil || len(content) > caddyFileLimit {
+		return "", ErrCaddyUnsafe
+	}
+	stdout, stderr, err := run(ctx, caddyCLI(inst, "fmt", "-"), strings.NewReader(content), nil)
+	if err != nil && !(ctx.Err() == nil && (stdout != "" || content == "") && strings.Contains(strings.ToLower(stderr), "not formatted")) {
+		return "", caddyCommandError(err, caddyOutput(stdout, stderr))
+	}
+	return stdout, nil
 }
 
-// HashCaddyPassword returns the hash `caddy hash-password` makes of
-// plain, which goes on stdin, never in the command line.
+// HashCaddyPassword returns a bcrypt hash for the default basic_auth policy.
+// The password is sent only on stdin; failures never include remote output.
 func HashCaddyPassword(ctx context.Context, run CaddyRunner, inst CaddyInstall, plain string) (string, error) {
-	return "", ErrCaddyNotImplemented
+	hash, _, err := CaddyPasswordHash(ctx, run, inst, plain)
+	return hash, err
 }

@@ -1,0 +1,18 @@
+# keep
+{
+ email test@example.com
+}
+(shared) {
+ header X-Test `a { }`
+}
+example.com, www.example.com {
+ @test path /a
+ respond @test <<HTML
+        { ignored }
+        HTML
+ import ../common/*.conf
+}
+# the next site
+b.example {
+ respond "a }"
+}

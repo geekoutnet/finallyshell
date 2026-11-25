@@ -2003,6 +2003,31 @@ file is saved through another connected session to the same host.
 Not supported: saving with sudo. A file without write permission fails to
 save with "permission denied".
 
+### Desktop mode › Trash
+
+Deleting files from the desktop file manager moves them to the remote trash
+after confirmation. The Trash window shows the original path, deletion time,
+size, permissions, owner and file note. Search by name, path or note, sort the
+list, and select one or more items to restore or permanently delete. The context
+menu also copies the original path or opens its parent in Files.
+
+Restore recreates missing folders. If a destination already exists, keep both,
+skip, or replace it; Replace first moves the existing item to the trash, so it
+remains recoverable. Notes follow restored files, including renamed copies.
+Restore all and Empty trash apply to the listed trash,
+not just search matches. Permanent deletion and emptying show the item count,
+size and affected paths before proceeding. You can cancel a batch; items
+already processed stay changed.
+
+The app uses the freedesktop Trash layout on Linux without installing a service.
+It keeps files on their original filesystem, in the user's trash or a partition
+trash. If moving requires elevation, the notification and operation log identify
+root's trash. Use the shield button to authorize viewing root's trash if it is
+not already available. Elevated changes refuse folders other users can redirect.
+Items without readable metadata can be permanently
+deleted but cannot be restored to an unknown location. Stale metadata without a
+matching item is cleaned up on refresh.
+
 ## System tab
 
 The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.

@@ -140,6 +140,7 @@ type Platform interface {
 
 // App is the state of the window.
 type App struct {
+	sysProxy      systemProxyRuntime
 	plat          Platform
 	settings      config.Settings
 	lock          appLock
@@ -342,6 +343,7 @@ func New(plat Platform) *App {
 	a.restoreLayout()
 	a.restoreLeftPanel()
 	a.transfers.init()
+	a.initSystemProxy()
 	return a
 }
 
@@ -618,6 +620,7 @@ func (a *App) closeSession(s *Session) {
 // secondary windows, and saves the pane sizes the user changed and the
 // command editor's text.
 func (a *App) CloseAll() {
+	a.closeSystemProxy()
 	a.stopAlerts()
 	if a.relay != nil {
 		a.closeRelay(a.relay)

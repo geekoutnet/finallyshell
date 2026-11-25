@@ -151,6 +151,7 @@ func (a *App) tunnelsPage(c *ui.Context, ed *connEditor) {
 		if ui.Button(c, locales.TunnelAdd()).Clicked() {
 			te.open(-1)
 		}
+		a.tunnelRecipesButton(c, ed)
 		if ui.Button(c, locales.TunnelEdit()).Disabled(!chosen).Clicked() && chosen {
 			te.open(te.row)
 		}

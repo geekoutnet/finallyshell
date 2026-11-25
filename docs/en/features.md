@@ -1061,6 +1061,22 @@ dialog says "Another tunnel already listens on this port". A tunnel with
 "Start with the session" turned off does not start automatically, but can
 be started by hand on the Tunnels tab.
 
+### Tunnel recipes
+
+In the connection editor, open **Tunnels → Tunnel recipes…**. In the command palette, the same action is available for a single SSH connection. Pick a goal, edit the suggested addresses and ports, and add the tunnel to the draft. Save the connection to keep it. Local port suggestions skip ports already used by app tunnels or listening on this computer; availability is checked again when the tunnel starts. Remote port suggestions do not probe the server.
+
+- **Server services and intranet:** reach MySQL, PostgreSQL, Redis, MongoDB, Elasticsearch, a web panel, or another machine’s SSH or Remote Desktop. The review shows where to connect your client. The Docker and MySQL recipes can target remote Unix sockets; Docker socket access can be equivalent to root.
+- **Forward or reverse proxies:** use SOCKS5, HTTP or a mixed local listener. Reverse proxies let programs on the server use this computer’s network. The wizard can suggest common local proxy ports; a listener is not proof that the suggested protocol works. Shell exports and HTTP settings for APT and Docker are copyable. Only shell exports can be sent to an active terminal, as unsubmitted input after confirmation; no server files are changed.
+- **Publishing and LAN sharing:** publish a local service through the server, or share a listener with selected LAN subnets. Review who can connect before accepting a non-loopback address. Use authentication before sharing a proxy and check GatewayPorts and the firewall with Public access before publishing. The recipe does not change the server configuration.
+
+**Import from ssh command…** previews `-L`, `-R`, `-D`, or their OpenSSH config directives without executing anything. The SSH config importer also imports forwards; non-loopback listeners from a config file start disabled until you review them. The gallery can copy an OpenSSH command or directives. Tunnels that OpenSSH cannot reproduce safely (such as HTTP or authenticated proxies, or tunnels with allowlists or limits) are listed as comments rather than emitted as active forwards. `ExitOnForwardFailure` is recognized but does not change Finallyshell’s independent tunnel startup.
+
+### System proxy
+
+Enable **Use as system proxy when running** on a local loopback SOCKS5, HTTP or mixed tunnel without proxy authentication or an allowlist. Blank PAC rules select a manual proxy; `all` routes globally through PAC. Otherwise enter exact domains, `*.example.org` patterns or CIDRs such as `10.0.0.0/8` separated by commas. Nonmatching traffic goes directly. IPv6 CIDRs depend on the PAC client’s `isInNetEx` support. Proxy and PAC support varies by application; some applications ignore system settings.
+
+Supported desktop settings are Windows per-user Internet Settings, macOS enabled network services and GNOME on Linux. The most recently applied tunnel replaces the previous system proxy; the original settings return when the active tunnel stops, on quit, or at the next launch after an unexpected exit. The command palette’s **Restore system proxy** action restores the backup without stopping tunnels.
+
 ### Keys and other behavior
 
 - Enter is OK (except in Notes, where it starts a new line), and Esc is

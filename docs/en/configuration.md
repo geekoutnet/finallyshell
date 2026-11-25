@@ -38,6 +38,7 @@ instead.
 | `hosts.v1.json` | The original file, kept when a version 1 `hosts.json` is migrated. |
 | `hosts.json.broken-<date-time>` | A copy of a `hosts.json` that could not be read. |
 | `settings.json` | The options (see below). |
+| `sysproxy-backup.json` | Local recovery snapshot of this computer’s system proxy before a tunnel replaces it. |
 | `db.json` | Local database connection profiles by SSH host ID; no credentials or query history. |
 | `log-paths/<host-hash>.json` | Up to 12 recently entered remote log paths per connection; local only. No log contents are stored here. Previous versions use the `.bak-YYYYMMDDHHMMSS` suffix. |
 | `known_hosts` | Host keys you have trusted. |
@@ -106,6 +107,8 @@ version 2.
   `crlf`). `encoding`, `backspace` and `delete` are shared terminal fields.
 
 ### Tunnels
+
+The system proxy uses the tunnel’s existing `systemProxy` (boolean) and `pac` (list of rules) fields in `hosts.json`; the recipe wizard does not add an application setting. The local `sysproxy-backup.json` is not synced and is removed only after restoring successfully. Do not copy it to a different machine. Recovery does not store proxy passwords, and the wizard does not accept upstream credentials. Configure tunnel proxy passwords through the system credential store, not a URL or `hosts.json`. On macOS, formerly empty proxy addresses can retain inactive values after restore; the corresponding proxies are disabled.
 
 `tunnels` are the host's port forwards:
 

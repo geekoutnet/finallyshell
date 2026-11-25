@@ -173,6 +173,7 @@ type sshReader struct {
 // sshLine is a setting the reader takes: one of the keywords read.
 type sshLine struct {
 	key, value string
+	forward    config.Tunnel
 	// conds are the patterns of the Host lines the setting is under,
 	// the Include's outer ones first: it applies to a name that matches
 	// every one.
@@ -208,7 +209,27 @@ func (r *sshReader) parse(text, name string, outer [][]string, depth int) {
 			match = true
 			r.problem(name, n, SSHMatch, nil)
 			continue
-		case match || len(args) == 0:
+		case match:
+			continue
+		}
+		switch key {
+		case "localforward", "remoteforward", "dynamicforward", "exitonforwardfailure":
+			forward, exit, err := config.ParseSSHForwardDirective(key, args)
+			if err != nil {
+				r.problem(name, n, SSHBadLine, err)
+			} else if exit == nil {
+				r.lines = append(r.lines, sshLine{key: key, forward: forward, conds: conds})
+			}
+			continue
+		case "clearallforwardings":
+			if len(args) != 1 || !strings.EqualFold(args[0], "yes") && !strings.EqualFold(args[0], "no") {
+				r.problem(name, n, SSHBadLine, config.ErrSSHForward)
+			} else {
+				r.lines = append(r.lines, sshLine{key: key, value: args[0], conds: conds})
+			}
+			continue
+		}
+		if len(args) == 0 {
 			continue
 		}
 		switch key {
@@ -305,13 +326,27 @@ func (r *sshReader) entries(user string) {
 		// The first value of each keyword that applies; ProxyJump and
 		// ProxyCommand are one, whichever is first.
 		v := map[string]string{}
+		var forwards []config.Tunnel
 		proxy := ""
 		for _, l := range r.lines {
+			if !sshMatchAll(sh.name, l.conds) {
+				continue
+			}
+			if l.forward.Kind != "" {
+				if !slices.ContainsFunc(forwards, func(t config.Tunnel) bool {
+					return t.Kind == l.forward.Kind && t.ListenAddr() == l.forward.ListenAddr() && t.TargetAddr() == l.forward.TargetAddr() && t.TargetSocket == l.forward.TargetSocket
+				}) {
+					forward := l.forward
+					forward.Disabled = !config.IsLoopback(forward.ListenHost)
+					forwards = append(forwards, forward)
+				}
+				continue
+			}
 			key := l.key
 			if key == "proxyjump" || key == "proxycommand" {
 				key = "proxy"
 			}
-			if _, ok := v[key]; ok || !sshMatchAll(sh.name, l.conds) {
+			if _, ok := v[key]; ok {
 				continue
 			}
 			v[key] = l.value
@@ -328,7 +363,11 @@ func (r *sshReader) entries(user string) {
 			login = user
 		}
 		port, _ := strconv.Atoi(v["port"])
-		h := &config.Host{Name: sh.name, Addr: addr, User: login, Auth: config.AuthPassword}
+		if strings.EqualFold(v["clearallforwardings"], "yes") {
+			forwards = nil
+		}
+		h := &config.Host{Name: sh.name, Addr: addr, User: login, Auth: config.AuthPassword, Tunnels: forwards}
+		h.EnsureTunnelIDs()
 		if port != 22 {
 			h.Port = port
 		}

@@ -31,6 +31,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `hosts.v1.json` | 迁移第 1 版的 `hosts.json` 时保留的原文件。 |
 | `hosts.json.broken-<日期-时间>` | 读不出来的 `hosts.json` 的副本。 |
 | `settings.json` | 选项（见下面）。 |
+| `sysproxy-backup.json` | 隧道接管系统代理前的本机设置恢复快照。 |
 | `db.json` | 按 SSH 主机 ID 保存的本机数据库连接配置，不含凭据和查询历史。 |
 | `log-paths/<连接哈希>.json` | 每个连接最近输入的最多 12 个远程日志路径，仅存本机，不保存日志内容。旧版本以 `.bak-YYYYMMDDHHMMSS` 为后缀。 |
 | `known_hosts` | 信任过的主机指纹。 |
@@ -85,6 +86,8 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - 串口以 `addr` 保存本机设备名，没有网络端口。`serial` 对象包含 `baud`、`dataBits`、`parity`（`none`、`odd`、`even`）、`stopBits`（1 或 2；Windows 上用 5 数据位时可选 1.5）、`flow`（`none`、`rtscts`、`xonxoff`）、`localEcho` 和 `lineEnding`（`cr`、`lf`、`crlf`）。字符编码和按键行为使用通用的 `encoding`、`backspace` 和 `delete` 字段。
 
 ### 隧道
+
+系统代理使用 `hosts.json` 中隧道已有的 `systemProxy`（布尔值）和 `pac`（规则列表）；场景向导不新增应用设置。`sysproxy-backup.json` 不同步，只在成功恢复后移除，不应复制到其他设备。恢复文件不保存代理密码，场景向导也不接受含凭据的上游地址。隧道代理密码应通过系统凭据库保存，不应写进 URL 或 `hosts.json`。在 macOS 上，恢复后原本为空的代理地址可能保留未生效的值；对应代理仍为禁用状态。
 
 `tunnels` 是这台主机的端口转发：
 

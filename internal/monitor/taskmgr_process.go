@@ -14,7 +14,7 @@ const taskProcessScript = taskSectionHeader + `m 'self'; printf '%s\n' "$$"
 m 'uname'; uname '-s'
 m 'cpu'; grep '-E' '^(cpu|btime )' '/proc/stat' 2>/dev/null
 m 'clock'; getconf 'CLK_TCK' 2>/dev/null
-m 'ps'; ps '-e' '-o' 'pid=' '-o' 'ppid=' '-o' 'user:32=' '-o' 'rss=' '-o' 'pcpu=' '-o' 'args=' 2>/dev/null || ps '-o' 'pid=,ppid=,user=,rss=,args=' 2>/dev/null
+m 'ps'; LC_ALL='C.UTF-8' ps '-e' '-ww' '-o' 'pid=' '-o' 'ppid=' '-o' 'user:32=' '-o' 'rss=' '-o' 'pcpu=' '-o' 'args=' 2>/dev/null || ps '-o' 'pid=,ppid=,user=,rss=,args=' 2>/dev/null
 m 'stat'; cat /proc/[0-9]*/stat 2>/dev/null
 m 'end'
 `
@@ -33,10 +33,6 @@ func (lister *TaskProcessLister) List(ctx context.Context, run MemoryRunner) ([]
 		return nil, err
 	}
 	return lister.parseSections(out, sections)
-}
-
-func (lister *TaskProcessLister) parse(out string) ([]TaskProcess, error) {
-	return lister.parseSections(out, procSections(out))
 }
 
 func (lister *TaskProcessLister) parseSections(out string, sections map[string]string) ([]TaskProcess, error) {

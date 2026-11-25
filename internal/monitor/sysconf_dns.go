@@ -44,6 +44,7 @@ type SysConfDNS struct {
 	Symlink        string
 	Device, UUID   string
 	NetworkManager bool
+	MountPoint     bool
 	Backup         bool
 }
 
@@ -65,7 +66,13 @@ link=''
 if [ -L '/etc/resolv.conf' ]; then
   link=$('readlink' '-f' '/etc/resolv.conf' 2>/dev/null) || link=''
 fi
-if 'systemctl' 'is-active' '--quiet' 'systemd-resolved.service' 2>/dev/null; then
+mounted='no'
+if [ -r '/proc/self/mountinfo' ] && 'awk' '$5 == "/etc/resolv.conf" { found = 1; exit } END { exit !found }' '/proc/self/mountinfo'; then
+  mounted='yes'
+fi
+if [ "$mounted" = 'yes' ]; then
+  mode='managed'
+elif 'systemctl' 'is-active' '--quiet' 'systemd-resolved.service' 2>/dev/null; then
   mode='resolved'
 elif [ -L '/etc/resolv.conf' ] && { [ "$link" != '/run/NetworkManager/resolv.conf' ] || [ -z "$uuid" ]; }; then
   mode='managed'
@@ -79,7 +86,7 @@ fi
 `
 
 const SysConfDNSCommand = sysConfMarks + sysConfDNSModeScript + `mark 'manager'
-'printf' 'MODE=%s\nNM=%s\nUUID=%s\nDEVICE=%s\n' "$mode" "$nm" "$uuid" "$device"
+'printf' 'MODE=%s\nNM=%s\nUUID=%s\nDEVICE=%s\nMOUNT=%s\n' "$mode" "$nm" "$uuid" "$device" "$mounted"
 if [ -L '/etc/resolv.conf' ]; then
   'printf' 'LINK=%s\n' "$('readlink' '/etc/resolv.conf')"
 fi
@@ -109,7 +116,7 @@ func ParseSysConfDNS(output string) SysConfDNS {
 	sections := sysInfoSections(output)
 	manager := sysConfKeyValues(sections["manager"])
 	dns := SysConfDNS{Mode: SysConfDNSMode(manager["MODE"]), Device: manager["DEVICE"], UUID: manager["UUID"],
-		Symlink: manager["LINK"], NetworkManager: manager["NM"] == "yes", Backup: manager["BACKUP"] == "yes"}
+		Symlink: manager["LINK"], NetworkManager: manager["NM"] == "yes", MountPoint: manager["MOUNT"] == "yes", Backup: manager["BACKUP"] == "yes"}
 	dns.File = ParseResolvConf(sections["file"])
 	dns.Edit = dns.File
 	dns.Links = ParseResolvedStatus(sections["resolved"])

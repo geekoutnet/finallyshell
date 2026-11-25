@@ -168,9 +168,11 @@ func (stream *privilegeStream) write(stdout bool, chunk []byte) {
 					chunk = prefix[end+newline+1:]
 					stderr := stream.before[1]
 					if stream.request.method == PrivilegeSudo && stream.request.prompt != "" {
-						stripped := bytes.ReplaceAll(stderr, []byte(stream.request.prompt+" "), nil)
-						defer clear(stripped)
-						stderr = stripped
+						prompt := []byte(stream.request.prompt)
+						for before, after, found := bytes.Cut(stderr, prompt); found; before, after, found = bytes.Cut(stderr, prompt) {
+							stream.stderr.write(before)
+							stderr = bytes.TrimPrefix(after, []byte(" "))
+						}
 					}
 					stream.stderr.write(stderr)
 					close(stream.ready)

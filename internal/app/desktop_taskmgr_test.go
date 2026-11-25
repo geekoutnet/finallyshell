@@ -34,6 +34,20 @@ func TestDesktopTaskLoadState(t *testing.T) {
 	}
 }
 
+func TestDesktopTaskDiskPrefersMountedDevice(t *testing.T) {
+	state := desktopTaskState{perf: monitor.TaskPerformance{Disks: []monitor.TaskDisk{
+		{Name: "loop0"}, {Name: "sda"}, {Name: "sde", Mounts: []string{"/etc/hosts"}},
+		{Name: "sdb1", Partition: true, Mounts: []string{"/"}},
+	}}}
+	if chosen, choices := state.diskChoice(); chosen.Name != "sdb1" || len(choices) != 4 {
+		t.Fatalf("default disk = %s, choices %v", chosen.Name, choices)
+	}
+	state.disk = "loop0"
+	if chosen, _ := state.diskChoice(); chosen.Name != "loop0" {
+		t.Fatal("explicit disk choice was ignored")
+	}
+}
+
 func TestDesktopTaskProcessActions(t *testing.T) {
 	a, p, tt, session := desktopTestApp(t)
 	window := a.desktopOpen(session, appTaskMgr, nil)

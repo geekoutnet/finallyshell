@@ -131,7 +131,7 @@ func validateCaddyPreview(ctx context.Context, run CaddyRunner, inst CaddyInstal
 		fmt.Fprintf(&script, "%s %s > \"$tmp/adapted.json\"\n", caddyCLI(cli, "adapt", "--adapter", inst.Adapter, "--config"), configArg)
 		configArg = `"$tmp/adapted.json"`
 	}
-	fmt.Fprintf(&script, "%s %s\n", caddyCLI(cli, "validate", "--config"), configArg)
+	script.WriteString(caddyAsServiceUser(inst, caddyCLI(cli, "validate", "--config")+" "+configArg, `"$tmp"`) + "\n")
 	command := caddyEnvironment(inst, script.String())
 	var stdout, stderr string
 	if inst.Method == CaddyDocker {

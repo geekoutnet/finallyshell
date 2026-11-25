@@ -152,7 +152,38 @@ func caddyEnvironment(inst CaddyInstall, command string) string {
 }
 
 func caddyValidationEnvironment(inst CaddyInstall, command string) string {
-	return caddyEnvScript(inst, command, true)
+	return caddyEnvScript(inst, caddyAsServiceUser(inst, command, `"$scratch"`), true)
+}
+
+// caddyServiceUser is the user Caddy's service runs as, when validation
+// should run as that user too: Caddy opens the files a config names
+// (access logs) while it validates, and files it creates as root the
+// service can't open after a reload. "" for root, Docker, or none.
+func caddyServiceUser(inst CaddyInstall) string {
+	if inst.Method == CaddyDocker || inst.User == "" || inst.User == "root" || !caddyUserName.MatchString(inst.User) {
+		return ""
+	}
+	return inst.User
+}
+
+var caddyUserName = regexp.MustCompile(`^[a-z_][a-z0-9_-]{0,31}$`)
+
+// caddyAsServiceUser runs command as the service's user, through
+// runuser keeping the environment, after giving that user the scratch
+// folder (a shell word, as "$tmp"); as is when there is no such user or
+// no runuser.
+func caddyAsServiceUser(inst CaddyInstall, command, scratch string) string {
+	user := caddyServiceUser(inst)
+	if user == "" {
+		return command
+	}
+	quoted := privilegeQuote(user)
+	return fmt.Sprintf(`if command -v runuser >/dev/null 2>&1 && id -u %s >/dev/null 2>&1; then
+  chown -R %s -- %s || exit '1'
+  runuser -p -u %s -- %s
+else
+  %s
+fi`, quoted, quoted, scratch, quoted, command, command)
 }
 
 func caddyEnvScript(inst CaddyInstall, command string, sandbox bool) string {

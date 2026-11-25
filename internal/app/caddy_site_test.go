@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	"finallyshell/internal/caddyfile"
+	"finallyshell/internal/icons"
 	"finallyshell/internal/monitor"
 	"finallyshell/locales"
 	"github.com/egoist/mygo/ui"
@@ -331,5 +332,22 @@ func TestCaddySitesScreenshots(t *testing.T) {
 				shot("templates-dialog")
 			})
 		}
+	}
+}
+
+// Every feature a site row shows has its icon (a missing one crashed the
+// Sites section on a server whose site has basic_auth).
+func TestCaddySiteFeatureIcons(t *testing.T) {
+	var spec caddyfile.SiteSpec
+	spec.Auth = []caddyfile.AuthUser{{}}
+	spec.IP.Allow = []string{"10.0.0.0/8"}
+	spec.SecurityHeaders = true
+	spec.Log.Enabled = true
+	features := caddySiteRow{spec: spec}.featureLabels()
+	if len(features) != 4 {
+		t.Fatalf("features %+v", features)
+	}
+	for _, feature := range features {
+		icons.Get(feature.icon) // panics in tests when the file is missing
 	}
 }

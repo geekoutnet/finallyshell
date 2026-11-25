@@ -44,7 +44,9 @@ for binary in "$(command -v 'caddy' 2>/dev/null)" '/usr/bin/caddy' '/usr/local/b
   case "$binary" in /*) [ -x "$binary" ] && inspect_binary "$binary" && break ;; esac
 done
 if command -v 'systemctl' >/dev/null 2>&1; then
-  units=$({ printf '%s\n' 'caddy.service' 'caddy-api.service'; systemctl 'list-unit-files' '--type=service' '--no-legend' '--no-pager' 2>/dev/null | awk '{print $1}'; systemctl 'list-units' '--all' '--type=service' '--no-legend' '--no-pager' '--plain' 2>/dev/null | awk '{print $1}'; } | sort -u)
+  # Template units (getty@.service) are no unit systemctl show takes: one
+  # in the list stops it before the units after it, caddy's included.
+  units=$({ printf '%s\n' 'caddy.service' 'caddy-api.service'; systemctl 'list-unit-files' '--type=service' '--no-legend' '--no-pager' 2>/dev/null | awk '{print $1}'; systemctl 'list-units' '--all' '--type=service' '--no-legend' '--no-pager' '--plain' 2>/dev/null | awk '{print $1}'; } | awk '/\.service$/ && !/@\.service$/' | sort -u)
   set -f
   set -- $units
   systemctl 'show' '-p' 'Id,FragmentPath,ExecStart,ActiveState,UnitFileState,User,WorkingDirectory,EnvironmentFiles,Environment' '--' "$@" 2>/dev/null |

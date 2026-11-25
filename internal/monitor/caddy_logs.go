@@ -2,8 +2,10 @@ package monitor
 
 import (
 	"path"
+	"regexp"
 	"slices"
 	"strconv"
+	"strings"
 )
 
 func caddyLogCount(lines int) (string, error) {
@@ -66,10 +68,15 @@ func CaddyLogFileScript(inst CaddyInstall, filename string, lines int, follow bo
 }
 
 // CaddyLogFiles returns unique absolute file outputs inside Caddyfile log
-// blocks. Dynamic or relative paths are omitted because their service working
-// directory or environment cannot be inferred from the files alone.
+// blocks. A path in a snippet that uses the snippet's arguments, as
+// /var/log/caddy/{args[0]}.log, gives one path per `import snippet …`
+// that passes them. Other dynamic or relative paths are omitted because
+// their service working directory or environment cannot be inferred from
+// the files alone.
 func CaddyLogFiles(files []CaddyFile) []string {
 	var names []string
+	templates := map[string][]string{} // log paths with {args…}, by snippet
+	var imports [][]string             // import name args…, as written
 	for _, file := range files {
 		if file.Adapter == "json" || path.Ext(file.Path) == ".json" {
 			continue
@@ -80,6 +87,7 @@ func CaddyLogFiles(files []CaddyFile) []string {
 		}
 		depth, logDepth := 0, 0
 		inLogLine := 0
+		snippet, snippetDepth := "", 0
 		for index, token := range tokens {
 			switch {
 			case token.is("{"):
@@ -87,21 +95,74 @@ func CaddyLogFiles(files []CaddyFile) []string {
 				if token.line == inLogLine && logDepth == 0 {
 					logDepth = depth
 				}
+				if depth == 1 && index > 0 && tokens[index-1].line == token.line {
+					if name := tokens[index-1].value; len(name) > 2 && name[0] == '(' && name[len(name)-1] == ')' {
+						snippet, snippetDepth = name[1:len(name)-1], depth
+					}
+				}
 			case token.is("}"):
 				if depth == logDepth {
 					logDepth = 0
 				}
+				if depth == snippetDepth {
+					snippet, snippetDepth = "", 0
+				}
 				depth--
 			case token.is("log"):
 				inLogLine = token.line
+			case token.is("import") && !token.quoted:
+				var line []string
+				for _, next := range tokens[index+1:] {
+					if next.line != token.line || next.is("{") {
+						break
+					}
+					line = append(line, next.value)
+				}
+				if len(line) > 0 {
+					imports = append(imports, line)
+				}
 			case logDepth != 0 && depth == logDepth && token.is("output") && index+2 < len(tokens):
 				driver, arg := tokens[index+1], tokens[index+2]
-				if driver.line == token.line && arg.line == token.line && driver.is("file") && caddyPath(arg.value) {
+				if driver.line != token.line || arg.line != token.line || !driver.is("file") {
+					continue
+				}
+				if snippet != "" && strings.Contains(arg.value, "{args") {
+					templates[snippet] = append(templates[snippet], arg.value)
+				} else if caddyPath(arg.value) {
 					names = append(names, arg.value)
 				}
 			}
 		}
 	}
+	for _, line := range imports {
+		for _, template := range templates[line[0]] {
+			if name := caddyExpandArgs(template, line[1:]); caddyPath(name) {
+				names = append(names, name)
+			}
+		}
+	}
 	slices.Sort(names)
 	return slices.Compact(names)
+}
+
+// caddyArgPlaceholder is a snippet argument: {args[0]} or {args.0}.
+var caddyArgPlaceholder = regexp.MustCompile(`\{args(?:\[(\d+)\]|\.(\d+))\}`)
+
+// caddyExpandArgs puts args in template's {args[N]} placeholders; "" when
+// one names an argument the import does not pass.
+func caddyExpandArgs(template string, args []string) string {
+	missing := false
+	expanded := caddyArgPlaceholder.ReplaceAllStringFunc(template, func(match string) string {
+		parts := caddyArgPlaceholder.FindStringSubmatch(match)
+		number, _ := strconv.Atoi(parts[1] + parts[2])
+		if number >= len(args) {
+			missing = true
+			return match
+		}
+		return args[number]
+	})
+	if missing || strings.Contains(expanded, "{") {
+		return ""
+	}
+	return expanded
 }

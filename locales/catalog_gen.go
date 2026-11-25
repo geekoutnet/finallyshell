@@ -3508,6 +3508,2486 @@ func (msgs Messages) TunnelKindDynamic() string {
 	return Catalog.Format(msgs.locale, "tunnelKindDynamic", nil)
 }
 
+// CsiteReading says "Reading Caddy sites…"
+// in the language the app shows.
+func CsiteReading() string { return In(i18n.Locale()).CsiteReading() }
+
+// CsiteReading says "Reading Caddy sites…"
+// in the language of msgs.
+func (msgs Messages) CsiteReading() string {
+	return Catalog.Format(msgs.locale, "csiteReading", nil)
+}
+
+// CsiteNoConfig says "No Caddy configuration file was found."
+// in the language the app shows.
+func CsiteNoConfig() string { return In(i18n.Locale()).CsiteNoConfig() }
+
+// CsiteNoConfig says "No Caddy configuration file was found."
+// in the language of msgs.
+func (msgs Messages) CsiteNoConfig() string {
+	return Catalog.Format(msgs.locale, "csiteNoConfig", nil)
+}
+
+// CsiteRawConfig says "This configuration cannot be changed by the site form. Open it in the code editor."
+// in the language the app shows.
+func CsiteRawConfig() string { return In(i18n.Locale()).CsiteRawConfig() }
+
+// CsiteRawConfig says "This configuration cannot be changed by the site form. Open it in the code editor."
+// in the language of msgs.
+func (msgs Messages) CsiteRawConfig() string {
+	return Catalog.Format(msgs.locale, "csiteRawConfig", nil)
+}
+
+// CsiteRawSite says "This site contains settings or comments the form cannot preserve. Open it in the code editor."
+// in the language the app shows.
+func CsiteRawSite() string { return In(i18n.Locale()).CsiteRawSite() }
+
+// CsiteRawSite says "This site contains settings or comments the form cannot preserve. Open it in the code editor."
+// in the language of msgs.
+func (msgs Messages) CsiteRawSite() string {
+	return Catalog.Format(msgs.locale, "csiteRawSite", nil)
+}
+
+// CsiteSomeRaw says "Some imported files could not be shown as sites."
+// in the language the app shows.
+func CsiteSomeRaw() string { return In(i18n.Locale()).CsiteSomeRaw() }
+
+// CsiteSomeRaw says "Some imported files could not be shown as sites."
+// in the language of msgs.
+func (msgs Messages) CsiteSomeRaw() string {
+	return Catalog.Format(msgs.locale, "csiteSomeRaw", nil)
+}
+
+// CsiteCode says "Open in code editor"
+// in the language the app shows.
+func CsiteCode() string { return In(i18n.Locale()).CsiteCode() }
+
+// CsiteCode says "Open in code editor"
+// in the language of msgs.
+func (msgs Messages) CsiteCode() string {
+	return Catalog.Format(msgs.locale, "csiteCode", nil)
+}
+
+// CsiteBusy says "Wait for the current read or change to finish."
+// in the language the app shows.
+func CsiteBusy() string { return In(i18n.Locale()).CsiteBusy() }
+
+// CsiteBusy says "Wait for the current read or change to finish."
+// in the language of msgs.
+func (msgs Messages) CsiteBusy() string {
+	return Catalog.Format(msgs.locale, "csiteBusy", nil)
+}
+
+// CsiteRefreshFirst says "Refresh the configuration before making changes."
+// in the language the app shows.
+func CsiteRefreshFirst() string { return In(i18n.Locale()).CsiteRefreshFirst() }
+
+// CsiteRefreshFirst says "Refresh the configuration before making changes."
+// in the language of msgs.
+func (msgs Messages) CsiteRefreshFirst() string {
+	return Catalog.Format(msgs.locale, "csiteRefreshFirst", nil)
+}
+
+// CsiteAddresses says "Addresses"
+// in the language the app shows.
+func CsiteAddresses() string { return In(i18n.Locale()).CsiteAddresses() }
+
+// CsiteAddresses says "Addresses"
+// in the language of msgs.
+func (msgs Messages) CsiteAddresses() string {
+	return Catalog.Format(msgs.locale, "csiteAddresses", nil)
+}
+
+// CsiteKind says "Type"
+// in the language the app shows.
+func CsiteKind() string { return In(i18n.Locale()).CsiteKind() }
+
+// CsiteKind says "Type"
+// in the language of msgs.
+func (msgs Messages) CsiteKind() string {
+	return Catalog.Format(msgs.locale, "csiteKind", nil)
+}
+
+// CsiteTarget says "Upstream or root"
+// in the language the app shows.
+func CsiteTarget() string { return In(i18n.Locale()).CsiteTarget() }
+
+// CsiteTarget says "Upstream or root"
+// in the language of msgs.
+func (msgs Messages) CsiteTarget() string {
+	return Catalog.Format(msgs.locale, "csiteTarget", nil)
+}
+
+// CsiteFeatures says "Features"
+// in the language the app shows.
+func CsiteFeatures() string { return In(i18n.Locale()).CsiteFeatures() }
+
+// CsiteFeatures says "Features"
+// in the language of msgs.
+func (msgs Messages) CsiteFeatures() string {
+	return Catalog.Format(msgs.locale, "csiteFeatures", nil)
+}
+
+// CsiteLocation says "File and line"
+// in the language the app shows.
+func CsiteLocation() string { return In(i18n.Locale()).CsiteLocation() }
+
+// CsiteLocation says "File and line"
+// in the language of msgs.
+func (msgs Messages) CsiteLocation() string {
+	return Catalog.Format(msgs.locale, "csiteLocation", nil)
+}
+
+// CsiteNew says "New site"
+// in the language the app shows.
+func CsiteNew() string { return In(i18n.Locale()).CsiteNew() }
+
+// CsiteNew says "New site"
+// in the language of msgs.
+func (msgs Messages) CsiteNew() string {
+	return Catalog.Format(msgs.locale, "csiteNew", nil)
+}
+
+// CsiteTemplates says "Templates"
+// in the language the app shows.
+func CsiteTemplates() string { return In(i18n.Locale()).CsiteTemplates() }
+
+// CsiteTemplates says "Templates"
+// in the language of msgs.
+func (msgs Messages) CsiteTemplates() string {
+	return Catalog.Format(msgs.locale, "csiteTemplates", nil)
+}
+
+// CsiteFilter says "Filter sites"
+// in the language the app shows.
+func CsiteFilter() string { return In(i18n.Locale()).CsiteFilter() }
+
+// CsiteFilter says "Filter sites"
+// in the language of msgs.
+func (msgs Messages) CsiteFilter() string {
+	return Catalog.Format(msgs.locale, "csiteFilter", nil)
+}
+
+// CsiteActions says "Site actions"
+// in the language the app shows.
+func CsiteActions() string { return In(i18n.Locale()).CsiteActions() }
+
+// CsiteActions says "Site actions"
+// in the language of msgs.
+func (msgs Messages) CsiteActions() string {
+	return Catalog.Format(msgs.locale, "csiteActions", nil)
+}
+
+// CsiteCount says "{n, plural, one {# site} other {# sites}}"
+// in the language the app shows.
+func CsiteCount(n int) string { return In(i18n.Locale()).CsiteCount(n) }
+
+// CsiteCount says "{n, plural, one {# site} other {# sites}}"
+// in the language of msgs.
+func (msgs Messages) CsiteCount(n int) string {
+	return Catalog.Format(msgs.locale, "csiteCount", map[string]any{"n": n})
+}
+
+// CsiteAuto says "Automatic"
+// in the language the app shows.
+func CsiteAuto() string { return In(i18n.Locale()).CsiteAuto() }
+
+// CsiteAuto says "Automatic"
+// in the language of msgs.
+func (msgs Messages) CsiteAuto() string {
+	return Catalog.Format(msgs.locale, "csiteAuto", nil)
+}
+
+// CsiteInternalTLS says "Internal CA"
+// in the language the app shows.
+func CsiteInternalTLS() string { return In(i18n.Locale()).CsiteInternalTLS() }
+
+// CsiteInternalTLS says "Internal CA"
+// in the language of msgs.
+func (msgs Messages) CsiteInternalTLS() string {
+	return Catalog.Format(msgs.locale, "csiteInternalTLS", nil)
+}
+
+// CsiteCertTLS says "Custom certificate"
+// in the language the app shows.
+func CsiteCertTLS() string { return In(i18n.Locale()).CsiteCertTLS() }
+
+// CsiteCertTLS says "Custom certificate"
+// in the language of msgs.
+func (msgs Messages) CsiteCertTLS() string {
+	return Catalog.Format(msgs.locale, "csiteCertTLS", nil)
+}
+
+// CsiteHasAuth says "Basic authentication"
+// in the language the app shows.
+func CsiteHasAuth() string { return In(i18n.Locale()).CsiteHasAuth() }
+
+// CsiteHasAuth says "Basic authentication"
+// in the language of msgs.
+func (msgs Messages) CsiteHasAuth() string {
+	return Catalog.Format(msgs.locale, "csiteHasAuth", nil)
+}
+
+// CsiteHasIP says "IP restrictions"
+// in the language the app shows.
+func CsiteHasIP() string { return In(i18n.Locale()).CsiteHasIP() }
+
+// CsiteHasIP says "IP restrictions"
+// in the language of msgs.
+func (msgs Messages) CsiteHasIP() string {
+	return Catalog.Format(msgs.locale, "csiteHasIP", nil)
+}
+
+// CsiteHasHeaders says "Headers"
+// in the language the app shows.
+func CsiteHasHeaders() string { return In(i18n.Locale()).CsiteHasHeaders() }
+
+// CsiteHasHeaders says "Headers"
+// in the language of msgs.
+func (msgs Messages) CsiteHasHeaders() string {
+	return Catalog.Format(msgs.locale, "csiteHasHeaders", nil)
+}
+
+// CsiteHasLogs says "Access log"
+// in the language the app shows.
+func CsiteHasLogs() string { return In(i18n.Locale()).CsiteHasLogs() }
+
+// CsiteHasLogs says "Access log"
+// in the language of msgs.
+func (msgs Messages) CsiteHasLogs() string {
+	return Catalog.Format(msgs.locale, "csiteHasLogs", nil)
+}
+
+// CsiteRedirect says "Redirect"
+// in the language the app shows.
+func CsiteRedirect() string { return In(i18n.Locale()).CsiteRedirect() }
+
+// CsiteRedirect says "Redirect"
+// in the language of msgs.
+func (msgs Messages) CsiteRedirect() string {
+	return Catalog.Format(msgs.locale, "csiteRedirect", nil)
+}
+
+// CsiteRespond says "Static response"
+// in the language the app shows.
+func CsiteRespond() string { return In(i18n.Locale()).CsiteRespond() }
+
+// CsiteRespond says "Static response"
+// in the language of msgs.
+func (msgs Messages) CsiteRespond() string {
+	return Catalog.Format(msgs.locale, "csiteRespond", nil)
+}
+
+// CsiteBrowser says "File browser"
+// in the language the app shows.
+func CsiteBrowser() string { return In(i18n.Locale()).CsiteBrowser() }
+
+// CsiteBrowser says "File browser"
+// in the language of msgs.
+func (msgs Messages) CsiteBrowser() string {
+	return Catalog.Format(msgs.locale, "csiteBrowser", nil)
+}
+
+// CsiteCustom says "Custom"
+// in the language the app shows.
+func CsiteCustom() string { return In(i18n.Locale()).CsiteCustom() }
+
+// CsiteCustom says "Custom"
+// in the language of msgs.
+func (msgs Messages) CsiteCustom() string {
+	return Catalog.Format(msgs.locale, "csiteCustom", nil)
+}
+
+// CsiteSelect says "Select a site first."
+// in the language the app shows.
+func CsiteSelect() string { return In(i18n.Locale()).CsiteSelect() }
+
+// CsiteSelect says "Select a site first."
+// in the language of msgs.
+func (msgs Messages) CsiteSelect() string {
+	return Catalog.Format(msgs.locale, "csiteSelect", nil)
+}
+
+// CsiteEnableFirst says "Enable the site first."
+// in the language the app shows.
+func CsiteEnableFirst() string { return In(i18n.Locale()).CsiteEnableFirst() }
+
+// CsiteEnableFirst says "Enable the site first."
+// in the language of msgs.
+func (msgs Messages) CsiteEnableFirst() string {
+	return Catalog.Format(msgs.locale, "csiteEnableFirst", nil)
+}
+
+// CsiteNoURL says "This site has no concrete HTTP or HTTPS address."
+// in the language the app shows.
+func CsiteNoURL() string { return In(i18n.Locale()).CsiteNoURL() }
+
+// CsiteNoURL says "This site has no concrete HTTP or HTTPS address."
+// in the language of msgs.
+func (msgs Messages) CsiteNoURL() string {
+	return Catalog.Format(msgs.locale, "csiteNoURL", nil)
+}
+
+// CsiteDuplicate says "Duplicate site"
+// in the language the app shows.
+func CsiteDuplicate() string { return In(i18n.Locale()).CsiteDuplicate() }
+
+// CsiteDuplicate says "Duplicate site"
+// in the language of msgs.
+func (msgs Messages) CsiteDuplicate() string {
+	return Catalog.Format(msgs.locale, "csiteDuplicate", nil)
+}
+
+// CsiteDisable says "Disable site"
+// in the language the app shows.
+func CsiteDisable() string { return In(i18n.Locale()).CsiteDisable() }
+
+// CsiteDisable says "Disable site"
+// in the language of msgs.
+func (msgs Messages) CsiteDisable() string {
+	return Catalog.Format(msgs.locale, "csiteDisable", nil)
+}
+
+// CsiteEnable says "Enable site"
+// in the language the app shows.
+func CsiteEnable() string { return In(i18n.Locale()).CsiteEnable() }
+
+// CsiteEnable says "Enable site"
+// in the language of msgs.
+func (msgs Messages) CsiteEnable() string {
+	return Catalog.Format(msgs.locale, "csiteEnable", nil)
+}
+
+// CsiteOpenBrowser says "Open in browser"
+// in the language the app shows.
+func CsiteOpenBrowser() string { return In(i18n.Locale()).CsiteOpenBrowser() }
+
+// CsiteOpenBrowser says "Open in browser"
+// in the language of msgs.
+func (msgs Messages) CsiteOpenBrowser() string {
+	return Catalog.Format(msgs.locale, "csiteOpenBrowser", nil)
+}
+
+// CsiteProbe says "Test HTTP headers"
+// in the language the app shows.
+func CsiteProbe() string { return In(i18n.Locale()).CsiteProbe() }
+
+// CsiteProbe says "Test HTTP headers"
+// in the language of msgs.
+func (msgs Messages) CsiteProbe() string {
+	return Catalog.Format(msgs.locale, "csiteProbe", nil)
+}
+
+// CsiteProbeLocal says "Test from this computer"
+// in the language the app shows.
+func CsiteProbeLocal() string { return In(i18n.Locale()).CsiteProbeLocal() }
+
+// CsiteProbeLocal says "Test from this computer"
+// in the language of msgs.
+func (msgs Messages) CsiteProbeLocal() string {
+	return Catalog.Format(msgs.locale, "csiteProbeLocal", nil)
+}
+
+// CsiteProbeRemote says "Test from the server"
+// in the language the app shows.
+func CsiteProbeRemote() string { return In(i18n.Locale()).CsiteProbeRemote() }
+
+// CsiteProbeRemote says "Test from the server"
+// in the language of msgs.
+func (msgs Messages) CsiteProbeRemote() string {
+	return Catalog.Format(msgs.locale, "csiteProbeRemote", nil)
+}
+
+// CsiteDeleteWarning says "Backs up the listed file and removes this site block. Validates the entire configuration and reloads Caddy; a failure…"
+// in the language the app shows.
+func CsiteDeleteWarning() string { return In(i18n.Locale()).CsiteDeleteWarning() }
+
+// CsiteDeleteWarning says "Backs up the listed file and removes this site block. Validates the entire configuration and reloads Caddy; a failure…"
+// in the language of msgs.
+func (msgs Messages) CsiteDeleteWarning() string {
+	return Catalog.Format(msgs.locale, "csiteDeleteWarning", nil)
+}
+
+// CsiteDisableWarning says "Backs up the listed file and comments out this site block. Validates the entire configuration and reloads Caddy; a fa…"
+// in the language the app shows.
+func CsiteDisableWarning() string { return In(i18n.Locale()).CsiteDisableWarning() }
+
+// CsiteDisableWarning says "Backs up the listed file and comments out this site block. Validates the entire configuration and reloads Caddy; a fa…"
+// in the language of msgs.
+func (msgs Messages) CsiteDisableWarning() string {
+	return Catalog.Format(msgs.locale, "csiteDisableWarning", nil)
+}
+
+// CsiteEnableWarning says "Backs up the listed file and restores this site block. Validates the entire configuration and reloads Caddy; a failur…"
+// in the language the app shows.
+func CsiteEnableWarning() string { return In(i18n.Locale()).CsiteEnableWarning() }
+
+// CsiteEnableWarning says "Backs up the listed file and restores this site block. Validates the entire configuration and reloads Caddy; a failur…"
+// in the language of msgs.
+func (msgs Messages) CsiteEnableWarning() string {
+	return Catalog.Format(msgs.locale, "csiteEnableWarning", nil)
+}
+
+// CsiteSaveWarning says "Backs up the listed file and writes this site block. Validates the entire configuration and reloads Caddy; a failure …"
+// in the language the app shows.
+func CsiteSaveWarning() string { return In(i18n.Locale()).CsiteSaveWarning() }
+
+// CsiteSaveWarning says "Backs up the listed file and writes this site block. Validates the entire configuration and reloads Caddy; a failure …"
+// in the language of msgs.
+func (msgs Messages) CsiteSaveWarning() string {
+	return Catalog.Format(msgs.locale, "csiteSaveWarning", nil)
+}
+
+// CsiteConflict says "One of these addresses already belongs to an enabled site."
+// in the language the app shows.
+func CsiteConflict() string { return In(i18n.Locale()).CsiteConflict() }
+
+// CsiteConflict says "One of these addresses already belongs to an enabled site."
+// in the language of msgs.
+func (msgs Messages) CsiteConflict() string {
+	return Catalog.Format(msgs.locale, "csiteConflict", nil)
+}
+
+// CsiteValidate says "Validate"
+// in the language the app shows.
+func CsiteValidate() string { return In(i18n.Locale()).CsiteValidate() }
+
+// CsiteValidate says "Validate"
+// in the language of msgs.
+func (msgs Messages) CsiteValidate() string {
+	return Catalog.Format(msgs.locale, "csiteValidate", nil)
+}
+
+// CsiteValidated says "Configuration validated."
+// in the language the app shows.
+func CsiteValidated() string { return In(i18n.Locale()).CsiteValidated() }
+
+// CsiteValidated says "Configuration validated."
+// in the language of msgs.
+func (msgs Messages) CsiteValidated() string {
+	return Catalog.Format(msgs.locale, "csiteValidated", nil)
+}
+
+// CsiteReloaded says "Caddy reloaded."
+// in the language the app shows.
+func CsiteReloaded() string { return In(i18n.Locale()).CsiteReloaded() }
+
+// CsiteReloaded says "Caddy reloaded."
+// in the language of msgs.
+func (msgs Messages) CsiteReloaded() string {
+	return Catalog.Format(msgs.locale, "csiteReloaded", nil)
+}
+
+// CsiteChanged says "The configuration changed on the server. Refresh it and reopen the site before saving."
+// in the language the app shows.
+func CsiteChanged() string { return In(i18n.Locale()).CsiteChanged() }
+
+// CsiteChanged says "The configuration changed on the server. Refresh it and reopen the site before saving."
+// in the language of msgs.
+func (msgs Messages) CsiteChanged() string {
+	return Catalog.Format(msgs.locale, "csiteChanged", nil)
+}
+
+// CsiteRollback says "The original configuration was restored."
+// in the language the app shows.
+func CsiteRollback() string { return In(i18n.Locale()).CsiteRollback() }
+
+// CsiteRollback says "The original configuration was restored."
+// in the language of msgs.
+func (msgs Messages) CsiteRollback() string {
+	return Catalog.Format(msgs.locale, "csiteRollback", nil)
+}
+
+// CsiteNoSockets says "No PHP-FPM sockets were found on the server."
+// in the language the app shows.
+func CsiteNoSockets() string { return In(i18n.Locale()).CsiteNoSockets() }
+
+// CsiteNoSockets says "No PHP-FPM sockets were found on the server."
+// in the language of msgs.
+func (msgs Messages) CsiteNoSockets() string {
+	return Catalog.Format(msgs.locale, "csiteNoSockets", nil)
+}
+
+// CsiteFormSetup says "Site setup"
+// in the language the app shows.
+func CsiteFormSetup() string { return In(i18n.Locale()).CsiteFormSetup() }
+
+// CsiteFormSetup says "Site setup"
+// in the language of msgs.
+func (msgs Messages) CsiteFormSetup() string {
+	return Catalog.Format(msgs.locale, "csiteFormSetup", nil)
+}
+
+// CsiteFormAccess says "TLS & access"
+// in the language the app shows.
+func CsiteFormAccess() string { return In(i18n.Locale()).CsiteFormAccess() }
+
+// CsiteFormAccess says "TLS & access"
+// in the language of msgs.
+func (msgs Messages) CsiteFormAccess() string {
+	return Catalog.Format(msgs.locale, "csiteFormAccess", nil)
+}
+
+// CsiteFormAdvanced says "Advanced"
+// in the language the app shows.
+func CsiteFormAdvanced() string { return In(i18n.Locale()).CsiteFormAdvanced() }
+
+// CsiteFormAdvanced says "Advanced"
+// in the language of msgs.
+func (msgs Messages) CsiteFormAdvanced() string {
+	return Catalog.Format(msgs.locale, "csiteFormAdvanced", nil)
+}
+
+// CsiteFormPreview says "Caddyfile preview"
+// in the language the app shows.
+func CsiteFormPreview() string { return In(i18n.Locale()).CsiteFormPreview() }
+
+// CsiteFormPreview says "Caddyfile preview"
+// in the language of msgs.
+func (msgs Messages) CsiteFormPreview() string {
+	return Catalog.Format(msgs.locale, "csiteFormPreview", nil)
+}
+
+// CsiteFormPreviewEmpty says "Complete the required fields to preview this site."
+// in the language the app shows.
+func CsiteFormPreviewEmpty() string { return In(i18n.Locale()).CsiteFormPreviewEmpty() }
+
+// CsiteFormPreviewEmpty says "Complete the required fields to preview this site."
+// in the language of msgs.
+func (msgs Messages) CsiteFormPreviewEmpty() string {
+	return Catalog.Format(msgs.locale, "csiteFormPreviewEmpty", nil)
+}
+
+// CsiteFormHiddenHash says "password hash hidden"
+// in the language the app shows.
+func CsiteFormHiddenHash() string { return In(i18n.Locale()).CsiteFormHiddenHash() }
+
+// CsiteFormHiddenHash says "password hash hidden"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHiddenHash() string {
+	return Catalog.Format(msgs.locale, "csiteFormHiddenHash", nil)
+}
+
+// CsiteFormBadField says "Check this field: {field}."
+// in the language the app shows.
+func CsiteFormBadField(field string) string { return In(i18n.Locale()).CsiteFormBadField(field) }
+
+// CsiteFormBadField says "Check this field: {field}."
+// in the language of msgs.
+func (msgs Messages) CsiteFormBadField(field string) string {
+	return Catalog.Format(msgs.locale, "csiteFormBadField", map[string]any{"field": field})
+}
+
+// CsiteFormInvalid says "These settings cannot generate a valid site block."
+// in the language the app shows.
+func CsiteFormInvalid() string { return In(i18n.Locale()).CsiteFormInvalid() }
+
+// CsiteFormInvalid says "These settings cannot generate a valid site block."
+// in the language of msgs.
+func (msgs Messages) CsiteFormInvalid() string {
+	return Catalog.Format(msgs.locale, "csiteFormInvalid", nil)
+}
+
+// CsiteFormHashFailed says "Caddy could not hash the password. No configuration was written."
+// in the language the app shows.
+func CsiteFormHashFailed() string { return In(i18n.Locale()).CsiteFormHashFailed() }
+
+// CsiteFormHashFailed says "Caddy could not hash the password. No configuration was written."
+// in the language of msgs.
+func (msgs Messages) CsiteFormHashFailed() string {
+	return Catalog.Format(msgs.locale, "csiteFormHashFailed", nil)
+}
+
+// CsiteFormPasswordRequired says "Enter a password for each new user."
+// in the language the app shows.
+func CsiteFormPasswordRequired() string { return In(i18n.Locale()).CsiteFormPasswordRequired() }
+
+// CsiteFormPasswordRequired says "Enter a password for each new user."
+// in the language of msgs.
+func (msgs Messages) CsiteFormPasswordRequired() string {
+	return Catalog.Format(msgs.locale, "csiteFormPasswordRequired", nil)
+}
+
+// CsiteFormPasswordLine says "Passwords cannot contain line breaks or NUL characters."
+// in the language the app shows.
+func CsiteFormPasswordLine() string { return In(i18n.Locale()).CsiteFormPasswordLine() }
+
+// CsiteFormPasswordLine says "Passwords cannot contain line breaks or NUL characters."
+// in the language of msgs.
+func (msgs Messages) CsiteFormPasswordLine() string {
+	return Catalog.Format(msgs.locale, "csiteFormPasswordLine", nil)
+}
+
+// CsiteFormTemplatePick says "Choose a template, then enter your own site addresses and review the settings before saving."
+// in the language the app shows.
+func CsiteFormTemplatePick() string { return In(i18n.Locale()).CsiteFormTemplatePick() }
+
+// CsiteFormTemplatePick says "Choose a template, then enter your own site addresses and review the settings before saving."
+// in the language of msgs.
+func (msgs Messages) CsiteFormTemplatePick() string {
+	return Catalog.Format(msgs.locale, "csiteFormTemplatePick", nil)
+}
+
+// CsiteFormAddresses says "Site addresses"
+// in the language the app shows.
+func CsiteFormAddresses() string { return In(i18n.Locale()).CsiteFormAddresses() }
+
+// CsiteFormAddresses says "Site addresses"
+// in the language of msgs.
+func (msgs Messages) CsiteFormAddresses() string {
+	return Catalog.Format(msgs.locale, "csiteFormAddresses", nil)
+}
+
+// CsiteFormType says "Site type"
+// in the language the app shows.
+func CsiteFormType() string { return In(i18n.Locale()).CsiteFormType() }
+
+// CsiteFormType says "Site type"
+// in the language of msgs.
+func (msgs Messages) CsiteFormType() string {
+	return Catalog.Format(msgs.locale, "csiteFormType", nil)
+}
+
+// CsiteFormWildcard says "Wildcard certificates normally require a DNS challenge and a matching Caddy DNS module."
+// in the language the app shows.
+func CsiteFormWildcard() string { return In(i18n.Locale()).CsiteFormWildcard() }
+
+// CsiteFormWildcard says "Wildcard certificates normally require a DNS challenge and a matching Caddy DNS module."
+// in the language of msgs.
+func (msgs Messages) CsiteFormWildcard() string {
+	return Catalog.Format(msgs.locale, "csiteFormWildcard", nil)
+}
+
+// CsiteFormDefault says "Default"
+// in the language the app shows.
+func CsiteFormDefault() string { return In(i18n.Locale()).CsiteFormDefault() }
+
+// CsiteFormDefault says "Default"
+// in the language of msgs.
+func (msgs Messages) CsiteFormDefault() string {
+	return Catalog.Format(msgs.locale, "csiteFormDefault", nil)
+}
+
+// CsiteFormStatic says "Static website"
+// in the language the app shows.
+func CsiteFormStatic() string { return In(i18n.Locale()).CsiteFormStatic() }
+
+// CsiteFormStatic says "Static website"
+// in the language of msgs.
+func (msgs Messages) CsiteFormStatic() string {
+	return Catalog.Format(msgs.locale, "csiteFormStatic", nil)
+}
+
+// CsiteFormStaticHint says "Serve files directly from a document root."
+// in the language the app shows.
+func CsiteFormStaticHint() string { return In(i18n.Locale()).CsiteFormStaticHint() }
+
+// CsiteFormStaticHint says "Serve files directly from a document root."
+// in the language of msgs.
+func (msgs Messages) CsiteFormStaticHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormStaticHint", nil)
+}
+
+// CsiteFormProxy says "Reverse proxy"
+// in the language the app shows.
+func CsiteFormProxy() string { return In(i18n.Locale()).CsiteFormProxy() }
+
+// CsiteFormProxy says "Reverse proxy"
+// in the language of msgs.
+func (msgs Messages) CsiteFormProxy() string {
+	return Catalog.Format(msgs.locale, "csiteFormProxy", nil)
+}
+
+// CsiteFormProxyHint says "Forward requests to a local or remote service."
+// in the language the app shows.
+func CsiteFormProxyHint() string { return In(i18n.Locale()).CsiteFormProxyHint() }
+
+// CsiteFormProxyHint says "Forward requests to a local or remote service."
+// in the language of msgs.
+func (msgs Messages) CsiteFormProxyHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormProxyHint", nil)
+}
+
+// CsiteFormPHP says "PHP website"
+// in the language the app shows.
+func CsiteFormPHP() string { return In(i18n.Locale()).CsiteFormPHP() }
+
+// CsiteFormPHP says "PHP website"
+// in the language of msgs.
+func (msgs Messages) CsiteFormPHP() string {
+	return Catalog.Format(msgs.locale, "csiteFormPHP", nil)
+}
+
+// CsiteFormPHPHint says "Serve files and run PHP scripts through PHP-FPM."
+// in the language the app shows.
+func CsiteFormPHPHint() string { return In(i18n.Locale()).CsiteFormPHPHint() }
+
+// CsiteFormPHPHint says "Serve files and run PHP scripts through PHP-FPM."
+// in the language of msgs.
+func (msgs Messages) CsiteFormPHPHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormPHPHint", nil)
+}
+
+// CsiteFormSPA says "Single-page app"
+// in the language the app shows.
+func CsiteFormSPA() string { return In(i18n.Locale()).CsiteFormSPA() }
+
+// CsiteFormSPA says "Single-page app"
+// in the language of msgs.
+func (msgs Messages) CsiteFormSPA() string {
+	return Catalog.Format(msgs.locale, "csiteFormSPA", nil)
+}
+
+// CsiteFormSPAHint says "Serve Vue or React and fall back to index.html for client routes."
+// in the language the app shows.
+func CsiteFormSPAHint() string { return In(i18n.Locale()).CsiteFormSPAHint() }
+
+// CsiteFormSPAHint says "Serve Vue or React and fall back to index.html for client routes."
+// in the language of msgs.
+func (msgs Messages) CsiteFormSPAHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormSPAHint", nil)
+}
+
+// CsiteFormRedirect says "Redirect"
+// in the language the app shows.
+func CsiteFormRedirect() string { return In(i18n.Locale()).CsiteFormRedirect() }
+
+// CsiteFormRedirect says "Redirect"
+// in the language of msgs.
+func (msgs Messages) CsiteFormRedirect() string {
+	return Catalog.Format(msgs.locale, "csiteFormRedirect", nil)
+}
+
+// CsiteFormRedirectHint says "Send visitors to a different address or path."
+// in the language the app shows.
+func CsiteFormRedirectHint() string { return In(i18n.Locale()).CsiteFormRedirectHint() }
+
+// CsiteFormRedirectHint says "Send visitors to a different address or path."
+// in the language of msgs.
+func (msgs Messages) CsiteFormRedirectHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormRedirectHint", nil)
+}
+
+// CsiteFormRespond says "Fixed response"
+// in the language the app shows.
+func CsiteFormRespond() string { return In(i18n.Locale()).CsiteFormRespond() }
+
+// CsiteFormRespond says "Fixed response"
+// in the language of msgs.
+func (msgs Messages) CsiteFormRespond() string {
+	return Catalog.Format(msgs.locale, "csiteFormRespond", nil)
+}
+
+// CsiteFormRespondHint says "Return a literal body and an HTTP status without a backend."
+// in the language the app shows.
+func CsiteFormRespondHint() string { return In(i18n.Locale()).CsiteFormRespondHint() }
+
+// CsiteFormRespondHint says "Return a literal body and an HTTP status without a backend."
+// in the language of msgs.
+func (msgs Messages) CsiteFormRespondHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormRespondHint", nil)
+}
+
+// CsiteFormBrowser says "File browser"
+// in the language the app shows.
+func CsiteFormBrowser() string { return In(i18n.Locale()).CsiteFormBrowser() }
+
+// CsiteFormBrowser says "File browser"
+// in the language of msgs.
+func (msgs Messages) CsiteFormBrowser() string {
+	return Catalog.Format(msgs.locale, "csiteFormBrowser", nil)
+}
+
+// CsiteFormBrowserHint says "Let visitors browse and download files from a directory."
+// in the language the app shows.
+func CsiteFormBrowserHint() string { return In(i18n.Locale()).CsiteFormBrowserHint() }
+
+// CsiteFormBrowserHint says "Let visitors browse and download files from a directory."
+// in the language of msgs.
+func (msgs Messages) CsiteFormBrowserHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormBrowserHint", nil)
+}
+
+// CsiteFormRoot says "Document root"
+// in the language the app shows.
+func CsiteFormRoot() string { return In(i18n.Locale()).CsiteFormRoot() }
+
+// CsiteFormRoot says "Document root"
+// in the language of msgs.
+func (msgs Messages) CsiteFormRoot() string {
+	return Catalog.Format(msgs.locale, "csiteFormRoot", nil)
+}
+
+// CsiteFormEnableBrowse says "Enable directory listings"
+// in the language the app shows.
+func CsiteFormEnableBrowse() string { return In(i18n.Locale()).CsiteFormEnableBrowse() }
+
+// CsiteFormEnableBrowse says "Enable directory listings"
+// in the language of msgs.
+func (msgs Messages) CsiteFormEnableBrowse() string {
+	return Catalog.Format(msgs.locale, "csiteFormEnableBrowse", nil)
+}
+
+// CsiteFormIndex says "Index files"
+// in the language the app shows.
+func CsiteFormIndex() string { return In(i18n.Locale()).CsiteFormIndex() }
+
+// CsiteFormIndex says "Index files"
+// in the language of msgs.
+func (msgs Messages) CsiteFormIndex() string {
+	return Catalog.Format(msgs.locale, "csiteFormIndex", nil)
+}
+
+// CsiteFormHide says "Hidden files and patterns"
+// in the language the app shows.
+func CsiteFormHide() string { return In(i18n.Locale()).CsiteFormHide() }
+
+// CsiteFormHide says "Hidden files and patterns"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHide() string {
+	return Catalog.Format(msgs.locale, "csiteFormHide", nil)
+}
+
+// CsiteFormUpstreams says "Upstreams (space-separated)"
+// in the language the app shows.
+func CsiteFormUpstreams() string { return In(i18n.Locale()).CsiteFormUpstreams() }
+
+// CsiteFormUpstreams says "Upstreams (space-separated)"
+// in the language of msgs.
+func (msgs Messages) CsiteFormUpstreams() string {
+	return Catalog.Format(msgs.locale, "csiteFormUpstreams", nil)
+}
+
+// CsiteFormWebsocket says "WebSocket upgrades work automatically. For server-sent events, set the flush interval to -1 if needed."
+// in the language the app shows.
+func CsiteFormWebsocket() string { return In(i18n.Locale()).CsiteFormWebsocket() }
+
+// CsiteFormWebsocket says "WebSocket upgrades work automatically. For server-sent events, set the flush interval to -1 if needed."
+// in the language of msgs.
+func (msgs Messages) CsiteFormWebsocket() string {
+	return Catalog.Format(msgs.locale, "csiteFormWebsocket", nil)
+}
+
+// CsiteFormDockerPick says "Choose a Docker port"
+// in the language the app shows.
+func CsiteFormDockerPick() string { return In(i18n.Locale()).CsiteFormDockerPick() }
+
+// CsiteFormDockerPick says "Choose a Docker port"
+// in the language of msgs.
+func (msgs Messages) CsiteFormDockerPick() string {
+	return Catalog.Format(msgs.locale, "csiteFormDockerPick", nil)
+}
+
+// CsiteFormDockerUnavailable says "No published running-container ports are available. Enter an upstream manually or load the Docker overview first."
+// in the language the app shows.
+func CsiteFormDockerUnavailable() string { return In(i18n.Locale()).CsiteFormDockerUnavailable() }
+
+// CsiteFormDockerUnavailable says "No published running-container ports are available. Enter an upstream manually or load the Docker overview first."
+// in the language of msgs.
+func (msgs Messages) CsiteFormDockerUnavailable() string {
+	return Catalog.Format(msgs.locale, "csiteFormDockerUnavailable", nil)
+}
+
+// CsiteFormPHPUpstream says "PHP-FPM socket or address"
+// in the language the app shows.
+func CsiteFormPHPUpstream() string { return In(i18n.Locale()).CsiteFormPHPUpstream() }
+
+// CsiteFormPHPUpstream says "PHP-FPM socket or address"
+// in the language of msgs.
+func (msgs Messages) CsiteFormPHPUpstream() string {
+	return Catalog.Format(msgs.locale, "csiteFormPHPUpstream", nil)
+}
+
+// CsiteFormPHPSockets says "Detected sockets"
+// in the language the app shows.
+func CsiteFormPHPSockets() string { return In(i18n.Locale()).CsiteFormPHPSockets() }
+
+// CsiteFormPHPSockets says "Detected sockets"
+// in the language of msgs.
+func (msgs Messages) CsiteFormPHPSockets() string {
+	return Catalog.Format(msgs.locale, "csiteFormPHPSockets", nil)
+}
+
+// CsiteFormPHPDetect says "Detect PHP-FPM sockets"
+// in the language the app shows.
+func CsiteFormPHPDetect() string { return In(i18n.Locale()).CsiteFormPHPDetect() }
+
+// CsiteFormPHPDetect says "Detect PHP-FPM sockets"
+// in the language of msgs.
+func (msgs Messages) CsiteFormPHPDetect() string {
+	return Catalog.Format(msgs.locale, "csiteFormPHPDetect", nil)
+}
+
+// CsiteFormRedirectTo says "Redirect destination"
+// in the language the app shows.
+func CsiteFormRedirectTo() string { return In(i18n.Locale()).CsiteFormRedirectTo() }
+
+// CsiteFormRedirectTo says "Redirect destination"
+// in the language of msgs.
+func (msgs Messages) CsiteFormRedirectTo() string {
+	return Catalog.Format(msgs.locale, "csiteFormRedirectTo", nil)
+}
+
+// CsiteFormRedirectStatus says "Redirect status"
+// in the language the app shows.
+func CsiteFormRedirectStatus() string { return In(i18n.Locale()).CsiteFormRedirectStatus() }
+
+// CsiteFormRedirectStatus says "Redirect status"
+// in the language of msgs.
+func (msgs Messages) CsiteFormRedirectStatus() string {
+	return Catalog.Format(msgs.locale, "csiteFormRedirectStatus", nil)
+}
+
+// CsiteFormToWWW says "Redirect to www"
+// in the language the app shows.
+func CsiteFormToWWW() string { return In(i18n.Locale()).CsiteFormToWWW() }
+
+// CsiteFormToWWW says "Redirect to www"
+// in the language of msgs.
+func (msgs Messages) CsiteFormToWWW() string {
+	return Catalog.Format(msgs.locale, "csiteFormToWWW", nil)
+}
+
+// CsiteFormFromWWW says "Redirect away from www"
+// in the language the app shows.
+func CsiteFormFromWWW() string { return In(i18n.Locale()).CsiteFormFromWWW() }
+
+// CsiteFormFromWWW says "Redirect away from www"
+// in the language of msgs.
+func (msgs Messages) CsiteFormFromWWW() string {
+	return Catalog.Format(msgs.locale, "csiteFormFromWWW", nil)
+}
+
+// CsiteFormWWWHint says "Enter one domain name without a scheme or port to set up the redirect."
+// in the language the app shows.
+func CsiteFormWWWHint() string { return In(i18n.Locale()).CsiteFormWWWHint() }
+
+// CsiteFormWWWHint says "Enter one domain name without a scheme or port to set up the redirect."
+// in the language of msgs.
+func (msgs Messages) CsiteFormWWWHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormWWWHint", nil)
+}
+
+// CsiteFormResponseStatus says "HTTP status"
+// in the language the app shows.
+func CsiteFormResponseStatus() string { return In(i18n.Locale()).CsiteFormResponseStatus() }
+
+// CsiteFormResponseStatus says "HTTP status"
+// in the language of msgs.
+func (msgs Messages) CsiteFormResponseStatus() string {
+	return Catalog.Format(msgs.locale, "csiteFormResponseStatus", nil)
+}
+
+// CsiteFormResponseBody says "Response body"
+// in the language the app shows.
+func CsiteFormResponseBody() string { return In(i18n.Locale()).CsiteFormResponseBody() }
+
+// CsiteFormResponseBody says "Response body"
+// in the language of msgs.
+func (msgs Messages) CsiteFormResponseBody() string {
+	return Catalog.Format(msgs.locale, "csiteFormResponseBody", nil)
+}
+
+// CsiteFormTLS says "TLS settings"
+// in the language the app shows.
+func CsiteFormTLS() string { return In(i18n.Locale()).CsiteFormTLS() }
+
+// CsiteFormTLS says "TLS settings"
+// in the language of msgs.
+func (msgs Messages) CsiteFormTLS() string {
+	return Catalog.Format(msgs.locale, "csiteFormTLS", nil)
+}
+
+// CsiteFormTLSMode says "Certificate mode"
+// in the language the app shows.
+func CsiteFormTLSMode() string { return In(i18n.Locale()).CsiteFormTLSMode() }
+
+// CsiteFormTLSMode says "Certificate mode"
+// in the language of msgs.
+func (msgs Messages) CsiteFormTLSMode() string {
+	return Catalog.Format(msgs.locale, "csiteFormTLSMode", nil)
+}
+
+// CsiteFormTLSAuto says "Automatic HTTPS"
+// in the language the app shows.
+func CsiteFormTLSAuto() string { return In(i18n.Locale()).CsiteFormTLSAuto() }
+
+// CsiteFormTLSAuto says "Automatic HTTPS"
+// in the language of msgs.
+func (msgs Messages) CsiteFormTLSAuto() string {
+	return Catalog.Format(msgs.locale, "csiteFormTLSAuto", nil)
+}
+
+// CsiteFormTLSEmail says "Automatic HTTPS with ACME email"
+// in the language the app shows.
+func CsiteFormTLSEmail() string { return In(i18n.Locale()).CsiteFormTLSEmail() }
+
+// CsiteFormTLSEmail says "Automatic HTTPS with ACME email"
+// in the language of msgs.
+func (msgs Messages) CsiteFormTLSEmail() string {
+	return Catalog.Format(msgs.locale, "csiteFormTLSEmail", nil)
+}
+
+// CsiteFormTLSInternal says "Caddy internal certificate authority"
+// in the language the app shows.
+func CsiteFormTLSInternal() string { return In(i18n.Locale()).CsiteFormTLSInternal() }
+
+// CsiteFormTLSInternal says "Caddy internal certificate authority"
+// in the language of msgs.
+func (msgs Messages) CsiteFormTLSInternal() string {
+	return Catalog.Format(msgs.locale, "csiteFormTLSInternal", nil)
+}
+
+// CsiteFormTLSCustom says "Certificate and key files"
+// in the language the app shows.
+func CsiteFormTLSCustom() string { return In(i18n.Locale()).CsiteFormTLSCustom() }
+
+// CsiteFormTLSCustom says "Certificate and key files"
+// in the language of msgs.
+func (msgs Messages) CsiteFormTLSCustom() string {
+	return Catalog.Format(msgs.locale, "csiteFormTLSCustom", nil)
+}
+
+// CsiteFormTLSDNS says "DNS challenge"
+// in the language the app shows.
+func CsiteFormTLSDNS() string { return In(i18n.Locale()).CsiteFormTLSDNS() }
+
+// CsiteFormTLSDNS says "DNS challenge"
+// in the language of msgs.
+func (msgs Messages) CsiteFormTLSDNS() string {
+	return Catalog.Format(msgs.locale, "csiteFormTLSDNS", nil)
+}
+
+// CsiteFormACMEEmail says "ACME email"
+// in the language the app shows.
+func CsiteFormACMEEmail() string { return In(i18n.Locale()).CsiteFormACMEEmail() }
+
+// CsiteFormACMEEmail says "ACME email"
+// in the language of msgs.
+func (msgs Messages) CsiteFormACMEEmail() string {
+	return Catalog.Format(msgs.locale, "csiteFormACMEEmail", nil)
+}
+
+// CsiteFormCertificate says "Certificate file path"
+// in the language the app shows.
+func CsiteFormCertificate() string { return In(i18n.Locale()).CsiteFormCertificate() }
+
+// CsiteFormCertificate says "Certificate file path"
+// in the language of msgs.
+func (msgs Messages) CsiteFormCertificate() string {
+	return Catalog.Format(msgs.locale, "csiteFormCertificate", nil)
+}
+
+// CsiteFormPrivateKey says "Private key file path"
+// in the language the app shows.
+func CsiteFormPrivateKey() string { return In(i18n.Locale()).CsiteFormPrivateKey() }
+
+// CsiteFormPrivateKey says "Private key file path"
+// in the language of msgs.
+func (msgs Messages) CsiteFormPrivateKey() string {
+	return Catalog.Format(msgs.locale, "csiteFormPrivateKey", nil)
+}
+
+// CsiteFormDNSProvider says "DNS provider"
+// in the language the app shows.
+func CsiteFormDNSProvider() string { return In(i18n.Locale()).CsiteFormDNSProvider() }
+
+// CsiteFormDNSProvider says "DNS provider"
+// in the language of msgs.
+func (msgs Messages) CsiteFormDNSProvider() string {
+	return Catalog.Format(msgs.locale, "csiteFormDNSProvider", nil)
+}
+
+// CsiteFormDNSArgs says "DNS provider environment references"
+// in the language the app shows.
+func CsiteFormDNSArgs() string { return In(i18n.Locale()).CsiteFormDNSArgs() }
+
+// CsiteFormDNSArgs says "DNS provider environment references"
+// in the language of msgs.
+func (msgs Messages) CsiteFormDNSArgs() string {
+	return Catalog.Format(msgs.locale, "csiteFormDNSArgs", nil)
+}
+
+// CsiteFormDNSHint says "Set credentials in the Caddy service environment and reference the variable here. Do not paste the API token."
+// in the language the app shows.
+func CsiteFormDNSHint() string { return In(i18n.Locale()).CsiteFormDNSHint() }
+
+// CsiteFormDNSHint says "Set credentials in the Caddy service environment and reference the variable here. Do not paste the API token."
+// in the language of msgs.
+func (msgs Messages) CsiteFormDNSHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormDNSHint", nil)
+}
+
+// CsiteFormDNSMissing says "The detected Caddy build does not list this DNS provider module."
+// in the language the app shows.
+func CsiteFormDNSMissing() string { return In(i18n.Locale()).CsiteFormDNSMissing() }
+
+// CsiteFormDNSMissing says "The detected Caddy build does not list this DNS provider module."
+// in the language of msgs.
+func (msgs Messages) CsiteFormDNSMissing() string {
+	return Catalog.Format(msgs.locale, "csiteFormDNSMissing", nil)
+}
+
+// CsiteFormTLSMin says "Minimum TLS version"
+// in the language the app shows.
+func CsiteFormTLSMin() string { return In(i18n.Locale()).CsiteFormTLSMin() }
+
+// CsiteFormTLSMin says "Minimum TLS version"
+// in the language of msgs.
+func (msgs Messages) CsiteFormTLSMin() string {
+	return Catalog.Format(msgs.locale, "csiteFormTLSMin", nil)
+}
+
+// CsiteFormTLSClientAuth says "Client certificate mode"
+// in the language the app shows.
+func CsiteFormTLSClientAuth() string { return In(i18n.Locale()).CsiteFormTLSClientAuth() }
+
+// CsiteFormTLSClientAuth says "Client certificate mode"
+// in the language of msgs.
+func (msgs Messages) CsiteFormTLSClientAuth() string {
+	return Catalog.Format(msgs.locale, "csiteFormTLSClientAuth", nil)
+}
+
+// CsiteFormTLSCAPool says "Trusted client CA file"
+// in the language the app shows.
+func CsiteFormTLSCAPool() string { return In(i18n.Locale()).CsiteFormTLSCAPool() }
+
+// CsiteFormTLSCAPool says "Trusted client CA file"
+// in the language of msgs.
+func (msgs Messages) CsiteFormTLSCAPool() string {
+	return Catalog.Format(msgs.locale, "csiteFormTLSCAPool", nil)
+}
+
+// CsiteFormAuth says "Basic authentication"
+// in the language the app shows.
+func CsiteFormAuth() string { return In(i18n.Locale()).CsiteFormAuth() }
+
+// CsiteFormAuth says "Basic authentication"
+// in the language of msgs.
+func (msgs Messages) CsiteFormAuth() string {
+	return Catalog.Format(msgs.locale, "csiteFormAuth", nil)
+}
+
+// CsiteFormProtectedPaths says "Protected paths (empty = the whole site)"
+// in the language the app shows.
+func CsiteFormProtectedPaths() string { return In(i18n.Locale()).CsiteFormProtectedPaths() }
+
+// CsiteFormProtectedPaths says "Protected paths (empty = the whole site)"
+// in the language of msgs.
+func (msgs Messages) CsiteFormProtectedPaths() string {
+	return Catalog.Format(msgs.locale, "csiteFormProtectedPaths", nil)
+}
+
+// CsiteFormPasswordHint says "Caddy hashes new passwords on the server. Plaintext is never placed in the preview or saved configuration."
+// in the language the app shows.
+func CsiteFormPasswordHint() string { return In(i18n.Locale()).CsiteFormPasswordHint() }
+
+// CsiteFormPasswordHint says "Caddy hashes new passwords on the server. Plaintext is never placed in the preview or saved configuration."
+// in the language of msgs.
+func (msgs Messages) CsiteFormPasswordHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormPasswordHint", nil)
+}
+
+// CsiteFormPasswordUnchanged says "Leave blank to keep the current password"
+// in the language the app shows.
+func CsiteFormPasswordUnchanged() string { return In(i18n.Locale()).CsiteFormPasswordUnchanged() }
+
+// CsiteFormPasswordUnchanged says "Leave blank to keep the current password"
+// in the language of msgs.
+func (msgs Messages) CsiteFormPasswordUnchanged() string {
+	return Catalog.Format(msgs.locale, "csiteFormPasswordUnchanged", nil)
+}
+
+// CsiteFormAddUser says "Add a user"
+// in the language the app shows.
+func CsiteFormAddUser() string { return In(i18n.Locale()).CsiteFormAddUser() }
+
+// CsiteFormAddUser says "Add a user"
+// in the language of msgs.
+func (msgs Messages) CsiteFormAddUser() string {
+	return Catalog.Format(msgs.locale, "csiteFormAddUser", nil)
+}
+
+// CsiteFormIP says "IP access rules"
+// in the language the app shows.
+func CsiteFormIP() string { return In(i18n.Locale()).CsiteFormIP() }
+
+// CsiteFormIP says "IP access rules"
+// in the language of msgs.
+func (msgs Messages) CsiteFormIP() string {
+	return Catalog.Format(msgs.locale, "csiteFormIP", nil)
+}
+
+// CsiteFormAllowIP says "Allowed addresses or ranges"
+// in the language the app shows.
+func CsiteFormAllowIP() string { return In(i18n.Locale()).CsiteFormAllowIP() }
+
+// CsiteFormAllowIP says "Allowed addresses or ranges"
+// in the language of msgs.
+func (msgs Messages) CsiteFormAllowIP() string {
+	return Catalog.Format(msgs.locale, "csiteFormAllowIP", nil)
+}
+
+// CsiteFormDenyIP says "Denied addresses or ranges"
+// in the language the app shows.
+func CsiteFormDenyIP() string { return In(i18n.Locale()).CsiteFormDenyIP() }
+
+// CsiteFormDenyIP says "Denied addresses or ranges"
+// in the language of msgs.
+func (msgs Messages) CsiteFormDenyIP() string {
+	return Catalog.Format(msgs.locale, "csiteFormDenyIP", nil)
+}
+
+// CsiteFormIPSource says "IP matcher"
+// in the language the app shows.
+func CsiteFormIPSource() string { return In(i18n.Locale()).CsiteFormIPSource() }
+
+// CsiteFormIPSource says "IP matcher"
+// in the language of msgs.
+func (msgs Messages) CsiteFormIPSource() string {
+	return Catalog.Format(msgs.locale, "csiteFormIPSource", nil)
+}
+
+// CsiteFormIPAction says "Action on refusal"
+// in the language the app shows.
+func CsiteFormIPAction() string { return In(i18n.Locale()).CsiteFormIPAction() }
+
+// CsiteFormIPAction says "Action on refusal"
+// in the language of msgs.
+func (msgs Messages) CsiteFormIPAction() string {
+	return Catalog.Format(msgs.locale, "csiteFormIPAction", nil)
+}
+
+// CsiteFormClientIPHint says "Configure trusted proxies in Global options before trusting a forwarded client IP."
+// in the language the app shows.
+func CsiteFormClientIPHint() string { return In(i18n.Locale()).CsiteFormClientIPHint() }
+
+// CsiteFormClientIPHint says "Configure trusted proxies in Global options before trusting a forwarded client IP."
+// in the language of msgs.
+func (msgs Messages) CsiteFormClientIPHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormClientIPHint", nil)
+}
+
+// CsiteFormHeaders says "Response headers"
+// in the language the app shows.
+func CsiteFormHeaders() string { return In(i18n.Locale()).CsiteFormHeaders() }
+
+// CsiteFormHeaders says "Response headers"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHeaders() string {
+	return Catalog.Format(msgs.locale, "csiteFormHeaders", nil)
+}
+
+// CsiteFormSecurityHeaders says "Apply security headers"
+// in the language the app shows.
+func CsiteFormSecurityHeaders() string { return In(i18n.Locale()).CsiteFormSecurityHeaders() }
+
+// CsiteFormSecurityHeaders says "Apply security headers"
+// in the language of msgs.
+func (msgs Messages) CsiteFormSecurityHeaders() string {
+	return Catalog.Format(msgs.locale, "csiteFormSecurityHeaders", nil)
+}
+
+// CsiteFormHSTS says "Strict-Transport-Security"
+// in the language the app shows.
+func CsiteFormHSTS() string { return In(i18n.Locale()).CsiteFormHSTS() }
+
+// CsiteFormHSTS says "Strict-Transport-Security"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHSTS() string {
+	return Catalog.Format(msgs.locale, "csiteFormHSTS", nil)
+}
+
+// CsiteFormReferrerPolicy says "Referrer-Policy"
+// in the language the app shows.
+func CsiteFormReferrerPolicy() string { return In(i18n.Locale()).CsiteFormReferrerPolicy() }
+
+// CsiteFormReferrerPolicy says "Referrer-Policy"
+// in the language of msgs.
+func (msgs Messages) CsiteFormReferrerPolicy() string {
+	return Catalog.Format(msgs.locale, "csiteFormReferrerPolicy", nil)
+}
+
+// CsiteFormPermissionsPolicy says "Permissions-Policy"
+// in the language the app shows.
+func CsiteFormPermissionsPolicy() string { return In(i18n.Locale()).CsiteFormPermissionsPolicy() }
+
+// CsiteFormPermissionsPolicy says "Permissions-Policy"
+// in the language of msgs.
+func (msgs Messages) CsiteFormPermissionsPolicy() string {
+	return Catalog.Format(msgs.locale, "csiteFormPermissionsPolicy", nil)
+}
+
+// CsiteFormRemoveServer says "Remove the Server header"
+// in the language the app shows.
+func CsiteFormRemoveServer() string { return In(i18n.Locale()).CsiteFormRemoveServer() }
+
+// CsiteFormRemoveServer says "Remove the Server header"
+// in the language of msgs.
+func (msgs Messages) CsiteFormRemoveServer() string {
+	return Catalog.Format(msgs.locale, "csiteFormRemoveServer", nil)
+}
+
+// CsiteFormCustomHeaders says "Custom response headers"
+// in the language the app shows.
+func CsiteFormCustomHeaders() string { return In(i18n.Locale()).CsiteFormCustomHeaders() }
+
+// CsiteFormCustomHeaders says "Custom response headers"
+// in the language of msgs.
+func (msgs Messages) CsiteFormCustomHeaders() string {
+	return Catalog.Format(msgs.locale, "csiteFormCustomHeaders", nil)
+}
+
+// CsiteFormHeaderName says "Header name"
+// in the language the app shows.
+func CsiteFormHeaderName() string { return In(i18n.Locale()).CsiteFormHeaderName() }
+
+// CsiteFormHeaderName says "Header name"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHeaderName() string {
+	return Catalog.Format(msgs.locale, "csiteFormHeaderName", nil)
+}
+
+// CsiteFormHeaderValue says "Header value"
+// in the language the app shows.
+func CsiteFormHeaderValue() string { return In(i18n.Locale()).CsiteFormHeaderValue() }
+
+// CsiteFormHeaderValue says "Header value"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHeaderValue() string {
+	return Catalog.Format(msgs.locale, "csiteFormHeaderValue", nil)
+}
+
+// CsiteFormAddHeader says "Add a header"
+// in the language the app shows.
+func CsiteFormAddHeader() string { return In(i18n.Locale()).CsiteFormAddHeader() }
+
+// CsiteFormAddHeader says "Add a header"
+// in the language of msgs.
+func (msgs Messages) CsiteFormAddHeader() string {
+	return Catalog.Format(msgs.locale, "csiteFormAddHeader", nil)
+}
+
+// CsiteFormHeaderPresets says "Header presets"
+// in the language the app shows.
+func CsiteFormHeaderPresets() string { return In(i18n.Locale()).CsiteFormHeaderPresets() }
+
+// CsiteFormHeaderPresets says "Header presets"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHeaderPresets() string {
+	return Catalog.Format(msgs.locale, "csiteFormHeaderPresets", nil)
+}
+
+// CsiteFormRemoveRow says "Remove row"
+// in the language the app shows.
+func CsiteFormRemoveRow() string { return In(i18n.Locale()).CsiteFormRemoveRow() }
+
+// CsiteFormRemoveRow says "Remove row"
+// in the language of msgs.
+func (msgs Messages) CsiteFormRemoveRow() string {
+	return Catalog.Format(msgs.locale, "csiteFormRemoveRow", nil)
+}
+
+// CsiteFormCORS says "Cross-origin resource sharing (CORS)"
+// in the language the app shows.
+func CsiteFormCORS() string { return In(i18n.Locale()).CsiteFormCORS() }
+
+// CsiteFormCORS says "Cross-origin resource sharing (CORS)"
+// in the language of msgs.
+func (msgs Messages) CsiteFormCORS() string {
+	return Catalog.Format(msgs.locale, "csiteFormCORS", nil)
+}
+
+// CsiteFormOrigins says "Allowed origins"
+// in the language the app shows.
+func CsiteFormOrigins() string { return In(i18n.Locale()).CsiteFormOrigins() }
+
+// CsiteFormOrigins says "Allowed origins"
+// in the language of msgs.
+func (msgs Messages) CsiteFormOrigins() string {
+	return Catalog.Format(msgs.locale, "csiteFormOrigins", nil)
+}
+
+// CsiteFormMethods says "Allowed HTTP methods"
+// in the language the app shows.
+func CsiteFormMethods() string { return In(i18n.Locale()).CsiteFormMethods() }
+
+// CsiteFormMethods says "Allowed HTTP methods"
+// in the language of msgs.
+func (msgs Messages) CsiteFormMethods() string {
+	return Catalog.Format(msgs.locale, "csiteFormMethods", nil)
+}
+
+// CsiteFormCORSHeaders says "Allowed request headers"
+// in the language the app shows.
+func CsiteFormCORSHeaders() string { return In(i18n.Locale()).CsiteFormCORSHeaders() }
+
+// CsiteFormCORSHeaders says "Allowed request headers"
+// in the language of msgs.
+func (msgs Messages) CsiteFormCORSHeaders() string {
+	return Catalog.Format(msgs.locale, "csiteFormCORSHeaders", nil)
+}
+
+// CsiteFormCompression says "Compression"
+// in the language the app shows.
+func CsiteFormCompression() string { return In(i18n.Locale()).CsiteFormCompression() }
+
+// CsiteFormCompression says "Compression"
+// in the language of msgs.
+func (msgs Messages) CsiteFormCompression() string {
+	return Catalog.Format(msgs.locale, "csiteFormCompression", nil)
+}
+
+// CsiteFormMaxBody says "Maximum request body size"
+// in the language the app shows.
+func CsiteFormMaxBody() string { return In(i18n.Locale()).CsiteFormMaxBody() }
+
+// CsiteFormMaxBody says "Maximum request body size"
+// in the language of msgs.
+func (msgs Messages) CsiteFormMaxBody() string {
+	return Catalog.Format(msgs.locale, "csiteFormMaxBody", nil)
+}
+
+// CsiteFormRoutes says "Path routes"
+// in the language the app shows.
+func CsiteFormRoutes() string { return In(i18n.Locale()).CsiteFormRoutes() }
+
+// CsiteFormRoutes says "Path routes"
+// in the language of msgs.
+func (msgs Messages) CsiteFormRoutes() string {
+	return Catalog.Format(msgs.locale, "csiteFormRoutes", nil)
+}
+
+// CsiteFormRoutesHint says "Each path forwards requests to its own upstreams and strips the matched path prefix."
+// in the language the app shows.
+func CsiteFormRoutesHint() string { return In(i18n.Locale()).CsiteFormRoutesHint() }
+
+// CsiteFormRoutesHint says "Each path forwards requests to its own upstreams and strips the matched path prefix."
+// in the language of msgs.
+func (msgs Messages) CsiteFormRoutesHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormRoutesHint", nil)
+}
+
+// CsiteFormRoutePath says "Path match"
+// in the language the app shows.
+func CsiteFormRoutePath() string { return In(i18n.Locale()).CsiteFormRoutePath() }
+
+// CsiteFormRoutePath says "Path match"
+// in the language of msgs.
+func (msgs Messages) CsiteFormRoutePath() string {
+	return Catalog.Format(msgs.locale, "csiteFormRoutePath", nil)
+}
+
+// CsiteFormAddRoute says "Add path route"
+// in the language the app shows.
+func CsiteFormAddRoute() string { return In(i18n.Locale()).CsiteFormAddRoute() }
+
+// CsiteFormAddRoute says "Add path route"
+// in the language of msgs.
+func (msgs Messages) CsiteFormAddRoute() string {
+	return Catalog.Format(msgs.locale, "csiteFormAddRoute", nil)
+}
+
+// CsiteFormLogging says "Access logging"
+// in the language the app shows.
+func CsiteFormLogging() string { return In(i18n.Locale()).CsiteFormLogging() }
+
+// CsiteFormLogging says "Access logging"
+// in the language of msgs.
+func (msgs Messages) CsiteFormLogging() string {
+	return Catalog.Format(msgs.locale, "csiteFormLogging", nil)
+}
+
+// CsiteFormLogPath says "Log file path"
+// in the language the app shows.
+func CsiteFormLogPath() string { return In(i18n.Locale()).CsiteFormLogPath() }
+
+// CsiteFormLogPath says "Log file path"
+// in the language of msgs.
+func (msgs Messages) CsiteFormLogPath() string {
+	return Catalog.Format(msgs.locale, "csiteFormLogPath", nil)
+}
+
+// CsiteFormLogRollSize says "Rotate at size"
+// in the language the app shows.
+func CsiteFormLogRollSize() string { return In(i18n.Locale()).CsiteFormLogRollSize() }
+
+// CsiteFormLogRollSize says "Rotate at size"
+// in the language of msgs.
+func (msgs Messages) CsiteFormLogRollSize() string {
+	return Catalog.Format(msgs.locale, "csiteFormLogRollSize", nil)
+}
+
+// CsiteFormLogRollKeep says "Files to keep"
+// in the language the app shows.
+func CsiteFormLogRollKeep() string { return In(i18n.Locale()).CsiteFormLogRollKeep() }
+
+// CsiteFormLogRollKeep says "Files to keep"
+// in the language of msgs.
+func (msgs Messages) CsiteFormLogRollKeep() string {
+	return Catalog.Format(msgs.locale, "csiteFormLogRollKeep", nil)
+}
+
+// CsiteFormLogFormat says "Log format"
+// in the language the app shows.
+func CsiteFormLogFormat() string { return In(i18n.Locale()).CsiteFormLogFormat() }
+
+// CsiteFormLogFormat says "Log format"
+// in the language of msgs.
+func (msgs Messages) CsiteFormLogFormat() string {
+	return Catalog.Format(msgs.locale, "csiteFormLogFormat", nil)
+}
+
+// CsiteFormCustom says "Additional Caddyfile directives"
+// in the language the app shows.
+func CsiteFormCustom() string { return In(i18n.Locale()).CsiteFormCustom() }
+
+// CsiteFormCustom says "Additional Caddyfile directives"
+// in the language of msgs.
+func (msgs Messages) CsiteFormCustom() string {
+	return Catalog.Format(msgs.locale, "csiteFormCustom", nil)
+}
+
+// CsiteFormCustomHint says "Append site directives or import a snippet. Use environment references instead of inline credentials."
+// in the language the app shows.
+func CsiteFormCustomHint() string { return In(i18n.Locale()).CsiteFormCustomHint() }
+
+// CsiteFormCustomHint says "Append site directives or import a snippet. Use environment references instead of inline credentials."
+// in the language of msgs.
+func (msgs Messages) CsiteFormCustomHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormCustomHint", nil)
+}
+
+// CsiteFormLoadBalancing says "Load balancing"
+// in the language the app shows.
+func CsiteFormLoadBalancing() string { return In(i18n.Locale()).CsiteFormLoadBalancing() }
+
+// CsiteFormLoadBalancing says "Load balancing"
+// in the language of msgs.
+func (msgs Messages) CsiteFormLoadBalancing() string {
+	return Catalog.Format(msgs.locale, "csiteFormLoadBalancing", nil)
+}
+
+// CsiteFormLBPolicy says "Load-balancing policy"
+// in the language the app shows.
+func CsiteFormLBPolicy() string { return In(i18n.Locale()).CsiteFormLBPolicy() }
+
+// CsiteFormLBPolicy says "Load-balancing policy"
+// in the language of msgs.
+func (msgs Messages) CsiteFormLBPolicy() string {
+	return Catalog.Format(msgs.locale, "csiteFormLBPolicy", nil)
+}
+
+// CsiteFormPolicyArgs says "Policy arguments"
+// in the language the app shows.
+func CsiteFormPolicyArgs() string { return In(i18n.Locale()).CsiteFormPolicyArgs() }
+
+// CsiteFormPolicyArgs says "Policy arguments"
+// in the language of msgs.
+func (msgs Messages) CsiteFormPolicyArgs() string {
+	return Catalog.Format(msgs.locale, "csiteFormPolicyArgs", nil)
+}
+
+// CsiteFormLBTry says "Retry window"
+// in the language the app shows.
+func CsiteFormLBTry() string { return In(i18n.Locale()).CsiteFormLBTry() }
+
+// CsiteFormLBTry says "Retry window"
+// in the language of msgs.
+func (msgs Messages) CsiteFormLBTry() string {
+	return Catalog.Format(msgs.locale, "csiteFormLBTry", nil)
+}
+
+// CsiteFormHealthChecks says "Health checks"
+// in the language the app shows.
+func CsiteFormHealthChecks() string { return In(i18n.Locale()).CsiteFormHealthChecks() }
+
+// CsiteFormHealthChecks says "Health checks"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHealthChecks() string {
+	return Catalog.Format(msgs.locale, "csiteFormHealthChecks", nil)
+}
+
+// CsiteFormHealthURI says "Active check path"
+// in the language the app shows.
+func CsiteFormHealthURI() string { return In(i18n.Locale()).CsiteFormHealthURI() }
+
+// CsiteFormHealthURI says "Active check path"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHealthURI() string {
+	return Catalog.Format(msgs.locale, "csiteFormHealthURI", nil)
+}
+
+// CsiteFormHealthInterval says "Active check interval"
+// in the language the app shows.
+func CsiteFormHealthInterval() string { return In(i18n.Locale()).CsiteFormHealthInterval() }
+
+// CsiteFormHealthInterval says "Active check interval"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHealthInterval() string {
+	return Catalog.Format(msgs.locale, "csiteFormHealthInterval", nil)
+}
+
+// CsiteFormHealthTimeout says "Active check timeout"
+// in the language the app shows.
+func CsiteFormHealthTimeout() string { return In(i18n.Locale()).CsiteFormHealthTimeout() }
+
+// CsiteFormHealthTimeout says "Active check timeout"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHealthTimeout() string {
+	return Catalog.Format(msgs.locale, "csiteFormHealthTimeout", nil)
+}
+
+// CsiteFormHealthStatus says "Expected status"
+// in the language the app shows.
+func CsiteFormHealthStatus() string { return In(i18n.Locale()).CsiteFormHealthStatus() }
+
+// CsiteFormHealthStatus says "Expected status"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHealthStatus() string {
+	return Catalog.Format(msgs.locale, "csiteFormHealthStatus", nil)
+}
+
+// CsiteFormFailDuration says "Passive failure window"
+// in the language the app shows.
+func CsiteFormFailDuration() string { return In(i18n.Locale()).CsiteFormFailDuration() }
+
+// CsiteFormFailDuration says "Passive failure window"
+// in the language of msgs.
+func (msgs Messages) CsiteFormFailDuration() string {
+	return Catalog.Format(msgs.locale, "csiteFormFailDuration", nil)
+}
+
+// CsiteFormMaxFails says "Maximum passive failures"
+// in the language the app shows.
+func CsiteFormMaxFails() string { return In(i18n.Locale()).CsiteFormMaxFails() }
+
+// CsiteFormMaxFails says "Maximum passive failures"
+// in the language of msgs.
+func (msgs Messages) CsiteFormMaxFails() string {
+	return Catalog.Format(msgs.locale, "csiteFormMaxFails", nil)
+}
+
+// CsiteFormHeaderUp says "Request headers sent upstream"
+// in the language the app shows.
+func CsiteFormHeaderUp() string { return In(i18n.Locale()).CsiteFormHeaderUp() }
+
+// CsiteFormHeaderUp says "Request headers sent upstream"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHeaderUp() string {
+	return Catalog.Format(msgs.locale, "csiteFormHeaderUp", nil)
+}
+
+// CsiteFormHeaderDown says "Response headers from upstream"
+// in the language the app shows.
+func CsiteFormHeaderDown() string { return In(i18n.Locale()).CsiteFormHeaderDown() }
+
+// CsiteFormHeaderDown says "Response headers from upstream"
+// in the language of msgs.
+func (msgs Messages) CsiteFormHeaderDown() string {
+	return Catalog.Format(msgs.locale, "csiteFormHeaderDown", nil)
+}
+
+// CsiteFormTransport says "HTTP transport"
+// in the language the app shows.
+func CsiteFormTransport() string { return In(i18n.Locale()).CsiteFormTransport() }
+
+// CsiteFormTransport says "HTTP transport"
+// in the language of msgs.
+func (msgs Messages) CsiteFormTransport() string {
+	return Catalog.Format(msgs.locale, "csiteFormTransport", nil)
+}
+
+// CsiteFormProxyTLS says "Use TLS to the upstream"
+// in the language the app shows.
+func CsiteFormProxyTLS() string { return In(i18n.Locale()).CsiteFormProxyTLS() }
+
+// CsiteFormProxyTLS says "Use TLS to the upstream"
+// in the language of msgs.
+func (msgs Messages) CsiteFormProxyTLS() string {
+	return Catalog.Format(msgs.locale, "csiteFormProxyTLS", nil)
+}
+
+// CsiteFormProxyInsecure says "Skip upstream certificate verification"
+// in the language the app shows.
+func CsiteFormProxyInsecure() string { return In(i18n.Locale()).CsiteFormProxyInsecure() }
+
+// CsiteFormProxyInsecure says "Skip upstream certificate verification"
+// in the language of msgs.
+func (msgs Messages) CsiteFormProxyInsecure() string {
+	return Catalog.Format(msgs.locale, "csiteFormProxyInsecure", nil)
+}
+
+// CsiteFormProxyInsecureWarning says "Skipping verification makes upstream traffic vulnerable to interception. Use a trusted upstream certificate instead."
+// in the language the app shows.
+func CsiteFormProxyInsecureWarning() string { return In(i18n.Locale()).CsiteFormProxyInsecureWarning() }
+
+// CsiteFormProxyInsecureWarning says "Skipping verification makes upstream traffic vulnerable to interception. Use a trusted upstream certificate instead."
+// in the language of msgs.
+func (msgs Messages) CsiteFormProxyInsecureWarning() string {
+	return Catalog.Format(msgs.locale, "csiteFormProxyInsecureWarning", nil)
+}
+
+// CsiteFormDialTimeout says "Connect timeout"
+// in the language the app shows.
+func CsiteFormDialTimeout() string { return In(i18n.Locale()).CsiteFormDialTimeout() }
+
+// CsiteFormDialTimeout says "Connect timeout"
+// in the language of msgs.
+func (msgs Messages) CsiteFormDialTimeout() string {
+	return Catalog.Format(msgs.locale, "csiteFormDialTimeout", nil)
+}
+
+// CsiteFormReadTimeout says "Read timeout"
+// in the language the app shows.
+func CsiteFormReadTimeout() string { return In(i18n.Locale()).CsiteFormReadTimeout() }
+
+// CsiteFormReadTimeout says "Read timeout"
+// in the language of msgs.
+func (msgs Messages) CsiteFormReadTimeout() string {
+	return Catalog.Format(msgs.locale, "csiteFormReadTimeout", nil)
+}
+
+// CsiteFormWriteTimeout says "Write timeout"
+// in the language the app shows.
+func CsiteFormWriteTimeout() string { return In(i18n.Locale()).CsiteFormWriteTimeout() }
+
+// CsiteFormWriteTimeout says "Write timeout"
+// in the language of msgs.
+func (msgs Messages) CsiteFormWriteTimeout() string {
+	return Catalog.Format(msgs.locale, "csiteFormWriteTimeout", nil)
+}
+
+// CsiteFormKeepAlive says "Keep-alive duration"
+// in the language the app shows.
+func CsiteFormKeepAlive() string { return In(i18n.Locale()).CsiteFormKeepAlive() }
+
+// CsiteFormKeepAlive says "Keep-alive duration"
+// in the language of msgs.
+func (msgs Messages) CsiteFormKeepAlive() string {
+	return Catalog.Format(msgs.locale, "csiteFormKeepAlive", nil)
+}
+
+// CsiteFormFlushInterval says "Response flush interval"
+// in the language the app shows.
+func CsiteFormFlushInterval() string { return In(i18n.Locale()).CsiteFormFlushInterval() }
+
+// CsiteFormFlushInterval says "Response flush interval"
+// in the language of msgs.
+func (msgs Messages) CsiteFormFlushInterval() string {
+	return Catalog.Format(msgs.locale, "csiteFormFlushInterval", nil)
+}
+
+// CsiteFormFlushHint says "Use -1 to flush responses immediately, for example for server-sent events."
+// in the language the app shows.
+func CsiteFormFlushHint() string { return In(i18n.Locale()).CsiteFormFlushHint() }
+
+// CsiteFormFlushHint says "Use -1 to flush responses immediately, for example for server-sent events."
+// in the language of msgs.
+func (msgs Messages) CsiteFormFlushHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormFlushHint", nil)
+}
+
+// CsiteFormApp says "Node.js / Go app"
+// in the language the app shows.
+func CsiteFormApp() string { return In(i18n.Locale()).CsiteFormApp() }
+
+// CsiteFormApp says "Node.js / Go app"
+// in the language of msgs.
+func (msgs Messages) CsiteFormApp() string {
+	return Catalog.Format(msgs.locale, "csiteFormApp", nil)
+}
+
+// CsiteFormAppHint says "Proxy a local application with compression and the client IP header."
+// in the language the app shows.
+func CsiteFormAppHint() string { return In(i18n.Locale()).CsiteFormAppHint() }
+
+// CsiteFormAppHint says "Proxy a local application with compression and the client IP header."
+// in the language of msgs.
+func (msgs Messages) CsiteFormAppHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormAppHint", nil)
+}
+
+// CsiteFormWordPress says "WordPress / PHP"
+// in the language the app shows.
+func CsiteFormWordPress() string { return In(i18n.Locale()).CsiteFormWordPress() }
+
+// CsiteFormWordPress says "WordPress / PHP"
+// in the language of msgs.
+func (msgs Messages) CsiteFormWordPress() string {
+	return Catalog.Format(msgs.locale, "csiteFormWordPress", nil)
+}
+
+// CsiteFormWordPressHint says "PHP-FPM with static files, compression, and security headers."
+// in the language the app shows.
+func CsiteFormWordPressHint() string { return In(i18n.Locale()).CsiteFormWordPressHint() }
+
+// CsiteFormWordPressHint says "PHP-FPM with static files, compression, and security headers."
+// in the language of msgs.
+func (msgs Messages) CsiteFormWordPressHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormWordPressHint", nil)
+}
+
+// CsiteFormWWW says "www redirect"
+// in the language the app shows.
+func CsiteFormWWW() string { return In(i18n.Locale()).CsiteFormWWW() }
+
+// CsiteFormWWW says "www redirect"
+// in the language of msgs.
+func (msgs Messages) CsiteFormWWW() string {
+	return Catalog.Format(msgs.locale, "csiteFormWWW", nil)
+}
+
+// CsiteFormBrowserAuth says "Password-protected file browser"
+// in the language the app shows.
+func CsiteFormBrowserAuth() string { return In(i18n.Locale()).CsiteFormBrowserAuth() }
+
+// CsiteFormBrowserAuth says "Password-protected file browser"
+// in the language of msgs.
+func (msgs Messages) CsiteFormBrowserAuth() string {
+	return Catalog.Format(msgs.locale, "csiteFormBrowserAuth", nil)
+}
+
+// CsiteFormBrowserAuthHint says "Serve a browsable directory protected by basic authentication."
+// in the language the app shows.
+func CsiteFormBrowserAuthHint() string { return In(i18n.Locale()).CsiteFormBrowserAuthHint() }
+
+// CsiteFormBrowserAuthHint says "Serve a browsable directory protected by basic authentication."
+// in the language of msgs.
+func (msgs Messages) CsiteFormBrowserAuthHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormBrowserAuthHint", nil)
+}
+
+// CsiteFormGateway says "API gateway"
+// in the language the app shows.
+func CsiteFormGateway() string { return In(i18n.Locale()).CsiteFormGateway() }
+
+// CsiteFormGateway says "API gateway"
+// in the language of msgs.
+func (msgs Messages) CsiteFormGateway() string {
+	return Catalog.Format(msgs.locale, "csiteFormGateway", nil)
+}
+
+// CsiteFormGatewayHint says "Route path prefixes to different services with a default upstream."
+// in the language the app shows.
+func CsiteFormGatewayHint() string { return In(i18n.Locale()).CsiteFormGatewayHint() }
+
+// CsiteFormGatewayHint says "Route path prefixes to different services with a default upstream."
+// in the language of msgs.
+func (msgs Messages) CsiteFormGatewayHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormGatewayHint", nil)
+}
+
+// CsiteFormDocker says "Docker container proxy"
+// in the language the app shows.
+func CsiteFormDocker() string { return In(i18n.Locale()).CsiteFormDocker() }
+
+// CsiteFormDocker says "Docker container proxy"
+// in the language of msgs.
+func (msgs Messages) CsiteFormDocker() string {
+	return Catalog.Format(msgs.locale, "csiteFormDocker", nil)
+}
+
+// CsiteFormDockerHint says "Choose a published port from a running Docker container."
+// in the language the app shows.
+func CsiteFormDockerHint() string { return In(i18n.Locale()).CsiteFormDockerHint() }
+
+// CsiteFormDockerHint says "Choose a published port from a running Docker container."
+// in the language of msgs.
+func (msgs Messages) CsiteFormDockerHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormDockerHint", nil)
+}
+
+// CsiteFormWebsocketApp says "WebSocket app"
+// in the language the app shows.
+func CsiteFormWebsocketApp() string { return In(i18n.Locale()).CsiteFormWebsocketApp() }
+
+// CsiteFormWebsocketApp says "WebSocket app"
+// in the language of msgs.
+func (msgs Messages) CsiteFormWebsocketApp() string {
+	return Catalog.Format(msgs.locale, "csiteFormWebsocketApp", nil)
+}
+
+// CsiteFormWebsocketAppHint says "Use a reverse proxy that supports WebSocket and immediate flushing."
+// in the language the app shows.
+func CsiteFormWebsocketAppHint() string { return In(i18n.Locale()).CsiteFormWebsocketAppHint() }
+
+// CsiteFormWebsocketAppHint says "Use a reverse proxy that supports WebSocket and immediate flushing."
+// in the language of msgs.
+func (msgs Messages) CsiteFormWebsocketAppHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormWebsocketAppHint", nil)
+}
+
+// CsiteFormBalancer says "Load balancer"
+// in the language the app shows.
+func CsiteFormBalancer() string { return In(i18n.Locale()).CsiteFormBalancer() }
+
+// CsiteFormBalancer says "Load balancer"
+// in the language of msgs.
+func (msgs Messages) CsiteFormBalancer() string {
+	return Catalog.Format(msgs.locale, "csiteFormBalancer", nil)
+}
+
+// CsiteFormBalancerHint says "Distribute traffic across several upstreams and check their health."
+// in the language the app shows.
+func CsiteFormBalancerHint() string { return In(i18n.Locale()).CsiteFormBalancerHint() }
+
+// CsiteFormBalancerHint says "Distribute traffic across several upstreams and check their health."
+// in the language of msgs.
+func (msgs Messages) CsiteFormBalancerHint() string {
+	return Catalog.Format(msgs.locale, "csiteFormBalancerHint", nil)
+}
+
+// CglobGeneral says "General"
+// in the language the app shows.
+func CglobGeneral() string { return In(i18n.Locale()).CglobGeneral() }
+
+// CglobGeneral says "General"
+// in the language of msgs.
+func (msgs Messages) CglobGeneral() string {
+	return Catalog.Format(msgs.locale, "cglobGeneral", nil)
+}
+
+// CglobPorts says "Ports & binding"
+// in the language the app shows.
+func CglobPorts() string { return In(i18n.Locale()).CglobPorts() }
+
+// CglobPorts says "Ports & binding"
+// in the language of msgs.
+func (msgs Messages) CglobPorts() string {
+	return Catalog.Format(msgs.locale, "cglobPorts", nil)
+}
+
+// CglobAdmin says "Admin API"
+// in the language the app shows.
+func CglobAdmin() string { return In(i18n.Locale()).CglobAdmin() }
+
+// CglobAdmin says "Admin API"
+// in the language of msgs.
+func (msgs Messages) CglobAdmin() string {
+	return Catalog.Format(msgs.locale, "cglobAdmin", nil)
+}
+
+// CglobLogging says "Logging"
+// in the language the app shows.
+func CglobLogging() string { return In(i18n.Locale()).CglobLogging() }
+
+// CglobLogging says "Logging"
+// in the language of msgs.
+func (msgs Messages) CglobLogging() string {
+	return Catalog.Format(msgs.locale, "cglobLogging", nil)
+}
+
+// CglobTLS says "TLS / ACME"
+// in the language the app shows.
+func CglobTLS() string { return In(i18n.Locale()).CglobTLS() }
+
+// CglobTLS says "TLS / ACME"
+// in the language of msgs.
+func (msgs Messages) CglobTLS() string {
+	return Catalog.Format(msgs.locale, "cglobTLS", nil)
+}
+
+// CglobOnDemand says "On-demand TLS"
+// in the language the app shows.
+func CglobOnDemand() string { return In(i18n.Locale()).CglobOnDemand() }
+
+// CglobOnDemand says "On-demand TLS"
+// in the language of msgs.
+func (msgs Messages) CglobOnDemand() string {
+	return Catalog.Format(msgs.locale, "cglobOnDemand", nil)
+}
+
+// CglobServers says "Servers"
+// in the language the app shows.
+func CglobServers() string { return In(i18n.Locale()).CglobServers() }
+
+// CglobServers says "Servers"
+// in the language of msgs.
+func (msgs Messages) CglobServers() string {
+	return Catalog.Format(msgs.locale, "cglobServers", nil)
+}
+
+// CglobPKI says "PKI / local CA"
+// in the language the app shows.
+func CglobPKI() string { return In(i18n.Locale()).CglobPKI() }
+
+// CglobPKI says "PKI / local CA"
+// in the language of msgs.
+func (msgs Messages) CglobPKI() string {
+	return Catalog.Format(msgs.locale, "cglobPKI", nil)
+}
+
+// CglobMetrics says "Metrics"
+// in the language the app shows.
+func CglobMetrics() string { return In(i18n.Locale()).CglobMetrics() }
+
+// CglobMetrics says "Metrics"
+// in the language of msgs.
+func (msgs Messages) CglobMetrics() string {
+	return Catalog.Format(msgs.locale, "cglobMetrics", nil)
+}
+
+// CglobOther says "Unrecognized"
+// in the language the app shows.
+func CglobOther() string { return In(i18n.Locale()).CglobOther() }
+
+// CglobOther says "Unrecognized"
+// in the language of msgs.
+func (msgs Messages) CglobOther() string {
+	return Catalog.Format(msgs.locale, "cglobOther", nil)
+}
+
+// CglobSnippets says "Snippets"
+// in the language the app shows.
+func CglobSnippets() string { return In(i18n.Locale()).CglobSnippets() }
+
+// CglobSnippets says "Snippets"
+// in the language of msgs.
+func (msgs Messages) CglobSnippets() string {
+	return Catalog.Format(msgs.locale, "cglobSnippets", nil)
+}
+
+// CglobGroup says "Option group"
+// in the language the app shows.
+func CglobGroup() string { return In(i18n.Locale()).CglobGroup() }
+
+// CglobGroup says "Option group"
+// in the language of msgs.
+func (msgs Messages) CglobGroup() string {
+	return Catalog.Format(msgs.locale, "cglobGroup", nil)
+}
+
+// CglobOption says "Option"
+// in the language the app shows.
+func CglobOption() string { return In(i18n.Locale()).CglobOption() }
+
+// CglobOption says "Option"
+// in the language of msgs.
+func (msgs Messages) CglobOption() string {
+	return Catalog.Format(msgs.locale, "cglobOption", nil)
+}
+
+// CglobState says "State"
+// in the language the app shows.
+func CglobState() string { return In(i18n.Locale()).CglobState() }
+
+// CglobState says "State"
+// in the language of msgs.
+func (msgs Messages) CglobState() string {
+	return Catalog.Format(msgs.locale, "cglobState", nil)
+}
+
+// CglobSet says "Set"
+// in the language the app shows.
+func CglobSet() string { return In(i18n.Locale()).CglobSet() }
+
+// CglobSet says "Set"
+// in the language of msgs.
+func (msgs Messages) CglobSet() string {
+	return Catalog.Format(msgs.locale, "cglobSet", nil)
+}
+
+// CglobUnset says "Default"
+// in the language the app shows.
+func CglobUnset() string { return In(i18n.Locale()).CglobUnset() }
+
+// CglobUnset says "Default"
+// in the language of msgs.
+func (msgs Messages) CglobUnset() string {
+	return Catalog.Format(msgs.locale, "cglobUnset", nil)
+}
+
+// CglobReading says "Reading Caddyfile…"
+// in the language the app shows.
+func CglobReading() string { return In(i18n.Locale()).CglobReading() }
+
+// CglobReading says "Reading Caddyfile…"
+// in the language of msgs.
+func (msgs Messages) CglobReading() string {
+	return Catalog.Format(msgs.locale, "cglobReading", nil)
+}
+
+// CglobNoConfig says "No Caddy configuration file was found."
+// in the language the app shows.
+func CglobNoConfig() string { return In(i18n.Locale()).CglobNoConfig() }
+
+// CglobNoConfig says "No Caddy configuration file was found."
+// in the language of msgs.
+func (msgs Messages) CglobNoConfig() string {
+	return Catalog.Format(msgs.locale, "cglobNoConfig", nil)
+}
+
+// CglobRawOnly says "This file cannot be edited as a Caddyfile form. Open it in the code editor."
+// in the language the app shows.
+func CglobRawOnly() string { return In(i18n.Locale()).CglobRawOnly() }
+
+// CglobRawOnly says "This file cannot be edited as a Caddyfile form. Open it in the code editor."
+// in the language of msgs.
+func (msgs Messages) CglobRawOnly() string {
+	return Catalog.Format(msgs.locale, "cglobRawOnly", nil)
+}
+
+// CglobReadOnly says "This option is not supported by the form. Edit it in the code editor."
+// in the language the app shows.
+func CglobReadOnly() string { return In(i18n.Locale()).CglobReadOnly() }
+
+// CglobReadOnly says "This option is not supported by the form. Edit it in the code editor."
+// in the language of msgs.
+func (msgs Messages) CglobReadOnly() string {
+	return Catalog.Format(msgs.locale, "cglobReadOnly", nil)
+}
+
+// CglobCode says "Open in code editor"
+// in the language the app shows.
+func CglobCode() string { return In(i18n.Locale()).CglobCode() }
+
+// CglobCode says "Open in code editor"
+// in the language of msgs.
+func (msgs Messages) CglobCode() string {
+	return Catalog.Format(msgs.locale, "cglobCode", nil)
+}
+
+// CglobSelect says "Select a row first."
+// in the language the app shows.
+func CglobSelect() string { return In(i18n.Locale()).CglobSelect() }
+
+// CglobSelect says "Select a row first."
+// in the language of msgs.
+func (msgs Messages) CglobSelect() string {
+	return Catalog.Format(msgs.locale, "cglobSelect", nil)
+}
+
+// CglobBusy says "Wait for the configuration read or change to finish."
+// in the language the app shows.
+func CglobBusy() string { return In(i18n.Locale()).CglobBusy() }
+
+// CglobBusy says "Wait for the configuration read or change to finish."
+// in the language of msgs.
+func (msgs Messages) CglobBusy() string {
+	return Catalog.Format(msgs.locale, "cglobBusy", nil)
+}
+
+// CglobSetFirst says "This option is not set."
+// in the language the app shows.
+func CglobSetFirst() string { return In(i18n.Locale()).CglobSetFirst() }
+
+// CglobSetFirst says "This option is not set."
+// in the language of msgs.
+func (msgs Messages) CglobSetFirst() string {
+	return Catalog.Format(msgs.locale, "cglobSetFirst", nil)
+}
+
+// CglobAdvice says "Only configured options are written. Other options and file text are kept."
+// in the language the app shows.
+func CglobAdvice() string { return In(i18n.Locale()).CglobAdvice() }
+
+// CglobAdvice says "Only configured options are written. Other options and file text are kept."
+// in the language of msgs.
+func (msgs Messages) CglobAdvice() string {
+	return Catalog.Format(msgs.locale, "cglobAdvice", nil)
+}
+
+// CglobSyntax says "Caddyfile syntax"
+// in the language the app shows.
+func CglobSyntax() string { return In(i18n.Locale()).CglobSyntax() }
+
+// CglobSyntax says "Caddyfile syntax"
+// in the language of msgs.
+func (msgs Messages) CglobSyntax() string {
+	return Catalog.Format(msgs.locale, "cglobSyntax", nil)
+}
+
+// CglobExample says "Example"
+// in the language the app shows.
+func CglobExample() string { return In(i18n.Locale()).CglobExample() }
+
+// CglobExample says "Example"
+// in the language of msgs.
+func (msgs Messages) CglobExample() string {
+	return Catalog.Format(msgs.locale, "cglobExample", nil)
+}
+
+// CglobInvalidOption says "Enter exactly one complete directive with the selected name."
+// in the language the app shows.
+func CglobInvalidOption() string { return In(i18n.Locale()).CglobInvalidOption() }
+
+// CglobInvalidOption says "Enter exactly one complete directive with the selected name."
+// in the language of msgs.
+func (msgs Messages) CglobInvalidOption() string {
+	return Catalog.Format(msgs.locale, "cglobInvalidOption", nil)
+}
+
+// CglobInvalidSnippet says "Enter one complete snippet with a unique name, such as (common) with a block."
+// in the language the app shows.
+func CglobInvalidSnippet() string { return In(i18n.Locale()).CglobInvalidSnippet() }
+
+// CglobInvalidSnippet says "Enter one complete snippet with a unique name, such as (common) with a block."
+// in the language of msgs.
+func (msgs Messages) CglobInvalidSnippet() string {
+	return Catalog.Format(msgs.locale, "cglobInvalidSnippet", nil)
+}
+
+// CglobSnippetNew says "New snippet"
+// in the language the app shows.
+func CglobSnippetNew() string { return In(i18n.Locale()).CglobSnippetNew() }
+
+// CglobSnippetNew says "New snippet"
+// in the language of msgs.
+func (msgs Messages) CglobSnippetNew() string {
+	return Catalog.Format(msgs.locale, "cglobSnippetNew", nil)
+}
+
+// CglobSnippetEmpty says "No named snippets were found."
+// in the language the app shows.
+func CglobSnippetEmpty() string { return In(i18n.Locale()).CglobSnippetEmpty() }
+
+// CglobSnippetEmpty says "No named snippets were found."
+// in the language of msgs.
+func (msgs Messages) CglobSnippetEmpty() string {
+	return Catalog.Format(msgs.locale, "cglobSnippetEmpty", nil)
+}
+
+// CglobSnippet says "Snippet"
+// in the language the app shows.
+func CglobSnippet() string { return In(i18n.Locale()).CglobSnippet() }
+
+// CglobSnippet says "Snippet"
+// in the language of msgs.
+func (msgs Messages) CglobSnippet() string {
+	return Catalog.Format(msgs.locale, "cglobSnippet", nil)
+}
+
+// CglobLocation says "File and line"
+// in the language the app shows.
+func CglobLocation() string { return In(i18n.Locale()).CglobLocation() }
+
+// CglobLocation says "File and line"
+// in the language of msgs.
+func (msgs Messages) CglobLocation() string {
+	return Catalog.Format(msgs.locale, "cglobLocation", nil)
+}
+
+// CglobSaveWarning says "Backs up the named file, writes this change, and validates the entire configuration before reloading. If validation o…"
+// in the language the app shows.
+func CglobSaveWarning() string { return In(i18n.Locale()).CglobSaveWarning() }
+
+// CglobSaveWarning says "Backs up the named file, writes this change, and validates the entire configuration before reloading. If validation o…"
+// in the language of msgs.
+func (msgs Messages) CglobSaveWarning() string {
+	return Catalog.Format(msgs.locale, "cglobSaveWarning", nil)
+}
+
+// CglobRemoveWarning says "Removes the named entry, then validates the entire configuration and reloads. If validation or reloading fails, the o…"
+// in the language the app shows.
+func CglobRemoveWarning() string { return In(i18n.Locale()).CglobRemoveWarning() }
+
+// CglobRemoveWarning says "Removes the named entry, then validates the entire configuration and reloads. If validation or reloading fails, the o…"
+// in the language of msgs.
+func (msgs Messages) CglobRemoveWarning() string {
+	return Catalog.Format(msgs.locale, "cglobRemoveWarning", nil)
+}
+
+// CglobAdminWarning says "Do not expose the administration API to untrusted networks. Changing or disabling its endpoint can prevent hot reloads."
+// in the language the app shows.
+func CglobAdminWarning() string { return In(i18n.Locale()).CglobAdminWarning() }
+
+// CglobAdminWarning says "Do not expose the administration API to untrusted networks. Changing or disabling its endpoint can prevent hot reloads."
+// in the language of msgs.
+func (msgs Messages) CglobAdminWarning() string {
+	return Catalog.Format(msgs.locale, "cglobAdminWarning", nil)
+}
+
+// CglobOnDemandWarning says "Use a permission check before issuing certificates on demand to avoid unintended certificate requests."
+// in the language the app shows.
+func CglobOnDemandWarning() string { return In(i18n.Locale()).CglobOnDemandWarning() }
+
+// CglobOnDemandWarning says "Use a permission check before issuing certificates on demand to avoid unintended certificate requests."
+// in the language of msgs.
+func (msgs Messages) CglobOnDemandWarning() string {
+	return Catalog.Format(msgs.locale, "cglobOnDemandWarning", nil)
+}
+
+// CglobPrivate says "Use private proxy ranges"
+// in the language the app shows.
+func CglobPrivate() string { return In(i18n.Locale()).CglobPrivate() }
+
+// CglobPrivate says "Use private proxy ranges"
+// in the language of msgs.
+func (msgs Messages) CglobPrivate() string {
+	return Catalog.Format(msgs.locale, "cglobPrivate", nil)
+}
+
+// CglobCloudflare says "Load Cloudflare proxy ranges"
+// in the language the app shows.
+func CglobCloudflare() string { return In(i18n.Locale()).CglobCloudflare() }
+
+// CglobCloudflare says "Load Cloudflare proxy ranges"
+// in the language of msgs.
+func (msgs Messages) CglobCloudflare() string {
+	return Catalog.Format(msgs.locale, "cglobCloudflare", nil)
+}
+
+// CglobProxyWarning says "Trust only proxies you control or use. Presets replace trusted_proxies in this servers block; review the result befor…"
+// in the language the app shows.
+func CglobProxyWarning() string { return In(i18n.Locale()).CglobProxyWarning() }
+
+// CglobProxyWarning says "Trust only proxies you control or use. Presets replace trusted_proxies in this servers block; review the result befor…"
+// in the language of msgs.
+func (msgs Messages) CglobProxyWarning() string {
+	return Catalog.Format(msgs.locale, "cglobProxyWarning", nil)
+}
+
+// CglobRangeReading says "Loading Cloudflare IPv4 and IPv6 ranges…"
+// in the language the app shows.
+func CglobRangeReading() string { return In(i18n.Locale()).CglobRangeReading() }
+
+// CglobRangeReading says "Loading Cloudflare IPv4 and IPv6 ranges…"
+// in the language of msgs.
+func (msgs Messages) CglobRangeReading() string {
+	return Catalog.Format(msgs.locale, "cglobRangeReading", nil)
+}
+
+// CglobRangeError says "Could not load valid IPv4 and IPv6 ranges from Cloudflare. No changes were made."
+// in the language the app shows.
+func CglobRangeError() string { return In(i18n.Locale()).CglobRangeError() }
+
+// CglobRangeError says "Could not load valid IPv4 and IPv6 ranges from Cloudflare. No changes were made."
+// in the language of msgs.
+func (msgs Messages) CglobRangeError() string {
+	return Catalog.Format(msgs.locale, "cglobRangeError", nil)
+}
+
+// CglobEditRangeError says "A proxy preset requires a single valid servers block with at most one trusted_proxies entry."
+// in the language the app shows.
+func CglobEditRangeError() string { return In(i18n.Locale()).CglobEditRangeError() }
+
+// CglobEditRangeError says "A proxy preset requires a single valid servers block with at most one trusted_proxies entry."
+// in the language of msgs.
+func (msgs Messages) CglobEditRangeError() string {
+	return Catalog.Format(msgs.locale, "cglobEditRangeError", nil)
+}
+
+// CglobRollback says "The original configuration was restored."
+// in the language the app shows.
+func CglobRollback() string { return In(i18n.Locale()).CglobRollback() }
+
+// CglobRollback says "The original configuration was restored."
+// in the language of msgs.
+func (msgs Messages) CglobRollback() string {
+	return Catalog.Format(msgs.locale, "cglobRollback", nil)
+}
+
+// CglobValue says "Value"
+// in the language the app shows.
+func CglobValue() string { return In(i18n.Locale()).CglobValue() }
+
+// CglobValue says "Value"
+// in the language of msgs.
+func (msgs Messages) CglobValue() string {
+	return Catalog.Format(msgs.locale, "cglobValue", nil)
+}
+
+// CglobEnabled says "Enabled"
+// in the language the app shows.
+func CglobEnabled() string { return In(i18n.Locale()).CglobEnabled() }
+
+// CglobEnabled says "Enabled"
+// in the language of msgs.
+func (msgs Messages) CglobEnabled() string {
+	return Catalog.Format(msgs.locale, "cglobEnabled", nil)
+}
+
+// CglobProtected says "This entry may contain secrets. Edit it in the code editor."
+// in the language the app shows.
+func CglobProtected() string { return In(i18n.Locale()).CglobProtected() }
+
+// CglobProtected says "This entry may contain secrets. Edit it in the code editor."
+// in the language of msgs.
+func (msgs Messages) CglobProtected() string {
+	return Catalog.Format(msgs.locale, "cglobProtected", nil)
+}
+
+// CglobSourceUnavailable says "Refresh the configuration before making changes."
+// in the language the app shows.
+func CglobSourceUnavailable() string { return In(i18n.Locale()).CglobSourceUnavailable() }
+
+// CglobSourceUnavailable says "Refresh the configuration before making changes."
+// in the language of msgs.
+func (msgs Messages) CglobSourceUnavailable() string {
+	return Catalog.Format(msgs.locale, "cglobSourceUnavailable", nil)
+}
+
+// CglobNoOther says "No unrecognized global options were found."
+// in the language the app shows.
+func CglobNoOther() string { return In(i18n.Locale()).CglobNoOther() }
+
+// CglobNoOther says "No unrecognized global options were found."
+// in the language of msgs.
+func (msgs Messages) CglobNoOther() string {
+	return Catalog.Format(msgs.locale, "cglobNoOther", nil)
+}
+
+// CglobServerField says "Server setting"
+// in the language the app shows.
+func CglobServerField() string { return In(i18n.Locale()).CglobServerField() }
+
+// CglobServerField says "Server setting"
+// in the language of msgs.
+func (msgs Messages) CglobServerField() string {
+	return Catalog.Format(msgs.locale, "cglobServerField", nil)
+}
+
+// CglobStage says "Update draft"
+// in the language the app shows.
+func CglobStage() string { return In(i18n.Locale()).CglobStage() }
+
+// CglobStage says "Update draft"
+// in the language of msgs.
+func (msgs Messages) CglobStage() string {
+	return Catalog.Format(msgs.locale, "cglobStage", nil)
+}
+
+// CglobInvalidNested says "Enter one setting with the selected name, or clear it to remove the setting."
+// in the language the app shows.
+func CglobInvalidNested() string { return In(i18n.Locale()).CglobInvalidNested() }
+
+// CglobInvalidNested says "Enter one setting with the selected name, or clear it to remove the setting."
+// in the language of msgs.
+func (msgs Messages) CglobInvalidNested() string {
+	return Catalog.Format(msgs.locale, "cglobInvalidNested", nil)
+}
+
+// CglobKeepName says "The name of an existing snippet cannot change because imports may reference it."
+// in the language the app shows.
+func CglobKeepName() string { return In(i18n.Locale()).CglobKeepName() }
+
+// CglobKeepName says "The name of an existing snippet cannot change because imports may reference it."
+// in the language of msgs.
+func (msgs Messages) CglobKeepName() string {
+	return Catalog.Format(msgs.locale, "cglobKeepName", nil)
+}
+
+// CglobProxyCancel says "Cancel download"
+// in the language the app shows.
+func CglobProxyCancel() string { return In(i18n.Locale()).CglobProxyCancel() }
+
+// CglobProxyCancel says "Cancel download"
+// in the language of msgs.
+func (msgs Messages) CglobProxyCancel() string {
+	return Catalog.Format(msgs.locale, "cglobProxyCancel", nil)
+}
+
+// CglobAddInstance says "Add another"
+// in the language the app shows.
+func CglobAddInstance() string { return In(i18n.Locale()).CglobAddInstance() }
+
+// CglobAddInstance says "Add another"
+// in the language of msgs.
+func (msgs Messages) CglobAddInstance() string {
+	return Catalog.Format(msgs.locale, "cglobAddInstance", nil)
+}
+
 // TunKindHTTP says "HTTP proxy"
 // in the language the app shows.
 func TunKindHTTP() string { return In(i18n.Locale()).TunKindHTTP() }
@@ -9924,6 +12404,456 @@ func TrayQuit() string { return In(i18n.Locale()).TrayQuit() }
 // in the language of msgs.
 func (msgs Messages) TrayQuit() string {
 	return Catalog.Format(msgs.locale, "trayQuit", nil)
+}
+
+// CeditTitle says "Code editor"
+// in the language the app shows.
+func CeditTitle() string { return In(i18n.Locale()).CeditTitle() }
+
+// CeditTitle says "Code editor"
+// in the language of msgs.
+func (msgs Messages) CeditTitle() string {
+	return Catalog.Format(msgs.locale, "ceditTitle", nil)
+}
+
+// CeditOpen says "Open in code editor"
+// in the language the app shows.
+func CeditOpen() string { return In(i18n.Locale()).CeditOpen() }
+
+// CeditOpen says "Open in code editor"
+// in the language of msgs.
+func (msgs Messages) CeditOpen() string {
+	return Catalog.Format(msgs.locale, "ceditOpen", nil)
+}
+
+// CeditOpenRoot says "Edit as root in code editor…"
+// in the language the app shows.
+func CeditOpenRoot() string { return In(i18n.Locale()).CeditOpenRoot() }
+
+// CeditOpenRoot says "Edit as root in code editor…"
+// in the language of msgs.
+func (msgs Messages) CeditOpenRoot() string {
+	return Catalog.Format(msgs.locale, "ceditOpenRoot", nil)
+}
+
+// CeditFiles says "Files"
+// in the language the app shows.
+func CeditFiles() string { return In(i18n.Locale()).CeditFiles() }
+
+// CeditFiles says "Files"
+// in the language of msgs.
+func (msgs Messages) CeditFiles() string {
+	return Catalog.Format(msgs.locale, "ceditFiles", nil)
+}
+
+// CeditChooseFile says "Select a file from the tree."
+// in the language the app shows.
+func CeditChooseFile() string { return In(i18n.Locale()).CeditChooseFile() }
+
+// CeditChooseFile says "Select a file from the tree."
+// in the language of msgs.
+func (msgs Messages) CeditChooseFile() string {
+	return Catalog.Format(msgs.locale, "ceditChooseFile", nil)
+}
+
+// CeditReadFile says "Read file"
+// in the language the app shows.
+func CeditReadFile() string { return In(i18n.Locale()).CeditReadFile() }
+
+// CeditReadFile says "Read file"
+// in the language of msgs.
+func (msgs Messages) CeditReadFile() string {
+	return Catalog.Format(msgs.locale, "ceditReadFile", nil)
+}
+
+// CeditReading says "Reading {path}…"
+// in the language the app shows.
+func CeditReading(path string) string { return In(i18n.Locale()).CeditReading(path) }
+
+// CeditReading says "Reading {path}…"
+// in the language of msgs.
+func (msgs Messages) CeditReading(path string) string {
+	return Catalog.Format(msgs.locale, "ceditReading", map[string]any{"path": path})
+}
+
+// CeditFormat says "Format"
+// in the language the app shows.
+func CeditFormat() string { return In(i18n.Locale()).CeditFormat() }
+
+// CeditFormat says "Format"
+// in the language of msgs.
+func (msgs Messages) CeditFormat() string {
+	return Catalog.Format(msgs.locale, "ceditFormat", nil)
+}
+
+// CeditFormatted says "Formatted — changes not saved"
+// in the language the app shows.
+func CeditFormatted() string { return In(i18n.Locale()).CeditFormatted() }
+
+// CeditFormatted says "Formatted — changes not saved"
+// in the language of msgs.
+func (msgs Messages) CeditFormatted() string {
+	return Catalog.Format(msgs.locale, "ceditFormatted", nil)
+}
+
+// CeditValidate says "Validate"
+// in the language the app shows.
+func CeditValidate() string { return In(i18n.Locale()).CeditValidate() }
+
+// CeditValidate says "Validate"
+// in the language of msgs.
+func (msgs Messages) CeditValidate() string {
+	return Catalog.Format(msgs.locale, "ceditValidate", nil)
+}
+
+// CeditValid says "Validation passed — no files written"
+// in the language the app shows.
+func CeditValid() string { return In(i18n.Locale()).CeditValid() }
+
+// CeditValid says "Validation passed — no files written"
+// in the language of msgs.
+func (msgs Messages) CeditValid() string {
+	return Catalog.Format(msgs.locale, "ceditValid", nil)
+}
+
+// CeditCheckAndSave says "Validating and saving…"
+// in the language the app shows.
+func CeditCheckAndSave() string { return In(i18n.Locale()).CeditCheckAndSave() }
+
+// CeditCheckAndSave says "Validating and saving…"
+// in the language of msgs.
+func (msgs Messages) CeditCheckAndSave() string {
+	return Catalog.Format(msgs.locale, "ceditCheckAndSave", nil)
+}
+
+// CeditBack says "Back to editor"
+// in the language the app shows.
+func CeditBack() string { return In(i18n.Locale()).CeditBack() }
+
+// CeditBack says "Back to editor"
+// in the language of msgs.
+func (msgs Messages) CeditBack() string {
+	return Catalog.Format(msgs.locale, "ceditBack", nil)
+}
+
+// CeditReviewTitle says "{count, plural, one {Review changes to # file} other {Review changes to # files}}"
+// in the language the app shows.
+func CeditReviewTitle(count int) string { return In(i18n.Locale()).CeditReviewTitle(count) }
+
+// CeditReviewTitle says "{count, plural, one {Review changes to # file} other {Review changes to # files}}"
+// in the language of msgs.
+func (msgs Messages) CeditReviewTitle(count int) string {
+	return Catalog.Format(msgs.locale, "ceditReviewTitle", map[string]any{"count": count})
+}
+
+// CeditReviewNote says "Saving backs up each listed file before replacing it on the server."
+// in the language the app shows.
+func CeditReviewNote() string { return In(i18n.Locale()).CeditReviewNote() }
+
+// CeditReviewNote says "Saving backs up each listed file before replacing it on the server."
+// in the language of msgs.
+func (msgs Messages) CeditReviewNote() string {
+	return Catalog.Format(msgs.locale, "ceditReviewNote", nil)
+}
+
+// CeditReviewTransaction says "Saving applies all listed changes together using the tool’s save procedure."
+// in the language the app shows.
+func CeditReviewTransaction() string { return In(i18n.Locale()).CeditReviewTransaction() }
+
+// CeditReviewTransaction says "Saving applies all listed changes together using the tool’s save procedure."
+// in the language of msgs.
+func (msgs Messages) CeditReviewTransaction() string {
+	return Catalog.Format(msgs.locale, "ceditReviewTransaction", nil)
+}
+
+// CeditReviewStale says "The text changed after review. Review the changes again before saving."
+// in the language the app shows.
+func CeditReviewStale() string { return In(i18n.Locale()).CeditReviewStale() }
+
+// CeditReviewStale says "The text changed after review. Review the changes again before saving."
+// in the language of msgs.
+func (msgs Messages) CeditReviewStale() string {
+	return Catalog.Format(msgs.locale, "ceditReviewStale", nil)
+}
+
+// CeditSplit says "Side by side"
+// in the language the app shows.
+func CeditSplit() string { return In(i18n.Locale()).CeditSplit() }
+
+// CeditSplit says "Side by side"
+// in the language of msgs.
+func (msgs Messages) CeditSplit() string {
+	return Catalog.Format(msgs.locale, "ceditSplit", nil)
+}
+
+// CeditUnified says "Unified"
+// in the language the app shows.
+func CeditUnified() string { return In(i18n.Locale()).CeditUnified() }
+
+// CeditUnified says "Unified"
+// in the language of msgs.
+func (msgs Messages) CeditUnified() string {
+	return Catalog.Format(msgs.locale, "ceditUnified", nil)
+}
+
+// CeditNormalizeEndings says "Normalize mixed line endings"
+// in the language the app shows.
+func CeditNormalizeEndings() string { return In(i18n.Locale()).CeditNormalizeEndings() }
+
+// CeditNormalizeEndings says "Normalize mixed line endings"
+// in the language of msgs.
+func (msgs Messages) CeditNormalizeEndings() string {
+	return Catalog.Format(msgs.locale, "ceditNormalizeEndings", nil)
+}
+
+// CeditSaveAnyway says "Save anyway"
+// in the language the app shows.
+func CeditSaveAnyway() string { return In(i18n.Locale()).CeditSaveAnyway() }
+
+// CeditSaveAnyway says "Save anyway"
+// in the language of msgs.
+func (msgs Messages) CeditSaveAnyway() string {
+	return Catalog.Format(msgs.locale, "ceditSaveAnyway", nil)
+}
+
+// CeditFontLarger says "Increase editor font size"
+// in the language the app shows.
+func CeditFontLarger() string { return In(i18n.Locale()).CeditFontLarger() }
+
+// CeditFontLarger says "Increase editor font size"
+// in the language of msgs.
+func (msgs Messages) CeditFontLarger() string {
+	return Catalog.Format(msgs.locale, "ceditFontLarger", nil)
+}
+
+// CeditFontSmaller says "Decrease editor font size"
+// in the language the app shows.
+func CeditFontSmaller() string { return In(i18n.Locale()).CeditFontSmaller() }
+
+// CeditFontSmaller says "Decrease editor font size"
+// in the language of msgs.
+func (msgs Messages) CeditFontSmaller() string {
+	return Catalog.Format(msgs.locale, "ceditFontSmaller", nil)
+}
+
+// CeditFold says "Fold all"
+// in the language the app shows.
+func CeditFold() string { return In(i18n.Locale()).CeditFold() }
+
+// CeditFold says "Fold all"
+// in the language of msgs.
+func (msgs Messages) CeditFold() string {
+	return Catalog.Format(msgs.locale, "ceditFold", nil)
+}
+
+// CeditUnfold says "Unfold all"
+// in the language the app shows.
+func CeditUnfold() string { return In(i18n.Locale()).CeditUnfold() }
+
+// CeditUnfold says "Unfold all"
+// in the language of msgs.
+func (msgs Messages) CeditUnfold() string {
+	return Catalog.Format(msgs.locale, "ceditUnfold", nil)
+}
+
+// CeditIndent says "Indentation"
+// in the language the app shows.
+func CeditIndent() string { return In(i18n.Locale()).CeditIndent() }
+
+// CeditIndent says "Indentation"
+// in the language of msgs.
+func (msgs Messages) CeditIndent() string {
+	return Catalog.Format(msgs.locale, "ceditIndent", nil)
+}
+
+// CeditSpaces says "Spaces"
+// in the language the app shows.
+func CeditSpaces() string { return In(i18n.Locale()).CeditSpaces() }
+
+// CeditSpaces says "Spaces"
+// in the language of msgs.
+func (msgs Messages) CeditSpaces() string {
+	return Catalog.Format(msgs.locale, "ceditSpaces", nil)
+}
+
+// CeditTabs says "Tabs"
+// in the language the app shows.
+func CeditTabs() string { return In(i18n.Locale()).CeditTabs() }
+
+// CeditTabs says "Tabs"
+// in the language of msgs.
+func (msgs Messages) CeditTabs() string {
+	return Catalog.Format(msgs.locale, "ceditTabs", nil)
+}
+
+// CeditRoot says "Root"
+// in the language the app shows.
+func CeditRoot() string { return In(i18n.Locale()).CeditRoot() }
+
+// CeditRoot says "Root"
+// in the language of msgs.
+func (msgs Messages) CeditRoot() string {
+	return Catalog.Format(msgs.locale, "ceditRoot", nil)
+}
+
+// CeditUser says "SSH user"
+// in the language the app shows.
+func CeditUser() string { return In(i18n.Locale()).CeditUser() }
+
+// CeditUser says "SSH user"
+// in the language of msgs.
+func (msgs Messages) CeditUser() string {
+	return Catalog.Format(msgs.locale, "ceditUser", nil)
+}
+
+// CeditReadOnly says "Read-only"
+// in the language the app shows.
+func CeditReadOnly() string { return In(i18n.Locale()).CeditReadOnly() }
+
+// CeditReadOnly says "Read-only"
+// in the language of msgs.
+func (msgs Messages) CeditReadOnly() string {
+	return Catalog.Format(msgs.locale, "ceditReadOnly", nil)
+}
+
+// CeditTooLarge says "Larger than 5 MiB. Only the first 256 KiB are shown, read-only."
+// in the language the app shows.
+func CeditTooLarge() string { return In(i18n.Locale()).CeditTooLarge() }
+
+// CeditTooLarge says "Larger than 5 MiB. Only the first 256 KiB are shown, read-only."
+// in the language of msgs.
+func (msgs Messages) CeditTooLarge() string {
+	return Catalog.Format(msgs.locale, "ceditTooLarge", nil)
+}
+
+// CeditUTF8Only says "The code editor opens UTF-8 text only. This file looks binary or uses another encoding."
+// in the language the app shows.
+func CeditUTF8Only() string { return In(i18n.Locale()).CeditUTF8Only() }
+
+// CeditUTF8Only says "The code editor opens UTF-8 text only. This file looks binary or uses another encoding."
+// in the language of msgs.
+func (msgs Messages) CeditUTF8Only() string {
+	return Catalog.Format(msgs.locale, "ceditUTF8Only", nil)
+}
+
+// CeditCannotValidateFile says "The full file could not be loaded for validation."
+// in the language the app shows.
+func CeditCannotValidateFile() string { return In(i18n.Locale()).CeditCannotValidateFile() }
+
+// CeditCannotValidateFile says "The full file could not be loaded for validation."
+// in the language of msgs.
+func (msgs Messages) CeditCannotValidateFile() string {
+	return Catalog.Format(msgs.locale, "ceditCannotValidateFile", nil)
+}
+
+// CeditPathInvalid says "Use an absolute path without line breaks or NUL characters."
+// in the language the app shows.
+func CeditPathInvalid() string { return In(i18n.Locale()).CeditPathInvalid() }
+
+// CeditPathInvalid says "Use an absolute path without line breaks or NUL characters."
+// in the language of msgs.
+func (msgs Messages) CeditPathInvalid() string {
+	return Catalog.Format(msgs.locale, "ceditPathInvalid", nil)
+}
+
+// CeditRegularOnly says "Only regular files can be edited."
+// in the language the app shows.
+func CeditRegularOnly() string { return In(i18n.Locale()).CeditRegularOnly() }
+
+// CeditRegularOnly says "Only regular files can be edited."
+// in the language of msgs.
+func (msgs Messages) CeditRegularOnly() string {
+	return Catalog.Format(msgs.locale, "ceditRegularOnly", nil)
+}
+
+// CeditChanged says "The file changed on the server or is no longer a regular file. No changes were written to it. Reopen it to review the…"
+// in the language the app shows.
+func CeditChanged() string { return In(i18n.Locale()).CeditChanged() }
+
+// CeditChanged says "The file changed on the server or is no longer a regular file. No changes were written to it. Reopen it to review the…"
+// in the language of msgs.
+func (msgs Messages) CeditChanged() string {
+	return Catalog.Format(msgs.locale, "ceditChanged", nil)
+}
+
+// CeditAtomicUnavailable says "This SFTP server cannot replace files atomically. No changes were written."
+// in the language the app shows.
+func CeditAtomicUnavailable() string { return In(i18n.Locale()).CeditAtomicUnavailable() }
+
+// CeditAtomicUnavailable says "This SFTP server cannot replace files atomically. No changes were written."
+// in the language of msgs.
+func (msgs Messages) CeditAtomicUnavailable() string {
+	return Catalog.Format(msgs.locale, "ceditAtomicUnavailable", nil)
+}
+
+// CeditBackupExists says "A backup already exists with the same timestamp. No changes were written. Try again in a moment."
+// in the language the app shows.
+func CeditBackupExists() string { return In(i18n.Locale()).CeditBackupExists() }
+
+// CeditBackupExists says "A backup already exists with the same timestamp. No changes were written. Try again in a moment."
+// in the language of msgs.
+func (msgs Messages) CeditBackupExists() string {
+	return Catalog.Format(msgs.locale, "ceditBackupExists", nil)
+}
+
+// CeditIncompleteRead says "The server did not return a complete file."
+// in the language the app shows.
+func CeditIncompleteRead() string { return In(i18n.Locale()).CeditIncompleteRead() }
+
+// CeditIncompleteRead says "The server did not return a complete file."
+// in the language of msgs.
+func (msgs Messages) CeditIncompleteRead() string {
+	return Catalog.Format(msgs.locale, "ceditIncompleteRead", nil)
+}
+
+// CeditMissingBackup says "The server did not confirm the backup path. Check the remote file before retrying."
+// in the language the app shows.
+func CeditMissingBackup() string { return In(i18n.Locale()).CeditMissingBackup() }
+
+// CeditMissingBackup says "The server did not confirm the backup path. Check the remote file before retrying."
+// in the language of msgs.
+func (msgs Messages) CeditMissingBackup() string {
+	return Catalog.Format(msgs.locale, "ceditMissingBackup", nil)
+}
+
+// CeditInterrupted says "Operation canceled or connection interrupted. Check the server before trying again."
+// in the language the app shows.
+func CeditInterrupted() string { return In(i18n.Locale()).CeditInterrupted() }
+
+// CeditInterrupted says "Operation canceled or connection interrupted. Check the server before trying again."
+// in the language of msgs.
+func (msgs Messages) CeditInterrupted() string {
+	return Catalog.Format(msgs.locale, "ceditInterrupted", nil)
+}
+
+// CeditReconnectOriginal says "Your edits are kept. Reconnect the original SSH session to use this tool’s checks and save procedure."
+// in the language the app shows.
+func CeditReconnectOriginal() string { return In(i18n.Locale()).CeditReconnectOriginal() }
+
+// CeditReconnectOriginal says "Your edits are kept. Reconnect the original SSH session to use this tool’s checks and save procedure."
+// in the language of msgs.
+func (msgs Messages) CeditReconnectOriginal() string {
+	return Catalog.Format(msgs.locale, "ceditReconnectOriginal", nil)
+}
+
+// CeditNoChanges says "No unsaved changes"
+// in the language the app shows.
+func CeditNoChanges() string { return In(i18n.Locale()).CeditNoChanges() }
+
+// CeditNoChanges says "No unsaved changes"
+// in the language of msgs.
+func (msgs Messages) CeditNoChanges() string {
+	return Catalog.Format(msgs.locale, "ceditNoChanges", nil)
+}
+
+// CeditWorking says "An operation is in progress"
+// in the language the app shows.
+func CeditWorking() string { return In(i18n.Locale()).CeditWorking() }
+
+// CeditWorking says "An operation is in progress"
+// in the language of msgs.
+func (msgs Messages) CeditWorking() string {
+	return Catalog.Format(msgs.locale, "ceditWorking", nil)
 }
 
 // TrecTitle says "Tunnel recipes…"
@@ -21634,6 +24564,96 @@ func (msgs Messages) TabDocker() string {
 	return Catalog.Format(msgs.locale, "tabDocker", nil)
 }
 
+// TabCaddy says "Caddy"
+// in the language the app shows.
+func TabCaddy() string { return In(i18n.Locale()).TabCaddy() }
+
+// TabCaddy says "Caddy"
+// in the language of msgs.
+func (msgs Messages) TabCaddy() string {
+	return Catalog.Format(msgs.locale, "tabCaddy", nil)
+}
+
+// CaddyOverview says "Overview"
+// in the language the app shows.
+func CaddyOverview() string { return In(i18n.Locale()).CaddyOverview() }
+
+// CaddyOverview says "Overview"
+// in the language of msgs.
+func (msgs Messages) CaddyOverview() string {
+	return Catalog.Format(msgs.locale, "caddyOverview", nil)
+}
+
+// CaddySites says "Sites"
+// in the language the app shows.
+func CaddySites() string { return In(i18n.Locale()).CaddySites() }
+
+// CaddySites says "Sites"
+// in the language of msgs.
+func (msgs Messages) CaddySites() string {
+	return Catalog.Format(msgs.locale, "caddySites", nil)
+}
+
+// CaddyGlobal says "Global options"
+// in the language the app shows.
+func CaddyGlobal() string { return In(i18n.Locale()).CaddyGlobal() }
+
+// CaddyGlobal says "Global options"
+// in the language of msgs.
+func (msgs Messages) CaddyGlobal() string {
+	return Catalog.Format(msgs.locale, "caddyGlobal", nil)
+}
+
+// CaddyConfig says "Config files"
+// in the language the app shows.
+func CaddyConfig() string { return In(i18n.Locale()).CaddyConfig() }
+
+// CaddyConfig says "Config files"
+// in the language of msgs.
+func (msgs Messages) CaddyConfig() string {
+	return Catalog.Format(msgs.locale, "caddyConfig", nil)
+}
+
+// CaddyCerts says "Certificates"
+// in the language the app shows.
+func CaddyCerts() string { return In(i18n.Locale()).CaddyCerts() }
+
+// CaddyCerts says "Certificates"
+// in the language of msgs.
+func (msgs Messages) CaddyCerts() string {
+	return Catalog.Format(msgs.locale, "caddyCerts", nil)
+}
+
+// CaddyLogs says "Logs"
+// in the language the app shows.
+func CaddyLogs() string { return In(i18n.Locale()).CaddyLogs() }
+
+// CaddyLogs says "Logs"
+// in the language of msgs.
+func (msgs Messages) CaddyLogs() string {
+	return Catalog.Format(msgs.locale, "caddyLogs", nil)
+}
+
+// CaddyInstall says "Install & migrate"
+// in the language the app shows.
+func CaddyInstall() string { return In(i18n.Locale()).CaddyInstall() }
+
+// CaddyInstall says "Install & migrate"
+// in the language of msgs.
+func (msgs Messages) CaddyInstall() string {
+	return Catalog.Format(msgs.locale, "caddyInstall", nil)
+}
+
+// CaddyRefresh says "Read again"
+// in the language the app shows.
+func CaddyRefresh() string { return In(i18n.Locale()).CaddyRefresh() }
+
+// CaddyRefresh says "Read again"
+// in the language of msgs.
+func (msgs Messages) CaddyRefresh() string {
+	return Catalog.Format(msgs.locale, "caddyRefresh", nil)
+}
+
 // TabSystem says "System"
 // in the language the app shows.
 func TabSystem() string { return In(i18n.Locale()).TabSystem() }
@@ -23256,6 +26276,1766 @@ func RdpAdminHint() string { return In(i18n.Locale()).RdpAdminHint() }
 // in the language of msgs.
 func (msgs Messages) RdpAdminHint() string {
 	return Catalog.Format(msgs.locale, "rdpAdminHint", nil)
+}
+
+// CpanelUnavailable says "This Caddy operation is not available in this build."
+// in the language the app shows.
+func CpanelUnavailable() string { return In(i18n.Locale()).CpanelUnavailable() }
+
+// CpanelUnavailable says "This Caddy operation is not available in this build."
+// in the language of msgs.
+func (msgs Messages) CpanelUnavailable() string {
+	return Catalog.Format(msgs.locale, "cpanelUnavailable", nil)
+}
+
+// CpanelChanged says "A file changed on the server. Refresh and review it before trying again."
+// in the language the app shows.
+func CpanelChanged() string { return In(i18n.Locale()).CpanelChanged() }
+
+// CpanelChanged says "A file changed on the server. Refresh and review it before trying again."
+// in the language of msgs.
+func (msgs Messages) CpanelChanged() string {
+	return Catalog.Format(msgs.locale, "cpanelChanged", nil)
+}
+
+// CpanelDetecting says "Detecting Caddy…"
+// in the language the app shows.
+func CpanelDetecting() string { return In(i18n.Locale()).CpanelDetecting() }
+
+// CpanelDetecting says "Detecting Caddy…"
+// in the language of msgs.
+func (msgs Messages) CpanelDetecting() string {
+	return Catalog.Format(msgs.locale, "cpanelDetecting", nil)
+}
+
+// CpanelNotInstalled says "Caddy is not installed on this server."
+// in the language the app shows.
+func CpanelNotInstalled() string { return In(i18n.Locale()).CpanelNotInstalled() }
+
+// CpanelNotInstalled says "Caddy is not installed on this server."
+// in the language of msgs.
+func (msgs Messages) CpanelNotInstalled() string {
+	return Catalog.Format(msgs.locale, "cpanelNotInstalled", nil)
+}
+
+// CpanelInstall says "Install Caddy"
+// in the language the app shows.
+func CpanelInstall() string { return In(i18n.Locale()).CpanelInstall() }
+
+// CpanelInstall says "Install Caddy"
+// in the language of msgs.
+func (msgs Messages) CpanelInstall() string {
+	return Catalog.Format(msgs.locale, "cpanelInstall", nil)
+}
+
+// CpanelReading says "Reading from the server…"
+// in the language the app shows.
+func CpanelReading() string { return In(i18n.Locale()).CpanelReading() }
+
+// CpanelReading says "Reading from the server…"
+// in the language of msgs.
+func (msgs Messages) CpanelReading() string {
+	return Catalog.Format(msgs.locale, "cpanelReading", nil)
+}
+
+// CpanelUnknown says "Unknown"
+// in the language the app shows.
+func CpanelUnknown() string { return In(i18n.Locale()).CpanelUnknown() }
+
+// CpanelUnknown says "Unknown"
+// in the language of msgs.
+func (msgs Messages) CpanelUnknown() string {
+	return Catalog.Format(msgs.locale, "cpanelUnknown", nil)
+}
+
+// CpanelYes says "Yes"
+// in the language the app shows.
+func CpanelYes() string { return In(i18n.Locale()).CpanelYes() }
+
+// CpanelYes says "Yes"
+// in the language of msgs.
+func (msgs Messages) CpanelYes() string {
+	return Catalog.Format(msgs.locale, "cpanelYes", nil)
+}
+
+// CpanelNo says "No"
+// in the language the app shows.
+func CpanelNo() string { return In(i18n.Locale()).CpanelNo() }
+
+// CpanelNo says "No"
+// in the language of msgs.
+func (msgs Messages) CpanelNo() string {
+	return Catalog.Format(msgs.locale, "cpanelNo", nil)
+}
+
+// CpanelActive says "Running"
+// in the language the app shows.
+func CpanelActive() string { return In(i18n.Locale()).CpanelActive() }
+
+// CpanelActive says "Running"
+// in the language of msgs.
+func (msgs Messages) CpanelActive() string {
+	return Catalog.Format(msgs.locale, "cpanelActive", nil)
+}
+
+// CpanelInactive says "Stopped"
+// in the language the app shows.
+func CpanelInactive() string { return In(i18n.Locale()).CpanelInactive() }
+
+// CpanelInactive says "Stopped"
+// in the language of msgs.
+func (msgs Messages) CpanelInactive() string {
+	return Catalog.Format(msgs.locale, "cpanelInactive", nil)
+}
+
+// CpanelFailed says "Failed"
+// in the language the app shows.
+func CpanelFailed() string { return In(i18n.Locale()).CpanelFailed() }
+
+// CpanelFailed says "Failed"
+// in the language of msgs.
+func (msgs Messages) CpanelFailed() string {
+	return Catalog.Format(msgs.locale, "cpanelFailed", nil)
+}
+
+// CpanelMethodApt says "Official APT repository"
+// in the language the app shows.
+func CpanelMethodApt() string { return In(i18n.Locale()).CpanelMethodApt() }
+
+// CpanelMethodApt says "Official APT repository"
+// in the language of msgs.
+func (msgs Messages) CpanelMethodApt() string {
+	return Catalog.Format(msgs.locale, "cpanelMethodApt", nil)
+}
+
+// CpanelMethodDnf says "COPR via DNF"
+// in the language the app shows.
+func CpanelMethodDnf() string { return In(i18n.Locale()).CpanelMethodDnf() }
+
+// CpanelMethodDnf says "COPR via DNF"
+// in the language of msgs.
+func (msgs Messages) CpanelMethodDnf() string {
+	return Catalog.Format(msgs.locale, "cpanelMethodDnf", nil)
+}
+
+// CpanelMethodPacman says "Pacman package"
+// in the language the app shows.
+func CpanelMethodPacman() string { return In(i18n.Locale()).CpanelMethodPacman() }
+
+// CpanelMethodPacman says "Pacman package"
+// in the language of msgs.
+func (msgs Messages) CpanelMethodPacman() string {
+	return Catalog.Format(msgs.locale, "cpanelMethodPacman", nil)
+}
+
+// CpanelMethodApk says "Alpine package"
+// in the language the app shows.
+func CpanelMethodApk() string { return In(i18n.Locale()).CpanelMethodApk() }
+
+// CpanelMethodApk says "Alpine package"
+// in the language of msgs.
+func (msgs Messages) CpanelMethodApk() string {
+	return Catalog.Format(msgs.locale, "cpanelMethodApk", nil)
+}
+
+// CpanelMethodBinary says "Standalone binary"
+// in the language the app shows.
+func CpanelMethodBinary() string { return In(i18n.Locale()).CpanelMethodBinary() }
+
+// CpanelMethodBinary says "Standalone binary"
+// in the language of msgs.
+func (msgs Messages) CpanelMethodBinary() string {
+	return Catalog.Format(msgs.locale, "cpanelMethodBinary", nil)
+}
+
+// CpanelService says "Service or container"
+// in the language the app shows.
+func CpanelService() string { return In(i18n.Locale()).CpanelService() }
+
+// CpanelService says "Service or container"
+// in the language of msgs.
+func (msgs Messages) CpanelService() string {
+	return Catalog.Format(msgs.locale, "cpanelService", nil)
+}
+
+// CpanelAutostart says "Start at boot"
+// in the language the app shows.
+func CpanelAutostart() string { return In(i18n.Locale()).CpanelAutostart() }
+
+// CpanelAutostart says "Start at boot"
+// in the language of msgs.
+func (msgs Messages) CpanelAutostart() string {
+	return Catalog.Format(msgs.locale, "cpanelAutostart", nil)
+}
+
+// CpanelBinary says "Binary path"
+// in the language the app shows.
+func CpanelBinary() string { return In(i18n.Locale()).CpanelBinary() }
+
+// CpanelBinary says "Binary path"
+// in the language of msgs.
+func (msgs Messages) CpanelBinary() string {
+	return Catalog.Format(msgs.locale, "cpanelBinary", nil)
+}
+
+// CpanelConfigPath says "Configuration path"
+// in the language the app shows.
+func CpanelConfigPath() string { return In(i18n.Locale()).CpanelConfigPath() }
+
+// CpanelConfigPath says "Configuration path"
+// in the language of msgs.
+func (msgs Messages) CpanelConfigPath() string {
+	return Catalog.Format(msgs.locale, "cpanelConfigPath", nil)
+}
+
+// CpanelAdapter says "Configuration adapter"
+// in the language the app shows.
+func CpanelAdapter() string { return In(i18n.Locale()).CpanelAdapter() }
+
+// CpanelAdapter says "Configuration adapter"
+// in the language of msgs.
+func (msgs Messages) CpanelAdapter() string {
+	return Catalog.Format(msgs.locale, "cpanelAdapter", nil)
+}
+
+// CpanelManaged says "Managed layout"
+// in the language the app shows.
+func CpanelManaged() string { return In(i18n.Locale()).CpanelManaged() }
+
+// CpanelManaged says "Managed layout"
+// in the language of msgs.
+func (msgs Messages) CpanelManaged() string {
+	return Catalog.Format(msgs.locale, "cpanelManaged", nil)
+}
+
+// CpanelAdmin says "Admin API"
+// in the language the app shows.
+func CpanelAdmin() string { return In(i18n.Locale()).CpanelAdmin() }
+
+// CpanelAdmin says "Admin API"
+// in the language of msgs.
+func (msgs Messages) CpanelAdmin() string {
+	return Catalog.Format(msgs.locale, "cpanelAdmin", nil)
+}
+
+// CpanelDataDir says "Data directory"
+// in the language the app shows.
+func CpanelDataDir() string { return In(i18n.Locale()).CpanelDataDir() }
+
+// CpanelDataDir says "Data directory"
+// in the language of msgs.
+func (msgs Messages) CpanelDataDir() string {
+	return Catalog.Format(msgs.locale, "cpanelDataDir", nil)
+}
+
+// CpanelUser says "Service user"
+// in the language the app shows.
+func CpanelUser() string { return In(i18n.Locale()).CpanelUser() }
+
+// CpanelUser says "Service user"
+// in the language of msgs.
+func (msgs Messages) CpanelUser() string {
+	return Catalog.Format(msgs.locale, "cpanelUser", nil)
+}
+
+// CpanelListening says "Listening addresses"
+// in the language the app shows.
+func CpanelListening() string { return In(i18n.Locale()).CpanelListening() }
+
+// CpanelListening says "Listening addresses"
+// in the language of msgs.
+func (msgs Messages) CpanelListening() string {
+	return Catalog.Format(msgs.locale, "cpanelListening", nil)
+}
+
+// CpanelModules says "Custom modules"
+// in the language the app shows.
+func CpanelModules() string { return In(i18n.Locale()).CpanelModules() }
+
+// CpanelModules says "Custom modules"
+// in the language of msgs.
+func (msgs Messages) CpanelModules() string {
+	return Catalog.Format(msgs.locale, "cpanelModules", nil)
+}
+
+// CpanelSince says "Running since"
+// in the language the app shows.
+func CpanelSince() string { return In(i18n.Locale()).CpanelSince() }
+
+// CpanelSince says "Running since"
+// in the language of msgs.
+func (msgs Messages) CpanelSince() string {
+	return Catalog.Format(msgs.locale, "cpanelSince", nil)
+}
+
+// CpanelMemory says "Memory"
+// in the language the app shows.
+func CpanelMemory() string { return In(i18n.Locale()).CpanelMemory() }
+
+// CpanelMemory says "Memory"
+// in the language of msgs.
+func (msgs Messages) CpanelMemory() string {
+	return Catalog.Format(msgs.locale, "cpanelMemory", nil)
+}
+
+// CpanelUpstreams says "Reverse proxy upstreams"
+// in the language the app shows.
+func CpanelUpstreams() string { return In(i18n.Locale()).CpanelUpstreams() }
+
+// CpanelUpstreams says "Reverse proxy upstreams"
+// in the language of msgs.
+func (msgs Messages) CpanelUpstreams() string {
+	return Catalog.Format(msgs.locale, "cpanelUpstreams", nil)
+}
+
+// CpanelUpstreamCount says "{healthy, number} with no failures · {failed, number} with failures"
+// in the language the app shows.
+func CpanelUpstreamCount(healthy int, failed int) string {
+	return In(i18n.Locale()).CpanelUpstreamCount(healthy, failed)
+}
+
+// CpanelUpstreamCount says "{healthy, number} with no failures · {failed, number} with failures"
+// in the language of msgs.
+func (msgs Messages) CpanelUpstreamCount(healthy int, failed int) string {
+	return Catalog.Format(msgs.locale, "cpanelUpstreamCount", map[string]any{"healthy": healthy, "failed": failed})
+}
+
+// CpanelCertificateCount says "{total, plural, one {# certificate} other {# certificates}} · {expiring, number} expiring within 30 days"
+// in the language the app shows.
+func CpanelCertificateCount(total int, expiring int) string {
+	return In(i18n.Locale()).CpanelCertificateCount(total, expiring)
+}
+
+// CpanelCertificateCount says "{total, plural, one {# certificate} other {# certificates}} · {expiring, number} expiring within 30 days"
+// in the language of msgs.
+func (msgs Messages) CpanelCertificateCount(total int, expiring int) string {
+	return Catalog.Format(msgs.locale, "cpanelCertificateCount", map[string]any{"total": total, "expiring": expiring})
+}
+
+// CpanelReachable says "reachable"
+// in the language the app shows.
+func CpanelReachable() string { return In(i18n.Locale()).CpanelReachable() }
+
+// CpanelReachable says "reachable"
+// in the language of msgs.
+func (msgs Messages) CpanelReachable() string {
+	return Catalog.Format(msgs.locale, "cpanelReachable", nil)
+}
+
+// CpanelUnreachable says "unreachable"
+// in the language the app shows.
+func CpanelUnreachable() string { return In(i18n.Locale()).CpanelUnreachable() }
+
+// CpanelUnreachable says "unreachable"
+// in the language of msgs.
+func (msgs Messages) CpanelUnreachable() string {
+	return Catalog.Format(msgs.locale, "cpanelUnreachable", nil)
+}
+
+// CpanelUpdateAvailable says "Update available: {version}"
+// in the language the app shows.
+func CpanelUpdateAvailable(version string) string {
+	return In(i18n.Locale()).CpanelUpdateAvailable(version)
+}
+
+// CpanelUpdateAvailable says "Update available: {version}"
+// in the language of msgs.
+func (msgs Messages) CpanelUpdateAvailable(version string) string {
+	return Catalog.Format(msgs.locale, "cpanelUpdateAvailable", map[string]any{"version": version})
+}
+
+// CpanelConflicts says "Ports 80 or 443 are in use by: {processes}"
+// in the language the app shows.
+func CpanelConflicts(processes string) string { return In(i18n.Locale()).CpanelConflicts(processes) }
+
+// CpanelConflicts says "Ports 80 or 443 are in use by: {processes}"
+// in the language of msgs.
+func (msgs Messages) CpanelConflicts(processes string) string {
+	return Catalog.Format(msgs.locale, "cpanelConflicts", map[string]any{"processes": processes})
+}
+
+// CpanelNoTarget says "No supported service or path was detected."
+// in the language the app shows.
+func CpanelNoTarget() string { return In(i18n.Locale()).CpanelNoTarget() }
+
+// CpanelNoTarget says "No supported service or path was detected."
+// in the language of msgs.
+func (msgs Messages) CpanelNoTarget() string {
+	return Catalog.Format(msgs.locale, "cpanelNoTarget", nil)
+}
+
+// CpanelStopWarning says "Stopping Caddy takes its websites offline immediately."
+// in the language the app shows.
+func CpanelStopWarning() string { return In(i18n.Locale()).CpanelStopWarning() }
+
+// CpanelStopWarning says "Stopping Caddy takes its websites offline immediately."
+// in the language of msgs.
+func (msgs Messages) CpanelStopWarning() string {
+	return Catalog.Format(msgs.locale, "cpanelStopWarning", nil)
+}
+
+// CpanelReload says "Graceful reload"
+// in the language the app shows.
+func CpanelReload() string { return In(i18n.Locale()).CpanelReload() }
+
+// CpanelReload says "Graceful reload"
+// in the language of msgs.
+func (msgs Messages) CpanelReload() string {
+	return Catalog.Format(msgs.locale, "cpanelReload", nil)
+}
+
+// CpanelValidate says "Validate config"
+// in the language the app shows.
+func CpanelValidate() string { return In(i18n.Locale()).CpanelValidate() }
+
+// CpanelValidate says "Validate config"
+// in the language of msgs.
+func (msgs Messages) CpanelValidate() string {
+	return Catalog.Format(msgs.locale, "cpanelValidate", nil)
+}
+
+// CpanelValidateNote says "Validate the complete configuration without changing files or reloading Caddy."
+// in the language the app shows.
+func CpanelValidateNote() string { return In(i18n.Locale()).CpanelValidateNote() }
+
+// CpanelValidateNote says "Validate the complete configuration without changing files or reloading Caddy."
+// in the language of msgs.
+func (msgs Messages) CpanelValidateNote() string {
+	return Catalog.Format(msgs.locale, "cpanelValidateNote", nil)
+}
+
+// CpanelOpenConfig says "Open config files"
+// in the language the app shows.
+func CpanelOpenConfig() string { return In(i18n.Locale()).CpanelOpenConfig() }
+
+// CpanelOpenConfig says "Open config files"
+// in the language of msgs.
+func (msgs Messages) CpanelOpenConfig() string {
+	return Catalog.Format(msgs.locale, "cpanelOpenConfig", nil)
+}
+
+// CpanelOpenData says "Open data directory"
+// in the language the app shows.
+func CpanelOpenData() string { return In(i18n.Locale()).CpanelOpenData() }
+
+// CpanelOpenData says "Open data directory"
+// in the language of msgs.
+func (msgs Messages) CpanelOpenData() string {
+	return Catalog.Format(msgs.locale, "cpanelOpenData", nil)
+}
+
+// CpanelBackupLocation says "Backup: {path}"
+// in the language the app shows.
+func CpanelBackupLocation(path string) string { return In(i18n.Locale()).CpanelBackupLocation(path) }
+
+// CpanelBackupLocation says "Backup: {path}"
+// in the language of msgs.
+func (msgs Messages) CpanelBackupLocation(path string) string {
+	return Catalog.Format(msgs.locale, "cpanelBackupLocation", map[string]any{"path": path})
+}
+
+// CpanelRolledBack says "The previous configuration was restored."
+// in the language the app shows.
+func CpanelRolledBack() string { return In(i18n.Locale()).CpanelRolledBack() }
+
+// CpanelRolledBack says "The previous configuration was restored."
+// in the language of msgs.
+func (msgs Messages) CpanelRolledBack() string {
+	return Catalog.Format(msgs.locale, "cpanelRolledBack", nil)
+}
+
+// CpanelNoFiles says "No configuration files have been read."
+// in the language the app shows.
+func CpanelNoFiles() string { return In(i18n.Locale()).CpanelNoFiles() }
+
+// CpanelNoFiles says "No configuration files have been read."
+// in the language of msgs.
+func (msgs Messages) CpanelNoFiles() string {
+	return Catalog.Format(msgs.locale, "cpanelNoFiles", nil)
+}
+
+// CpanelCaddyfileOnly says "Available only for Caddyfile configurations."
+// in the language the app shows.
+func CpanelCaddyfileOnly() string { return In(i18n.Locale()).CpanelCaddyfileOnly() }
+
+// CpanelCaddyfileOnly says "Available only for Caddyfile configurations."
+// in the language of msgs.
+func (msgs Messages) CpanelCaddyfileOnly() string {
+	return Catalog.Format(msgs.locale, "cpanelCaddyfileOnly", nil)
+}
+
+// CpanelNoEnv says "No environment file was detected for the service."
+// in the language the app shows.
+func CpanelNoEnv() string { return In(i18n.Locale()).CpanelNoEnv() }
+
+// CpanelNoEnv says "No environment file was detected for the service."
+// in the language of msgs.
+func (msgs Messages) CpanelNoEnv() string {
+	return Catalog.Format(msgs.locale, "cpanelNoEnv", nil)
+}
+
+// CpanelAdminOff says "The admin API is disabled or its address is unknown."
+// in the language the app shows.
+func CpanelAdminOff() string { return In(i18n.Locale()).CpanelAdminOff() }
+
+// CpanelAdminOff says "The admin API is disabled or its address is unknown."
+// in the language of msgs.
+func (msgs Messages) CpanelAdminOff() string {
+	return Catalog.Format(msgs.locale, "cpanelAdminOff", nil)
+}
+
+// CpanelEditor says "Open in code editor"
+// in the language the app shows.
+func CpanelEditor() string { return In(i18n.Locale()).CpanelEditor() }
+
+// CpanelEditor says "Open in code editor"
+// in the language of msgs.
+func (msgs Messages) CpanelEditor() string {
+	return Catalog.Format(msgs.locale, "cpanelEditor", nil)
+}
+
+// CpanelFormatAll says "Format all"
+// in the language the app shows.
+func CpanelFormatAll() string { return In(i18n.Locale()).CpanelFormatAll() }
+
+// CpanelFormatAll says "Format all"
+// in the language of msgs.
+func (msgs Messages) CpanelFormatAll() string {
+	return Catalog.Format(msgs.locale, "cpanelFormatAll", nil)
+}
+
+// CpanelAdapt says "Adapt to JSON"
+// in the language the app shows.
+func CpanelAdapt() string { return In(i18n.Locale()).CpanelAdapt() }
+
+// CpanelAdapt says "Adapt to JSON"
+// in the language of msgs.
+func (msgs Messages) CpanelAdapt() string {
+	return Catalog.Format(msgs.locale, "cpanelAdapt", nil)
+}
+
+// CpanelRunningConfig says "Show running config"
+// in the language the app shows.
+func CpanelRunningConfig() string { return In(i18n.Locale()).CpanelRunningConfig() }
+
+// CpanelRunningConfig says "Show running config"
+// in the language of msgs.
+func (msgs Messages) CpanelRunningConfig() string {
+	return Catalog.Format(msgs.locale, "cpanelRunningConfig", nil)
+}
+
+// CpanelBackups says "Backups"
+// in the language the app shows.
+func CpanelBackups() string { return In(i18n.Locale()).CpanelBackups() }
+
+// CpanelBackups says "Backups"
+// in the language of msgs.
+func (msgs Messages) CpanelBackups() string {
+	return Catalog.Format(msgs.locale, "cpanelBackups", nil)
+}
+
+// CpanelEnvironment says "Environment file"
+// in the language the app shows.
+func CpanelEnvironment() string { return In(i18n.Locale()).CpanelEnvironment() }
+
+// CpanelEnvironment says "Environment file"
+// in the language of msgs.
+func (msgs Messages) CpanelEnvironment() string {
+	return Catalog.Format(msgs.locale, "cpanelEnvironment", nil)
+}
+
+// CpanelMain says "Main file"
+// in the language the app shows.
+func CpanelMain() string { return In(i18n.Locale()).CpanelMain() }
+
+// CpanelMain says "Main file"
+// in the language of msgs.
+func (msgs Messages) CpanelMain() string {
+	return Catalog.Format(msgs.locale, "cpanelMain", nil)
+}
+
+// CpanelImport says "Imported file"
+// in the language the app shows.
+func CpanelImport() string { return In(i18n.Locale()).CpanelImport() }
+
+// CpanelImport says "Imported file"
+// in the language of msgs.
+func (msgs Messages) CpanelImport() string {
+	return Catalog.Format(msgs.locale, "cpanelImport", nil)
+}
+
+// CpanelKind says "Type"
+// in the language the app shows.
+func CpanelKind() string { return In(i18n.Locale()).CpanelKind() }
+
+// CpanelKind says "Type"
+// in the language of msgs.
+func (msgs Messages) CpanelKind() string {
+	return Catalog.Format(msgs.locale, "cpanelKind", nil)
+}
+
+// CpanelSize says "Size"
+// in the language the app shows.
+func CpanelSize() string { return In(i18n.Locale()).CpanelSize() }
+
+// CpanelSize says "Size"
+// in the language of msgs.
+func (msgs Messages) CpanelSize() string {
+	return Catalog.Format(msgs.locale, "cpanelSize", nil)
+}
+
+// CpanelModified says "Modified"
+// in the language the app shows.
+func CpanelModified() string { return In(i18n.Locale()).CpanelModified() }
+
+// CpanelModified says "Modified"
+// in the language of msgs.
+func (msgs Messages) CpanelModified() string {
+	return Catalog.Format(msgs.locale, "cpanelModified", nil)
+}
+
+// CpanelNoChanges says "There are no changes to apply."
+// in the language the app shows.
+func CpanelNoChanges() string { return In(i18n.Locale()).CpanelNoChanges() }
+
+// CpanelNoChanges says "There are no changes to apply."
+// in the language of msgs.
+func (msgs Messages) CpanelNoChanges() string {
+	return Catalog.Format(msgs.locale, "cpanelNoChanges", nil)
+}
+
+// CpanelApplyNote says "Back up the listed files, validate the complete configuration and reload Caddy. If validation or reload fails, restor…"
+// in the language the app shows.
+func CpanelApplyNote() string { return In(i18n.Locale()).CpanelApplyNote() }
+
+// CpanelApplyNote says "Back up the listed files, validate the complete configuration and reload Caddy. If validation or reload fails, restor…"
+// in the language of msgs.
+func (msgs Messages) CpanelApplyNote() string {
+	return Catalog.Format(msgs.locale, "cpanelApplyNote", nil)
+}
+
+// CpanelNoBackups says "No Caddy configuration backups found."
+// in the language the app shows.
+func CpanelNoBackups() string { return In(i18n.Locale()).CpanelNoBackups() }
+
+// CpanelNoBackups says "No Caddy configuration backups found."
+// in the language of msgs.
+func (msgs Messages) CpanelNoBackups() string {
+	return Catalog.Format(msgs.locale, "cpanelNoBackups", nil)
+}
+
+// CpanelRestore says "Preview restore"
+// in the language the app shows.
+func CpanelRestore() string { return In(i18n.Locale()).CpanelRestore() }
+
+// CpanelRestore says "Preview restore"
+// in the language of msgs.
+func (msgs Messages) CpanelRestore() string {
+	return Catalog.Format(msgs.locale, "cpanelRestore", nil)
+}
+
+// CpanelDeleteBackup says "Delete backup…"
+// in the language the app shows.
+func CpanelDeleteBackup() string { return In(i18n.Locale()).CpanelDeleteBackup() }
+
+// CpanelDeleteBackup says "Delete backup…"
+// in the language of msgs.
+func (msgs Messages) CpanelDeleteBackup() string {
+	return Catalog.Format(msgs.locale, "cpanelDeleteBackup", nil)
+}
+
+// CpanelDeleteBackupNote says "Permanently delete the selected backup. The active configuration is not changed."
+// in the language the app shows.
+func CpanelDeleteBackupNote() string { return In(i18n.Locale()).CpanelDeleteBackupNote() }
+
+// CpanelDeleteBackupNote says "Permanently delete the selected backup. The active configuration is not changed."
+// in the language of msgs.
+func (msgs Messages) CpanelDeleteBackupNote() string {
+	return Catalog.Format(msgs.locale, "cpanelDeleteBackupNote", nil)
+}
+
+// CpanelNoRootCA says "No local root certificate was found."
+// in the language the app shows.
+func CpanelNoRootCA() string { return In(i18n.Locale()).CpanelNoRootCA() }
+
+// CpanelNoRootCA says "No local root certificate was found."
+// in the language of msgs.
+func (msgs Messages) CpanelNoRootCA() string {
+	return Catalog.Format(msgs.locale, "cpanelNoRootCA", nil)
+}
+
+// CpanelNoRootDownload says "The local root certificate is not available over SFTP."
+// in the language the app shows.
+func CpanelNoRootDownload() string { return In(i18n.Locale()).CpanelNoRootDownload() }
+
+// CpanelNoRootDownload says "The local root certificate is not available over SFTP."
+// in the language of msgs.
+func (msgs Messages) CpanelNoRootDownload() string {
+	return Catalog.Format(msgs.locale, "cpanelNoRootDownload", nil)
+}
+
+// CpanelSelectCert says "Select a certificate whose public PEM was read."
+// in the language the app shows.
+func CpanelSelectCert() string { return In(i18n.Locale()).CpanelSelectCert() }
+
+// CpanelSelectCert says "Select a certificate whose public PEM was read."
+// in the language of msgs.
+func (msgs Messages) CpanelSelectCert() string {
+	return Catalog.Format(msgs.locale, "cpanelSelectCert", nil)
+}
+
+// CpanelOpenCert says "View certificate"
+// in the language the app shows.
+func CpanelOpenCert() string { return In(i18n.Locale()).CpanelOpenCert() }
+
+// CpanelOpenCert says "View certificate"
+// in the language of msgs.
+func (msgs Messages) CpanelOpenCert() string {
+	return Catalog.Format(msgs.locale, "cpanelOpenCert", nil)
+}
+
+// CpanelCopyRoot says "Copy root certificate PEM"
+// in the language the app shows.
+func CpanelCopyRoot() string { return In(i18n.Locale()).CpanelCopyRoot() }
+
+// CpanelCopyRoot says "Copy root certificate PEM"
+// in the language of msgs.
+func (msgs Messages) CpanelCopyRoot() string {
+	return Catalog.Format(msgs.locale, "cpanelCopyRoot", nil)
+}
+
+// CpanelDownloadRoot says "Download root certificate"
+// in the language the app shows.
+func CpanelDownloadRoot() string { return In(i18n.Locale()).CpanelDownloadRoot() }
+
+// CpanelDownloadRoot says "Download root certificate"
+// in the language of msgs.
+func (msgs Messages) CpanelDownloadRoot() string {
+	return Catalog.Format(msgs.locale, "cpanelDownloadRoot", nil)
+}
+
+// CpanelRootSummary says "Local root CA: {subject} · expires {expiry}"
+// in the language the app shows.
+func CpanelRootSummary(subject string, expiry string) string {
+	return In(i18n.Locale()).CpanelRootSummary(subject, expiry)
+}
+
+// CpanelRootSummary says "Local root CA: {subject} · expires {expiry}"
+// in the language of msgs.
+func (msgs Messages) CpanelRootSummary(subject string, expiry string) string {
+	return Catalog.Format(msgs.locale, "cpanelRootSummary", map[string]any{"subject": subject, "expiry": expiry})
+}
+
+// CpanelOnDemand says "On-demand TLS is enabled. Some certificates appear only after the first TLS connection."
+// in the language the app shows.
+func CpanelOnDemand() string { return In(i18n.Locale()).CpanelOnDemand() }
+
+// CpanelOnDemand says "On-demand TLS is enabled. Some certificates appear only after the first TLS connection."
+// in the language of msgs.
+func (msgs Messages) CpanelOnDemand() string {
+	return Catalog.Format(msgs.locale, "cpanelOnDemand", nil)
+}
+
+// CpanelAutoRenew says "Caddy renews managed certificates automatically. The next check is not reported here."
+// in the language the app shows.
+func CpanelAutoRenew() string { return In(i18n.Locale()).CpanelAutoRenew() }
+
+// CpanelAutoRenew says "Caddy renews managed certificates automatically. The next check is not reported here."
+// in the language of msgs.
+func (msgs Messages) CpanelAutoRenew() string {
+	return Catalog.Format(msgs.locale, "cpanelAutoRenew", nil)
+}
+
+// CpanelNoCerts says "No managed certificates found."
+// in the language the app shows.
+func CpanelNoCerts() string { return In(i18n.Locale()).CpanelNoCerts() }
+
+// CpanelNoCerts says "No managed certificates found."
+// in the language of msgs.
+func (msgs Messages) CpanelNoCerts() string {
+	return Catalog.Format(msgs.locale, "cpanelNoCerts", nil)
+}
+
+// CpanelDomains says "Domains"
+// in the language the app shows.
+func CpanelDomains() string { return In(i18n.Locale()).CpanelDomains() }
+
+// CpanelDomains says "Domains"
+// in the language of msgs.
+func (msgs Messages) CpanelDomains() string {
+	return Catalog.Format(msgs.locale, "cpanelDomains", nil)
+}
+
+// CpanelIssuer says "Issuer"
+// in the language the app shows.
+func CpanelIssuer() string { return In(i18n.Locale()).CpanelIssuer() }
+
+// CpanelIssuer says "Issuer"
+// in the language of msgs.
+func (msgs Messages) CpanelIssuer() string {
+	return Catalog.Format(msgs.locale, "cpanelIssuer", nil)
+}
+
+// CpanelExpiry says "Expiration"
+// in the language the app shows.
+func CpanelExpiry() string { return In(i18n.Locale()).CpanelExpiry() }
+
+// CpanelExpiry says "Expiration"
+// in the language of msgs.
+func (msgs Messages) CpanelExpiry() string {
+	return Catalog.Format(msgs.locale, "cpanelExpiry", nil)
+}
+
+// CpanelKeyType says "Key type"
+// in the language the app shows.
+func CpanelKeyType() string { return In(i18n.Locale()).CpanelKeyType() }
+
+// CpanelKeyType says "Key type"
+// in the language of msgs.
+func (msgs Messages) CpanelKeyType() string {
+	return Catalog.Format(msgs.locale, "cpanelKeyType", nil)
+}
+
+// CpanelCertPath says "Storage path"
+// in the language the app shows.
+func CpanelCertPath() string { return In(i18n.Locale()).CpanelCertPath() }
+
+// CpanelCertPath says "Storage path"
+// in the language of msgs.
+func (msgs Messages) CpanelCertPath() string {
+	return Catalog.Format(msgs.locale, "cpanelCertPath", nil)
+}
+
+// CpanelDaysLeft says "{days, plural, one {# day left} other {# days left}}"
+// in the language the app shows.
+func CpanelDaysLeft(days int) string { return In(i18n.Locale()).CpanelDaysLeft(days) }
+
+// CpanelDaysLeft says "{days, plural, one {# day left} other {# days left}}"
+// in the language of msgs.
+func (msgs Messages) CpanelDaysLeft(days int) string {
+	return Catalog.Format(msgs.locale, "cpanelDaysLeft", map[string]any{"days": days})
+}
+
+// CpanelExpired says "Expired"
+// in the language the app shows.
+func CpanelExpired() string { return In(i18n.Locale()).CpanelExpired() }
+
+// CpanelExpired says "Expired"
+// in the language of msgs.
+func (msgs Messages) CpanelExpired() string {
+	return Catalog.Format(msgs.locale, "cpanelExpired", nil)
+}
+
+// CpanelDockerLogs says "Container logs"
+// in the language the app shows.
+func CpanelDockerLogs() string { return In(i18n.Locale()).CpanelDockerLogs() }
+
+// CpanelDockerLogs says "Container logs"
+// in the language of msgs.
+func (msgs Messages) CpanelDockerLogs() string {
+	return Catalog.Format(msgs.locale, "cpanelDockerLogs", nil)
+}
+
+// CpanelJournal says "Service journal"
+// in the language the app shows.
+func CpanelJournal() string { return In(i18n.Locale()).CpanelJournal() }
+
+// CpanelJournal says "Service journal"
+// in the language of msgs.
+func (msgs Messages) CpanelJournal() string {
+	return Catalog.Format(msgs.locale, "cpanelJournal", nil)
+}
+
+// CpanelNoLogSource says "No supported log source detected."
+// in the language the app shows.
+func CpanelNoLogSource() string { return In(i18n.Locale()).CpanelNoLogSource() }
+
+// CpanelNoLogSource says "No supported log source detected."
+// in the language of msgs.
+func (msgs Messages) CpanelNoLogSource() string {
+	return Catalog.Format(msgs.locale, "cpanelNoLogSource", nil)
+}
+
+// CpanelLogSource says "Log source"
+// in the language the app shows.
+func CpanelLogSource() string { return In(i18n.Locale()).CpanelLogSource() }
+
+// CpanelLogSource says "Log source"
+// in the language of msgs.
+func (msgs Messages) CpanelLogSource() string {
+	return Catalog.Format(msgs.locale, "cpanelLogSource", nil)
+}
+
+// CpanelPause says "Pause"
+// in the language the app shows.
+func CpanelPause() string { return In(i18n.Locale()).CpanelPause() }
+
+// CpanelPause says "Pause"
+// in the language of msgs.
+func (msgs Messages) CpanelPause() string {
+	return Catalog.Format(msgs.locale, "cpanelPause", nil)
+}
+
+// CpanelFollow says "Follow"
+// in the language the app shows.
+func CpanelFollow() string { return In(i18n.Locale()).CpanelFollow() }
+
+// CpanelFollow says "Follow"
+// in the language of msgs.
+func (msgs Messages) CpanelFollow() string {
+	return Catalog.Format(msgs.locale, "cpanelFollow", nil)
+}
+
+// CpanelClear says "Clear"
+// in the language the app shows.
+func CpanelClear() string { return In(i18n.Locale()).CpanelClear() }
+
+// CpanelClear says "Clear"
+// in the language of msgs.
+func (msgs Messages) CpanelClear() string {
+	return Catalog.Format(msgs.locale, "cpanelClear", nil)
+}
+
+// CpanelColumns says "Access log columns"
+// in the language the app shows.
+func CpanelColumns() string { return In(i18n.Locale()).CpanelColumns() }
+
+// CpanelColumns says "Access log columns"
+// in the language of msgs.
+func (msgs Messages) CpanelColumns() string {
+	return Catalog.Format(msgs.locale, "cpanelColumns", nil)
+}
+
+// CpanelFilter says "Filter logs"
+// in the language the app shows.
+func CpanelFilter() string { return In(i18n.Locale()).CpanelFilter() }
+
+// CpanelFilter says "Filter logs"
+// in the language of msgs.
+func (msgs Messages) CpanelFilter() string {
+	return Catalog.Format(msgs.locale, "cpanelFilter", nil)
+}
+
+// CpanelRegex says "Regular expression"
+// in the language the app shows.
+func CpanelRegex() string { return In(i18n.Locale()).CpanelRegex() }
+
+// CpanelRegex says "Regular expression"
+// in the language of msgs.
+func (msgs Messages) CpanelRegex() string {
+	return Catalog.Format(msgs.locale, "cpanelRegex", nil)
+}
+
+// CpanelLogTime says "Time"
+// in the language the app shows.
+func CpanelLogTime() string { return In(i18n.Locale()).CpanelLogTime() }
+
+// CpanelLogTime says "Time"
+// in the language of msgs.
+func (msgs Messages) CpanelLogTime() string {
+	return Catalog.Format(msgs.locale, "cpanelLogTime", nil)
+}
+
+// CpanelLogHost says "Host"
+// in the language the app shows.
+func CpanelLogHost() string { return In(i18n.Locale()).CpanelLogHost() }
+
+// CpanelLogHost says "Host"
+// in the language of msgs.
+func (msgs Messages) CpanelLogHost() string {
+	return Catalog.Format(msgs.locale, "cpanelLogHost", nil)
+}
+
+// CpanelLogMethod says "Method"
+// in the language the app shows.
+func CpanelLogMethod() string { return In(i18n.Locale()).CpanelLogMethod() }
+
+// CpanelLogMethod says "Method"
+// in the language of msgs.
+func (msgs Messages) CpanelLogMethod() string {
+	return Catalog.Format(msgs.locale, "cpanelLogMethod", nil)
+}
+
+// CpanelLogStatus says "Status"
+// in the language the app shows.
+func CpanelLogStatus() string { return In(i18n.Locale()).CpanelLogStatus() }
+
+// CpanelLogStatus says "Status"
+// in the language of msgs.
+func (msgs Messages) CpanelLogStatus() string {
+	return Catalog.Format(msgs.locale, "cpanelLogStatus", nil)
+}
+
+// CpanelLogDuration says "Duration"
+// in the language the app shows.
+func CpanelLogDuration() string { return In(i18n.Locale()).CpanelLogDuration() }
+
+// CpanelLogDuration says "Duration"
+// in the language of msgs.
+func (msgs Messages) CpanelLogDuration() string {
+	return Catalog.Format(msgs.locale, "cpanelLogDuration", nil)
+}
+
+// CpanelViewLog says "View log entry"
+// in the language the app shows.
+func CpanelViewLog() string { return In(i18n.Locale()).CpanelViewLog() }
+
+// CpanelViewLog says "View log entry"
+// in the language of msgs.
+func (msgs Messages) CpanelViewLog() string {
+	return Catalog.Format(msgs.locale, "cpanelViewLog", nil)
+}
+
+// CpanelRecommended says "{method} (recommended)"
+// in the language the app shows.
+func CpanelRecommended(method string) string { return In(i18n.Locale()).CpanelRecommended(method) }
+
+// CpanelRecommended says "{method} (recommended)"
+// in the language of msgs.
+func (msgs Messages) CpanelRecommended(method string) string {
+	return Catalog.Format(msgs.locale, "cpanelRecommended", map[string]any{"method": method})
+}
+
+// CpanelOS says "Detected OS: {os}"
+// in the language the app shows.
+func CpanelOS(os string) string { return In(i18n.Locale()).CpanelOS(os) }
+
+// CpanelOS says "Detected OS: {os}"
+// in the language of msgs.
+func (msgs Messages) CpanelOS(os string) string {
+	return Catalog.Format(msgs.locale, "cpanelOS", map[string]any{"os": os})
+}
+
+// CpanelMethod says "Install method"
+// in the language the app shows.
+func CpanelMethod() string { return In(i18n.Locale()).CpanelMethod() }
+
+// CpanelMethod says "Install method"
+// in the language of msgs.
+func (msgs Messages) CpanelMethod() string {
+	return Catalog.Format(msgs.locale, "cpanelMethod", nil)
+}
+
+// CpanelLatest says "Latest release"
+// in the language the app shows.
+func CpanelLatest() string { return In(i18n.Locale()).CpanelLatest() }
+
+// CpanelLatest says "Latest release"
+// in the language of msgs.
+func (msgs Messages) CpanelLatest() string {
+	return Catalog.Format(msgs.locale, "cpanelLatest", nil)
+}
+
+// CpanelVersion says "Version"
+// in the language the app shows.
+func CpanelVersion() string { return In(i18n.Locale()).CpanelVersion() }
+
+// CpanelVersion says "Version"
+// in the language of msgs.
+func (msgs Messages) CpanelVersion() string {
+	return Catalog.Format(msgs.locale, "cpanelVersion", nil)
+}
+
+// CpanelReplaceConflicts says "Stop conflicting web services and turn off their autostart"
+// in the language the app shows.
+func CpanelReplaceConflicts() string { return In(i18n.Locale()).CpanelReplaceConflicts() }
+
+// CpanelReplaceConflicts says "Stop conflicting web services and turn off their autostart"
+// in the language of msgs.
+func (msgs Messages) CpanelReplaceConflicts() string {
+	return Catalog.Format(msgs.locale, "cpanelReplaceConflicts", nil)
+}
+
+// CpanelStartNow says "Start now"
+// in the language the app shows.
+func CpanelStartNow() string { return In(i18n.Locale()).CpanelStartNow() }
+
+// CpanelStartNow says "Start now"
+// in the language of msgs.
+func (msgs Messages) CpanelStartNow() string {
+	return Catalog.Format(msgs.locale, "cpanelStartNow", nil)
+}
+
+// CpanelOpenPorts says "Open HTTP, HTTPS and HTTP/3 ports"
+// in the language the app shows.
+func CpanelOpenPorts() string { return In(i18n.Locale()).CpanelOpenPorts() }
+
+// CpanelOpenPorts says "Open HTTP, HTTPS and HTTP/3 ports"
+// in the language of msgs.
+func (msgs Messages) CpanelOpenPorts() string {
+	return Catalog.Format(msgs.locale, "cpanelOpenPorts", nil)
+}
+
+// CpanelFirewallHint says "Requires an active UFW or firewalld firewall."
+// in the language the app shows.
+func CpanelFirewallHint() string { return In(i18n.Locale()).CpanelFirewallHint() }
+
+// CpanelFirewallHint says "Requires an active UFW or firewalld firewall."
+// in the language of msgs.
+func (msgs Messages) CpanelFirewallHint() string {
+	return Catalog.Format(msgs.locale, "cpanelFirewallHint", nil)
+}
+
+// CpanelReviewInstall says "Review installation"
+// in the language the app shows.
+func CpanelReviewInstall() string { return In(i18n.Locale()).CpanelReviewInstall() }
+
+// CpanelReviewInstall says "Review installation"
+// in the language of msgs.
+func (msgs Messages) CpanelReviewInstall() string {
+	return Catalog.Format(msgs.locale, "cpanelReviewInstall", nil)
+}
+
+// CpanelStepsApt says "Set up the official Cloudsmith repository and its signing key, refresh APT metadata, then install caddy with package …"
+// in the language the app shows.
+func CpanelStepsApt() string { return In(i18n.Locale()).CpanelStepsApt() }
+
+// CpanelStepsApt says "Set up the official Cloudsmith repository and its signing key, refresh APT metadata, then install caddy with package …"
+// in the language of msgs.
+func (msgs Messages) CpanelStepsApt() string {
+	return Catalog.Format(msgs.locale, "cpanelStepsApt", nil)
+}
+
+// CpanelStepsDnf says "Install {plugin}, enable COPR @caddy/caddy, then install the signed caddy package."
+// in the language the app shows.
+func CpanelStepsDnf(plugin string) string { return In(i18n.Locale()).CpanelStepsDnf(plugin) }
+
+// CpanelStepsDnf says "Install {plugin}, enable COPR @caddy/caddy, then install the signed caddy package."
+// in the language of msgs.
+func (msgs Messages) CpanelStepsDnf(plugin string) string {
+	return Catalog.Format(msgs.locale, "cpanelStepsDnf", map[string]any{"plugin": plugin})
+}
+
+// CpanelStepsPacman says "Synchronize repositories and upgrade system packages as needed with pacman -Syu caddy. Verify package signatures."
+// in the language the app shows.
+func CpanelStepsPacman() string { return In(i18n.Locale()).CpanelStepsPacman() }
+
+// CpanelStepsPacman says "Synchronize repositories and upgrade system packages as needed with pacman -Syu caddy. Verify package signatures."
+// in the language of msgs.
+func (msgs Messages) CpanelStepsPacman() string {
+	return Catalog.Format(msgs.locale, "cpanelStepsPacman", nil)
+}
+
+// CpanelStepsApk says "Install the signed caddy package using apk add caddy and use OpenRC for service control."
+// in the language the app shows.
+func CpanelStepsApk() string { return In(i18n.Locale()).CpanelStepsApk() }
+
+// CpanelStepsApk says "Install the signed caddy package using apk add caddy and use OpenRC for service control."
+// in the language of msgs.
+func (msgs Messages) CpanelStepsApk() string {
+	return Catalog.Format(msgs.locale, "cpanelStepsApk", nil)
+}
+
+// CpanelStepsBinary says "Detect the CPU architecture, download the official release archive, verify its SHA-512 checksum, then install the bin…"
+// in the language the app shows.
+func CpanelStepsBinary() string { return In(i18n.Locale()).CpanelStepsBinary() }
+
+// CpanelStepsBinary says "Detect the CPU architecture, download the official release archive, verify its SHA-512 checksum, then install the bin…"
+// in the language of msgs.
+func (msgs Messages) CpanelStepsBinary() string {
+	return Catalog.Format(msgs.locale, "cpanelStepsBinary", nil)
+}
+
+// CpanelStepsDocker says "Pull the official Caddy image and create the caddy container with HTTP/HTTPS port mappings and persistent configurati…"
+// in the language the app shows.
+func CpanelStepsDocker() string { return In(i18n.Locale()).CpanelStepsDocker() }
+
+// CpanelStepsDocker says "Pull the official Caddy image and create the caddy container with HTTP/HTTPS port mappings and persistent configurati…"
+// in the language of msgs.
+func (msgs Messages) CpanelStepsDocker() string {
+	return Catalog.Format(msgs.locale, "cpanelStepsDocker", nil)
+}
+
+// CpanelVersionTarget says "Target: {version}"
+// in the language the app shows.
+func CpanelVersionTarget(version string) string {
+	return In(i18n.Locale()).CpanelVersionTarget(version)
+}
+
+// CpanelVersionTarget says "Target: {version}"
+// in the language of msgs.
+func (msgs Messages) CpanelVersionTarget(version string) string {
+	return Catalog.Format(msgs.locale, "cpanelVersionTarget", map[string]any{"version": version})
+}
+
+// CpanelReplaceWarning says "Stop these services and disable their autostart: {services}. Their websites can go offline. Restore their original st…"
+// in the language the app shows.
+func CpanelReplaceWarning(services string) string {
+	return In(i18n.Locale()).CpanelReplaceWarning(services)
+}
+
+// CpanelReplaceWarning says "Stop these services and disable their autostart: {services}. Their websites can go offline. Restore their original st…"
+// in the language of msgs.
+func (msgs Messages) CpanelReplaceWarning(services string) string {
+	return Catalog.Format(msgs.locale, "cpanelReplaceWarning", map[string]any{"services": services})
+}
+
+// CpanelStartOption says "Start Caddy now: {choice}"
+// in the language the app shows.
+func CpanelStartOption(choice string) string { return In(i18n.Locale()).CpanelStartOption(choice) }
+
+// CpanelStartOption says "Start Caddy now: {choice}"
+// in the language of msgs.
+func (msgs Messages) CpanelStartOption(choice string) string {
+	return Catalog.Format(msgs.locale, "cpanelStartOption", map[string]any{"choice": choice})
+}
+
+// CpanelBootOption says "Start Caddy at boot: {choice}"
+// in the language the app shows.
+func CpanelBootOption(choice string) string { return In(i18n.Locale()).CpanelBootOption(choice) }
+
+// CpanelBootOption says "Start Caddy at boot: {choice}"
+// in the language of msgs.
+func (msgs Messages) CpanelBootOption(choice string) string {
+	return Catalog.Format(msgs.locale, "cpanelBootOption", map[string]any{"choice": choice})
+}
+
+// CpanelFirewallSteps says "Open 80/tcp, 443/tcp and 443/udp in {firewall}."
+// in the language the app shows.
+func CpanelFirewallSteps(firewall string) string {
+	return In(i18n.Locale()).CpanelFirewallSteps(firewall)
+}
+
+// CpanelFirewallSteps says "Open 80/tcp, 443/tcp and 443/udp in {firewall}."
+// in the language of msgs.
+func (msgs Messages) CpanelFirewallSteps(firewall string) string {
+	return Catalog.Format(msgs.locale, "cpanelFirewallSteps", map[string]any{"firewall": firewall})
+}
+
+// CpanelInstallNote says "This changes the remote server and requires root access. Review the install method, service and firewall choices befo…"
+// in the language the app shows.
+func CpanelInstallNote() string { return In(i18n.Locale()).CpanelInstallNote() }
+
+// CpanelInstallNote says "This changes the remote server and requires root access. Review the install method, service and firewall choices befo…"
+// in the language of msgs.
+func (msgs Messages) CpanelInstallNote() string {
+	return Catalog.Format(msgs.locale, "cpanelInstallNote", nil)
+}
+
+// CpanelInstalledVia says "Caddy installed via {method}"
+// in the language the app shows.
+func CpanelInstalledVia(method string) string { return In(i18n.Locale()).CpanelInstalledVia(method) }
+
+// CpanelInstalledVia says "Caddy installed via {method}"
+// in the language of msgs.
+func (msgs Messages) CpanelInstalledVia(method string) string {
+	return Catalog.Format(msgs.locale, "cpanelInstalledVia", map[string]any{"method": method})
+}
+
+// CpanelNoUpdate says "No newer version has been confirmed."
+// in the language the app shows.
+func CpanelNoUpdate() string { return In(i18n.Locale()).CpanelNoUpdate() }
+
+// CpanelNoUpdate says "No newer version has been confirmed."
+// in the language of msgs.
+func (msgs Messages) CpanelNoUpdate() string {
+	return Catalog.Format(msgs.locale, "cpanelNoUpdate", nil)
+}
+
+// CpanelReleaseNotes says "Release notes"
+// in the language the app shows.
+func CpanelReleaseNotes() string { return In(i18n.Locale()).CpanelReleaseNotes() }
+
+// CpanelReleaseNotes says "Release notes"
+// in the language of msgs.
+func (msgs Messages) CpanelReleaseNotes() string {
+	return Catalog.Format(msgs.locale, "cpanelReleaseNotes", nil)
+}
+
+// CpanelUpdate says "Update Caddy…"
+// in the language the app shows.
+func CpanelUpdate() string { return In(i18n.Locale()).CpanelUpdate() }
+
+// CpanelUpdate says "Update Caddy…"
+// in the language of msgs.
+func (msgs Messages) CpanelUpdate() string {
+	return Catalog.Format(msgs.locale, "cpanelUpdate", nil)
+}
+
+// CpanelRepair says "Reinstall or repair…"
+// in the language the app shows.
+func CpanelRepair() string { return In(i18n.Locale()).CpanelRepair() }
+
+// CpanelRepair says "Reinstall or repair…"
+// in the language of msgs.
+func (msgs Messages) CpanelRepair() string {
+	return Catalog.Format(msgs.locale, "cpanelRepair", nil)
+}
+
+// CpanelUninstall says "Uninstall, keep data…"
+// in the language the app shows.
+func CpanelUninstall() string { return In(i18n.Locale()).CpanelUninstall() }
+
+// CpanelUninstall says "Uninstall, keep data…"
+// in the language of msgs.
+func (msgs Messages) CpanelUninstall() string {
+	return Catalog.Format(msgs.locale, "cpanelUninstall", nil)
+}
+
+// CpanelPurge says "Uninstall and delete data…"
+// in the language the app shows.
+func CpanelPurge() string { return In(i18n.Locale()).CpanelPurge() }
+
+// CpanelPurge says "Uninstall and delete data…"
+// in the language of msgs.
+func (msgs Messages) CpanelPurge() string {
+	return Catalog.Format(msgs.locale, "cpanelPurge", nil)
+}
+
+// CpanelUpdateTarget says "{current} → {target} via {method}"
+// in the language the app shows.
+func CpanelUpdateTarget(current string, target string, method string) string {
+	return In(i18n.Locale()).CpanelUpdateTarget(current, target, method)
+}
+
+// CpanelUpdateTarget says "{current} → {target} via {method}"
+// in the language of msgs.
+func (msgs Messages) CpanelUpdateTarget(current string, target string, method string) string {
+	return Catalog.Format(msgs.locale, "cpanelUpdateTarget", map[string]any{"current": current, "target": target, "method": method})
+}
+
+// CpanelUpdateNote says "Keep the previous binary or image and configuration, install the verified replacement, validate and restart. Report r…"
+// in the language the app shows.
+func CpanelUpdateNote() string { return In(i18n.Locale()).CpanelUpdateNote() }
+
+// CpanelUpdateNote says "Keep the previous binary or image and configuration, install the verified replacement, validate and restart. Report r…"
+// in the language of msgs.
+func (msgs Messages) CpanelUpdateNote() string {
+	return Catalog.Format(msgs.locale, "cpanelUpdateNote", nil)
+}
+
+// CpanelUninstallNote says "Stop and remove this Caddy installation. Keep its configuration, certificates and data. Websites served by Caddy go o…"
+// in the language the app shows.
+func CpanelUninstallNote() string { return In(i18n.Locale()).CpanelUninstallNote() }
+
+// CpanelUninstallNote says "Stop and remove this Caddy installation. Keep its configuration, certificates and data. Websites served by Caddy go o…"
+// in the language of msgs.
+func (msgs Messages) CpanelUninstallNote() string {
+	return Catalog.Format(msgs.locale, "cpanelUninstallNote", nil)
+}
+
+// CpanelPurgeNote says "Stop and remove Caddy, then move the listed configuration and data, including managed certificates, into a private re…"
+// in the language the app shows.
+func CpanelPurgeNote() string { return In(i18n.Locale()).CpanelPurgeNote() }
+
+// CpanelPurgeNote says "Stop and remove Caddy, then move the listed configuration and data, including managed certificates, into a private re…"
+// in the language of msgs.
+func (msgs Messages) CpanelPurgeNote() string {
+	return Catalog.Format(msgs.locale, "cpanelPurgeNote", nil)
+}
+
+// CpanelTypePurge says "Type caddy to confirm removing the configuration and data."
+// in the language the app shows.
+func CpanelTypePurge() string { return In(i18n.Locale()).CpanelTypePurge() }
+
+// CpanelTypePurge says "Type caddy to confirm removing the configuration and data."
+// in the language of msgs.
+func (msgs Messages) CpanelTypePurge() string {
+	return Catalog.Format(msgs.locale, "cpanelTypePurge", nil)
+}
+
+// CpanelTypeCutover says "Type caddy to confirm taking existing web services offline."
+// in the language the app shows.
+func CpanelTypeCutover() string { return In(i18n.Locale()).CpanelTypeCutover() }
+
+// CpanelTypeCutover says "Type caddy to confirm taking existing web services offline."
+// in the language of msgs.
+func (msgs Messages) CpanelTypeCutover() string {
+	return Catalog.Format(msgs.locale, "cpanelTypeCutover", nil)
+}
+
+// CpanelMigration says "Adopt or migrate"
+// in the language the app shows.
+func CpanelMigration() string { return In(i18n.Locale()).CpanelMigration() }
+
+// CpanelMigration says "Adopt or migrate"
+// in the language of msgs.
+func (msgs Messages) CpanelMigration() string {
+	return Catalog.Format(msgs.locale, "cpanelMigration", nil)
+}
+
+// CpanelAdoptNote says "Use the detected installation as it is, or review a migration before changing the server."
+// in the language the app shows.
+func CpanelAdoptNote() string { return In(i18n.Locale()).CpanelAdoptNote() }
+
+// CpanelAdoptNote says "Use the detected installation as it is, or review a migration before changing the server."
+// in the language of msgs.
+func (msgs Messages) CpanelAdoptNote() string {
+	return Catalog.Format(msgs.locale, "cpanelAdoptNote", nil)
+}
+
+// CpanelAdopted says "Adopted the existing installation without changing the server."
+// in the language the app shows.
+func CpanelAdopted() string { return In(i18n.Locale()).CpanelAdopted() }
+
+// CpanelAdopted says "Adopted the existing installation without changing the server."
+// in the language of msgs.
+func (msgs Messages) CpanelAdopted() string {
+	return Catalog.Format(msgs.locale, "cpanelAdopted", nil)
+}
+
+// CpanelAlreadyManaged says "The configuration already uses the managed layout."
+// in the language the app shows.
+func CpanelAlreadyManaged() string { return In(i18n.Locale()).CpanelAlreadyManaged() }
+
+// CpanelAlreadyManaged says "The configuration already uses the managed layout."
+// in the language of msgs.
+func (msgs Messages) CpanelAlreadyManaged() string {
+	return Catalog.Format(msgs.locale, "cpanelAlreadyManaged", nil)
+}
+
+// CpanelDockerMigration says "Migration between Docker and a host service is not supported."
+// in the language the app shows.
+func CpanelDockerMigration() string { return In(i18n.Locale()).CpanelDockerMigration() }
+
+// CpanelDockerMigration says "Migration between Docker and a host service is not supported."
+// in the language of msgs.
+func (msgs Messages) CpanelDockerMigration() string {
+	return Catalog.Format(msgs.locale, "cpanelDockerMigration", nil)
+}
+
+// CpanelNoPackageMigration says "Requires a standalone binary without custom modules, a local systemd unit, and a Caddy data directory on an APT or DN…"
+// in the language the app shows.
+func CpanelNoPackageMigration() string { return In(i18n.Locale()).CpanelNoPackageMigration() }
+
+// CpanelNoPackageMigration says "Requires a standalone binary without custom modules, a local systemd unit, and a Caddy data directory on an APT or DN…"
+// in the language of msgs.
+func (msgs Messages) CpanelNoPackageMigration() string {
+	return Catalog.Format(msgs.locale, "cpanelNoPackageMigration", nil)
+}
+
+// CpanelAdopt says "Adopt as is"
+// in the language the app shows.
+func CpanelAdopt() string { return In(i18n.Locale()).CpanelAdopt() }
+
+// CpanelAdopt says "Adopt as is"
+// in the language of msgs.
+func (msgs Messages) CpanelAdopt() string {
+	return Catalog.Format(msgs.locale, "cpanelAdopt", nil)
+}
+
+// CpanelConvertManaged says "Convert to managed layout…"
+// in the language the app shows.
+func CpanelConvertManaged() string { return In(i18n.Locale()).CpanelConvertManaged() }
+
+// CpanelConvertManaged says "Convert to managed layout…"
+// in the language of msgs.
+func (msgs Messages) CpanelConvertManaged() string {
+	return Catalog.Format(msgs.locale, "cpanelConvertManaged", nil)
+}
+
+// CpanelBinaryToPackage says "Move binary to official package…"
+// in the language the app shows.
+func CpanelBinaryToPackage() string { return In(i18n.Locale()).CpanelBinaryToPackage() }
+
+// CpanelBinaryToPackage says "Move binary to official package…"
+// in the language of msgs.
+func (msgs Messages) CpanelBinaryToPackage() string {
+	return Catalog.Format(msgs.locale, "cpanelBinaryToPackage", nil)
+}
+
+// CpanelPackageSteps says "Stop Caddy, save the binary and service unit, install via {method}, point the new unit to {config}, keep {data}, then…"
+// in the language the app shows.
+func CpanelPackageSteps(method string, config string, data string) string {
+	return In(i18n.Locale()).CpanelPackageSteps(method, config, data)
+}
+
+// CpanelPackageSteps says "Stop Caddy, save the binary and service unit, install via {method}, point the new unit to {config}, keep {data}, then…"
+// in the language of msgs.
+func (msgs Messages) CpanelPackageSteps(method string, config string, data string) string {
+	return Catalog.Format(msgs.locale, "cpanelPackageSteps", map[string]any{"method": method, "config": config, "data": data})
+}
+
+// CpanelPackageNote says "This can interrupt websites. Restore the old binary and unit if the new service fails."
+// in the language the app shows.
+func CpanelPackageNote() string { return In(i18n.Locale()).CpanelPackageNote() }
+
+// CpanelPackageNote says "This can interrupt websites. Restore the old binary and unit if the new service fails."
+// in the language of msgs.
+func (msgs Messages) CpanelPackageNote() string {
+	return Catalog.Format(msgs.locale, "cpanelPackageNote", nil)
+}
+
+// CpanelImportNginx says "Import Nginx websites…"
+// in the language the app shows.
+func CpanelImportNginx() string { return In(i18n.Locale()).CpanelImportNginx() }
+
+// CpanelImportNginx says "Import Nginx websites…"
+// in the language of msgs.
+func (msgs Messages) CpanelImportNginx() string {
+	return Catalog.Format(msgs.locale, "cpanelImportNginx", nil)
+}
+
+// CpanelNoNginxSites says "No active Nginx website was converted."
+// in the language the app shows.
+func CpanelNoNginxSites() string { return In(i18n.Locale()).CpanelNoNginxSites() }
+
+// CpanelNoNginxSites says "No active Nginx website was converted."
+// in the language of msgs.
+func (msgs Messages) CpanelNoNginxSites() string {
+	return Catalog.Format(msgs.locale, "cpanelNoNginxSites", nil)
+}
+
+// CpanelNginxSiteNumber says "{index, number}. {name}"
+// in the language the app shows.
+func CpanelNginxSiteNumber(index int, name string) string {
+	return In(i18n.Locale()).CpanelNginxSiteNumber(index, name)
+}
+
+// CpanelNginxSiteNumber says "{index, number}. {name}"
+// in the language of msgs.
+func (msgs Messages) CpanelNginxSiteNumber(index int, name string) string {
+	return Catalog.Format(msgs.locale, "cpanelNginxSiteNumber", map[string]any{"index": index, "name": name})
+}
+
+// CpanelIncludeSite says "Import this website"
+// in the language the app shows.
+func CpanelIncludeSite() string { return In(i18n.Locale()).CpanelIncludeSite() }
+
+// CpanelIncludeSite says "Import this website"
+// in the language of msgs.
+func (msgs Messages) CpanelIncludeSite() string {
+	return Catalog.Format(msgs.locale, "cpanelIncludeSite", nil)
+}
+
+// CpanelGeneratedSite says "Generated Caddyfile"
+// in the language the app shows.
+func CpanelGeneratedSite() string { return In(i18n.Locale()).CpanelGeneratedSite() }
+
+// CpanelGeneratedSite says "Generated Caddyfile"
+// in the language of msgs.
+func (msgs Messages) CpanelGeneratedSite() string {
+	return Catalog.Format(msgs.locale, "cpanelGeneratedSite", nil)
+}
+
+// CpanelCutoverNginx says "Stop and disable Nginx, then start Caddy"
+// in the language the app shows.
+func CpanelCutoverNginx() string { return In(i18n.Locale()).CpanelCutoverNginx() }
+
+// CpanelCutoverNginx says "Stop and disable Nginx, then start Caddy"
+// in the language of msgs.
+func (msgs Messages) CpanelCutoverNginx() string {
+	return Catalog.Format(msgs.locale, "cpanelCutoverNginx", nil)
+}
+
+// CpanelReviewImport says "Review import ({count, plural, one {# website} other {# websites}})"
+// in the language the app shows.
+func CpanelReviewImport(count int) string { return In(i18n.Locale()).CpanelReviewImport(count) }
+
+// CpanelReviewImport says "Review import ({count, plural, one {# website} other {# websites}})"
+// in the language of msgs.
+func (msgs Messages) CpanelReviewImport(count int) string {
+	return Catalog.Format(msgs.locale, "cpanelReviewImport", map[string]any{"count": count})
+}
+
+// CpanelNginxCutoverNote says "Back up and validate the reviewed Caddy configuration without reloading. Stop Nginx and disable its autostart, then e…"
+// in the language the app shows.
+func CpanelNginxCutoverNote() string { return In(i18n.Locale()).CpanelNginxCutoverNote() }
+
+// CpanelNginxCutoverNote says "Back up and validate the reviewed Caddy configuration without reloading. Stop Nginx and disable its autostart, then e…"
+// in the language of msgs.
+func (msgs Messages) CpanelNginxCutoverNote() string {
+	return Catalog.Format(msgs.locale, "cpanelNginxCutoverNote", nil)
+}
+
+// CpanelImportWithoutStart says "Back up and validate the new Caddy configuration. Leave Nginx unchanged and Caddy stopped."
+// in the language the app shows.
+func CpanelImportWithoutStart() string { return In(i18n.Locale()).CpanelImportWithoutStart() }
+
+// CpanelImportWithoutStart says "Back up and validate the new Caddy configuration. Leave Nginx unchanged and Caddy stopped."
+// in the language of msgs.
+func (msgs Messages) CpanelImportWithoutStart() string {
+	return Catalog.Format(msgs.locale, "cpanelImportWithoutStart", nil)
+}
+
+// CwireCannotValidate says "Validation is unavailable for an API-resume service or stopped container."
+// in the language the app shows.
+func CwireCannotValidate() string { return In(i18n.Locale()).CwireCannotValidate() }
+
+// CwireCannotValidate says "Validation is unavailable for an API-resume service or stopped container."
+// in the language of msgs.
+func (msgs Messages) CwireCannotValidate() string {
+	return Catalog.Format(msgs.locale, "cwireCannotValidate", nil)
+}
+
+// CwireCannotWrite says "This configuration is not writable as regular files in a supported layout."
+// in the language the app shows.
+func CwireCannotWrite() string { return In(i18n.Locale()).CwireCannotWrite() }
+
+// CwireCannotWrite says "This configuration is not writable as regular files in a supported layout."
+// in the language of msgs.
+func (msgs Messages) CwireCannotWrite() string {
+	return Catalog.Format(msgs.locale, "cwireCannotWrite", nil)
+}
+
+// CwireDockerLifecycle says "Use the original Docker or Compose workflow for this container."
+// in the language the app shows.
+func CwireDockerLifecycle() string { return In(i18n.Locale()).CwireDockerLifecycle() }
+
+// CwireDockerLifecycle says "Use the original Docker or Compose workflow for this container."
+// in the language of msgs.
+func (msgs Messages) CwireDockerLifecycle() string {
+	return Catalog.Format(msgs.locale, "cwireDockerLifecycle", nil)
+}
+
+// CwireCannotUpdate says "This installation does not support a safe update from the panel."
+// in the language the app shows.
+func CwireCannotUpdate() string { return In(i18n.Locale()).CwireCannotUpdate() }
+
+// CwireCannotUpdate says "This installation does not support a safe update from the panel."
+// in the language of msgs.
+func (msgs Messages) CwireCannotUpdate() string {
+	return Catalog.Format(msgs.locale, "cwireCannotUpdate", nil)
+}
+
+// CwireNoRepair says "Repair requires a known standalone release or a replaceable Docker image."
+// in the language the app shows.
+func CwireNoRepair() string { return In(i18n.Locale()).CwireNoRepair() }
+
+// CwireNoRepair says "Repair requires a known standalone release or a replaceable Docker image."
+// in the language of msgs.
+func (msgs Messages) CwireNoRepair() string {
+	return Catalog.Format(msgs.locale, "cwireNoRepair", nil)
+}
+
+// CwireNoPurge says "Removing data is available only with the standard native configuration and data paths."
+// in the language the app shows.
+func CwireNoPurge() string { return In(i18n.Locale()).CwireNoPurge() }
+
+// CwireNoPurge says "Removing data is available only with the standard native configuration and data paths."
+// in the language of msgs.
+func (msgs Messages) CwireNoPurge() string {
+	return Catalog.Format(msgs.locale, "cwireNoPurge", nil)
+}
+
+// CwireNoCutover says "Cutover requires stopped systemd Caddy and Nginx as the only conflicting listener."
+// in the language the app shows.
+func CwireNoCutover() string { return In(i18n.Locale()).CwireNoCutover() }
+
+// CwireNoCutover says "Cutover requires stopped systemd Caddy and Nginx as the only conflicting listener."
+// in the language of msgs.
+func (msgs Messages) CwireNoCutover() string {
+	return Catalog.Format(msgs.locale, "cwireNoCutover", nil)
+}
+
+// CwireNoNginxDraft says "There is no draft to select. Enter and review a Caddy site first."
+// in the language the app shows.
+func CwireNoNginxDraft() string { return In(i18n.Locale()).CwireNoNginxDraft() }
+
+// CwireNoNginxDraft says "There is no draft to select. Enter and review a Caddy site first."
+// in the language of msgs.
+func (msgs Messages) CwireNoNginxDraft() string {
+	return Catalog.Format(msgs.locale, "cwireNoNginxDraft", nil)
+}
+
+// CwireDockerNeedsStart says "A Docker restart policy requires starting the new container first."
+// in the language the app shows.
+func CwireDockerNeedsStart() string { return In(i18n.Locale()).CwireDockerNeedsStart() }
+
+// CwireDockerNeedsStart says "A Docker restart policy requires starting the new container first."
+// in the language of msgs.
+func (msgs Messages) CwireDockerNeedsStart() string {
+	return Catalog.Format(msgs.locale, "cwireDockerNeedsStart", nil)
+}
+
+// CwireReplacementNeedsStart says "Start Caddy now when stopping conflicting web services."
+// in the language the app shows.
+func CwireReplacementNeedsStart() string { return In(i18n.Locale()).CwireReplacementNeedsStart() }
+
+// CwireReplacementNeedsStart says "Start Caddy now when stopping conflicting web services."
+// in the language of msgs.
+func (msgs Messages) CwireReplacementNeedsStart() string {
+	return Catalog.Format(msgs.locale, "cwireReplacementNeedsStart", nil)
+}
+
+// CwireReleaseUnavailable says "Could not confirm a standalone release. Refresh or choose another installation method."
+// in the language the app shows.
+func CwireReleaseUnavailable() string { return In(i18n.Locale()).CwireReleaseUnavailable() }
+
+// CwireReleaseUnavailable says "Could not confirm a standalone release. Refresh or choose another installation method."
+// in the language of msgs.
+func (msgs Messages) CwireReleaseUnavailable() string {
+	return Catalog.Format(msgs.locale, "cwireReleaseUnavailable", nil)
+}
+
+// CwireDockerRepair says "Pull the original image reference again and recreate the container with the same settings and mounts. A mutable tag m…"
+// in the language the app shows.
+func CwireDockerRepair() string { return In(i18n.Locale()).CwireDockerRepair() }
+
+// CwireDockerRepair says "Pull the original image reference again and recreate the container with the same settings and mounts. A mutable tag m…"
+// in the language of msgs.
+func (msgs Messages) CwireDockerRepair() string {
+	return Catalog.Format(msgs.locale, "cwireDockerRepair", nil)
+}
+
+// CwireCustomUpdate says "Run Caddy’s experimental upgrade to rebuild the binary with its installed modules. Keep the previous binary and con…"
+// in the language the app shows.
+func CwireCustomUpdate() string { return In(i18n.Locale()).CwireCustomUpdate() }
+
+// CwireCustomUpdate says "Run Caddy’s experimental upgrade to rebuild the binary with its installed modules. Keep the previous binary and con…"
+// in the language of msgs.
+func (msgs Messages) CwireCustomUpdate() string {
+	return Catalog.Format(msgs.locale, "cwireCustomUpdate", nil)
+}
+
+// CwirePackageUpdate says "Save a verified copy of the installed package and back up the configuration. Let the package manager select the avail…"
+// in the language the app shows.
+func CwirePackageUpdate() string { return In(i18n.Locale()).CwirePackageUpdate() }
+
+// CwirePackageUpdate says "Save a verified copy of the installed package and back up the configuration. Let the package manager select the avail…"
+// in the language of msgs.
+func (msgs Messages) CwirePackageUpdate() string {
+	return Catalog.Format(msgs.locale, "cwirePackageUpdate", nil)
+}
+
+// CwireValidateWithoutReload says "Back up the files, write the proposed changes and validate the complete configuration. Do not start or reload Caddy."
+// in the language the app shows.
+func CwireValidateWithoutReload() string { return In(i18n.Locale()).CwireValidateWithoutReload() }
+
+// CwireValidateWithoutReload says "Back up the files, write the proposed changes and validate the complete configuration. Do not start or reload Caddy."
+// in the language of msgs.
+func (msgs Messages) CwireValidateWithoutReload() string {
+	return Catalog.Format(msgs.locale, "cwireValidateWithoutReload", nil)
+}
+
+// CwireNeedsSystemd says "This option requires an active systemd service manager."
+// in the language the app shows.
+func CwireNeedsSystemd() string { return In(i18n.Locale()).CwireNeedsSystemd() }
+
+// CwireNeedsSystemd says "This option requires an active systemd service manager."
+// in the language of msgs.
+func (msgs Messages) CwireNeedsSystemd() string {
+	return Catalog.Format(msgs.locale, "cwireNeedsSystemd", nil)
+}
+
+// CwireNeedsOpenRC says "The Alpine package option requires OpenRC."
+// in the language the app shows.
+func CwireNeedsOpenRC() string { return In(i18n.Locale()).CwireNeedsOpenRC() }
+
+// CwireNeedsOpenRC says "The Alpine package option requires OpenRC."
+// in the language of msgs.
+func (msgs Messages) CwireNeedsOpenRC() string {
+	return Catalog.Format(msgs.locale, "cwireNeedsOpenRC", nil)
+}
+
+// CwireNoAutostart says "Autostart cannot be changed for a systemd unit in state {state}."
+// in the language the app shows.
+func CwireNoAutostart(state string) string { return In(i18n.Locale()).CwireNoAutostart(state) }
+
+// CwireNoAutostart says "Autostart cannot be changed for a systemd unit in state {state}."
+// in the language of msgs.
+func (msgs Messages) CwireNoAutostart(state string) string {
+	return Catalog.Format(msgs.locale, "cwireNoAutostart", map[string]any{"state": state})
+}
+
+// CwireFirewalldDefault says "the default firewalld zone"
+// in the language the app shows.
+func CwireFirewalldDefault() string { return In(i18n.Locale()).CwireFirewalldDefault() }
+
+// CwireFirewalldDefault says "the default firewalld zone"
+// in the language of msgs.
+func (msgs Messages) CwireFirewalldDefault() string {
+	return Catalog.Format(msgs.locale, "cwireFirewalldDefault", nil)
 }
 
 // TexpPublic says "Public access…"

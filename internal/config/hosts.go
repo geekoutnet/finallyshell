@@ -233,6 +233,8 @@ func (h *Host) Clone() *Host {
 	c.MonitorIfaces = slices.Clone(h.MonitorIfaces)
 	for i := range c.Tunnels {
 		c.Tunnels[i].extra = maps.Clone(h.Tunnels[i].extra)
+		c.Tunnels[i].AllowFrom = slices.Clone(h.Tunnels[i].AllowFrom)
+		c.Tunnels[i].PAC = slices.Clone(h.Tunnels[i].PAC)
 	}
 	return &c
 }

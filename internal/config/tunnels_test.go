@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 )
 
@@ -50,5 +51,47 @@ func TestTunnelUnknownKeys(t *testing.T) {
 	data, _ := json.Marshal(tunnels)
 	if want := `[{"kind":"local","listenPort":8081,"targetHost":"localhost","targetPort":80,"note":"admin"},{"kind":"x11"}]`; string(data) != want {
 		t.Errorf("encoded %s\nwant    %s", data, want)
+	}
+}
+
+// Every field of a tunnel survives saving and loading, and a clone of its
+// host shares none of its slices.
+func TestTunnelEveryField(t *testing.T) {
+	full := Tunnel{
+		ID: "t1", Kind: TunnelRemoteHTTP, Name: "apt via laptop", Description: "lets the server use this computer's proxy",
+		ListenHost: "127.0.0.1", ListenPort: 3128, TargetHost: "x", TargetPort: 1, TargetSocket: "/run/x.sock",
+		Mixed: true, ProxyUser: "u", Upstream: "socks5://127.0.0.1:7890",
+		AllowFrom: []string{"10.0.0.0/8"}, MaxConns: 50, RateKBps: 1024, IdleSeconds: 300,
+		Disabled: true, Background: true, SystemProxy: true, PAC: []string{"*.corp.example", "10.0.0.0/8"}, ServerRelay: true,
+	}
+	v := reflect.ValueOf(full)
+	for i := range v.NumField() {
+		if f := v.Type().Field(i); f.IsExported() && v.Field(i).IsZero() {
+			t.Errorf("the test leaves %s unset", f.Name)
+		}
+	}
+	data, err := json.Marshal(full)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var back Tunnel
+	if err := json.Unmarshal(data, &back); err != nil || !reflect.DeepEqual(back, full) {
+		t.Fatalf("round trip %+v, %v", back, err)
+	}
+	h := &Host{Tunnels: []Tunnel{full}}
+	c := h.Clone()
+	c.Tunnels[0].AllowFrom[0], c.Tunnels[0].PAC[0] = "changed", "changed"
+	if h.Tunnels[0].AllowFrom[0] != "10.0.0.0/8" || h.Tunnels[0].PAC[0] != "*.corp.example" {
+		t.Error("the clone shares the tunnel's slices")
+	}
+	h.Tunnels = append(h.Tunnels, Tunnel{Kind: TunnelLocal})
+	h.EnsureTunnelIDs()
+	if h.Tunnels[0].ID != "t1" || h.Tunnels[1].ID == "" || h.Tunnels[1].ID == "t1" {
+		t.Errorf("ids %q %q", h.Tunnels[0].ID, h.Tunnels[1].ID)
+	}
+	for _, k := range TunnelKinds {
+		if k.IsRemote() == (k == TunnelLocal || k == TunnelDynamic || k == TunnelHTTP) {
+			t.Errorf("%s remote %v", k, k.IsRemote())
+		}
 	}
 }

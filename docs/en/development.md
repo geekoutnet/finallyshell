@@ -321,6 +321,20 @@ Security → Open Anyway** or `xattr -dr com.apple.quarantine /Applications/Fina
 Linux verifies the packages and signatures but cannot validate Finder,
 Gatekeeper or actual app launch.
 
+## Releasing local packages
+
+To publish a release without waiting for the dev-build workflow, the owner
+runs the `release-local` skill (`.claude/skills/release-local/`, invoked by
+hand as `/release-local`). Its `release.sh plan` checks that the checkout is
+`dev`, clean and equal to `origin/dev`, and prints the next `v2.0.N`, the
+commit and the notes; `release.sh publish` builds the five platforms with
+the docker-build skill at that version, verifies them, creates a draft
+release at the commit, uploads the same twelve files a dev-build release
+has (with `SHA256SUMS`), checks their sizes and publishes the release as
+the latest. A failed upload keeps the draft; running `publish` again
+resumes it. The dev-build workflow skips a commit that already has a
+release and numbers from the newest tag, so the two never collide.
+
 ## Signing updates
 
 Installed apps accept only updates signed with the project's Ed25519 key

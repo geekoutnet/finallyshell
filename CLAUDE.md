@@ -64,6 +64,7 @@ Work is issue-driven; the `issue-workflow` skill
   ([testbox skill](.claude/skills/testbox/), [testing guide](docs/en/testing.md)).
   Never run mutating tests against real or production servers.
 - Use the [docker-build skill](.claude/skills/docker-build/) for all local release-artifact packaging.
+- Releases from local packages go through the [release-local skill](.claude/skills/release-local/), only when the owner invokes it.
 - New UI text goes in `locales/en.json` and `locales/zh-Hans.json`, then
   `go tool mygo generate`; commit the regenerated `locales/catalog_gen.go`.
 - Run `go vet ./...` and `go tool mygo vet` before committing.

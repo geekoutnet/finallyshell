@@ -152,6 +152,10 @@ pack=.claude/skills/docker-build/build.sh
 
 和开发版一样，本地包没有已签名的更新、Developer ID 签名或 Apple 公证。`rcodesign` 给 macOS 应用和 Ghostty 动态库做临时签名；`.icns` 与 CI 一样由 PNG 生成。HFS+ DMG 使用 zlib 而不是 CI 的 LZMA，且不带 Finder 的 `.DS_Store` 窗口布局；照常把应用拖到 `Applications` 链接即可。Windows 安装包仍用 NSIS，但改用 Deflate，便携 ZIP 也用更快的压缩设置；文件布局不变，体积会略大。确认是可信的本地包后，首次可尝试右键选择“打开”；较新的 macOS 可能需要在“隐私与安全性”中选择“仍要打开”，也可运行 `xattr -dr com.apple.quarantine /Applications/Finallyshell.app`。Linux 能检查包和签名，但不能验证 Finder、Gatekeeper 或应用实际启动。
 
+## 发布本地打的包
+
+不想等 dev-build 工作流时，由维护者手动调用 `release-local` skill（`.claude/skills/release-local/`，输入 `/release-local`）。`release.sh plan` 检查当前在 `dev`、工作区干净且与 `origin/dev` 一致，并显示下一个 `v2.0.N`、提交和发布说明；`release.sh publish` 用 docker-build skill 按这个版本打五个平台的包并验包，在该提交上建草稿 Release，上传与 dev-build 发布相同的十二个文件（含 `SHA256SUMS`），核对大小后发布为最新版。上传失败时草稿保留，再运行一次 `publish` 会接着传。dev-build 工作流会跳过已经发布过的提交，并从最新的标签继续编号，两者不会冲突。
+
 ## 给更新签名
 
 已安装的应用只接受用项目的 Ed25519 密钥签名的更新（MyGo 的[自动更新](https://github.com/egoist/mygo/blob/main/docs/updates.md)）。这个密钥是所有者 2026-11-08 用 `mygo keygen` 生成的：

@@ -15,8 +15,11 @@ import (
 // tunnelState is a session's tunnels, as the "Tunnels" tab shows them:
 // those of its host when it last connected.
 type tunnelState struct {
-	runs  []*tunnelRun
-	table ui.ListState
+	runs      []*tunnelRun
+	table     ui.ListState
+	selection int
+	confirm   *tunnelConfirmation
+	log       *tunnelLog
 }
 
 // tunnelRun is one of a session's tunnels. The tunnel itself counts its
@@ -24,6 +27,7 @@ type tunnelState struct {
 type tunnelRun struct {
 	spec     config.Tunnel
 	fwd      *sshx.Tunnel // while it listens
+	last     *sshx.Tunnel
 	starting bool
 	err      error // why it did not start, or stopped by itself
 	// gen counts the starts and stops, so that a start that ends after
@@ -36,6 +40,7 @@ type tunnelRun struct {
 func (a *App) startTunnels(s *Session, tunnels []config.Tunnel) {
 	s.stopTunnels()
 	s.tunnels.runs = nil
+	s.tunnels.selection = -1
 	for _, t := range tunnels {
 		if t.ID == "" {
 			t.ID = config.NewTunnelID()
@@ -63,7 +68,7 @@ func (s *Session) tunnelByID(id string) *tunnelRun {
 // startSessionTunnel starts a known stopped tunnel on the UI thread.
 func (a *App) startSessionTunnel(s *Session, id string) bool {
 	run := s.tunnelByID(id)
-	if s.client == nil || run == nil || run.starting || run.fwd != nil {
+	if s.status != statusConnected || s.client == nil || run == nil || run.starting || run.fwd != nil {
 		return false
 	}
 	a.startTunnel(s, run)
@@ -93,18 +98,30 @@ func (a *App) startTunnel(s *Session, run *tunnelRun) {
 	// The tunnel tells of changes to its stats, and of stopping, from its
 	// goroutines: posted, the windows draw them.
 	notify := func() { a.post(run.refresh) }
-	go func() {
-		fwd, err := sshx.StartTunnelWithOptions(client, spec, sshx.TunnelOptions{Notify: notify})
-		a.post(func() {
-			if run.gen != gen || s.client != client { // stopped meanwhile
-				if fwd != nil {
-					fwd.Stop()
+	hostID := ""
+	if s.Host != nil {
+		hostID = s.Host.ID
+	}
+	a.tunnelOptions(hostID, spec, notify, func(opts sshx.TunnelOptions) {
+		if run.gen != gen || s.client != client {
+			return
+		}
+		go func() {
+			fwd, err := sshx.StartTunnelWithOptions(client, spec, opts)
+			a.post(func() {
+				if run.gen != gen || s.client != client { // stopped meanwhile
+					if fwd != nil {
+						fwd.Stop()
+					}
+					return
 				}
-				return
-			}
-			run.starting, run.fwd, run.err = false, fwd, err
-		})
-	}()
+				run.starting, run.fwd, run.err = false, fwd, err
+				if fwd != nil {
+					run.last = fwd
+				}
+			})
+		}()
+	})
 }
 
 // stop stops run, keeping it in the list.
@@ -133,6 +150,7 @@ func (run *tunnelRun) refresh() {
 
 // stopTunnels stops s's tunnels, as it disconnects.
 func (s *Session) stopTunnels() {
+	s.tunnels.confirm = nil
 	for _, run := range s.tunnels.runs {
 		run.stop()
 	}
@@ -158,6 +176,18 @@ func describeTunnelError(err error) string {
 		return locales.ErrTunnelUnknown()
 	case errors.Is(err, sshx.ErrConnectionClosed):
 		return locales.ErrTunnelLost()
+	case errors.Is(err, sshx.ErrTunnelCredential):
+		return locales.TunSecretMissing()
+	case errors.Is(err, sshx.ErrTunnelAllowList):
+		return locales.TunAllowError()
+	case errors.Is(err, sshx.ErrTunnelSocket):
+		return locales.TunSocketError()
+	case errors.Is(err, sshx.ErrTunnelUpstream):
+		return locales.TunUpstreamError()
+	case errors.Is(err, sshx.ErrTunnelLimit):
+		return locales.TunLimitError()
+	case errors.Is(err, sshx.ErrTunnelTarget):
+		return locales.TunInvalidTarget()
 	case errors.As(err, &te):
 		switch {
 		case te.InUse:
@@ -172,14 +202,21 @@ func describeTunnelError(err error) string {
 	return locales.ErrTunnelStopped(err.Error())
 }
 
-func tunnelStatusColumns() []ui.TableColumn {
+func tunnelStatusColumns(narrow bool) []ui.TableColumn {
+	if narrow {
+		return []ui.TableColumn{
+			{ID: "type", Title: locales.TunNameAndType(), MinWidth: 85},
+			{ID: "listen", Title: locales.ColTunnelListen(), MinWidth: 105},
+			{ID: "status", Title: locales.ColTunnelStatus(), MinWidth: 128},
+		}
+	}
 	return []ui.TableColumn{
-		{ID: "type", Title: locales.ColTunnelType(), Width: 100},
-		{ID: "listen", Title: locales.ColTunnelListen(), Width: 150},
-		{ID: "target", Title: locales.ColTunnelTarget(), Width: 150},
-		{ID: "status", Title: locales.ColTunnelStatus(), MinWidth: 180},
-		{ID: "connections", Title: locales.ColTunnelConnections(), Width: 120},
-		{ID: "traffic", Title: locales.ColTunnelTraffic(), Width: 150},
+		{ID: "type", Title: locales.TunNameAndType(), Width: 173},
+		{ID: "listen", Title: locales.ColTunnelListen(), Width: 140},
+		{ID: "target", Title: locales.TunTargetAndExit(), MinWidth: 130},
+		{ID: "status", Title: locales.ColTunnelStatus(), MinWidth: 145},
+		{ID: "connections", Title: locales.ColTunnelConnections(), Width: 122},
+		{ID: "traffic", Title: locales.ColTunnelTraffic(), Width: 144},
 		{ID: "action", Title: "", Width: 80, Align: ui.Center, Fixed: true},
 	}
 }
@@ -197,8 +234,11 @@ func (a *App) tunnelPanel(c *ui.Context) {
 	}
 	ts := &s.tunnels
 	connected := s.status == statusConnected && s.client != nil
+	width, _ := c.Size()
+	narrow := width < 900 || !a.current().isPanelTab() && a.panelOnRight()
+	cols := tunnelStatusColumns(narrow)
 	ui.Column(c.Key(s.ID)).Grow(1).Children(func() {
-		ui.Row(c).Padding(4, 8).Gap(8).AlignItems(ui.Center).BorderWidth(0, 0, 1, 0).BorderColor(colors.line).Children(func() {
+		ui.Row(c).Padding(4, 8).Gap(6).AlignItems(ui.Center).Wrap().BorderWidth(0, 0, 1, 0).BorderColor(colors.line).Children(func() {
 			switch {
 			case !connected:
 				widgets.Muted(c, locales.TunnelsOffline()).Grow(1)
@@ -207,33 +247,45 @@ func (a *App) tunnelPanel(c *ui.Context) {
 			default:
 				ui.Spacer(c)
 			}
+			if len(ts.runs) > 0 {
+				ui.MenuButton(c, locales.TunActions(), func(menu *ui.Menu) {
+					var run *tunnelRun
+					if ts.selection >= 0 && ts.selection < len(ts.runs) {
+						run = ts.runs[ts.selection]
+					}
+					a.tunnelMenu(c, menu, s, run, connected)
+				}).Shrink(0)
+			}
 			if ui.Button(c, locales.TunnelsConfigure()).Clicked() {
 				a.editTunnels(s.Host)
 			}
 		})
 		runs := ts.runs
+		ts.table.Selected = &ts.selection
 		ts.table.Key = func(i int) any { return runs[i] }
-		ts.table.Label = func(i int) string { return tunnelKindLabel(runs[i].spec.Kind) + " " + runs[i].spec.ListenAddr() }
-		ui.Table(c, &ts.table, tunnelStatusColumns(), len(runs), func(row, col int) {
-			a.tunnelCell(c, s, runs[row], col, connected)
-		}).Grow(1)
+		ts.table.Label = func(i int) string { return tunnelName(&runs[i].spec) + " " + runs[i].address() }
+		ts.table.CellMenu = func(menu *ui.Menu, row, _ int) { a.tunnelMenu(c, menu, s, runs[row], connected) }
+		ui.Table(c, &ts.table, cols, len(runs), func(row, col int) {
+			a.tunnelCell(c, s, runs[row], cols[col].ID, connected, narrow)
+		}).Grow(1).MinHeight(0)
+		a.tunnelDialogs(c, s)
 	})
 }
 
-func (a *App) tunnelCell(c *ui.Context, s *Session, run *tunnelRun, col int, connected bool) {
+func (a *App) tunnelCell(c *ui.Context, s *Session, run *tunnelRun, col string, connected, narrow bool) {
 	t := &run.spec
 	switch col {
-	case 0:
-		ui.Text(c, tunnelKindLabel(t.Kind)).SingleLine()
-	case 1:
-		addr := t.ListenAddr()
-		if run.fwd != nil {
-			addr = run.fwd.Addr().String()
+	case "type":
+		tunnelTypeCell(c, t)
+	case "listen":
+		target := ""
+		if narrow {
+			target = tunnelTarget(t)
 		}
-		ui.Text(c, addr).SingleLine()
-	case 2:
-		ui.Text(c, tunnelTarget(t)).SingleLine()
-	case 3:
+		tunnelAddressCell(c, t, run.fwd, target)
+	case "target":
+		ui.Text(c, tunnelTarget(t)).SingleLine().Tooltip(tunnelTarget(t))
+	case "status":
 		ui.Column(c).Gap(2).MinWidth(0).Children(func() {
 			color, text := theme.TextMuted, locales.TunnelStopped()
 			switch {
@@ -251,32 +303,72 @@ func (a *App) tunnelCell(c *ui.Context, s *Session, run *tunnelRun, col int, con
 					st.TextColor(theme.Danger)
 				}
 			})
-			if run.fwd != nil {
-				if err := run.fwd.DialErr(); err != nil {
-					msg := locales.TunnelDialFailed(err.Error())
+			if run.last != nil {
+				st := run.last.Stats()
+				if !run.starting && run.err == nil && st.LastError != nil {
+					msg := tunnelLogResult(st.LastError)
 					widgets.Muted(c, msg).FontSize(11.5).SingleLine().Tooltip(msg)
+				}
+				if narrow {
+					tunnelConnectionsCell(c, st)
+					tunnelTrafficCell(c, st)
 				}
 			}
 		})
-	case 4:
-		if run.fwd != nil {
-			st := run.fwd.Stats()
-			ui.Text(c, locales.TunnelConnectionsCount(int(st.Active), int(st.Total))).SingleLine()
+	case "connections":
+		if run.last != nil {
+			tunnelConnectionsCell(c, run.last.Stats())
 		}
-	case 5:
-		if run.fwd != nil {
-			st := run.fwd.Stats()
-			ui.Text(c, locales.TunnelTraffic(formatSize(st.Up), formatSize(st.Down))).SingleLine()
+	case "traffic":
+		if run.last != nil {
+			tunnelTrafficCell(c, run.last.Stats())
 		}
-	case 6:
+	case "action":
 		if run.fwd != nil || run.starting {
 			if ui.Button(c, locales.TunnelStop()).Clicked() {
-				run.stop()
+				s.tunnels.ask(run, false)
 			}
-		} else if ui.Button(c, locales.TunnelStart()).Disabled(!connected).Clicked() && connected {
-			a.startTunnel(s, run)
+		} else if ui.Button(c, locales.TunnelStart()).Disabled(!connected).Tooltip(tunnelStartReason(run, connected)).Clicked() && connected {
+			s.tunnels.ask(run, true)
 		}
 	}
+}
+
+func tunnelAddressCell(c *ui.Context, spec *config.Tunnel, fwd *sshx.Tunnel, target string) {
+	addr := spec.ListenAddr()
+	automatic := fwd == nil && spec.ListenPort == 0
+	if fwd != nil {
+		addr = fwd.Addr().String()
+	} else if automatic {
+		addr = spec.ListenHostOrLoopback()
+	}
+	ui.Column(c).Gap(2).MinWidth(0).Shrink(1).Children(func() {
+		ui.Text(c, addr).SingleLine().Tooltip(addr)
+		if automatic {
+			widgets.Muted(c, locales.TunAutomatic()).FontSize(11).SingleLine().Tooltip(locales.TunAutomatic())
+		}
+		if target != "" {
+			widgets.Muted(c, target).FontSize(11).SingleLine().Tooltip(target)
+		}
+	})
+}
+
+func tunnelConnectionsCell(c *ui.Context, st sshx.TunnelStats) {
+	text := locales.TunnelConnectionsCount(int(st.Active), int(st.Total))
+	if st.Rejected != 0 {
+		text += " · " + locales.TunRejectedCount(int(st.Rejected))
+	}
+	ui.Text(c, text).FontSize(12).SingleLine().Tooltip(text)
+}
+
+func tunnelTrafficCell(c *ui.Context, st sshx.TunnelStats) {
+	text := locales.TunnelTraffic(formatSize(st.Up), formatSize(st.Down))
+	ui.Column(c).MinWidth(0).Gap(2).Children(func() {
+		ui.Text(c, text).FontSize(12).SingleLine().Tooltip(text + " · " + locales.TunBytesPerSecond(formatBytes(st.UpRate+st.DownRate)))
+		widgets.BarChart(c, 17, sshx.TunnelRateSamples, [][]float64{st.UpHistory[:], st.DownHistory[:]}, []ui.Color{txChart, rxChart}, func(rate float64) string {
+			return locales.TunBytesPerSecond(formatBytes(rate))
+		})
+	})
 }
 
 // editTunnels opens the connection editor on h's Tunnels page, or

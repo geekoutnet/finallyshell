@@ -86,14 +86,14 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 
 ### 隧道
 
-`tunnels` 是这台主机的端口转发：
+`hosts.json` 的 `tunnels` 保存每台主机的隧道。每条隧道有稳定的 `id`（旧条目再次保存时自动分配）、可选的 `name` 和 `description`，以及 `kind`：`local`、`remote`、`dynamic`、`http`、`remoteDynamic` 或 `remoteHTTP`。未知字段会原样保留。
 
-- `kind` 为 `local`（`-L`）、`remote`（`-R`）或 `dynamic`（`-D`，没有 `targetHost`、`targetPort`）。
-- 没有 `listenHost` 就是只监听 `127.0.0.1`。
-- `disabled` 为 `true` 时，这条隧道不随会话启动。
-- 隧道里不认识的字段也原样保留。
+- `listenHost` 默认是 `127.0.0.1`，`listenPort` 填 `0` 表示自动分配。远程监听必须用 IP 地址或 `localhost`。
+- 固定转发使用 `targetHost` 和 `targetPort`；本地转发也可以使用 `targetSocket`。代理目标由客户端指定。`mixed` 让本机的 HTTP 或 SOCKS5 监听端同时提供两种协议。
+- `proxyUser` 启用入站认证。远程隧道的 `upstream` 可填 `socks5://host:port` 或 `http://host:port`，可加 `user@`，不能包含密码；留空则直连。
+- `allowFrom` 保存 IP 地址或 CIDR 网段。`maxConns`、`rateKBps`（单向 KiB/秒）、`idleSeconds` 默认不限制。`disabled: true` 表示不随会话自动启动。
 
-远程隧道的监听地址只能是 IP 地址或 `localhost`，见[隧道](features.md#tunnels-page)。
+隧道密码不写入 `hosts.json`，也不同步。系统凭据库的键是 `host/<主机 ID>/tunnel/<隧道 ID>/password` 和 `host/<主机 ID>/tunnel/<隧道 ID>/upstream/password`。配置了用户名但没有对应密码时，不会打开监听。开放监听的注意事项见[隧道](features.md#隧道)。
 
 ### 代理
 

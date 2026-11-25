@@ -107,17 +107,28 @@ version 2.
 
 ### Tunnels
 
-`tunnels` are the host's port forwards:
+`hosts.json` stores each host's `tunnels`. Each entry has a stable `id`
+(assigned when saving old entries), optional `name` and `description`, and
+a `kind`: `local`, `remote`, `dynamic`, `http`, `remoteDynamic`, or `remoteHTTP`.
+Unknown properties are preserved.
 
-- `kind` is `local` (`-L`), `remote` (`-R`) or `dynamic` (`-D`, which has
-  no `targetHost` or `targetPort`).
-- Without `listenHost`, the tunnel listens on `127.0.0.1` only.
-- With `disabled` set to `true`, the tunnel does not start with the
-  session.
-- Unknown fields in a tunnel are kept as they are.
+- `listenHost` defaults to `127.0.0.1`; `listenPort` of `0` means automatic.
+  Remote listeners require an IP address or `localhost`.
+- Fixed forwards use `targetHost` and `targetPort`; a local forward can instead
+  use `targetSocket`. Proxy clients specify their own targets. `mixed` enables
+  both protocols on a local SOCKS5 or HTTP listener.
+- `proxyUser` enables incoming authentication. `upstream` on a remote tunnel
+  is `socks5://host:port` or `http://host:port`, with optional `user@` and no
+  password. An empty `upstream` means direct.
+- `allowFrom` holds IP addresses or CIDRs; `maxConns`, `rateKBps` (KiB/s per
+  direction) and `idleSeconds` default to unlimited. `disabled: true` skips
+  automatic start with the session.
 
-The listen address of a remote tunnel must be an IP address or
-`localhost`; see [Tunnels](features.md#tunnels-page).
+Tunnel credentials are not stored in `hosts.json` or synced. The system
+credential store uses `host/<host-id>/tunnel/<tunnel-id>/password` and
+`host/<host-id>/tunnel/<tunnel-id>/upstream/password`. A configured username
+without a corresponding stored password prevents the listener from starting.
+See [Tunnels](features.md#tunnels) for behavior and exposure warnings.
 
 ### Proxy
 

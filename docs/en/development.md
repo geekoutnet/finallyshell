@@ -43,18 +43,12 @@ cache directory. Apps packaged by `mygo build` include the library.
 UI code is tested headless with `ui.NewTester`; `tt.Image()` returns a
 frame of the window.
 
-Integration tests against a real server (connecting, the terminal, the
-monitor, drag-and-drop upload, download):
+### Testing on a real machine
 
-```sh
-FINALLYSHELL_TEST_SSH=user:password@127.0.0.1:22 go test ./internal/app -run SSH -v
-```
-
-The tunnel tests (`TestTunnels` in `internal/sshx`, `TestSSHTunnels` in
-`internal/app`) use the same variable. The server must be on this machine
-(the ports of remote tunnels are connected to from this machine) and must
-allow TCP forwarding (`AllowTcpForwarding yes`). Without the variable,
-they use the in-process test server (`internal/sshtest`).
+Use the [Docker test machine](testing.md) for live SSH integration tests
+and manual flows that need a Linux server. Never run mutating tests against
+a real or production server. Tests that do not need real services can use
+the in-process SSH fixture (`internal/sshtest`).
 
 ## Checks before a commit
 

@@ -318,6 +318,25 @@ an existing `settings.json` as `settings.json.bak-<yyyymmddHHMMSS>`.
 
 The Websites section adds no host or application settings. It reads Nginx configuration on the remote server, creates site files under `/etc/nginx/sites-available/` or `/etc/nginx/conf.d/`, and manages corresponding Debian links under `/etc/nginx/sites-enabled/`. Backups use the sibling name `<file>.bak-<YYYYMMDDHHMMSS>`. The app reads public certificates configured by Nginx and `/etc/letsencrypt/live/*/fullchain.pem`; it does not download private keys or cache configuration locally.
 
+### Desktop mode
+
+`desktop` is local to this device. `wallpaper` is empty for the default,
+`builtin:<id>` for a built-in, `color:#rrggbb` for a solid color, or the
+basename of a `desktop-wallpaper-*` image copied into the config directory.
+`singleClick`, `stackWindows`, `coverDock`, `iconSize` (`small`, empty for
+medium, or `large`), and `pinned` control desktop behavior. Omitted `pinned`
+uses the default apps; an empty array keeps no optional pins.
+
+`desktop.hosts` uses host IDs as keys. A host's `iconsConfigured` records
+whether its icon list is customized, including an intentionally empty
+list. `icons` stores app, folder, and path shortcuts with their grid cells;
+`folders` stores the names of icon folders. `autoArrange` packs icons into
+the grid instead of using saved cells. No window placement is written.
+
+Desktop key bindings in `shortcuts`: `openDesktop`, `desktopClose`,
+`desktopMinimize`, `desktopMaximize`, `desktopSnapLeft`, `desktopSnapRight`,
+`desktopCycle`, `desktopShow`, and `desktopLauncher`.
+
 ## db.json
 
 This optional file maps SSH host IDs to arrays of Database tab connection

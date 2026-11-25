@@ -804,6 +804,9 @@ func (a *App) managerItemMenu(c *ui.Context, m *managerState, menu *ui.Menu, it 
 	if menu.Item(locales.Connect()).Chosen() {
 		do(func() { a.connectFrom(m, h) })
 	}
+	if h.IsSSH() && menu.Item(locales.OpenDesktop()).Chosen() {
+		do(func() { a.desktopFromHost(m, h) })
+	}
 	a.bulkManagerItem(menu, m, []managerItem{it}, later)
 	if menu.Item(locales.Edit()).Chosen() {
 		do(func() { a.editFrom(m, h) })

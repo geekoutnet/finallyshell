@@ -237,6 +237,21 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 
 “网站”模块不添加主机或应用设置项。它读取远程服务器的 Nginx 配置，在 `/etc/nginx/sites-available/` 或 `/etc/nginx/conf.d/` 下创建网站，并管理 Debian 风格布局中 `/etc/nginx/sites-enabled/` 下的对应链接。备份放在原目录，文件名为 `<file>.bak-<YYYYMMDDHHMMSS>`。客户端只读取 Nginx 配置所引用的公开证书及 `/etc/letsencrypt/live/*/fullchain.pem`，不会下载私钥或在本机缓存配置。
 
+### 桌面模式
+
+`desktop` 留在本机。`wallpaper` 为空时用默认壁纸，`builtin:<id>` 表示内置壁纸，
+`color:#rrggbb` 表示纯色，也可以是复制到配置目录中的 `desktop-wallpaper-*` 图片的
+文件名。`singleClick`、`stackWindows`、`coverDock`、`iconSize`（`small`、空值对应中等，
+或 `large`）和 `pinned` 控制桌面行为。省略 `pinned` 使用默认应用，空数组不保留可选固定项。
+
+`desktop.hosts` 按主机 ID 存储。`iconsConfigured` 标记图标列表已自定义，包括有意清空的
+列表。`icons` 存储应用、文件夹和路径快捷方式及其网格位置；`folders` 存储图标文件夹的
+名称。开启 `autoArrange` 后，图标连续排列，不使用保存的格子。不写入窗口的位置或大小。
+
+`shortcuts` 中的桌面快捷键为 `openDesktop`、`desktopClose`、`desktopMinimize`、
+`desktopMaximize`、`desktopSnapLeft`、`desktopSnapRight`、`desktopCycle`、`desktopShow`
+和 `desktopLauncher`。
+
 ## db.json
 
 此文件可以不存在，按 SSH 主机 ID 保存数据库页的连接配置列表。每条配置包含

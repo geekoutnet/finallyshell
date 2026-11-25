@@ -1,5 +1,38 @@
 package config
 
+import (
+	"fmt"
+	"os"
+	"path/filepath"
+	"slices"
+	"strings"
+	"time"
+)
+
+const desktopWallpaperPrefix = "desktop-wallpaper-"
+
+func DesktopWallpaperPath(name string) (string, error) {
+	if !strings.HasPrefix(name, desktopWallpaperPrefix) || filepath.Base(name) != name || strings.ContainsAny(name, "/\\:\x00\r\n") {
+		return "", ErrNoBackground
+	}
+	return filepath.Join(Dir(), name), nil
+}
+
+func SaveDesktopWallpaper(data []byte, src string) (string, error) {
+	ext := strings.ToLower(filepath.Ext(src))
+	if !slices.Contains([]string{".png", ".jpg", ".jpeg", ".gif", ".webp"}, ext) {
+		ext = ".img"
+	}
+	name := fmt.Sprintf("%s%d%s", desktopWallpaperPrefix, time.Now().UnixNano(), ext)
+	return name, writeFileAtomic(filepath.Join(Dir(), name), data)
+}
+
+func RemoveDesktopWallpaper(name string) {
+	if file, err := DesktopWallpaperPath(name); err == nil {
+		_ = os.Remove(file)
+	}
+}
+
 // DesktopSettings is the desktop mode's settings (internal/app/desktop*.go):
 // how the desktop looks and behaves, and each host's own layout. It is
 // this device's own (localSettings): the wallpaper is a file in this
@@ -34,7 +67,9 @@ type DesktopSettings struct {
 type DesktopHost struct {
 	// Icons are the desktop's icons the user moved or added, in order; nil
 	// for the default layout.
-	Icons []DesktopIcon `json:"icons,omitempty"`
+	Icons           []DesktopIcon `json:"icons,omitempty"`
+	IconsConfigured bool          `json:"iconsConfigured,omitempty"`
+	AutoArrange     bool          `json:"autoArrange,omitempty"`
 	// Folders are the desktop's icon folders.
 	Folders []DesktopFolder `json:"folders,omitempty"`
 	// Favorites are the file manager's favorite folders (absolute paths).

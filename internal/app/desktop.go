@@ -149,7 +149,8 @@ type desktopWindow struct {
 	// restore is the frame to go back to from maximized or snapped.
 	restore [4]float32
 	// z orders the windows: the highest is in front.
-	z int
+	z         int
+	keepOnTop bool
 	// state is the app's own state for this window.
 	state any
 	// opened is when it opened.
@@ -283,7 +284,7 @@ func (a *App) desktopOpen(s *Session, id desktopAppID, arg any) *desktopWindow {
 		}
 	}
 	w := &desktopWindow{id: nextDesktopWindowIDNext(), app: app, session: s, opened: time.Now()}
-	w.w, w.h = app.size.W, app.size.H+desktopTitleHeight
+	w.w, w.h = app.size.W, app.size.H+desktopTitleHeight+desktopTitleDivider
 	a.placeDesktopWindow(d, w)
 	d.windows = append(d.windows, w)
 	a.desktopFocus(w)
@@ -302,6 +303,8 @@ func (a *App) desktopFocus(w *desktopWindow) {
 		return
 	}
 	w.minimized = false
+	d.shell.iconKeys = false
+	d.shell.cycle = nil
 	d.nextZ++
 	w.z = d.nextZ
 	d.focused = w
@@ -314,6 +317,13 @@ func (a *App) desktopClose(w *desktopWindow) {
 		return
 	}
 	d.windows = slices.DeleteFunc(d.windows, func(x *desktopWindow) bool { return x == w })
+	delete(d.shell.hidden, w)
+	if len(d.shell.hidden) == 0 {
+		d.shell.hidden, d.shell.hiddenFocus = nil, nil
+	}
+	if d.shell.drag != nil && d.shell.drag.window == w {
+		d.shell.drag, d.shell.preview = nil, ""
+	}
 	if d.focused == w {
 		d.focused = d.topWindow()
 	}
@@ -332,7 +342,7 @@ func (a *App) desktopRequestClose(w *desktopWindow) {
 func (d *desktopState) topWindow() *desktopWindow {
 	var top *desktopWindow
 	for _, w := range d.windows {
-		if !w.minimized && (top == nil || w.z > top.z) {
+		if !w.minimized && (top == nil || desktopWindowOrder(top, w) < 0) {
 			top = w
 		}
 	}
@@ -372,6 +382,7 @@ var errDesktopNotImplemented = errors.New("not implemented yet")
 
 // desktopTitleHeight is a window's title bar's height.
 const desktopTitleHeight = 36
+const desktopTitleDivider = 1
 
 // desktopRowIcon and desktopRowName are the desktop row's icon and name in
 // the session list.

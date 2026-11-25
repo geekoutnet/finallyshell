@@ -140,13 +140,15 @@ type Platform interface {
 
 // App is the state of the window.
 type App struct {
-	sysProxy      systemProxyRuntime
-	plat          Platform
-	settings      config.Settings
-	lock          appLock
-	totpCopies    map[WindowKind]totpClipboard
-	totpStatus    map[string]totpStatus
-	totpPromptSeq uint64
+	desktopWall        desktopWallpaperState
+	desktopWindowSizes map[desktopAppID]desktopSize
+	sysProxy           systemProxyRuntime
+	plat               Platform
+	settings           config.Settings
+	lock               appLock
+	totpCopies         map[WindowKind]totpClipboard
+	totpStatus         map[string]totpStatus
+	totpPromptSeq      uint64
 
 	hosts     *config.Store     // deleted hosts included: lists show hosts.Live()
 	passwords map[string]string // by host ID: what the host logs in with, this run
@@ -537,6 +539,10 @@ func (a *App) openSession(h *config.Host) { a.openSessionIn(a.selectedNewTab(), 
 // asks for those the store does not have either: h's own, then its
 // proxy's and jump hosts', one at a time.
 func (a *App) openSessionIn(tab *Session, h *config.Host) {
+	a.openSessionThen(tab, h, nil)
+}
+
+func (a *App) openSessionThen(tab *Session, h *config.Host, opened func(*Session)) {
 	switch h.Kind {
 	case config.KindRDP:
 		a.openRDP(h)
@@ -548,16 +554,19 @@ func (a *App) openSessionIn(tab *Session, h *config.Host) {
 		a.openDeviceSession(tab, h, "")
 		return
 	}
-	if a.readChainSecrets(h, func() { a.openSessionIn(tab, h) }) {
+	if a.readChainSecrets(h, func() { a.openSessionThen(tab, h, opened) }) {
 		return
 	}
 	if need := a.missingSecret(h); need != nil {
-		a.askSecret(need, func() { a.openSessionIn(tab, h) })
+		a.askSecret(need, func() { a.openSessionThen(tab, h, opened) })
 		return
 	}
 	pw := a.passwords[h.ID]
 	if tab != nil && tab.isNewTab() && !tab.isPanelTab() && slices.Contains(a.sessions, tab) {
 		a.fillTab(tab, h, pw)
+		if opened != nil {
+			opened(tab)
+		}
 		return
 	}
 	s := newSession(h)
@@ -566,6 +575,9 @@ func (a *App) openSessionIn(tab *Session, h *config.Host) {
 		a.active = len(a.sessions) - 1
 	}
 	a.connect(s, pw)
+	if opened != nil {
+		opened(s)
+	}
 }
 
 func (a *App) reconnect(s *Session) {

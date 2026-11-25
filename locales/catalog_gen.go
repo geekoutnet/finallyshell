@@ -20368,6 +20368,514 @@ func (msgs Messages) DesktopAppTrash() string {
 	return Catalog.Format(msgs.locale, "desktopAppTrash", nil)
 }
 
+// DesktopTrashIntro says "Manage deleted files on this server."
+// in the language the app shows.
+func DesktopTrashIntro() string { return In(i18n.Locale()).DesktopTrashIntro() }
+
+// DesktopTrashIntro says "Manage deleted files on this server."
+// in the language of msgs.
+func (msgs Messages) DesktopTrashIntro() string {
+	return Catalog.Format(msgs.locale, "desktopTrashIntro", nil)
+}
+
+// DesktopTrashRestore says "Restore"
+// in the language the app shows.
+func DesktopTrashRestore() string { return In(i18n.Locale()).DesktopTrashRestore() }
+
+// DesktopTrashRestore says "Restore"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashRestore() string {
+	return Catalog.Format(msgs.locale, "desktopTrashRestore", nil)
+}
+
+// DesktopTrashRestoreAll says "Restore all"
+// in the language the app shows.
+func DesktopTrashRestoreAll() string { return In(i18n.Locale()).DesktopTrashRestoreAll() }
+
+// DesktopTrashRestoreAll says "Restore all"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashRestoreAll() string {
+	return Catalog.Format(msgs.locale, "desktopTrashRestoreAll", nil)
+}
+
+// DesktopTrashDelete says "Delete permanently"
+// in the language the app shows.
+func DesktopTrashDelete() string { return In(i18n.Locale()).DesktopTrashDelete() }
+
+// DesktopTrashDelete says "Delete permanently"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashDelete() string {
+	return Catalog.Format(msgs.locale, "desktopTrashDelete", nil)
+}
+
+// DesktopTrashEmpty says "Empty trash"
+// in the language the app shows.
+func DesktopTrashEmpty() string { return In(i18n.Locale()).DesktopTrashEmpty() }
+
+// DesktopTrashEmpty says "Empty trash"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashEmpty() string {
+	return Catalog.Format(msgs.locale, "desktopTrashEmpty", nil)
+}
+
+// DesktopTrashSearch says "Search by name, path or note"
+// in the language the app shows.
+func DesktopTrashSearch() string { return In(i18n.Locale()).DesktopTrashSearch() }
+
+// DesktopTrashSearch says "Search by name, path or note"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashSearch() string {
+	return Catalog.Format(msgs.locale, "desktopTrashSearch", nil)
+}
+
+// DesktopTrashSort says "Sort trash"
+// in the language the app shows.
+func DesktopTrashSort() string { return In(i18n.Locale()).DesktopTrashSort() }
+
+// DesktopTrashSort says "Sort trash"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashSort() string {
+	return Catalog.Format(msgs.locale, "desktopTrashSort", nil)
+}
+
+// DesktopTrashName says "Name"
+// in the language the app shows.
+func DesktopTrashName() string { return In(i18n.Locale()).DesktopTrashName() }
+
+// DesktopTrashName says "Name"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashName() string {
+	return Catalog.Format(msgs.locale, "desktopTrashName", nil)
+}
+
+// DesktopTrashLocation says "Original location"
+// in the language the app shows.
+func DesktopTrashLocation() string { return In(i18n.Locale()).DesktopTrashLocation() }
+
+// DesktopTrashLocation says "Original location"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashLocation() string {
+	return Catalog.Format(msgs.locale, "desktopTrashLocation", nil)
+}
+
+// DesktopTrashDate says "Deleted"
+// in the language the app shows.
+func DesktopTrashDate() string { return In(i18n.Locale()).DesktopTrashDate() }
+
+// DesktopTrashDate says "Deleted"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashDate() string {
+	return Catalog.Format(msgs.locale, "desktopTrashDate", nil)
+}
+
+// DesktopTrashSize says "Size"
+// in the language the app shows.
+func DesktopTrashSize() string { return In(i18n.Locale()).DesktopTrashSize() }
+
+// DesktopTrashSize says "Size"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashSize() string {
+	return Catalog.Format(msgs.locale, "desktopTrashSize", nil)
+}
+
+// DesktopTrashMode says "Mode"
+// in the language the app shows.
+func DesktopTrashMode() string { return In(i18n.Locale()).DesktopTrashMode() }
+
+// DesktopTrashMode says "Mode"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashMode() string {
+	return Catalog.Format(msgs.locale, "desktopTrashMode", nil)
+}
+
+// DesktopTrashOwner says "Owner"
+// in the language the app shows.
+func DesktopTrashOwner() string { return In(i18n.Locale()).DesktopTrashOwner() }
+
+// DesktopTrashOwner says "Owner"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashOwner() string {
+	return Catalog.Format(msgs.locale, "desktopTrashOwner", nil)
+}
+
+// DesktopTrashNote says "Note"
+// in the language the app shows.
+func DesktopTrashNote() string { return In(i18n.Locale()).DesktopTrashNote() }
+
+// DesktopTrashNote says "Note"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashNote() string {
+	return Catalog.Format(msgs.locale, "desktopTrashNote", nil)
+}
+
+// DesktopTrashUnknown says "Unknown origin"
+// in the language the app shows.
+func DesktopTrashUnknown() string { return In(i18n.Locale()).DesktopTrashUnknown() }
+
+// DesktopTrashUnknown says "Unknown origin"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashUnknown() string {
+	return Catalog.Format(msgs.locale, "desktopTrashUnknown", nil)
+}
+
+// DesktopTrashHome says "User trash"
+// in the language the app shows.
+func DesktopTrashHome() string { return In(i18n.Locale()).DesktopTrashHome() }
+
+// DesktopTrashHome says "User trash"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashHome() string {
+	return Catalog.Format(msgs.locale, "desktopTrashHome", nil)
+}
+
+// DesktopTrashRoot says "Root trash"
+// in the language the app shows.
+func DesktopTrashRoot() string { return In(i18n.Locale()).DesktopTrashRoot() }
+
+// DesktopTrashRoot says "Root trash"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashRoot() string {
+	return Catalog.Format(msgs.locale, "desktopTrashRoot", nil)
+}
+
+// DesktopTrashLoadRoot says "Show root trash"
+// in the language the app shows.
+func DesktopTrashLoadRoot() string { return In(i18n.Locale()).DesktopTrashLoadRoot() }
+
+// DesktopTrashLoadRoot says "Show root trash"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashLoadRoot() string {
+	return Catalog.Format(msgs.locale, "desktopTrashLoadRoot", nil)
+}
+
+// DesktopTrashCopy says "Copy original path"
+// in the language the app shows.
+func DesktopTrashCopy() string { return In(i18n.Locale()).DesktopTrashCopy() }
+
+// DesktopTrashCopy says "Copy original path"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashCopy() string {
+	return Catalog.Format(msgs.locale, "desktopTrashCopy", nil)
+}
+
+// DesktopTrashOpenFolder says "Open original folder"
+// in the language the app shows.
+func DesktopTrashOpenFolder() string { return In(i18n.Locale()).DesktopTrashOpenFolder() }
+
+// DesktopTrashOpenFolder says "Open original folder"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashOpenFolder() string {
+	return Catalog.Format(msgs.locale, "desktopTrashOpenFolder", nil)
+}
+
+// DesktopTrashSelectAll says "Select all visible items"
+// in the language the app shows.
+func DesktopTrashSelectAll() string { return In(i18n.Locale()).DesktopTrashSelectAll() }
+
+// DesktopTrashSelectAll says "Select all visible items"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashSelectAll() string {
+	return Catalog.Format(msgs.locale, "desktopTrashSelectAll", nil)
+}
+
+// DesktopTrashSelectItem says "Select {name}"
+// in the language the app shows.
+func DesktopTrashSelectItem(name string) string {
+	return In(i18n.Locale()).DesktopTrashSelectItem(name)
+}
+
+// DesktopTrashSelectItem says "Select {name}"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashSelectItem(name string) string {
+	return Catalog.Format(msgs.locale, "desktopTrashSelectItem", map[string]any{"name": name})
+}
+
+// DesktopTrashEmptyTitle says "Trash is empty"
+// in the language the app shows.
+func DesktopTrashEmptyTitle() string { return In(i18n.Locale()).DesktopTrashEmptyTitle() }
+
+// DesktopTrashEmptyTitle says "Trash is empty"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashEmptyTitle() string {
+	return Catalog.Format(msgs.locale, "desktopTrashEmptyTitle", nil)
+}
+
+// DesktopTrashEmptyHint says "Files you move to the trash will appear here."
+// in the language the app shows.
+func DesktopTrashEmptyHint() string { return In(i18n.Locale()).DesktopTrashEmptyHint() }
+
+// DesktopTrashEmptyHint says "Files you move to the trash will appear here."
+// in the language of msgs.
+func (msgs Messages) DesktopTrashEmptyHint() string {
+	return Catalog.Format(msgs.locale, "desktopTrashEmptyHint", nil)
+}
+
+// DesktopTrashNoResults says "No matching items"
+// in the language the app shows.
+func DesktopTrashNoResults() string { return In(i18n.Locale()).DesktopTrashNoResults() }
+
+// DesktopTrashNoResults says "No matching items"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashNoResults() string {
+	return Catalog.Format(msgs.locale, "desktopTrashNoResults", nil)
+}
+
+// DesktopTrashTrySearch says "Try a different name, path or note."
+// in the language the app shows.
+func DesktopTrashTrySearch() string { return In(i18n.Locale()).DesktopTrashTrySearch() }
+
+// DesktopTrashTrySearch says "Try a different name, path or note."
+// in the language of msgs.
+func (msgs Messages) DesktopTrashTrySearch() string {
+	return Catalog.Format(msgs.locale, "desktopTrashTrySearch", nil)
+}
+
+// DesktopTrashSummary says "{count, plural, one {# item} other {# items}} · {size}"
+// in the language the app shows.
+func DesktopTrashSummary(count int, size string) string {
+	return In(i18n.Locale()).DesktopTrashSummary(count, size)
+}
+
+// DesktopTrashSummary says "{count, plural, one {# item} other {# items}} · {size}"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashSummary(count int, size string) string {
+	return Catalog.Format(msgs.locale, "desktopTrashSummary", map[string]any{"count": count, "size": size})
+}
+
+// DesktopTrashSelected says "{count, plural, one {# selected} other {# selected}}"
+// in the language the app shows.
+func DesktopTrashSelected(count int) string { return In(i18n.Locale()).DesktopTrashSelected(count) }
+
+// DesktopTrashSelected says "{count, plural, one {# selected} other {# selected}}"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashSelected(count int) string {
+	return Catalog.Format(msgs.locale, "desktopTrashSelected", map[string]any{"count": count})
+}
+
+// DesktopTrashPurgeQuestion says "Permanently delete {count, plural, one {# item} other {# items}} ({size})? This cannot be undone."
+// in the language the app shows.
+func DesktopTrashPurgeQuestion(count int, size string) string {
+	return In(i18n.Locale()).DesktopTrashPurgeQuestion(count, size)
+}
+
+// DesktopTrashPurgeQuestion says "Permanently delete {count, plural, one {# item} other {# items}} ({size})? This cannot be undone."
+// in the language of msgs.
+func (msgs Messages) DesktopTrashPurgeQuestion(count int, size string) string {
+	return Catalog.Format(msgs.locale, "desktopTrashPurgeQuestion", map[string]any{"count": count, "size": size})
+}
+
+// DesktopTrashRestoreQuestion says "Restore {count, plural, one {# item} other {# items}} ({size}) to the original locations? Missing folders will be rec…"
+// in the language the app shows.
+func DesktopTrashRestoreQuestion(count int, size string) string {
+	return In(i18n.Locale()).DesktopTrashRestoreQuestion(count, size)
+}
+
+// DesktopTrashRestoreQuestion says "Restore {count, plural, one {# item} other {# items}} ({size}) to the original locations? Missing folders will be rec…"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashRestoreQuestion(count int, size string) string {
+	return Catalog.Format(msgs.locale, "desktopTrashRestoreQuestion", map[string]any{"count": count, "size": size})
+}
+
+// DesktopTrashConflict says "An item already exists here"
+// in the language the app shows.
+func DesktopTrashConflict() string { return In(i18n.Locale()).DesktopTrashConflict() }
+
+// DesktopTrashConflict says "An item already exists here"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashConflict() string {
+	return Catalog.Format(msgs.locale, "desktopTrashConflict", nil)
+}
+
+// DesktopTrashConflictHint says "Replace moves the existing item to the trash. Keep both restores this item under a new name."
+// in the language the app shows.
+func DesktopTrashConflictHint() string { return In(i18n.Locale()).DesktopTrashConflictHint() }
+
+// DesktopTrashConflictHint says "Replace moves the existing item to the trash. Keep both restores this item under a new name."
+// in the language of msgs.
+func (msgs Messages) DesktopTrashConflictHint() string {
+	return Catalog.Format(msgs.locale, "desktopTrashConflictHint", nil)
+}
+
+// DesktopTrashReplace says "Replace"
+// in the language the app shows.
+func DesktopTrashReplace() string { return In(i18n.Locale()).DesktopTrashReplace() }
+
+// DesktopTrashReplace says "Replace"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashReplace() string {
+	return Catalog.Format(msgs.locale, "desktopTrashReplace", nil)
+}
+
+// DesktopTrashKeepBoth says "Keep both"
+// in the language the app shows.
+func DesktopTrashKeepBoth() string { return In(i18n.Locale()).DesktopTrashKeepBoth() }
+
+// DesktopTrashKeepBoth says "Keep both"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashKeepBoth() string {
+	return Catalog.Format(msgs.locale, "desktopTrashKeepBoth", nil)
+}
+
+// DesktopTrashSkip says "Skip"
+// in the language the app shows.
+func DesktopTrashSkip() string { return In(i18n.Locale()).DesktopTrashSkip() }
+
+// DesktopTrashSkip says "Skip"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashSkip() string {
+	return Catalog.Format(msgs.locale, "desktopTrashSkip", nil)
+}
+
+// DesktopTrashUnavailable says "Connect to a Linux SSH server with remote commands enabled to use the trash."
+// in the language the app shows.
+func DesktopTrashUnavailable() string { return In(i18n.Locale()).DesktopTrashUnavailable() }
+
+// DesktopTrashUnavailable says "Connect to a Linux SSH server with remote commands enabled to use the trash."
+// in the language of msgs.
+func (msgs Messages) DesktopTrashUnavailable() string {
+	return Catalog.Format(msgs.locale, "desktopTrashUnavailable", nil)
+}
+
+// DesktopTrashLoading says "Reading trash…"
+// in the language the app shows.
+func DesktopTrashLoading() string { return In(i18n.Locale()).DesktopTrashLoading() }
+
+// DesktopTrashLoading says "Reading trash…"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashLoading() string {
+	return Catalog.Format(msgs.locale, "desktopTrashLoading", nil)
+}
+
+// DesktopTrashProgress says "Processing {current} of {total}"
+// in the language the app shows.
+func DesktopTrashProgress(current int, total int) string {
+	return In(i18n.Locale()).DesktopTrashProgress(current, total)
+}
+
+// DesktopTrashProgress says "Processing {current} of {total}"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashProgress(current int, total int) string {
+	return Catalog.Format(msgs.locale, "desktopTrashProgress", map[string]any{"current": current, "total": total})
+}
+
+// DesktopTrashMoved says "Move to trash: {path} → {store}"
+// in the language the app shows.
+func DesktopTrashMoved(path string, store string) string {
+	return In(i18n.Locale()).DesktopTrashMoved(path, store)
+}
+
+// DesktopTrashMoved says "Move to trash: {path} → {store}"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashMoved(path string, store string) string {
+	return Catalog.Format(msgs.locale, "desktopTrashMoved", map[string]any{"path": path, "store": store})
+}
+
+// DesktopTrashMoveFailed says "Move to trash: {path}"
+// in the language the app shows.
+func DesktopTrashMoveFailed(path string) string {
+	return In(i18n.Locale()).DesktopTrashMoveFailed(path)
+}
+
+// DesktopTrashMoveFailed says "Move to trash: {path}"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashMoveFailed(path string) string {
+	return Catalog.Format(msgs.locale, "desktopTrashMoveFailed", map[string]any{"path": path})
+}
+
+// DesktopTrashRootNotice says "Moved to root trash at {path}."
+// in the language the app shows.
+func DesktopTrashRootNotice(path string) string {
+	return In(i18n.Locale()).DesktopTrashRootNotice(path)
+}
+
+// DesktopTrashRootNotice says "Moved to root trash at {path}."
+// in the language of msgs.
+func (msgs Messages) DesktopTrashRootNotice(path string) string {
+	return Catalog.Format(msgs.locale, "desktopTrashRootNotice", map[string]any{"path": path})
+}
+
+// DesktopTrashRootBatch says "{count, plural, one {# item moved} other {# items moved}} to root trash. See the operation log for locations."
+// in the language the app shows.
+func DesktopTrashRootBatch(count int) string { return In(i18n.Locale()).DesktopTrashRootBatch(count) }
+
+// DesktopTrashRootBatch says "{count, plural, one {# item moved} other {# items moved}} to root trash. See the operation log for locations."
+// in the language of msgs.
+func (msgs Messages) DesktopTrashRootBatch(count int) string {
+	return Catalog.Format(msgs.locale, "desktopTrashRootBatch", map[string]any{"count": count})
+}
+
+// DesktopTrashRestored says "Restore from trash: {path}"
+// in the language the app shows.
+func DesktopTrashRestored(path string) string { return In(i18n.Locale()).DesktopTrashRestored(path) }
+
+// DesktopTrashRestored says "Restore from trash: {path}"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashRestored(path string) string {
+	return Catalog.Format(msgs.locale, "desktopTrashRestored", map[string]any{"path": path})
+}
+
+// DesktopTrashPurged says "Permanently delete from trash: {path}"
+// in the language the app shows.
+func DesktopTrashPurged(path string) string { return In(i18n.Locale()).DesktopTrashPurged(path) }
+
+// DesktopTrashPurged says "Permanently delete from trash: {path}"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashPurged(path string) string {
+	return Catalog.Format(msgs.locale, "desktopTrashPurged", map[string]any{"path": path})
+}
+
+// DesktopTrashCleaned says "Remove orphaned trash metadata: {path}"
+// in the language the app shows.
+func DesktopTrashCleaned(path string) string { return In(i18n.Locale()).DesktopTrashCleaned(path) }
+
+// DesktopTrashCleaned says "Remove orphaned trash metadata: {path}"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashCleaned(path string) string {
+	return Catalog.Format(msgs.locale, "desktopTrashCleaned", map[string]any{"path": path})
+}
+
+// DesktopTrashUnsafePath says "This location is protected or the path is invalid."
+// in the language the app shows.
+func DesktopTrashUnsafePath() string { return In(i18n.Locale()).DesktopTrashUnsafePath() }
+
+// DesktopTrashUnsafePath says "This location is protected or the path is invalid."
+// in the language of msgs.
+func (msgs Messages) DesktopTrashUnsafePath() string {
+	return Catalog.Format(msgs.locale, "desktopTrashUnsafePath", nil)
+}
+
+// DesktopTrashItemChanged says "The item or destination changed. Refresh and try again."
+// in the language the app shows.
+func DesktopTrashItemChanged() string { return In(i18n.Locale()).DesktopTrashItemChanged() }
+
+// DesktopTrashItemChanged says "The item or destination changed. Refresh and try again."
+// in the language of msgs.
+func (msgs Messages) DesktopTrashItemChanged() string {
+	return Catalog.Format(msgs.locale, "desktopTrashItemChanged", nil)
+}
+
+// DesktopTrashProblems says "Trash operation did not finish"
+// in the language the app shows.
+func DesktopTrashProblems() string { return In(i18n.Locale()).DesktopTrashProblems() }
+
+// DesktopTrashProblems says "Trash operation did not finish"
+// in the language of msgs.
+func (msgs Messages) DesktopTrashProblems() string {
+	return Catalog.Format(msgs.locale, "desktopTrashProblems", nil)
+}
+
+// DesktopTrashUnknownSize says "Could not measure every item. Check access to {path}."
+// in the language the app shows.
+func DesktopTrashUnknownSize(path string) string {
+	return In(i18n.Locale()).DesktopTrashUnknownSize(path)
+}
+
+// DesktopTrashUnknownSize says "Could not measure every item. Check access to {path}."
+// in the language of msgs.
+func (msgs Messages) DesktopTrashUnknownSize(path string) string {
+	return Catalog.Format(msgs.locale, "desktopTrashUnknownSize", map[string]any{"path": path})
+}
+
 // DesktopAppTaskManager says "Task Manager"
 // in the language the app shows.
 func DesktopAppTaskManager() string { return In(i18n.Locale()).DesktopAppTaskManager() }

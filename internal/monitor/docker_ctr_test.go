@@ -75,7 +75,7 @@ func TestDockerCtrFilesAndStats(t *testing.T) {
 	for action, want := range map[CtrFileOp]string{
 		CtrFileToServer:   `sudo -n podman 'cp' '--' 'box:/file'\''s' '/staging/a'`,
 		CtrFileFromServer: `sudo -n podman 'cp' '--' '/staging/a' 'box:/file'\''s'`,
-		CtrFileRename:     `sudo -n podman 'exec' '-e' 'LC_ALL=C' 'box' 'mv' '-nT' '--' '/file'\''s' '/staging/a'`,
+		CtrFileRename:     `'docker-rename' '/file'\''s' '/staging/a'`,
 	} {
 		script, err := cmd.CtrFileScript(action, "box", "/file's", "/staging/a")
 		if err != nil || !strings.HasSuffix(script, want+"\n") || action != CtrFileRename && !strings.Contains(script, `! -L "$1"`) {
@@ -112,6 +112,24 @@ lrwxrwxrwx 1 root root 5 1723161600 "shortcut" -> "target"
 	if _, err := ParseCtrFiles("-rw------- 1 0 0 7 Aug  9 12:14 ambiguous?file"); err == nil {
 		t.Fatal("accepted ambiguous BusyBox file name")
 	}
+}
+
+func TestDockerCtrListBusyBox(t *testing.T) {
+	script, err := (DockerCmd{Tool: "docker"}).CtrListScript("box", "/tmp")
+	if err != nil || !strings.Contains(script, `exec ls -lan -- "$1"`) || strings.Contains(script, "'-lanq'") {
+		t.Fatalf("BusyBox fallback: %q, %v", script, err)
+	}
+	checkSyntax(t, script)
+}
+
+func TestDockerCtrRenameChecksDestinationAndSource(t *testing.T) {
+	script, err := (DockerCmd{Tool: "docker"}).CtrFileScript(CtrFileRename, "box", "/tmp/old", "/tmp/new")
+	for _, want := range []string{`[ ! -e "$2" ] && [ ! -L "$2" ]`, `mv -nT -- "$1" "$2"`, `[ ! -e "$1" ] && [ ! -L "$1" ]`} {
+		if err != nil || !strings.Contains(script, want) {
+			t.Fatalf("missing %q in %q, %v", want, script, err)
+		}
+	}
+	checkSyntax(t, script)
 }
 
 func TestDockerCtrExportAndCommit(t *testing.T) {

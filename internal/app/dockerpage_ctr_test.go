@@ -262,7 +262,7 @@ func TestDockerCtrFilesAndPolling(t *testing.T) {
 	}{
 		{locales.NewFolder(), "new folder", "'mkdir' '--' '/new folder'", false},
 		{locales.DockerCtrCopyFromServer(), "/tmp/in.txt", "'cp' '--' '/tmp/in.txt' '" + id + ":/in.txt'", false},
-		{locales.Rename(), "notes.txt", "'mv' '-nT' '--' '/read me.txt' '/notes.txt'", true},
+		{locales.Rename(), "notes.txt", "'docker-rename' '/read me.txt' '/notes.txt'", true},
 		{locales.Delete(), "", "'rm' '-r' '--' '/read me.txt'", true},
 	} {
 		open := func() {

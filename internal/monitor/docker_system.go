@@ -311,11 +311,59 @@ func (cmd DockerCmd) Events(since string) string {
 	if cmd.Tool == "podman" {
 		format = "json"
 	}
-	return resourceReadHead + "exec " + cmd.Line("events", "--since", since, "--format", format) + "\n"
+	return resourceReadHead + `exec 3<&0
+` + cmd.Line("events", "--since", since, "--format", format) + ` </dev/null 3<&- &
+engine=$!
+(
+  while IFS= read -r unused <&3; do :; done
+  kill -TERM "$engine" 2>/dev/null || :
+) &
+watch=$!
+wait "$engine"
+status=$?
+kill -TERM "$watch" 2>/dev/null || :
+wait "$watch" 2>/dev/null || :
+exit "$status"
+`
 }
 
 func StreamDockerEvents(ctx context.Context, client *ssh.Client, script string, report func(string)) (string, error) {
-	return runResourceExec(ctx, client, script, "", report, true)
+	return streamDockerEvents(ctx, func(ctx context.Context, input io.Reader) (string, error) {
+		return runResourceExec(ctx, client, script, input, report)
+	})
+}
+
+func StreamDockerEventsRoot(ctx context.Context, run DockerRootRunner, script string, report func(string)) (string, error) {
+	return streamDockerEvents(ctx, func(ctx context.Context, input io.Reader) (string, error) {
+		return runDockerRoot(ctx, run, script, PrivilegeOptions{Stdin: input, Progress: report})
+	})
+}
+
+func streamDockerEvents(ctx context.Context, run func(context.Context, io.Reader) (string, error)) (string, error) {
+	if err := ctx.Err(); err != nil {
+		return "", err
+	}
+	remote, cancel := context.WithCancel(context.WithoutCancel(ctx))
+	defer cancel()
+	input, keepOpen := io.Pipe()
+	defer input.Close()
+	defer keepOpen.Close()
+	finished := make(chan struct{})
+	defer close(finished)
+	stop := context.AfterFunc(ctx, func() {
+		_ = keepOpen.Close()
+		select {
+		case <-finished:
+		case <-time.After(3 * time.Second):
+			cancel()
+		}
+	})
+	defer stop()
+	out, err := run(remote, input)
+	if ctx.Err() != nil {
+		return out, ctx.Err()
+	}
+	return out, err
 }
 
 type DockerRegistries struct {
@@ -462,10 +510,10 @@ func (cmd DockerCmd) RegistryLogout(registry string) (string, error) {
 
 func (input DockerInput) Run(ctx context.Context, client *ssh.Client, report func(string)) (string, error) {
 	if input.private {
-		_, err := runResourceExec(ctx, client, input.script, input.input, func(string) {}, false)
+		_, err := runResourceExec(ctx, client, input.script, strings.NewReader(input.input), func(string) {})
 		return "", err
 	}
-	return runResourceExec(ctx, client, input.script, input.input, report, false)
+	return runResourceExec(ctx, client, input.script, strings.NewReader(input.input), report)
 }
 
 func (input DockerInput) RunRoot(ctx context.Context, run DockerRootRunner, report func(string)) (string, error) {
@@ -481,7 +529,7 @@ func (input DockerInput) RunRoot(ctx context.Context, run DockerRootRunner, repo
 	return runDockerRoot(ctx, run, input.script, PrivilegeOptions{Stdin: strings.NewReader(input.input), Progress: report, Interrupt: report != nil})
 }
 
-func runResourceExec(ctx context.Context, client *ssh.Client, script, input string, report func(string), stopRemote bool) (string, error) {
+func runResourceExec(ctx context.Context, client *ssh.Client, script string, input io.Reader, report func(string)) (string, error) {
 	if err := ctx.Err(); err != nil {
 		return "", err
 	}
@@ -493,14 +541,9 @@ func runResourceExec(ctx context.Context, client *ssh.Client, script, input stri
 		return "", err
 	}
 	defer session.Close()
-	stop := context.AfterFunc(ctx, func() {
-		if stopRemote {
-			_ = session.Signal(ssh.SIGTERM)
-		}
-		_ = session.Close()
-	})
+	stop := context.AfterFunc(ctx, func() { _ = session.Close() })
 	defer stop()
-	session.Stdin = strings.NewReader(input)
+	session.Stdin = input
 	var output, stderr bytes.Buffer
 	session.Stderr = &limitWriter{w: &stderr, n: 64 << 10}
 	session.Stdout = &limitWriter{w: &output, n: procOutputLimit}

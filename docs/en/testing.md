@@ -89,6 +89,15 @@ without checking that flag, so do not treat an unset flag as a read-only
 guarantee. For tunnel cases that assume a shared loopback network, leave
 `FINALLYSHELL_TEST_SSH` unset and use the in-process fixture.
 
+With the Caddy fixture running, load credentials with `ssh-env` and run
+`FINALLYSHELL_TEST_MUTATE=1 go test ./internal/app -run '^TestDesktopLive(Task|Settings|Browser|Apps)' -count=1 -v -timeout 900s`
+once as root and once as tester. Run the mutating passes sequentially:
+they change and restore the time zone. Mounted DNS is never rewritten;
+the apply/restore flow uses a writable scratch copy on that box. Omit the
+mutation flag for the read-only cases. Set `SHOT_DIR` to an existing local
+directory to capture the windows. The all-apps smoke test allows about
+20 seconds per window to catch slow reads and UI freezes.
+
 ## Adding components
 
 Install extras inside the disposable container, not on the host:

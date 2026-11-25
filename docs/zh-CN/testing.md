@@ -51,6 +51,13 @@
 
 `internal/app` 的 `TestSSH` 会验证终端、监控和文件传输。在包含 `TestCaddyLive*` 的分支上，先安装 Caddy 示例并载入 `root` 凭据，再运行 `go test ./internal/app -run '^TestCaddyLive' -count=1 -v`。需要修改服务器的用例，在命令前加上 `FINALLYSHELL_TEST_MUTATE=1`。部分较早的 SSH 用例不会检查这个开关，也会写文件或启动进程，所以别把未设开关当成只读保证。如果隧道用例要求客户端和服务端共享回环网络，不要设置 `FINALLYSHELL_TEST_SSH`，改用进程内测试服务。
 
+启动 Caddy 示例后，用 `ssh-env` 加载凭据，分别以 root 和 tester 运行
+`FINALLYSHELL_TEST_MUTATE=1 go test ./internal/app -run '^TestDesktopLive(Task|Settings|Browser|Apps)' -count=1 -v -timeout 900s`。
+两轮有写入的测试应串行执行，因为会修改并恢复时区。测试不会改写已挂载的
+DNS 文件，而是在测试箱内的临时可写副本上验证应用和恢复。仅运行只读用例
+可以不设置写入开关。将 `SHOT_DIR` 指向已有的本地目录即可保存截图；逐窗
+巡检会为每个窗口运行约 20 秒，以捕捉缓慢的读取或界面卡死。
+
 ## 添加组件
 
 额外组件装在可随时重建的容器里，不要装到宿主机上：

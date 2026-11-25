@@ -16534,6 +16534,16 @@ func (msgs Messages) SiteOtherServer(server string, file string) string {
 	return Catalog.Format(msgs.locale, "siteOtherServer", map[string]any{"server": server, "file": file})
 }
 
+// SiteCaddyDetected says "Caddy detected · {file}"
+// in the language the app shows.
+func SiteCaddyDetected(file string) string { return In(i18n.Locale()).SiteCaddyDetected(file) }
+
+// SiteCaddyDetected says "Caddy detected · {file}"
+// in the language of msgs.
+func (msgs Messages) SiteCaddyDetected(file string) string {
+	return Catalog.Format(msgs.locale, "siteCaddyDetected", map[string]any{"file": file})
+}
+
 // SitePorts says "Listen ports"
 // in the language the app shows.
 func SitePorts() string { return In(i18n.Locale()).SitePorts() }
@@ -25224,6 +25234,16 @@ func (msgs Messages) DesktopSetDNSManaged() string {
 	return Catalog.Format(msgs.locale, "desktopSetDNSManaged", nil)
 }
 
+// DesktopSetDNSMounted says "/etc/resolv.conf is mounted by the host or container runtime. Change DNS there; this app cannot safely replace the mo…"
+// in the language the app shows.
+func DesktopSetDNSMounted() string { return In(i18n.Locale()).DesktopSetDNSMounted() }
+
+// DesktopSetDNSMounted says "/etc/resolv.conf is mounted by the host or container runtime. Change DNS there; this app cannot safely replace the mo…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSMounted() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSMounted", nil)
+}
+
 // DesktopSetDNSNetworkManager says "NetworkManager detected · default-route interface: {device}"
 // in the language the app shows.
 func DesktopSetDNSNetworkManager(device string) string {
@@ -25634,6 +25654,16 @@ func DesktopSetSyncNote() string { return In(i18n.Locale()).DesktopSetSyncNote()
 // in the language of msgs.
 func (msgs Messages) DesktopSetSyncNote() string {
 	return Catalog.Format(msgs.locale, "desktopSetSyncNote", nil)
+}
+
+// DesktopSetSyncUnavailable says "This server does not expose a supported time synchronization service. NTP and manual synchronization are unavailable."
+// in the language the app shows.
+func DesktopSetSyncUnavailable() string { return In(i18n.Locale()).DesktopSetSyncUnavailable() }
+
+// DesktopSetSyncUnavailable says "This server does not expose a supported time synchronization service. NTP and manual synchronization are unavailable."
+// in the language of msgs.
+func (msgs Messages) DesktopSetSyncUnavailable() string {
+	return Catalog.Format(msgs.locale, "desktopSetSyncUnavailable", nil)
 }
 
 // DesktopSetAppLock says "App lock"

@@ -135,10 +135,17 @@ func siteBanner(c *ui.Context, text string, warning bool) {
 
 func (a *App) siteList(c *ui.Context, s *Session, narrow bool) {
 	page := &s.server.sites
-	for _, server := range []struct{ name, file string }{{"Apache", page.status.Apache}, {"Caddy", page.status.Caddy}} {
-		if server.file != "" {
-			siteBanner(c.Key(server.name), locales.SiteOtherServer(server.name, siteClean(server.file)), false)
-		}
+	if file := page.status.Apache; file != "" {
+		siteBanner(c.Key("Apache"), locales.SiteOtherServer("Apache", siteClean(file)), false)
+	}
+	if file := page.status.Caddy; file != "" {
+		ui.Row(c.Key("Caddy")).FillWidth().Padding(2, 8).Gap(8).AlignItems(ui.Center).Children(func() {
+			text := locales.SiteCaddyDetected(siteClean(file))
+			widgets.Muted(c, text).SingleLine().Tooltip(text).FontSize(12).MinWidth(0).Grow(1)
+			if ui.Button(c, locales.TabCaddy()).Shrink(0).Clicked() {
+				a.openCaddyPage(s, caddySecSites)
+			}
+		})
 	}
 	if page.loaded && !page.status.Installed {
 		siteBanner(c, locales.SiteNotInstalled(), false)

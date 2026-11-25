@@ -988,8 +988,9 @@ CPU、内存和已挂载存储。可在此编辑连接别名。地址默认隐�
 
 DNS 页显示当前生效的解析器，支持预设、自定义 IPv4／IPv6 服务器和搜索域。
 修改通过 systemd-resolved、默认路由对应的 NetworkManager 配置，或普通的
-`/etc/resolv.conf` 完成，不会覆盖由未知服务管理的配置或符号链接。首次备份
-会保留，可手动恢复。确认窗口列出涉及的文件或命令；重新激活 NetworkManager
+`/etc/resolv.conf` 完成，不会覆盖由未知服务管理的配置、受管理的符号链接或
+容器运行时挂载的解析器文件。可编辑配置的首次备份会保留，可手动恢复。
+确认窗口列出涉及的文件或命令；重新激活 NetworkManager
 配置可能中断 SSH。修改后会测试 `example.com` 的解析。systemd-resolved 的
 全局设置不会改动网卡各自的 DNS 配置。
 

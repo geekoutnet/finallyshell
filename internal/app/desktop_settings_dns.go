@@ -84,7 +84,9 @@ func (a *App) desktopSetDNSStatus(c *ui.Context, window *desktopWindow, state *d
 		if page.data.NetworkManager {
 			widgets.Muted(c, locales.DesktopSetDNSNetworkManager(desktopSetValue(page.data.Device, locales.DesktopSetUnknown())))
 		}
-		if page.data.Mode == monitor.SysConfDNSManaged || page.data.Mode == monitor.SysConfDNSUnknown {
+		if page.data.MountPoint {
+			ui.Text(c, locales.DesktopSetDNSMounted()).TextColor(colors.warningText)
+		} else if page.data.Mode == monitor.SysConfDNSManaged || page.data.Mode == monitor.SysConfDNSUnknown {
 			ui.Text(c, locales.DesktopSetDNSManaged()).TextColor(colors.warningText)
 		}
 		for index, link := range page.data.Links {

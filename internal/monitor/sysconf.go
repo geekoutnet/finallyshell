@@ -25,7 +25,13 @@ esac
 const SysConfInfoCommand = sysConfMarks + `mark 'os-release'
 'cat' '/etc/os-release' 2>/dev/null || 'cat' '/usr/lib/os-release' 2>/dev/null
 mark 'virtualization'
-'systemd-detect-virt' 2>/dev/null
+if [ -e '/.dockerenv' ]; then
+  'printf' '%s\n' 'docker'
+elif [ -e '/run/.containerenv' ]; then
+  'printf' '%s\n' 'podman'
+else
+  'systemd-detect-virt' 2>/dev/null
+fi
 mark 'zone'
 ` + sysConfZoneRead + `mark 'addr'
 'ip' '-o' 'addr' 'show' 2>/dev/null

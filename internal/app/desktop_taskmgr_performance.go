@@ -3,6 +3,7 @@ package app
 import (
 	"fmt"
 	"math"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -72,15 +73,28 @@ func taskSize(value uint64) string {
 
 func (state *desktopTaskState) diskChoice() (monitor.TaskDisk, []string) {
 	var names []string
-	var selected monitor.TaskDisk
+	var selected, mounted, whole monitor.TaskDisk
 	for _, disk := range state.perf.Disks {
 		names = append(names, disk.Name)
 		if disk.Name == state.disk {
 			selected = disk
 		}
+		if slices.Contains(disk.Mounts, "/") || mounted.Name == "" && len(disk.Mounts) != 0 {
+			mounted = disk
+		}
+		if whole.Name == "" && !disk.Partition && !strings.HasPrefix(disk.Name, "loop") {
+			whole = disk
+		}
 	}
 	if selected.Name == "" && len(names) > 0 {
-		selected = state.perf.Disks[0]
+		switch {
+		case mounted.Name != "":
+			selected = mounted
+		case whole.Name != "":
+			selected = whole
+		default:
+			selected = state.perf.Disks[0]
+		}
 		state.disk = selected.Name
 	}
 	return selected, names

@@ -52,6 +52,7 @@ func (a *App) desktopOpenTerminalAt(s *Session, dir string) {
 }
 
 var desktopToolsTabApps = map[int]desktopAppID{
+	tabCaddy: "srv-caddy",
 	tabFiles: appFiles, tabDocker: "srv-docker", tabDatabase: "srv-db", tabProcesses: "srv-processes",
 	tabNetwork: "srv-network", tabTunnels: "srv-tunnels", tabTransfers: "srv-transfers",
 	tabCommands: "srv-commands", tabOverview: "srv-overview",

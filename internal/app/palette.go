@@ -12,7 +12,12 @@ func (a *App) openBulkPalette(hosts []*config.Host) {
 	commands := []bulkPaletteAction{
 		{locales.BulkOpen(), func() { a.openBulkExec(hosts, "") }},
 		{locales.ManagerTitle(), a.openManager},
+		{locales.TmgrTitle(), a.OpenTunnelManager},
 		{locales.Options(), a.openOptions},
+		{locales.SysproxyRestore(), a.confirmRestoreSystemProxy},
+	}
+	if len(hosts) == 1 && hosts[0].IsSSH() {
+		commands = append(commands, bulkPaletteAction{locales.TrecTitle(), func() { a.openPaletteTunnelRecipes(hosts[0]) }})
 	}
 	if a.CanLock() {
 		commands = append(commands, bulkPaletteAction{locales.LockNow(), a.LockNow})

@@ -938,6 +938,27 @@ keys, the server refused every key in the agent, or the agent did not
 sign (the user denied it). No password prompt opens. Agent forwarding
 (`ssh -A`) is not supported.
 
+### Remote Desktop
+
+Choose **Remote Desktop** to open the saved connection in the system's
+RDP client: mstsc on Windows, FreeRDP on Linux, or Windows App on macOS.
+The editor offers display, local resources, connection and gateway settings.
+
+#### Remote Desktop through SSH
+
+In **Connection**, choose **Connect through SSH host** and select a saved
+SSH host. **Target as seen from the SSH host** can be a private name or IP,
+with an optional port. Leave it empty to use the saved RDP address and port
+(3389 by default). Do not combine this mode with a Remote Desktop Gateway.
+
+Finallyshell uses the SSH host's usual sign-in and host-key verification,
+or reuses an open SSH session. It checks TCP reachability from that host
+before opening a local tunnel on `127.0.0.1` and handing its address to the
+RDP client. The RDP client's authentication and certificate checks still
+apply; it may warn that the certificate does not match the loopback address.
+On Windows and Linux, the tunnel stops when the client process exits. On
+macOS, stop it in **Tunnels** when done; Windows App asks for the password.
+
 ### Telnet connection
 
 Choose **Telnet** in the connection editor, enter a host and port (23 by
@@ -1027,39 +1048,99 @@ Type is one of None (connect directly), SOCKS5, HTTP or Jump host.
 
 ### Tunnels
 
-SSH port forwarding. A table lists Type, Listen on, Forward to and
-Enabled, with Add…, Edit… and Remove below it (double-clicking a row also
-edits it). Adding and editing use the same dialog.
+The connection editor lists each tunnel's name, type, listener, target
+or exit, restrictions, and whether it starts with the session. Double-click
+a row or use its menu to edit it. Changes take effect on the next connection.
 
-- Local (`-L`): listens on this computer, and forwards each connection
-  through the server to the target (the target address is resolved on the
-  server's side).
-- Remote (`-R`): listens on the server, and sends each connection back to
-  this computer, which connects to the target.
-- Dynamic (`-D`): a SOCKS5 proxy on this computer; the server connects to
-  the addresses that clients ask for. Only CONNECT is supported, without
-  authentication. Addresses can be IPv4, IPv6 or domain names (resolved
-  by the server). The SOCKS5 server is a small piece of code of its own
-  (`sshx/forward.go`), as none of the existing dependencies had one.
+| Type | Listener | Exit or destination |
+|---|---|---|
+| Local (`-L`) | This computer | The SSH server connects to a host and port, or to an absolute Unix socket path such as `/var/run/docker.sock`. |
+| Remote (`-R`) | SSH server | This computer connects to a fixed host and port. |
+| Dynamic (`-D`) | This computer | SOCKS5 CONNECT from the SSH server. UDP and BIND are not supported. |
+| HTTP proxy | This computer | HTTP requests and CONNECT from the SSH server. |
+| Reverse SOCKS5 | SSH server | SOCKS5 CONNECT from this computer. |
+| Reverse HTTP | SSH server | HTTP requests and CONNECT from this computer. |
 
-By default a tunnel listens on `127.0.0.1` only (for a remote tunnel, the
-server's `127.0.0.1`), so only the same machine can connect. Checking "Let
-other computers connect" allows another listen address (`0.0.0.0` by
-default) and shows a warning: anyone can use the tunnel without logging
-in. A remote tunnel also needs the server's `GatewayPorts` to allow it.
+Leave the listen port blank or use `0` to allocate a free port at start.
+Fixed ports are checked for conflicting listeners on the same side, including
+wildcard addresses. For remote tunnels, use an IP address or `localhost`.
+The default is `127.0.0.1` on the listening machine. Listening beyond
+loopback requires explicit acknowledgment; only use it for intended clients.
+For public access on the server, check the SSH server's `GatewayPorts` and
+firewall policy. The port reported by SSH is not proof of public reachability.
 
-The listen address of a remote tunnel must be an IP address (IPv4 or IPv6)
-or `localhost` (meaning `127.0.0.1`). The SSH library would resolve a host
-name on this computer rather than on the server, so host names are not
-accepted. If `hosts.json` was edited by hand to contain one, that tunnel
-reports an error explaining why when it starts, and the table shows a
-warning icon on it.
+Local SOCKS5 and HTTP proxies can serve both protocols on the same port.
+Set a username and password to require SOCKS5 username/password or HTTP
+Basic proxy authentication. These credentials are not encrypted between a
+proxy client and the listener itself; use loopback or a trusted network.
+Never expose an unauthenticated proxy or a Docker socket to an untrusted
+network. Remote tunnels can exit directly or through a SOCKS5 or HTTP CONNECT
+upstream reachable from this computer, with separate optional credentials.
 
-Ports must be from 1 to 65535, and the target host is required. When
-another tunnel on the same machine already listens on the same port, the
-dialog says "Another tunnel already listens on this port". A tunnel with
-"Start with the session" turned off does not start automatically, but can
-be started by hand on the Tunnels tab.
+**Advanced** accepts IPv4 and IPv6 addresses or CIDRs in an IP allowlist,
+a concurrent connection cap, a shared rate limit in KiB/s per direction,
+and a per-connection idle timeout. Blank or zero means no numeric limit.
+Remote allowlists use the origin address reported by the SSH server, not
+an HTTP header. Disabling **Start with the session** leaves the tunnel
+available for manual start.
+
+### Tunnel recipes
+
+In the connection editor, open **Tunnels → Tunnel recipes…**. In the command palette, the same action is available for a single SSH connection. Pick a goal, edit the suggested addresses and ports, and add the tunnel to the draft. Save the connection to keep it. Local port suggestions skip ports already used by app tunnels or listening on this computer; availability is checked again when the tunnel starts. Remote port suggestions do not probe the server.
+
+- **Server services and intranet:** reach MySQL, PostgreSQL, Redis, MongoDB, Elasticsearch, a web panel, or another machine’s SSH or Remote Desktop. The review shows where to connect your client. The Docker and MySQL recipes can target remote Unix sockets; Docker socket access can be equivalent to root.
+- **Forward or reverse proxies:** use SOCKS5, HTTP or a mixed local listener. Reverse proxies let programs on the server use this computer’s network. The wizard can suggest common local proxy ports; a listener is not proof that the suggested protocol works. Shell exports and HTTP settings for APT and Docker are copyable. Only shell exports can be sent to an active terminal, as unsubmitted input after confirmation; no server files are changed.
+- **Publishing and LAN sharing:** publish a local service through the server, or share a listener with selected LAN subnets. Review who can connect before accepting a non-loopback address. Use authentication before sharing a proxy and check GatewayPorts and the firewall with Public access before publishing. The recipe does not change the server configuration.
+
+**Import from ssh command…** previews `-L`, `-R`, `-D`, or their OpenSSH config directives without executing anything. The SSH config importer also imports forwards; non-loopback listeners from a config file start disabled until you review them. The gallery can copy an OpenSSH command or directives. Tunnels that OpenSSH cannot reproduce safely (such as HTTP or authenticated proxies, or tunnels with allowlists or limits) are listed as comments rather than emitted as active forwards. `ExitOnForwardFailure` is recognized but does not change Finallyshell’s independent tunnel startup.
+
+### System proxy
+
+Enable **Use as system proxy when running** on a local loopback SOCKS5, HTTP or mixed tunnel without proxy authentication or an allowlist. Blank PAC rules select a manual proxy; `all` routes globally through PAC. Otherwise enter exact domains, `*.example.org` patterns or CIDRs such as `10.0.0.0/8` separated by commas. Nonmatching traffic goes directly. IPv6 CIDRs depend on the PAC client’s `isInNetEx` support. Proxy and PAC support varies by application; some applications ignore system settings.
+
+Supported desktop settings are Windows per-user Internet Settings, macOS enabled network services and GNOME on Linux. The most recently applied tunnel replaces the previous system proxy; the original settings return when the active tunnel stops, on quit, or at the next launch after an unexpected exit. The command palette’s **Restore system proxy** action restores the backup without stopping tunnels.
+
+### Public access and LAN sharing
+
+Right-click a remote tunnel in the editor or in **Tunnels** and choose
+**Public access…** (or **Make it public…** for a loopback-only bind).
+Choose the server address explicitly. A wildcard bind can let anyone with
+network access to the server reach the port. Do not expose an unauthenticated
+proxy; use authentication and restrict its sources.
+
+- **Run checks** inspects `GatewayPorts`, available relay tools and the
+  server firewall. Changing `GatewayPorts` to `clientspecified` requires
+  confirmation and elevated access. The app backs up the configuration,
+  validates it, reloads sshd and rolls back on failure. Custom `Match` or
+  `Include` rules require manual review. Reconnect SSH after a successful
+  change; restarting a tunnel on the old connection is not enough.
+- A **server relay** uses a loopback-only remote SSH forward plus an SSH
+  command running `socat`, `ncat` or Python 3.8+ on the server. It needs
+  `setsid`, a fixed public port and a server that honors loopback binds.
+  It does not support source allowlists because it hides client IPs from
+  the tunnel. Server ports below 1024 use the app's privilege prompt.
+  Enabling a relay turns off automatic and background starts. Use the
+  assistant to start it; stopping the tunnel or losing its SSH connection
+  stops the relay as well.
+- The assistant can allow a TCP port in active UFW or an unambiguous
+  firewalld zone. It remembers rules it adds on this computer. Remove
+  unused rules from **Managed rules…**, including rules whose tunnel was
+  deleted. The assistant cannot inspect your cloud security groups;
+  check them separately and restrict them to the intended sources.
+- Test TCP or make an HTTP `GET /` from this computer. An HTTP response
+  (even an error code) proves only that something answered from here.
+  Copy the public address or open it in a browser. To verify access from
+  other networks, test from one of those networks too.
+
+For a local tunnel bound to a non-loopback address, right-click and choose
+**Share with the LAN…**. Copy the addresses of active, matching adapters
+and use the displayed subnet for the source allowlist. Prefer a trusted LAN
+and require proxy authentication. On Windows the dialog can check for an
+enabled program-specific inbound rule, copy a `netsh` command, or request
+UAC to add the rule. The check is best effort: profiles, scope and localized
+command output can make it inconclusive. The rule you add applies to all
+programs and profiles and remains after the tunnel stops; remove or narrow
+it in Windows Defender Firewall when no longer needed.
 
 ### Keys and other behavior
 
@@ -1948,28 +2029,57 @@ The System tab of the bottom panel manages the connected server itself: a row at
 
 ## Tunnels tab
 
-The "Tunnels" tab at the bottom right lists the tunnels of the current
-session. Each shows:
+The session's **Tunnels** tab shows each listener (including its assigned
+port), target or exit, status, last error, open, total and rejected
+connections, and traffic in both directions. The chart shows recent
+one-second traffic samples. The tab count is the number of live listeners.
 
-- its status: Starting…, Listening, Stopped, or the reason it failed, such
-  as "Port 127.0.0.1:8080 is already in use" or "The server did not listen
-  on …: the port is in use there, or forwarding is not allowed";
-- the number of open connections and of connections in all;
-- bytes sent and received;
-- why the last connection that could not reach the target failed.
+Right-click a row or open **Tunnel actions** to start or stop it after
+confirmation, copy its address or an example command, view its connection
+log, or edit its definition. Copied proxy addresses and commands omit
+credentials. For a reverse proxy, use them on the server, not on this computer.
+The in-memory log shows the last 200 completed or rejected connections for
+that run and can be filtered or copied; it does not record URLs, headers or
+request bodies. With an HTTP keep-alive client the log lists its last target.
 
-Each row has Start or Stop. The number on the tab is the number of tunnels
-listening.
+Enabled tunnels start when the SSH session connects. A failed listener
+does not fail the session. Closing, disconnecting, or losing the session
+stops its tunnels; reconnecting uses the host's current settings. When the
+host uses a jump host, forwarding uses the connection to the final host.
 
-- When a session connects, its enabled tunnels start. A tunnel that fails
-  (for example because its port is in use) only affects itself; the
-  session connects as usual.
-- Disconnecting, losing the connection or closing the session stops all of
-  them and frees their ports. Reconnecting starts them again with the
-  host's current settings.
-- When the host is reached through a proxy or jump host, tunnels use the
-  connection to the host itself.
-- "Edit tunnels…" opens the Tunnels page of the connection editor.
+## Tunnel manager
+
+Open **Tunnel manager** from the command palette, the Tunnels tab's network
+button, or the tray menu. **Tunnels…** in an SSH host's context menu opens
+the manager filtered to that host.
+
+- Tunnels are grouped by host. Search by tunnel or host name, or filter by
+  host, type and state. The table shows the actual address once listening
+  (including a dynamically assigned port), target or egress, operating mode,
+  active and total connections, traffic history and uptime. On narrow windows,
+  scroll the table horizontally for the remaining columns.
+- Select rows to start, stop or restart them together. **Start all background**
+  applies to tunnels marked for background autostart; **Stop all** stops
+  managed listeners and pending retries across hosts without disconnecting any
+  terminal. The context menu copies the active address, shows the latest error
+  and next retry, or opens the host's terminal. Add and edit open the host's
+  connection editor. Editing or deleting an active background tunnel stops it;
+  start it again to apply the new configuration.
+- Background tunnels share a separate SSH connection per host, without a
+  shell or monitoring. They reuse the host's saved credentials, jump hosts,
+  proxy and SSH keepalive settings. An unknown or changed host key never opens
+  a prompt or gets accepted automatically: connect once in a terminal, verify
+  the key, then retry. Network failures and listener refusals retry with
+  jittered exponential backoff, from about two seconds to at most one minute.
+  Waking the computer or regaining network access checks the connection early.
+- Background autostart runs marked tunnels at app launch, even if they are
+  not set to start with the terminal. The manager's checkbox controls autostart
+  on this device; its row menu changes which tunnels are marked. Neither change
+  starts or stops a running tunnel immediately. **Start without a terminal**
+  starts the selected tunnel in the background without changing its saved flag.
+- Closing the main window to the tray keeps background tunnels alive. Quitting
+  closes them and cancels retries. A dot on the main **Tunnels** tab indicates
+  background listeners; an exclamation mark signals a failure or a pending retry.
 
 ## Processes tab
 

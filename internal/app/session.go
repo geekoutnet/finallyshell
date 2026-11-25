@@ -223,7 +223,8 @@ func (a *App) connect(s *Session, secret string) {
 			}
 			s.status, s.err = statusConnected, nil
 			a.noteConnected(s.Host)
-			a.startTunnels(s, h.Tunnels)
+			a.startTunnels(s, a.sessionTunnelSpecs(h.ID, h.Tunnels))
+			a.scheduleTunnelManagerTick()
 			a.alertSessionStarted(s, client, ctx)
 		})
 		// The monitor polls with an exec channel; hosts that drop extra

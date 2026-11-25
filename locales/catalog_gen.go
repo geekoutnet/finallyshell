@@ -3508,6 +3508,780 @@ func (msgs Messages) TunnelKindDynamic() string {
 	return Catalog.Format(msgs.locale, "tunnelKindDynamic", nil)
 }
 
+// TunKindHTTP says "HTTP proxy"
+// in the language the app shows.
+func TunKindHTTP() string { return In(i18n.Locale()).TunKindHTTP() }
+
+// TunKindHTTP says "HTTP proxy"
+// in the language of msgs.
+func (msgs Messages) TunKindHTTP() string {
+	return Catalog.Format(msgs.locale, "tunKindHTTP", nil)
+}
+
+// TunKindRemoteDynamic says "Reverse SOCKS5"
+// in the language the app shows.
+func TunKindRemoteDynamic() string { return In(i18n.Locale()).TunKindRemoteDynamic() }
+
+// TunKindRemoteDynamic says "Reverse SOCKS5"
+// in the language of msgs.
+func (msgs Messages) TunKindRemoteDynamic() string {
+	return Catalog.Format(msgs.locale, "tunKindRemoteDynamic", nil)
+}
+
+// TunKindRemoteHTTP says "Reverse HTTP"
+// in the language the app shows.
+func TunKindRemoteHTTP() string { return In(i18n.Locale()).TunKindRemoteHTTP() }
+
+// TunKindRemoteHTTP says "Reverse HTTP"
+// in the language of msgs.
+func (msgs Messages) TunKindRemoteHTTP() string {
+	return Catalog.Format(msgs.locale, "tunKindRemoteHTTP", nil)
+}
+
+// TunHintHTTP says "Listens here as an HTTP proxy; connections exit from the server."
+// in the language the app shows.
+func TunHintHTTP() string { return In(i18n.Locale()).TunHintHTTP() }
+
+// TunHintHTTP says "Listens here as an HTTP proxy; connections exit from the server."
+// in the language of msgs.
+func (msgs Messages) TunHintHTTP() string {
+	return Catalog.Format(msgs.locale, "tunHintHTTP", nil)
+}
+
+// TunHintRemoteDynamic says "Listens on the server as a SOCKS5 proxy; connections exit from this computer."
+// in the language the app shows.
+func TunHintRemoteDynamic() string { return In(i18n.Locale()).TunHintRemoteDynamic() }
+
+// TunHintRemoteDynamic says "Listens on the server as a SOCKS5 proxy; connections exit from this computer."
+// in the language of msgs.
+func (msgs Messages) TunHintRemoteDynamic() string {
+	return Catalog.Format(msgs.locale, "tunHintRemoteDynamic", nil)
+}
+
+// TunHintRemoteHTTP says "Listens on the server as an HTTP proxy; connections exit from this computer."
+// in the language the app shows.
+func TunHintRemoteHTTP() string { return In(i18n.Locale()).TunHintRemoteHTTP() }
+
+// TunHintRemoteHTTP says "Listens on the server as an HTTP proxy; connections exit from this computer."
+// in the language of msgs.
+func (msgs Messages) TunHintRemoteHTTP() string {
+	return Catalog.Format(msgs.locale, "tunHintRemoteHTTP", nil)
+}
+
+// TunAutomatic says "Automatic port"
+// in the language the app shows.
+func TunAutomatic() string { return In(i18n.Locale()).TunAutomatic() }
+
+// TunAutomatic says "Automatic port"
+// in the language of msgs.
+func (msgs Messages) TunAutomatic() string {
+	return Catalog.Format(msgs.locale, "tunAutomatic", nil)
+}
+
+// TunPortHint says "Leave blank or enter 0 to choose a free port when starting."
+// in the language the app shows.
+func TunPortHint() string { return In(i18n.Locale()).TunPortHint() }
+
+// TunPortHint says "Leave blank or enter 0 to choose a free port when starting."
+// in the language of msgs.
+func (msgs Messages) TunPortHint() string {
+	return Catalog.Format(msgs.locale, "tunPortHint", nil)
+}
+
+// TunListenPortError says "Enter a port from 0 to 65535."
+// in the language the app shows.
+func TunListenPortError() string { return In(i18n.Locale()).TunListenPortError() }
+
+// TunListenPortError says "Enter a port from 0 to 65535."
+// in the language of msgs.
+func (msgs Messages) TunListenPortError() string {
+	return Catalog.Format(msgs.locale, "tunListenPortError", nil)
+}
+
+// TunSocketMode says "Unix socket on the server"
+// in the language the app shows.
+func TunSocketMode() string { return In(i18n.Locale()).TunSocketMode() }
+
+// TunSocketMode says "Unix socket on the server"
+// in the language of msgs.
+func (msgs Messages) TunSocketMode() string {
+	return Catalog.Format(msgs.locale, "tunSocketMode", nil)
+}
+
+// TunSocketPath says "Unix socket path"
+// in the language the app shows.
+func TunSocketPath() string { return In(i18n.Locale()).TunSocketPath() }
+
+// TunSocketPath says "Unix socket path"
+// in the language of msgs.
+func (msgs Messages) TunSocketPath() string {
+	return Catalog.Format(msgs.locale, "tunSocketPath", nil)
+}
+
+// TunSocketError says "Enter an absolute Unix path without line breaks."
+// in the language the app shows.
+func TunSocketError() string { return In(i18n.Locale()).TunSocketError() }
+
+// TunSocketError says "Enter an absolute Unix path without line breaks."
+// in the language of msgs.
+func (msgs Messages) TunSocketError() string {
+	return Catalog.Format(msgs.locale, "tunSocketError", nil)
+}
+
+// TunMixed says "Serve HTTP and SOCKS5 on the same port"
+// in the language the app shows.
+func TunMixed() string { return In(i18n.Locale()).TunMixed() }
+
+// TunMixed says "Serve HTTP and SOCKS5 on the same port"
+// in the language of msgs.
+func (msgs Messages) TunMixed() string {
+	return Catalog.Format(msgs.locale, "tunMixed", nil)
+}
+
+// TunMixedExit says "HTTP + SOCKS5 · server"
+// in the language the app shows.
+func TunMixedExit() string { return In(i18n.Locale()).TunMixedExit() }
+
+// TunMixedExit says "HTTP + SOCKS5 · server"
+// in the language of msgs.
+func (msgs Messages) TunMixedExit() string {
+	return Catalog.Format(msgs.locale, "tunMixedExit", nil)
+}
+
+// TunServerExit says "Via the SSH server"
+// in the language the app shows.
+func TunServerExit() string { return In(i18n.Locale()).TunServerExit() }
+
+// TunServerExit says "Via the SSH server"
+// in the language of msgs.
+func (msgs Messages) TunServerExit() string {
+	return Catalog.Format(msgs.locale, "tunServerExit", nil)
+}
+
+// TunLocalExit says "Via this computer"
+// in the language the app shows.
+func TunLocalExit() string { return In(i18n.Locale()).TunLocalExit() }
+
+// TunLocalExit says "Via this computer"
+// in the language of msgs.
+func (msgs Messages) TunLocalExit() string {
+	return Catalog.Format(msgs.locale, "tunLocalExit", nil)
+}
+
+// TunAuth says "Proxy authentication"
+// in the language the app shows.
+func TunAuth() string { return In(i18n.Locale()).TunAuth() }
+
+// TunAuth says "Proxy authentication"
+// in the language of msgs.
+func (msgs Messages) TunAuth() string {
+	return Catalog.Format(msgs.locale, "tunAuth", nil)
+}
+
+// TunUser says "Proxy username"
+// in the language the app shows.
+func TunUser() string { return In(i18n.Locale()).TunUser() }
+
+// TunUser says "Proxy username"
+// in the language of msgs.
+func (msgs Messages) TunUser() string {
+	return Catalog.Format(msgs.locale, "tunUser", nil)
+}
+
+// TunProxyPassword says "Tunnel proxy password"
+// in the language the app shows.
+func TunProxyPassword() string { return In(i18n.Locale()).TunProxyPassword() }
+
+// TunProxyPassword says "Tunnel proxy password"
+// in the language of msgs.
+func (msgs Messages) TunProxyPassword() string {
+	return Catalog.Format(msgs.locale, "tunProxyPassword", nil)
+}
+
+// TunUpstreamPassword says "Upstream password"
+// in the language the app shows.
+func TunUpstreamPassword() string { return In(i18n.Locale()).TunUpstreamPassword() }
+
+// TunUpstreamPassword says "Upstream password"
+// in the language of msgs.
+func (msgs Messages) TunUpstreamPassword() string {
+	return Catalog.Format(msgs.locale, "tunUpstreamPassword", nil)
+}
+
+// TunSecretHint says "Leave blank to keep the existing password for this username and endpoint. Passwords use the system credential store."
+// in the language the app shows.
+func TunSecretHint() string { return In(i18n.Locale()).TunSecretHint() }
+
+// TunSecretHint says "Leave blank to keep the existing password for this username and endpoint. Passwords use the system credential store."
+// in the language of msgs.
+func (msgs Messages) TunSecretHint() string {
+	return Catalog.Format(msgs.locale, "tunSecretHint", nil)
+}
+
+// TunSecretError says "Enter a valid username and password (up to 255 bytes each)."
+// in the language the app shows.
+func TunSecretError() string { return In(i18n.Locale()).TunSecretError() }
+
+// TunSecretError says "Enter a valid username and password (up to 255 bytes each)."
+// in the language of msgs.
+func (msgs Messages) TunSecretError() string {
+	return Catalog.Format(msgs.locale, "tunSecretError", nil)
+}
+
+// TunSecretMissing says "The proxy credentials are missing or invalid. Enter them in the tunnel editor."
+// in the language the app shows.
+func TunSecretMissing() string { return In(i18n.Locale()).TunSecretMissing() }
+
+// TunSecretMissing says "The proxy credentials are missing or invalid. Enter them in the tunnel editor."
+// in the language of msgs.
+func (msgs Messages) TunSecretMissing() string {
+	return Catalog.Format(msgs.locale, "tunSecretMissing", nil)
+}
+
+// TunSecretStoreError says "Could not save the tunnel password in the system credential store."
+// in the language the app shows.
+func TunSecretStoreError() string { return In(i18n.Locale()).TunSecretStoreError() }
+
+// TunSecretStoreError says "Could not save the tunnel password in the system credential store."
+// in the language of msgs.
+func (msgs Messages) TunSecretStoreError() string {
+	return Catalog.Format(msgs.locale, "tunSecretStoreError", nil)
+}
+
+// TunUpstream says "Upstream proxy"
+// in the language the app shows.
+func TunUpstream() string { return In(i18n.Locale()).TunUpstream() }
+
+// TunUpstream says "Upstream proxy"
+// in the language of msgs.
+func (msgs Messages) TunUpstream() string {
+	return Catalog.Format(msgs.locale, "tunUpstream", nil)
+}
+
+// TunUpstreamDirect says "Direct connection"
+// in the language the app shows.
+func TunUpstreamDirect() string { return In(i18n.Locale()).TunUpstreamDirect() }
+
+// TunUpstreamDirect says "Direct connection"
+// in the language of msgs.
+func (msgs Messages) TunUpstreamDirect() string {
+	return Catalog.Format(msgs.locale, "tunUpstreamDirect", nil)
+}
+
+// TunUpstreamAddress says "Upstream host:port"
+// in the language the app shows.
+func TunUpstreamAddress() string { return In(i18n.Locale()).TunUpstreamAddress() }
+
+// TunUpstreamAddress says "Upstream host:port"
+// in the language of msgs.
+func (msgs Messages) TunUpstreamAddress() string {
+	return Catalog.Format(msgs.locale, "tunUpstreamAddress", nil)
+}
+
+// TunUpstreamUser says "Upstream username"
+// in the language the app shows.
+func TunUpstreamUser() string { return In(i18n.Locale()).TunUpstreamUser() }
+
+// TunUpstreamUser says "Upstream username"
+// in the language of msgs.
+func (msgs Messages) TunUpstreamUser() string {
+	return Catalog.Format(msgs.locale, "tunUpstreamUser", nil)
+}
+
+// TunUpstreamError says "Enter a valid host and port and, if needed, a valid username. Do not include a password in the address."
+// in the language the app shows.
+func TunUpstreamError() string { return In(i18n.Locale()).TunUpstreamError() }
+
+// TunUpstreamError says "Enter a valid host and port and, if needed, a valid username. Do not include a password in the address."
+// in the language of msgs.
+func (msgs Messages) TunUpstreamError() string {
+	return Catalog.Format(msgs.locale, "tunUpstreamError", nil)
+}
+
+// TunAllow says "IP allowlist"
+// in the language the app shows.
+func TunAllow() string { return In(i18n.Locale()).TunAllow() }
+
+// TunAllow says "IP allowlist"
+// in the language of msgs.
+func (msgs Messages) TunAllow() string {
+	return Catalog.Format(msgs.locale, "tunAllow", nil)
+}
+
+// TunAllowHint says "One IP address or CIDR per line. Leave blank to allow any source."
+// in the language the app shows.
+func TunAllowHint() string { return In(i18n.Locale()).TunAllowHint() }
+
+// TunAllowHint says "One IP address or CIDR per line. Leave blank to allow any source."
+// in the language of msgs.
+func (msgs Messages) TunAllowHint() string {
+	return Catalog.Format(msgs.locale, "tunAllowHint", nil)
+}
+
+// TunAllowError says "Use IPv4 or IPv6 addresses or CIDRs in the allowlist."
+// in the language the app shows.
+func TunAllowError() string { return In(i18n.Locale()).TunAllowError() }
+
+// TunAllowError says "Use IPv4 or IPv6 addresses or CIDRs in the allowlist."
+// in the language of msgs.
+func (msgs Messages) TunAllowError() string {
+	return Catalog.Format(msgs.locale, "tunAllowError", nil)
+}
+
+// TunMaxConns says "Concurrent connections"
+// in the language the app shows.
+func TunMaxConns() string { return In(i18n.Locale()).TunMaxConns() }
+
+// TunMaxConns says "Concurrent connections"
+// in the language of msgs.
+func (msgs Messages) TunMaxConns() string {
+	return Catalog.Format(msgs.locale, "tunMaxConns", nil)
+}
+
+// TunRate says "Per-direction limit (KiB/s)"
+// in the language the app shows.
+func TunRate() string { return In(i18n.Locale()).TunRate() }
+
+// TunRate says "Per-direction limit (KiB/s)"
+// in the language of msgs.
+func (msgs Messages) TunRate() string {
+	return Catalog.Format(msgs.locale, "tunRate", nil)
+}
+
+// TunIdle says "Idle timeout (seconds)"
+// in the language the app shows.
+func TunIdle() string { return In(i18n.Locale()).TunIdle() }
+
+// TunIdle says "Idle timeout (seconds)"
+// in the language of msgs.
+func (msgs Messages) TunIdle() string {
+	return Catalog.Format(msgs.locale, "tunIdle", nil)
+}
+
+// TunLimitError says "Enter a nonnegative whole number."
+// in the language the app shows.
+func TunLimitError() string { return In(i18n.Locale()).TunLimitError() }
+
+// TunLimitError says "Enter a nonnegative whole number."
+// in the language of msgs.
+func (msgs Messages) TunLimitError() string {
+	return Catalog.Format(msgs.locale, "tunLimitError", nil)
+}
+
+// TunLimitsHint says "Zero or blank means no limit."
+// in the language the app shows.
+func TunLimitsHint() string { return In(i18n.Locale()).TunLimitsHint() }
+
+// TunLimitsHint says "Zero or blank means no limit."
+// in the language of msgs.
+func (msgs Messages) TunLimitsHint() string {
+	return Catalog.Format(msgs.locale, "tunLimitsHint", nil)
+}
+
+// TunDescription says "Description"
+// in the language the app shows.
+func TunDescription() string { return In(i18n.Locale()).TunDescription() }
+
+// TunDescription says "Description"
+// in the language of msgs.
+func (msgs Messages) TunDescription() string {
+	return Catalog.Format(msgs.locale, "tunDescription", nil)
+}
+
+// TunNameAndType says "Name / type"
+// in the language the app shows.
+func TunNameAndType() string { return In(i18n.Locale()).TunNameAndType() }
+
+// TunNameAndType says "Name / type"
+// in the language of msgs.
+func (msgs Messages) TunNameAndType() string {
+	return Catalog.Format(msgs.locale, "tunNameAndType", nil)
+}
+
+// TunTargetAndExit says "Target / exit"
+// in the language the app shows.
+func TunTargetAndExit() string { return In(i18n.Locale()).TunTargetAndExit() }
+
+// TunTargetAndExit says "Target / exit"
+// in the language of msgs.
+func (msgs Messages) TunTargetAndExit() string {
+	return Catalog.Format(msgs.locale, "tunTargetAndExit", nil)
+}
+
+// TunOptions says "Options"
+// in the language the app shows.
+func TunOptions() string { return In(i18n.Locale()).TunOptions() }
+
+// TunOptions says "Options"
+// in the language of msgs.
+func (msgs Messages) TunOptions() string {
+	return Catalog.Format(msgs.locale, "tunOptions", nil)
+}
+
+// TunPublicAuth says "Anyone who can reach this port can try to use the proxy. Proxy authentication is not encrypted between the client and…"
+// in the language the app shows.
+func TunPublicAuth() string { return In(i18n.Locale()).TunPublicAuth() }
+
+// TunPublicAuth says "Anyone who can reach this port can try to use the proxy. Proxy authentication is not encrypted between the client and…"
+// in the language of msgs.
+func (msgs Messages) TunPublicAuth() string {
+	return Catalog.Format(msgs.locale, "tunPublicAuth", nil)
+}
+
+// TunOpenProxy says "Warning: anyone who can reach this port and passes the IP allowlist can use this proxy without a password. They can r…"
+// in the language the app shows.
+func TunOpenProxy() string { return In(i18n.Locale()).TunOpenProxy() }
+
+// TunOpenProxy says "Warning: anyone who can reach this port and passes the IP allowlist can use this proxy without a password. They can r…"
+// in the language of msgs.
+func (msgs Messages) TunOpenProxy() string {
+	return Catalog.Format(msgs.locale, "tunOpenProxy", nil)
+}
+
+// TunSeePublic says "See Public access"
+// in the language the app shows.
+func TunSeePublic() string { return In(i18n.Locale()).TunSeePublic() }
+
+// TunSeePublic says "See Public access"
+// in the language of msgs.
+func (msgs Messages) TunSeePublic() string {
+	return Catalog.Format(msgs.locale, "tunSeePublic", nil)
+}
+
+// TunGatewayPorts says "A non-loopback remote listener requires GatewayPorts on the SSH server."
+// in the language the app shows.
+func TunGatewayPorts() string { return In(i18n.Locale()).TunGatewayPorts() }
+
+// TunGatewayPorts says "A non-loopback remote listener requires GatewayPorts on the SSH server."
+// in the language of msgs.
+func (msgs Messages) TunGatewayPorts() string {
+	return Catalog.Format(msgs.locale, "tunGatewayPorts", nil)
+}
+
+// TunPublicConfirm says "I understand who can connect to this listener"
+// in the language the app shows.
+func TunPublicConfirm() string { return In(i18n.Locale()).TunPublicConfirm() }
+
+// TunPublicConfirm says "I understand who can connect to this listener"
+// in the language of msgs.
+func (msgs Messages) TunPublicConfirm() string {
+	return Catalog.Format(msgs.locale, "tunPublicConfirm", nil)
+}
+
+// TunPublicError says "Acknowledge the exposure or use the loopback address."
+// in the language the app shows.
+func TunPublicError() string { return In(i18n.Locale()).TunPublicError() }
+
+// TunPublicError says "Acknowledge the exposure or use the loopback address."
+// in the language of msgs.
+func (msgs Messages) TunPublicError() string {
+	return Catalog.Format(msgs.locale, "tunPublicError", nil)
+}
+
+// TunRemoveQuestion says "Remove {name} from this connection? Its saved proxy passwords will be removed when you save the connection."
+// in the language the app shows.
+func TunRemoveQuestion(name string) string { return In(i18n.Locale()).TunRemoveQuestion(name) }
+
+// TunRemoveQuestion says "Remove {name} from this connection? Its saved proxy passwords will be removed when you save the connection."
+// in the language of msgs.
+func (msgs Messages) TunRemoveQuestion(name string) string {
+	return Catalog.Format(msgs.locale, "tunRemoveQuestion", map[string]any{"name": name})
+}
+
+// TunActions says "Tunnel actions"
+// in the language the app shows.
+func TunActions() string { return In(i18n.Locale()).TunActions() }
+
+// TunActions says "Tunnel actions"
+// in the language of msgs.
+func (msgs Messages) TunActions() string {
+	return Catalog.Format(msgs.locale, "tunActions", nil)
+}
+
+// TunSelectOne says "Select a tunnel first."
+// in the language the app shows.
+func TunSelectOne() string { return In(i18n.Locale()).TunSelectOne() }
+
+// TunSelectOne says "Select a tunnel first."
+// in the language of msgs.
+func (msgs Messages) TunSelectOne() string {
+	return Catalog.Format(msgs.locale, "tunSelectOne", nil)
+}
+
+// TunAlreadyRunning says "This tunnel is already running or starting."
+// in the language the app shows.
+func TunAlreadyRunning() string { return In(i18n.Locale()).TunAlreadyRunning() }
+
+// TunAlreadyRunning says "This tunnel is already running or starting."
+// in the language of msgs.
+func (msgs Messages) TunAlreadyRunning() string {
+	return Catalog.Format(msgs.locale, "tunAlreadyRunning", nil)
+}
+
+// TunNotRunning says "This tunnel is not running."
+// in the language the app shows.
+func TunNotRunning() string { return In(i18n.Locale()).TunNotRunning() }
+
+// TunNotRunning says "This tunnel is not running."
+// in the language of msgs.
+func (msgs Messages) TunNotRunning() string {
+	return Catalog.Format(msgs.locale, "tunNotRunning", nil)
+}
+
+// TunStartQuestion says "Start {name} on {address}?"
+// in the language the app shows.
+func TunStartQuestion(name string, address string) string {
+	return In(i18n.Locale()).TunStartQuestion(name, address)
+}
+
+// TunStartQuestion says "Start {name} on {address}?"
+// in the language of msgs.
+func (msgs Messages) TunStartQuestion(name string, address string) string {
+	return Catalog.Format(msgs.locale, "tunStartQuestion", map[string]any{"name": name, "address": address})
+}
+
+// TunStopQuestion says "Stop {name} on {address} and close its open connections?"
+// in the language the app shows.
+func TunStopQuestion(name string, address string) string {
+	return In(i18n.Locale()).TunStopQuestion(name, address)
+}
+
+// TunStopQuestion says "Stop {name} on {address} and close its open connections?"
+// in the language of msgs.
+func (msgs Messages) TunStopQuestion(name string, address string) string {
+	return Catalog.Format(msgs.locale, "tunStopQuestion", map[string]any{"name": name, "address": address})
+}
+
+// TunCopyAddress says "Copy address"
+// in the language the app shows.
+func TunCopyAddress() string { return In(i18n.Locale()).TunCopyAddress() }
+
+// TunCopyAddress says "Copy address"
+// in the language of msgs.
+func (msgs Messages) TunCopyAddress() string {
+	return Catalog.Format(msgs.locale, "tunCopyAddress", nil)
+}
+
+// TunCopyCommand says "Copy command"
+// in the language the app shows.
+func TunCopyCommand() string { return In(i18n.Locale()).TunCopyCommand() }
+
+// TunCopyCommand says "Copy command"
+// in the language of msgs.
+func (msgs Messages) TunCopyCommand() string {
+	return Catalog.Format(msgs.locale, "tunCopyCommand", nil)
+}
+
+// TunNoCommand says "No command is available for this tunnel."
+// in the language the app shows.
+func TunNoCommand() string { return In(i18n.Locale()).TunNoCommand() }
+
+// TunNoCommand says "No command is available for this tunnel."
+// in the language of msgs.
+func (msgs Messages) TunNoCommand() string {
+	return Catalog.Format(msgs.locale, "tunNoCommand", nil)
+}
+
+// TunConnectionLog says "Connection log"
+// in the language the app shows.
+func TunConnectionLog() string { return In(i18n.Locale()).TunConnectionLog() }
+
+// TunConnectionLog says "Connection log"
+// in the language of msgs.
+func (msgs Messages) TunConnectionLog() string {
+	return Catalog.Format(msgs.locale, "tunConnectionLog", nil)
+}
+
+// TunNoLog says "No completed or rejected connections to show."
+// in the language the app shows.
+func TunNoLog() string { return In(i18n.Locale()).TunNoLog() }
+
+// TunNoLog says "No completed or rejected connections to show."
+// in the language of msgs.
+func (msgs Messages) TunNoLog() string {
+	return Catalog.Format(msgs.locale, "tunNoLog", nil)
+}
+
+// TunLogFilter says "Filter by client, target or result"
+// in the language the app shows.
+func TunLogFilter() string { return In(i18n.Locale()).TunLogFilter() }
+
+// TunLogFilter says "Filter by client, target or result"
+// in the language of msgs.
+func (msgs Messages) TunLogFilter() string {
+	return Catalog.Format(msgs.locale, "tunLogFilter", nil)
+}
+
+// TunLogTime says "Started"
+// in the language the app shows.
+func TunLogTime() string { return In(i18n.Locale()).TunLogTime() }
+
+// TunLogTime says "Started"
+// in the language of msgs.
+func (msgs Messages) TunLogTime() string {
+	return Catalog.Format(msgs.locale, "tunLogTime", nil)
+}
+
+// TunLogClient says "Client"
+// in the language the app shows.
+func TunLogClient() string { return In(i18n.Locale()).TunLogClient() }
+
+// TunLogClient says "Client"
+// in the language of msgs.
+func (msgs Messages) TunLogClient() string {
+	return Catalog.Format(msgs.locale, "tunLogClient", nil)
+}
+
+// TunLogDuration says "Duration"
+// in the language the app shows.
+func TunLogDuration() string { return In(i18n.Locale()).TunLogDuration() }
+
+// TunLogDuration says "Duration"
+// in the language of msgs.
+func (msgs Messages) TunLogDuration() string {
+	return Catalog.Format(msgs.locale, "tunLogDuration", nil)
+}
+
+// TunLogResult says "Result"
+// in the language the app shows.
+func TunLogResult() string { return In(i18n.Locale()).TunLogResult() }
+
+// TunLogResult says "Result"
+// in the language of msgs.
+func (msgs Messages) TunLogResult() string {
+	return Catalog.Format(msgs.locale, "tunLogResult", nil)
+}
+
+// TunLogOK says "Closed"
+// in the language the app shows.
+func TunLogOK() string { return In(i18n.Locale()).TunLogOK() }
+
+// TunLogOK says "Closed"
+// in the language of msgs.
+func (msgs Messages) TunLogOK() string {
+	return Catalog.Format(msgs.locale, "tunLogOK", nil)
+}
+
+// TunLogRejected says "Client not on the IP allowlist"
+// in the language the app shows.
+func TunLogRejected() string { return In(i18n.Locale()).TunLogRejected() }
+
+// TunLogRejected says "Client not on the IP allowlist"
+// in the language of msgs.
+func (msgs Messages) TunLogRejected() string {
+	return Catalog.Format(msgs.locale, "tunLogRejected", nil)
+}
+
+// TunLogAtCapacity says "Connection limit reached"
+// in the language the app shows.
+func TunLogAtCapacity() string { return In(i18n.Locale()).TunLogAtCapacity() }
+
+// TunLogAtCapacity says "Connection limit reached"
+// in the language of msgs.
+func (msgs Messages) TunLogAtCapacity() string {
+	return Catalog.Format(msgs.locale, "tunLogAtCapacity", nil)
+}
+
+// TunLogIdle says "Idle timeout"
+// in the language the app shows.
+func TunLogIdle() string { return In(i18n.Locale()).TunLogIdle() }
+
+// TunLogIdle says "Idle timeout"
+// in the language of msgs.
+func (msgs Messages) TunLogIdle() string {
+	return Catalog.Format(msgs.locale, "tunLogIdle", nil)
+}
+
+// TunLogAuth says "Proxy authentication failed"
+// in the language the app shows.
+func TunLogAuth() string { return In(i18n.Locale()).TunLogAuth() }
+
+// TunLogAuth says "Proxy authentication failed"
+// in the language of msgs.
+func (msgs Messages) TunLogAuth() string {
+	return Catalog.Format(msgs.locale, "tunLogAuth", nil)
+}
+
+// TunLogFailed says "Connection failed"
+// in the language the app shows.
+func TunLogFailed() string { return In(i18n.Locale()).TunLogFailed() }
+
+// TunLogFailed says "Connection failed"
+// in the language of msgs.
+func (msgs Messages) TunLogFailed() string {
+	return Catalog.Format(msgs.locale, "tunLogFailed", nil)
+}
+
+// TunTargetDenied says "Target connection denied"
+// in the language the app shows.
+func TunTargetDenied() string { return In(i18n.Locale()).TunTargetDenied() }
+
+// TunTargetDenied says "Target connection denied"
+// in the language of msgs.
+func (msgs Messages) TunTargetDenied() string {
+	return Catalog.Format(msgs.locale, "tunTargetDenied", nil)
+}
+
+// TunTargetRefused says "Target connection refused"
+// in the language the app shows.
+func TunTargetRefused() string { return In(i18n.Locale()).TunTargetRefused() }
+
+// TunTargetRefused says "Target connection refused"
+// in the language of msgs.
+func (msgs Messages) TunTargetRefused() string {
+	return Catalog.Format(msgs.locale, "tunTargetRefused", nil)
+}
+
+// TunTargetNetwork says "Target network unreachable"
+// in the language the app shows.
+func TunTargetNetwork() string { return In(i18n.Locale()).TunTargetNetwork() }
+
+// TunTargetNetwork says "Target network unreachable"
+// in the language of msgs.
+func (msgs Messages) TunTargetNetwork() string {
+	return Catalog.Format(msgs.locale, "tunTargetNetwork", nil)
+}
+
+// TunTargetTimeout says "Target connection timed out"
+// in the language the app shows.
+func TunTargetTimeout() string { return In(i18n.Locale()).TunTargetTimeout() }
+
+// TunTargetTimeout says "Target connection timed out"
+// in the language of msgs.
+func (msgs Messages) TunTargetTimeout() string {
+	return Catalog.Format(msgs.locale, "tunTargetTimeout", nil)
+}
+
+// TunInvalidTarget says "Enter a valid target host and port."
+// in the language the app shows.
+func TunInvalidTarget() string { return In(i18n.Locale()).TunInvalidTarget() }
+
+// TunInvalidTarget says "Enter a valid target host and port."
+// in the language of msgs.
+func (msgs Messages) TunInvalidTarget() string {
+	return Catalog.Format(msgs.locale, "tunInvalidTarget", nil)
+}
+
+// TunRejectedCount says "{count, plural, one {# rejected} other {# rejected}}"
+// in the language the app shows.
+func TunRejectedCount(count int) string { return In(i18n.Locale()).TunRejectedCount(count) }
+
+// TunRejectedCount says "{count, plural, one {# rejected} other {# rejected}}"
+// in the language of msgs.
+func (msgs Messages) TunRejectedCount(count int) string {
+	return Catalog.Format(msgs.locale, "tunRejectedCount", map[string]any{"count": count})
+}
+
+// TunBytesPerSecond says "{rate}/s"
+// in the language the app shows.
+func TunBytesPerSecond(rate string) string { return In(i18n.Locale()).TunBytesPerSecond(rate) }
+
+// TunBytesPerSecond says "{rate}/s"
+// in the language of msgs.
+func (msgs Messages) TunBytesPerSecond(rate string) string {
+	return Catalog.Format(msgs.locale, "tunBytesPerSecond", map[string]any{"rate": rate})
+}
+
 // TunnelSocks says "SOCKS5 proxy"
 // in the language the app shows.
 func TunnelSocks() string { return In(i18n.Locale()).TunnelSocks() }
@@ -3798,6 +4572,702 @@ func TabTunnels() string { return In(i18n.Locale()).TabTunnels() }
 // in the language of msgs.
 func (msgs Messages) TabTunnels() string {
 	return Catalog.Format(msgs.locale, "tabTunnels", nil)
+}
+
+// TmgrTitle says "Tunnel manager"
+// in the language the app shows.
+func TmgrTitle() string { return In(i18n.Locale()).TmgrTitle() }
+
+// TmgrTitle says "Tunnel manager"
+// in the language of msgs.
+func (msgs Messages) TmgrTitle() string {
+	return Catalog.Format(msgs.locale, "tmgrTitle", nil)
+}
+
+// TmgrHostMenu says "Tunnels…"
+// in the language the app shows.
+func TmgrHostMenu() string { return In(i18n.Locale()).TmgrHostMenu() }
+
+// TmgrHostMenu says "Tunnels…"
+// in the language of msgs.
+func (msgs Messages) TmgrHostMenu() string {
+	return Catalog.Format(msgs.locale, "tmgrHostMenu", nil)
+}
+
+// TmgrName says "Tunnel / Type"
+// in the language the app shows.
+func TmgrName() string { return In(i18n.Locale()).TmgrName() }
+
+// TmgrName says "Tunnel / Type"
+// in the language of msgs.
+func (msgs Messages) TmgrName() string {
+	return Catalog.Format(msgs.locale, "tmgrName", nil)
+}
+
+// TmgrHost says "Host"
+// in the language the app shows.
+func TmgrHost() string { return In(i18n.Locale()).TmgrHost() }
+
+// TmgrHost says "Host"
+// in the language of msgs.
+func (msgs Messages) TmgrHost() string {
+	return Catalog.Format(msgs.locale, "tmgrHost", nil)
+}
+
+// TmgrTarget says "Target / Egress"
+// in the language the app shows.
+func TmgrTarget() string { return In(i18n.Locale()).TmgrTarget() }
+
+// TmgrTarget says "Target / Egress"
+// in the language of msgs.
+func (msgs Messages) TmgrTarget() string {
+	return Catalog.Format(msgs.locale, "tmgrTarget", nil)
+}
+
+// TmgrMode says "Mode"
+// in the language the app shows.
+func TmgrMode() string { return In(i18n.Locale()).TmgrMode() }
+
+// TmgrMode says "Mode"
+// in the language of msgs.
+func (msgs Messages) TmgrMode() string {
+	return Catalog.Format(msgs.locale, "tmgrMode", nil)
+}
+
+// TmgrUptime says "Uptime"
+// in the language the app shows.
+func TmgrUptime() string { return In(i18n.Locale()).TmgrUptime() }
+
+// TmgrUptime says "Uptime"
+// in the language of msgs.
+func (msgs Messages) TmgrUptime() string {
+	return Catalog.Format(msgs.locale, "tmgrUptime", nil)
+}
+
+// TmgrHTTP says "HTTP proxy"
+// in the language the app shows.
+func TmgrHTTP() string { return In(i18n.Locale()).TmgrHTTP() }
+
+// TmgrHTTP says "HTTP proxy"
+// in the language of msgs.
+func (msgs Messages) TmgrHTTP() string {
+	return Catalog.Format(msgs.locale, "tmgrHTTP", nil)
+}
+
+// TmgrRemoteSOCKS says "Reverse SOCKS5 proxy"
+// in the language the app shows.
+func TmgrRemoteSOCKS() string { return In(i18n.Locale()).TmgrRemoteSOCKS() }
+
+// TmgrRemoteSOCKS says "Reverse SOCKS5 proxy"
+// in the language of msgs.
+func (msgs Messages) TmgrRemoteSOCKS() string {
+	return Catalog.Format(msgs.locale, "tmgrRemoteSOCKS", nil)
+}
+
+// TmgrRemoteHTTP says "Reverse HTTP proxy"
+// in the language the app shows.
+func TmgrRemoteHTTP() string { return In(i18n.Locale()).TmgrRemoteHTTP() }
+
+// TmgrRemoteHTTP says "Reverse HTTP proxy"
+// in the language of msgs.
+func (msgs Messages) TmgrRemoteHTTP() string {
+	return Catalog.Format(msgs.locale, "tmgrRemoteHTTP", nil)
+}
+
+// TmgrAutoPort says "{host}: auto port"
+// in the language the app shows.
+func TmgrAutoPort(host string) string { return In(i18n.Locale()).TmgrAutoPort(host) }
+
+// TmgrAutoPort says "{host}: auto port"
+// in the language of msgs.
+func (msgs Messages) TmgrAutoPort(host string) string {
+	return Catalog.Format(msgs.locale, "tmgrAutoPort", map[string]any{"host": host})
+}
+
+// TmgrServerExit says "Via the SSH server"
+// in the language the app shows.
+func TmgrServerExit() string { return In(i18n.Locale()).TmgrServerExit() }
+
+// TmgrServerExit says "Via the SSH server"
+// in the language of msgs.
+func (msgs Messages) TmgrServerExit() string {
+	return Catalog.Format(msgs.locale, "tmgrServerExit", nil)
+}
+
+// TmgrLocalExit says "Via this computer"
+// in the language the app shows.
+func TmgrLocalExit() string { return In(i18n.Locale()).TmgrLocalExit() }
+
+// TmgrLocalExit says "Via this computer"
+// in the language of msgs.
+func (msgs Messages) TmgrLocalExit() string {
+	return Catalog.Format(msgs.locale, "tmgrLocalExit", nil)
+}
+
+// TmgrUpstream says "Via {address}"
+// in the language the app shows.
+func TmgrUpstream(address string) string { return In(i18n.Locale()).TmgrUpstream(address) }
+
+// TmgrUpstream says "Via {address}"
+// in the language of msgs.
+func (msgs Messages) TmgrUpstream(address string) string {
+	return Catalog.Format(msgs.locale, "tmgrUpstream", map[string]any{"address": address})
+}
+
+// TmgrSearch says "Search tunnels or hosts"
+// in the language the app shows.
+func TmgrSearch() string { return In(i18n.Locale()).TmgrSearch() }
+
+// TmgrSearch says "Search tunnels or hosts"
+// in the language of msgs.
+func (msgs Messages) TmgrSearch() string {
+	return Catalog.Format(msgs.locale, "tmgrSearch", nil)
+}
+
+// TmgrAnyHost says "All hosts"
+// in the language the app shows.
+func TmgrAnyHost() string { return In(i18n.Locale()).TmgrAnyHost() }
+
+// TmgrAnyHost says "All hosts"
+// in the language of msgs.
+func (msgs Messages) TmgrAnyHost() string {
+	return Catalog.Format(msgs.locale, "tmgrAnyHost", nil)
+}
+
+// TmgrAnyKind says "All types"
+// in the language the app shows.
+func TmgrAnyKind() string { return In(i18n.Locale()).TmgrAnyKind() }
+
+// TmgrAnyKind says "All types"
+// in the language of msgs.
+func (msgs Messages) TmgrAnyKind() string {
+	return Catalog.Format(msgs.locale, "tmgrAnyKind", nil)
+}
+
+// TmgrAnyState says "All states"
+// in the language the app shows.
+func TmgrAnyState() string { return In(i18n.Locale()).TmgrAnyState() }
+
+// TmgrAnyState says "All states"
+// in the language of msgs.
+func (msgs Messages) TmgrAnyState() string {
+	return Catalog.Format(msgs.locale, "tmgrAnyState", nil)
+}
+
+// TmgrReconnecting says "Reconnecting"
+// in the language the app shows.
+func TmgrReconnecting() string { return In(i18n.Locale()).TmgrReconnecting() }
+
+// TmgrReconnecting says "Reconnecting"
+// in the language of msgs.
+func (msgs Messages) TmgrReconnecting() string {
+	return Catalog.Format(msgs.locale, "tmgrReconnecting", nil)
+}
+
+// TmgrError says "Error"
+// in the language the app shows.
+func TmgrError() string { return In(i18n.Locale()).TmgrError() }
+
+// TmgrError says "Error"
+// in the language of msgs.
+func (msgs Messages) TmgrError() string {
+	return Catalog.Format(msgs.locale, "tmgrError", nil)
+}
+
+// TmgrBackground says "Background"
+// in the language the app shows.
+func TmgrBackground() string { return In(i18n.Locale()).TmgrBackground() }
+
+// TmgrBackground says "Background"
+// in the language of msgs.
+func (msgs Messages) TmgrBackground() string {
+	return Catalog.Format(msgs.locale, "tmgrBackground", nil)
+}
+
+// TmgrWithSession says "With session"
+// in the language the app shows.
+func TmgrWithSession() string { return In(i18n.Locale()).TmgrWithSession() }
+
+// TmgrWithSession says "With session"
+// in the language of msgs.
+func (msgs Messages) TmgrWithSession() string {
+	return Catalog.Format(msgs.locale, "tmgrWithSession", nil)
+}
+
+// TmgrRestart says "Restart"
+// in the language the app shows.
+func TmgrRestart() string { return In(i18n.Locale()).TmgrRestart() }
+
+// TmgrRestart says "Restart"
+// in the language of msgs.
+func (msgs Messages) TmgrRestart() string {
+	return Catalog.Format(msgs.locale, "tmgrRestart", nil)
+}
+
+// TmgrStartAll says "Start all background"
+// in the language the app shows.
+func TmgrStartAll() string { return In(i18n.Locale()).TmgrStartAll() }
+
+// TmgrStartAll says "Start all background"
+// in the language of msgs.
+func (msgs Messages) TmgrStartAll() string {
+	return Catalog.Format(msgs.locale, "tmgrStartAll", nil)
+}
+
+// TmgrStopAll says "Stop all"
+// in the language the app shows.
+func TmgrStopAll() string { return In(i18n.Locale()).TmgrStopAll() }
+
+// TmgrStopAll says "Stop all"
+// in the language of msgs.
+func (msgs Messages) TmgrStopAll() string {
+	return Catalog.Format(msgs.locale, "tmgrStopAll", nil)
+}
+
+// TmgrStartWithoutTerminal says "Start without a terminal"
+// in the language the app shows.
+func TmgrStartWithoutTerminal() string { return In(i18n.Locale()).TmgrStartWithoutTerminal() }
+
+// TmgrStartWithoutTerminal says "Start without a terminal"
+// in the language of msgs.
+func (msgs Messages) TmgrStartWithoutTerminal() string {
+	return Catalog.Format(msgs.locale, "tmgrStartWithoutTerminal", nil)
+}
+
+// TmgrEnableBackground says "Enable background autostart"
+// in the language the app shows.
+func TmgrEnableBackground() string { return In(i18n.Locale()).TmgrEnableBackground() }
+
+// TmgrEnableBackground says "Enable background autostart"
+// in the language of msgs.
+func (msgs Messages) TmgrEnableBackground() string {
+	return Catalog.Format(msgs.locale, "tmgrEnableBackground", nil)
+}
+
+// TmgrDisableBackground says "Disable background autostart"
+// in the language the app shows.
+func TmgrDisableBackground() string { return In(i18n.Locale()).TmgrDisableBackground() }
+
+// TmgrDisableBackground says "Disable background autostart"
+// in the language of msgs.
+func (msgs Messages) TmgrDisableBackground() string {
+	return Catalog.Format(msgs.locale, "tmgrDisableBackground", nil)
+}
+
+// TmgrAlreadyActive says "Already running or waiting to retry"
+// in the language the app shows.
+func TmgrAlreadyActive() string { return In(i18n.Locale()).TmgrAlreadyActive() }
+
+// TmgrAlreadyActive says "Already running or waiting to retry"
+// in the language of msgs.
+func (msgs Messages) TmgrAlreadyActive() string {
+	return Catalog.Format(msgs.locale, "tmgrAlreadyActive", nil)
+}
+
+// TmgrNotRunning says "Already stopped"
+// in the language the app shows.
+func TmgrNotRunning() string { return In(i18n.Locale()).TmgrNotRunning() }
+
+// TmgrNotRunning says "Already stopped"
+// in the language of msgs.
+func (msgs Messages) TmgrNotRunning() string {
+	return Catalog.Format(msgs.locale, "tmgrNotRunning", nil)
+}
+
+// TmgrNotListening says "No active listener"
+// in the language the app shows.
+func TmgrNotListening() string { return In(i18n.Locale()).TmgrNotListening() }
+
+// TmgrNotListening says "No active listener"
+// in the language of msgs.
+func (msgs Messages) TmgrNotListening() string {
+	return Catalog.Format(msgs.locale, "tmgrNotListening", nil)
+}
+
+// TmgrEditorOpen says "Close this host’s editor first"
+// in the language the app shows.
+func TmgrEditorOpen() string { return In(i18n.Locale()).TmgrEditorOpen() }
+
+// TmgrEditorOpen says "Close this host’s editor first"
+// in the language of msgs.
+func (msgs Messages) TmgrEditorOpen() string {
+	return Catalog.Format(msgs.locale, "tmgrEditorOpen", nil)
+}
+
+// TmgrSelectOne says "Select one tunnel"
+// in the language the app shows.
+func TmgrSelectOne() string { return In(i18n.Locale()).TmgrSelectOne() }
+
+// TmgrSelectOne says "Select one tunnel"
+// in the language of msgs.
+func (msgs Messages) TmgrSelectOne() string {
+	return Catalog.Format(msgs.locale, "tmgrSelectOne", nil)
+}
+
+// TmgrSelectRows says "Select tunnels first"
+// in the language the app shows.
+func TmgrSelectRows() string { return In(i18n.Locale()).TmgrSelectRows() }
+
+// TmgrSelectRows says "Select tunnels first"
+// in the language of msgs.
+func (msgs Messages) TmgrSelectRows() string {
+	return Catalog.Format(msgs.locale, "tmgrSelectRows", nil)
+}
+
+// TmgrSelectAll says "Select all visible tunnels"
+// in the language the app shows.
+func TmgrSelectAll() string { return In(i18n.Locale()).TmgrSelectAll() }
+
+// TmgrSelectAll says "Select all visible tunnels"
+// in the language of msgs.
+func (msgs Messages) TmgrSelectAll() string {
+	return Catalog.Format(msgs.locale, "tmgrSelectAll", nil)
+}
+
+// TmgrCopyAddress says "Copy listen address"
+// in the language the app shows.
+func TmgrCopyAddress() string { return In(i18n.Locale()).TmgrCopyAddress() }
+
+// TmgrCopyAddress says "Copy listen address"
+// in the language of msgs.
+func (msgs Messages) TmgrCopyAddress() string {
+	return Catalog.Format(msgs.locale, "tmgrCopyAddress", nil)
+}
+
+// TmgrOpenTerminal says "Open host terminal"
+// in the language the app shows.
+func TmgrOpenTerminal() string { return In(i18n.Locale()).TmgrOpenTerminal() }
+
+// TmgrOpenTerminal says "Open host terminal"
+// in the language of msgs.
+func (msgs Messages) TmgrOpenTerminal() string {
+	return Catalog.Format(msgs.locale, "tmgrOpenTerminal", nil)
+}
+
+// TmgrLog says "Connection log"
+// in the language the app shows.
+func TmgrLog() string { return In(i18n.Locale()).TmgrLog() }
+
+// TmgrLog says "Connection log"
+// in the language of msgs.
+func (msgs Messages) TmgrLog() string {
+	return Catalog.Format(msgs.locale, "tmgrLog", nil)
+}
+
+// TmgrLastError says "Last error"
+// in the language the app shows.
+func TmgrLastError() string { return In(i18n.Locale()).TmgrLastError() }
+
+// TmgrLastError says "Last error"
+// in the language of msgs.
+func (msgs Messages) TmgrLastError() string {
+	return Catalog.Format(msgs.locale, "tmgrLastError", nil)
+}
+
+// TmgrNoError says "No error recorded."
+// in the language the app shows.
+func TmgrNoError() string { return In(i18n.Locale()).TmgrNoError() }
+
+// TmgrNoError says "No error recorded."
+// in the language of msgs.
+func (msgs Messages) TmgrNoError() string {
+	return Catalog.Format(msgs.locale, "tmgrNoError", nil)
+}
+
+// TmgrUntrusted says "Host key not trusted. Connect once interactively, verify the key, then retry here."
+// in the language the app shows.
+func TmgrUntrusted() string { return In(i18n.Locale()).TmgrUntrusted() }
+
+// TmgrUntrusted says "Host key not trusted. Connect once interactively, verify the key, then retry here."
+// in the language of msgs.
+func (msgs Messages) TmgrUntrusted() string {
+	return Catalog.Format(msgs.locale, "tmgrUntrusted", nil)
+}
+
+// TmgrLoginError says "Background SSH authentication failed. Check saved credentials or connect interactively, then retry here."
+// in the language the app shows.
+func TmgrLoginError() string { return In(i18n.Locale()).TmgrLoginError() }
+
+// TmgrLoginError says "Background SSH authentication failed. Check saved credentials or connect interactively, then retry here."
+// in the language of msgs.
+func (msgs Messages) TmgrLoginError() string {
+	return Catalog.Format(msgs.locale, "tmgrLoginError", nil)
+}
+
+// TmgrEngineError says "The tunnel engine in this build cannot apply this tunnel’s options."
+// in the language the app shows.
+func TmgrEngineError() string { return In(i18n.Locale()).TmgrEngineError() }
+
+// TmgrEngineError says "The tunnel engine in this build cannot apply this tunnel’s options."
+// in the language of msgs.
+func (msgs Messages) TmgrEngineError() string {
+	return Catalog.Format(msgs.locale, "tmgrEngineError", nil)
+}
+
+// TmgrEmpty says "No matching tunnels. Use Add tunnel to configure a host."
+// in the language the app shows.
+func TmgrEmpty() string { return In(i18n.Locale()).TmgrEmpty() }
+
+// TmgrEmpty says "No matching tunnels. Use Add tunnel to configure a host."
+// in the language of msgs.
+func (msgs Messages) TmgrEmpty() string {
+	return Catalog.Format(msgs.locale, "tmgrEmpty", nil)
+}
+
+// TmgrChooseHost says "Choose an SSH host for the new tunnel"
+// in the language the app shows.
+func TmgrChooseHost() string { return In(i18n.Locale()).TmgrChooseHost() }
+
+// TmgrChooseHost says "Choose an SSH host for the new tunnel"
+// in the language of msgs.
+func (msgs Messages) TmgrChooseHost() string {
+	return Catalog.Format(msgs.locale, "tmgrChooseHost", nil)
+}
+
+// TmgrRetryIn says "Retry in {seconds, plural, one {# second} other {# seconds}}"
+// in the language the app shows.
+func TmgrRetryIn(seconds int) string { return In(i18n.Locale()).TmgrRetryIn(seconds) }
+
+// TmgrRetryIn says "Retry in {seconds, plural, one {# second} other {# seconds}}"
+// in the language of msgs.
+func (msgs Messages) TmgrRetryIn(seconds int) string {
+	return Catalog.Format(msgs.locale, "tmgrRetryIn", map[string]any{"seconds": seconds})
+}
+
+// TmgrAttempt says "Attempt {count}"
+// in the language the app shows.
+func TmgrAttempt(count string) string { return In(i18n.Locale()).TmgrAttempt(count) }
+
+// TmgrAttempt says "Attempt {count}"
+// in the language of msgs.
+func (msgs Messages) TmgrAttempt(count string) string {
+	return Catalog.Format(msgs.locale, "tmgrAttempt", map[string]any{"count": count})
+}
+
+// TmgrNextRetry says "Next retry at {time} · Attempt {count}"
+// in the language the app shows.
+func TmgrNextRetry(time_ string, count string) string {
+	return In(i18n.Locale()).TmgrNextRetry(time_, count)
+}
+
+// TmgrNextRetry says "Next retry at {time} · Attempt {count}"
+// in the language of msgs.
+func (msgs Messages) TmgrNextRetry(time_ string, count string) string {
+	return Catalog.Format(msgs.locale, "tmgrNextRetry", map[string]any{"time": time_, "count": count})
+}
+
+// TmgrConnectionCount says "{active} / {total}"
+// in the language the app shows.
+func TmgrConnectionCount(active string, total string) string {
+	return In(i18n.Locale()).TmgrConnectionCount(active, total)
+}
+
+// TmgrConnectionCount says "{active} / {total}"
+// in the language of msgs.
+func (msgs Messages) TmgrConnectionCount(active string, total string) string {
+	return Catalog.Format(msgs.locale, "tmgrConnectionCount", map[string]any{"active": active, "total": total})
+}
+
+// TmgrConnectionsHint says "Open / total connections"
+// in the language the app shows.
+func TmgrConnectionsHint() string { return In(i18n.Locale()).TmgrConnectionsHint() }
+
+// TmgrConnectionsHint says "Open / total connections"
+// in the language of msgs.
+func (msgs Messages) TmgrConnectionsHint() string {
+	return Catalog.Format(msgs.locale, "tmgrConnectionsHint", nil)
+}
+
+// TmgrRate says "Peak: {size}/s"
+// in the language the app shows.
+func TmgrRate(size string) string { return In(i18n.Locale()).TmgrRate(size) }
+
+// TmgrRate says "Peak: {size}/s"
+// in the language of msgs.
+func (msgs Messages) TmgrRate(size string) string {
+	return Catalog.Format(msgs.locale, "tmgrRate", map[string]any{"size": size})
+}
+
+// TmgrListeningTotal says "{count, plural, one {# listening tunnel} other {# listening tunnels}}"
+// in the language the app shows.
+func TmgrListeningTotal(count int) string { return In(i18n.Locale()).TmgrListeningTotal(count) }
+
+// TmgrListeningTotal says "{count, plural, one {# listening tunnel} other {# listening tunnels}}"
+// in the language of msgs.
+func (msgs Messages) TmgrListeningTotal(count int) string {
+	return Catalog.Format(msgs.locale, "tmgrListeningTotal", map[string]any{"count": count})
+}
+
+// TmgrActiveTotal says "{count, plural, one {# open connection} other {# open connections}}"
+// in the language the app shows.
+func TmgrActiveTotal(count int) string { return In(i18n.Locale()).TmgrActiveTotal(count) }
+
+// TmgrActiveTotal says "{count, plural, one {# open connection} other {# open connections}}"
+// in the language of msgs.
+func (msgs Messages) TmgrActiveTotal(count int) string {
+	return Catalog.Format(msgs.locale, "tmgrActiveTotal", map[string]any{"count": count})
+}
+
+// TmgrTrafficTotal says "Traffic: {size}"
+// in the language the app shows.
+func TmgrTrafficTotal(size string) string { return In(i18n.Locale()).TmgrTrafficTotal(size) }
+
+// TmgrTrafficTotal says "Traffic: {size}"
+// in the language of msgs.
+func (msgs Messages) TmgrTrafficTotal(size string) string {
+	return Catalog.Format(msgs.locale, "tmgrTrafficTotal", map[string]any{"size": size})
+}
+
+// TmgrConfirmAction says "{action}: {count, plural, one {# tunnel} other {# tunnels}}"
+// in the language the app shows.
+func TmgrConfirmAction(action string, count int) string {
+	return In(i18n.Locale()).TmgrConfirmAction(action, count)
+}
+
+// TmgrConfirmAction says "{action}: {count, plural, one {# tunnel} other {# tunnels}}"
+// in the language of msgs.
+func (msgs Messages) TmgrConfirmAction(action string, count int) string {
+	return Catalog.Format(msgs.locale, "tmgrConfirmAction", map[string]any{"action": action, "count": count})
+}
+
+// TmgrConfirm says "Confirm"
+// in the language the app shows.
+func TmgrConfirm() string { return In(i18n.Locale()).TmgrConfirm() }
+
+// TmgrConfirm says "Confirm"
+// in the language of msgs.
+func (msgs Messages) TmgrConfirm() string {
+	return Catalog.Format(msgs.locale, "tmgrConfirm", nil)
+}
+
+// TmgrStartNote says "Use a matching connected terminal session when available; otherwise start without a terminal."
+// in the language the app shows.
+func TmgrStartNote() string { return In(i18n.Locale()).TmgrStartNote() }
+
+// TmgrStartNote says "Use a matching connected terminal session when available; otherwise start without a terminal."
+// in the language of msgs.
+func (msgs Messages) TmgrStartNote() string {
+	return Catalog.Format(msgs.locale, "tmgrStartNote", nil)
+}
+
+// TmgrStartBackgroundNote says "Open or reuse a dedicated SSH connection without starting a terminal."
+// in the language the app shows.
+func TmgrStartBackgroundNote() string { return In(i18n.Locale()).TmgrStartBackgroundNote() }
+
+// TmgrStartBackgroundNote says "Open or reuse a dedicated SSH connection without starting a terminal."
+// in the language of msgs.
+func (msgs Messages) TmgrStartBackgroundNote() string {
+	return Catalog.Format(msgs.locale, "tmgrStartBackgroundNote", nil)
+}
+
+// TmgrDisconnectNote says "Open connections through these tunnels will be closed."
+// in the language the app shows.
+func TmgrDisconnectNote() string { return In(i18n.Locale()).TmgrDisconnectNote() }
+
+// TmgrDisconnectNote says "Open connections through these tunnels will be closed."
+// in the language of msgs.
+func (msgs Messages) TmgrDisconnectNote() string {
+	return Catalog.Format(msgs.locale, "tmgrDisconnectNote", nil)
+}
+
+// TmgrBackgroundNote says "This changes startup behavior. It does not stop or start any tunnel now."
+// in the language the app shows.
+func TmgrBackgroundNote() string { return In(i18n.Locale()).TmgrBackgroundNote() }
+
+// TmgrBackgroundNote says "This changes startup behavior. It does not stop or start any tunnel now."
+// in the language of msgs.
+func (msgs Messages) TmgrBackgroundNote() string {
+	return Catalog.Format(msgs.locale, "tmgrBackgroundNote", nil)
+}
+
+// TmgrAutostart says "Start background tunnels when the app starts"
+// in the language the app shows.
+func TmgrAutostart() string { return In(i18n.Locale()).TmgrAutostart() }
+
+// TmgrAutostart says "Start background tunnels when the app starts"
+// in the language of msgs.
+func (msgs Messages) TmgrAutostart() string {
+	return Catalog.Format(msgs.locale, "tmgrAutostart", nil)
+}
+
+// TmgrAutostartOn says "Enable background tunnel autostart on this device?"
+// in the language the app shows.
+func TmgrAutostartOn() string { return In(i18n.Locale()).TmgrAutostartOn() }
+
+// TmgrAutostartOn says "Enable background tunnel autostart on this device?"
+// in the language of msgs.
+func (msgs Messages) TmgrAutostartOn() string {
+	return Catalog.Format(msgs.locale, "tmgrAutostartOn", nil)
+}
+
+// TmgrAutostartOff says "Disable background tunnel autostart on this device?"
+// in the language the app shows.
+func TmgrAutostartOff() string { return In(i18n.Locale()).TmgrAutostartOff() }
+
+// TmgrAutostartOff says "Disable background tunnel autostart on this device?"
+// in the language of msgs.
+func (msgs Messages) TmgrAutostartOff() string {
+	return Catalog.Format(msgs.locale, "tmgrAutostartOff", nil)
+}
+
+// TmgrPublicLocal says "Anyone who can reach {address} on this computer may connect, subject to firewall and tunnel access rules."
+// in the language the app shows.
+func TmgrPublicLocal(address string) string { return In(i18n.Locale()).TmgrPublicLocal(address) }
+
+// TmgrPublicLocal says "Anyone who can reach {address} on this computer may connect, subject to firewall and tunnel access rules."
+// in the language of msgs.
+func (msgs Messages) TmgrPublicLocal(address string) string {
+	return Catalog.Format(msgs.locale, "tmgrPublicLocal", map[string]any{"address": address})
+}
+
+// TmgrPublicRemote says "Anyone who can reach {address} on the SSH server may connect, subject to firewall, SSH server and tunnel access rules."
+// in the language the app shows.
+func TmgrPublicRemote(address string) string { return In(i18n.Locale()).TmgrPublicRemote(address) }
+
+// TmgrPublicRemote says "Anyone who can reach {address} on the SSH server may connect, subject to firewall, SSH server and tunnel access rules."
+// in the language of msgs.
+func (msgs Messages) TmgrPublicRemote(address string) string {
+	return Catalog.Format(msgs.locale, "tmgrPublicRemote", map[string]any{"address": address})
+}
+
+// TmgrPublicProxy says "Warning: this proxy has no authentication. Untrusted clients may use the egress network."
+// in the language the app shows.
+func TmgrPublicProxy() string { return In(i18n.Locale()).TmgrPublicProxy() }
+
+// TmgrPublicProxy says "Warning: this proxy has no authentication. Untrusted clients may use the egress network."
+// in the language of msgs.
+func (msgs Messages) TmgrPublicProxy() string {
+	return Catalog.Format(msgs.locale, "tmgrPublicProxy", nil)
+}
+
+// TmgrTabLive says "{label} •"
+// in the language the app shows.
+func TmgrTabLive(label string) string { return In(i18n.Locale()).TmgrTabLive(label) }
+
+// TmgrTabLive says "{label} •"
+// in the language of msgs.
+func (msgs Messages) TmgrTabLive(label string) string {
+	return Catalog.Format(msgs.locale, "tmgrTabLive", map[string]any{"label": label})
+}
+
+// TmgrTabAttention says "{label} !"
+// in the language the app shows.
+func TmgrTabAttention(label string) string { return In(i18n.Locale()).TmgrTabAttention(label) }
+
+// TmgrTabAttention says "{label} !"
+// in the language of msgs.
+func (msgs Messages) TmgrTabAttention(label string) string {
+	return Catalog.Format(msgs.locale, "tmgrTabAttention", map[string]any{"label": label})
+}
+
+// TmgrQuit says "{count, plural, one {# background tunnel will stop} other {# background tunnels will stop}}."
+// in the language the app shows.
+func TmgrQuit(count int) string { return In(i18n.Locale()).TmgrQuit(count) }
+
+// TmgrQuit says "{count, plural, one {# background tunnel will stop} other {# background tunnels will stop}}."
+// in the language of msgs.
+func (msgs Messages) TmgrQuit(count int) string {
+	return Catalog.Format(msgs.locale, "tmgrQuit", map[string]any{"count": count})
 }
 
 // TabTunnelsActive says "Tunnels ({count})"
@@ -8454,6 +9924,968 @@ func TrayQuit() string { return In(i18n.Locale()).TrayQuit() }
 // in the language of msgs.
 func (msgs Messages) TrayQuit() string {
 	return Catalog.Format(msgs.locale, "trayQuit", nil)
+}
+
+// TrecTitle says "Tunnel recipes…"
+// in the language the app shows.
+func TrecTitle() string { return In(i18n.Locale()).TrecTitle() }
+
+// TrecTitle says "Tunnel recipes…"
+// in the language of msgs.
+func (msgs Messages) TrecTitle() string {
+	return Catalog.Format(msgs.locale, "trecTitle", nil)
+}
+
+// TrecForHost says "Tunnel recipes for {host}"
+// in the language the app shows.
+func TrecForHost(host string) string { return In(i18n.Locale()).TrecForHost(host) }
+
+// TrecForHost says "Tunnel recipes for {host}"
+// in the language of msgs.
+func (msgs Messages) TrecForHost(host string) string {
+	return Catalog.Format(msgs.locale, "trecForHost", map[string]any{"host": host})
+}
+
+// TrecNewHost says "a new connection"
+// in the language the app shows.
+func TrecNewHost() string { return In(i18n.Locale()).TrecNewHost() }
+
+// TrecNewHost says "a new connection"
+// in the language of msgs.
+func (msgs Messages) TrecNewHost() string {
+	return Catalog.Format(msgs.locale, "trecNewHost", nil)
+}
+
+// TrecIntro says "Choose a goal, review the settings, and add the tunnel to this connection."
+// in the language the app shows.
+func TrecIntro() string { return In(i18n.Locale()).TrecIntro() }
+
+// TrecIntro says "Choose a goal, review the settings, and add the tunnel to this connection."
+// in the language of msgs.
+func (msgs Messages) TrecIntro() string {
+	return Catalog.Format(msgs.locale, "trecIntro", nil)
+}
+
+// TrecGroupService says "Server services"
+// in the language the app shows.
+func TrecGroupService() string { return In(i18n.Locale()).TrecGroupService() }
+
+// TrecGroupService says "Server services"
+// in the language of msgs.
+func (msgs Messages) TrecGroupService() string {
+	return Catalog.Format(msgs.locale, "trecGroupService", nil)
+}
+
+// TrecGroupIntranet says "Server intranet"
+// in the language the app shows.
+func TrecGroupIntranet() string { return In(i18n.Locale()).TrecGroupIntranet() }
+
+// TrecGroupIntranet says "Server intranet"
+// in the language of msgs.
+func (msgs Messages) TrecGroupIntranet() string {
+	return Catalog.Format(msgs.locale, "trecGroupIntranet", nil)
+}
+
+// TrecGroupForward says "Forward proxy"
+// in the language the app shows.
+func TrecGroupForward() string { return In(i18n.Locale()).TrecGroupForward() }
+
+// TrecGroupForward says "Forward proxy"
+// in the language of msgs.
+func (msgs Messages) TrecGroupForward() string {
+	return Catalog.Format(msgs.locale, "trecGroupForward", nil)
+}
+
+// TrecGroupReverse says "Reverse proxy"
+// in the language the app shows.
+func TrecGroupReverse() string { return In(i18n.Locale()).TrecGroupReverse() }
+
+// TrecGroupReverse says "Reverse proxy"
+// in the language of msgs.
+func (msgs Messages) TrecGroupReverse() string {
+	return Catalog.Format(msgs.locale, "trecGroupReverse", nil)
+}
+
+// TrecGroupPublish says "Publish a local service"
+// in the language the app shows.
+func TrecGroupPublish() string { return In(i18n.Locale()).TrecGroupPublish() }
+
+// TrecGroupPublish says "Publish a local service"
+// in the language of msgs.
+func (msgs Messages) TrecGroupPublish() string {
+	return Catalog.Format(msgs.locale, "trecGroupPublish", nil)
+}
+
+// TrecGroupLAN says "Share on your LAN"
+// in the language the app shows.
+func TrecGroupLAN() string { return In(i18n.Locale()).TrecGroupLAN() }
+
+// TrecGroupLAN says "Share on your LAN"
+// in the language of msgs.
+func (msgs Messages) TrecGroupLAN() string {
+	return Catalog.Format(msgs.locale, "trecGroupLAN", nil)
+}
+
+// TrecMySQL says "MySQL · 3306"
+// in the language the app shows.
+func TrecMySQL() string { return In(i18n.Locale()).TrecMySQL() }
+
+// TrecMySQL says "MySQL · 3306"
+// in the language of msgs.
+func (msgs Messages) TrecMySQL() string {
+	return Catalog.Format(msgs.locale, "trecMySQL", nil)
+}
+
+// TrecPostgres says "PostgreSQL · 5432"
+// in the language the app shows.
+func TrecPostgres() string { return In(i18n.Locale()).TrecPostgres() }
+
+// TrecPostgres says "PostgreSQL · 5432"
+// in the language of msgs.
+func (msgs Messages) TrecPostgres() string {
+	return Catalog.Format(msgs.locale, "trecPostgres", nil)
+}
+
+// TrecRedis says "Redis · 6379"
+// in the language the app shows.
+func TrecRedis() string { return In(i18n.Locale()).TrecRedis() }
+
+// TrecRedis says "Redis · 6379"
+// in the language of msgs.
+func (msgs Messages) TrecRedis() string {
+	return Catalog.Format(msgs.locale, "trecRedis", nil)
+}
+
+// TrecMongo says "MongoDB · 27017"
+// in the language the app shows.
+func TrecMongo() string { return In(i18n.Locale()).TrecMongo() }
+
+// TrecMongo says "MongoDB · 27017"
+// in the language of msgs.
+func (msgs Messages) TrecMongo() string {
+	return Catalog.Format(msgs.locale, "trecMongo", nil)
+}
+
+// TrecElastic says "Elasticsearch · 9200"
+// in the language the app shows.
+func TrecElastic() string { return In(i18n.Locale()).TrecElastic() }
+
+// TrecElastic says "Elasticsearch · 9200"
+// in the language of msgs.
+func (msgs Messages) TrecElastic() string {
+	return Catalog.Format(msgs.locale, "trecElastic", nil)
+}
+
+// TrecWeb says "Web or admin panel"
+// in the language the app shows.
+func TrecWeb() string { return In(i18n.Locale()).TrecWeb() }
+
+// TrecWeb says "Web or admin panel"
+// in the language of msgs.
+func (msgs Messages) TrecWeb() string {
+	return Catalog.Format(msgs.locale, "trecWeb", nil)
+}
+
+// TrecDocker says "Remote Docker socket"
+// in the language the app shows.
+func TrecDocker() string { return In(i18n.Locale()).TrecDocker() }
+
+// TrecDocker says "Remote Docker socket"
+// in the language of msgs.
+func (msgs Messages) TrecDocker() string {
+	return Catalog.Format(msgs.locale, "trecDocker", nil)
+}
+
+// TrecMySQLSocket says "MySQL Unix socket"
+// in the language the app shows.
+func TrecMySQLSocket() string { return In(i18n.Locale()).TrecMySQLSocket() }
+
+// TrecMySQLSocket says "MySQL Unix socket"
+// in the language of msgs.
+func (msgs Messages) TrecMySQLSocket() string {
+	return Catalog.Format(msgs.locale, "trecMySQLSocket", nil)
+}
+
+// TrecRDP says "Remote Desktop · 3389"
+// in the language the app shows.
+func TrecRDP() string { return In(i18n.Locale()).TrecRDP() }
+
+// TrecRDP says "Remote Desktop · 3389"
+// in the language of msgs.
+func (msgs Messages) TrecRDP() string {
+	return Catalog.Format(msgs.locale, "trecRDP", nil)
+}
+
+// TrecSSH says "Another SSH server · 22"
+// in the language the app shows.
+func TrecSSH() string { return In(i18n.Locale()).TrecSSH() }
+
+// TrecSSH says "Another SSH server · 22"
+// in the language of msgs.
+func (msgs Messages) TrecSSH() string {
+	return Catalog.Format(msgs.locale, "trecSSH", nil)
+}
+
+// TrecSOCKS says "SOCKS5 proxy"
+// in the language the app shows.
+func TrecSOCKS() string { return In(i18n.Locale()).TrecSOCKS() }
+
+// TrecSOCKS says "SOCKS5 proxy"
+// in the language of msgs.
+func (msgs Messages) TrecSOCKS() string {
+	return Catalog.Format(msgs.locale, "trecSOCKS", nil)
+}
+
+// TrecHTTP says "HTTP proxy"
+// in the language the app shows.
+func TrecHTTP() string { return In(i18n.Locale()).TrecHTTP() }
+
+// TrecHTTP says "HTTP proxy"
+// in the language of msgs.
+func (msgs Messages) TrecHTTP() string {
+	return Catalog.Format(msgs.locale, "trecHTTP", nil)
+}
+
+// TrecMixed says "Mixed HTTP and SOCKS5 proxy"
+// in the language the app shows.
+func TrecMixed() string { return In(i18n.Locale()).TrecMixed() }
+
+// TrecMixed says "Mixed HTTP and SOCKS5 proxy"
+// in the language of msgs.
+func (msgs Messages) TrecMixed() string {
+	return Catalog.Format(msgs.locale, "trecMixed", nil)
+}
+
+// TrecReverseHTTP says "Reverse HTTP proxy"
+// in the language the app shows.
+func TrecReverseHTTP() string { return In(i18n.Locale()).TrecReverseHTTP() }
+
+// TrecReverseHTTP says "Reverse HTTP proxy"
+// in the language of msgs.
+func (msgs Messages) TrecReverseHTTP() string {
+	return Catalog.Format(msgs.locale, "trecReverseHTTP", nil)
+}
+
+// TrecReverseSOCKS says "Reverse SOCKS5 proxy"
+// in the language the app shows.
+func TrecReverseSOCKS() string { return In(i18n.Locale()).TrecReverseSOCKS() }
+
+// TrecReverseSOCKS says "Reverse SOCKS5 proxy"
+// in the language of msgs.
+func (msgs Messages) TrecReverseSOCKS() string {
+	return Catalog.Format(msgs.locale, "trecReverseSOCKS", nil)
+}
+
+// TrecReverseLAN says "Reach your LAN from the server"
+// in the language the app shows.
+func TrecReverseLAN() string { return In(i18n.Locale()).TrecReverseLAN() }
+
+// TrecReverseLAN says "Reach your LAN from the server"
+// in the language of msgs.
+func (msgs Messages) TrecReverseLAN() string {
+	return Catalog.Format(msgs.locale, "trecReverseLAN", nil)
+}
+
+// TrecPublishWeb says "Publish a development server"
+// in the language the app shows.
+func TrecPublishWeb() string { return In(i18n.Locale()).TrecPublishWeb() }
+
+// TrecPublishWeb says "Publish a development server"
+// in the language of msgs.
+func (msgs Messages) TrecPublishWeb() string {
+	return Catalog.Format(msgs.locale, "trecPublishWeb", nil)
+}
+
+// TrecPublishRDP says "Publish this computer’s Remote Desktop"
+// in the language the app shows.
+func TrecPublishRDP() string { return In(i18n.Locale()).TrecPublishRDP() }
+
+// TrecPublishRDP says "Publish this computer’s Remote Desktop"
+// in the language of msgs.
+func (msgs Messages) TrecPublishRDP() string {
+	return Catalog.Format(msgs.locale, "trecPublishRDP", nil)
+}
+
+// TrecPublishPort says "Publish a custom port"
+// in the language the app shows.
+func TrecPublishPort() string { return In(i18n.Locale()).TrecPublishPort() }
+
+// TrecPublishPort says "Publish a custom port"
+// in the language of msgs.
+func (msgs Messages) TrecPublishPort() string {
+	return Catalog.Format(msgs.locale, "trecPublishPort", nil)
+}
+
+// TrecLANService says "Share a forwarded service"
+// in the language the app shows.
+func TrecLANService() string { return In(i18n.Locale()).TrecLANService() }
+
+// TrecLANService says "Share a forwarded service"
+// in the language of msgs.
+func (msgs Messages) TrecLANService() string {
+	return Catalog.Format(msgs.locale, "trecLANService", nil)
+}
+
+// TrecLANProxy says "Share a proxy on the LAN"
+// in the language the app shows.
+func TrecLANProxy() string { return In(i18n.Locale()).TrecLANProxy() }
+
+// TrecLANProxy says "Share a proxy on the LAN"
+// in the language of msgs.
+func (msgs Messages) TrecLANProxy() string {
+	return Catalog.Format(msgs.locale, "trecLANProxy", nil)
+}
+
+// TrecServiceSummary says "Connect to the server’s service through a local port."
+// in the language the app shows.
+func TrecServiceSummary() string { return In(i18n.Locale()).TrecServiceSummary() }
+
+// TrecServiceSummary says "Connect to the server’s service through a local port."
+// in the language of msgs.
+func (msgs Messages) TrecServiceSummary() string {
+	return Catalog.Format(msgs.locale, "trecServiceSummary", nil)
+}
+
+// TrecWebSummary says "Open a web panel that listens on a port you specify."
+// in the language the app shows.
+func TrecWebSummary() string { return In(i18n.Locale()).TrecWebSummary() }
+
+// TrecWebSummary says "Open a web panel that listens on a port you specify."
+// in the language of msgs.
+func (msgs Messages) TrecWebSummary() string {
+	return Catalog.Format(msgs.locale, "trecWebSummary", nil)
+}
+
+// TrecDockerSummary says "Use the local Docker client with the server’s Docker socket."
+// in the language the app shows.
+func TrecDockerSummary() string { return In(i18n.Locale()).TrecDockerSummary() }
+
+// TrecDockerSummary says "Use the local Docker client with the server’s Docker socket."
+// in the language of msgs.
+func (msgs Messages) TrecDockerSummary() string {
+	return Catalog.Format(msgs.locale, "trecDockerSummary", nil)
+}
+
+// TrecSocketSummary says "Reach the server’s MySQL socket through a local TCP port."
+// in the language the app shows.
+func TrecSocketSummary() string { return In(i18n.Locale()).TrecSocketSummary() }
+
+// TrecSocketSummary says "Reach the server’s MySQL socket through a local TCP port."
+// in the language of msgs.
+func (msgs Messages) TrecSocketSummary() string {
+	return Catalog.Format(msgs.locale, "trecSocketSummary", nil)
+}
+
+// TrecIntranetSummary says "Use the SSH server to reach a machine on its private network."
+// in the language the app shows.
+func TrecIntranetSummary() string { return In(i18n.Locale()).TrecIntranetSummary() }
+
+// TrecIntranetSummary says "Use the SSH server to reach a machine on its private network."
+// in the language of msgs.
+func (msgs Messages) TrecIntranetSummary() string {
+	return Catalog.Format(msgs.locale, "trecIntranetSummary", nil)
+}
+
+// TrecForwardSummary says "Apps on this computer connect through the SSH server."
+// in the language the app shows.
+func TrecForwardSummary() string { return In(i18n.Locale()).TrecForwardSummary() }
+
+// TrecForwardSummary says "Apps on this computer connect through the SSH server."
+// in the language of msgs.
+func (msgs Messages) TrecForwardSummary() string {
+	return Catalog.Format(msgs.locale, "trecForwardSummary", nil)
+}
+
+// TrecReverseSummary says "Apps on the server connect through this computer or an upstream proxy."
+// in the language the app shows.
+func TrecReverseSummary() string { return In(i18n.Locale()).TrecReverseSummary() }
+
+// TrecReverseSummary says "Apps on the server connect through this computer or an upstream proxy."
+// in the language of msgs.
+func (msgs Messages) TrecReverseSummary() string {
+	return Catalog.Format(msgs.locale, "trecReverseSummary", nil)
+}
+
+// TrecReverseLANSummary says "Programs on the server can use SOCKS5 to reach this computer’s network."
+// in the language the app shows.
+func TrecReverseLANSummary() string { return In(i18n.Locale()).TrecReverseLANSummary() }
+
+// TrecReverseLANSummary says "Programs on the server can use SOCKS5 to reach this computer’s network."
+// in the language of msgs.
+func (msgs Messages) TrecReverseLANSummary() string {
+	return Catalog.Format(msgs.locale, "trecReverseLANSummary", nil)
+}
+
+// TrecPublishSummary says "Accept connections on the SSH server and forward them to a local service."
+// in the language the app shows.
+func TrecPublishSummary() string { return In(i18n.Locale()).TrecPublishSummary() }
+
+// TrecPublishSummary says "Accept connections on the SSH server and forward them to a local service."
+// in the language of msgs.
+func (msgs Messages) TrecPublishSummary() string {
+	return Catalog.Format(msgs.locale, "trecPublishSummary", nil)
+}
+
+// TrecLANSummary says "Let computers in the allowlist use this tunnel from your LAN."
+// in the language the app shows.
+func TrecLANSummary() string { return In(i18n.Locale()).TrecLANSummary() }
+
+// TrecLANSummary says "Let computers in the allowlist use this tunnel from your LAN."
+// in the language of msgs.
+func (msgs Messages) TrecLANSummary() string {
+	return Catalog.Format(msgs.locale, "trecLANSummary", nil)
+}
+
+// TrecName says "Tunnel name"
+// in the language the app shows.
+func TrecName() string { return In(i18n.Locale()).TrecName() }
+
+// TrecName says "Tunnel name"
+// in the language of msgs.
+func (msgs Messages) TrecName() string {
+	return Catalog.Format(msgs.locale, "trecName", nil)
+}
+
+// TrecSocket says "Unix socket path"
+// in the language the app shows.
+func TrecSocket() string { return In(i18n.Locale()).TrecSocket() }
+
+// TrecSocket says "Unix socket path"
+// in the language of msgs.
+func (msgs Messages) TrecSocket() string {
+	return Catalog.Format(msgs.locale, "trecSocket", nil)
+}
+
+// TrecACL says "Client allowlist"
+// in the language the app shows.
+func TrecACL() string { return In(i18n.Locale()).TrecACL() }
+
+// TrecACL says "Client allowlist"
+// in the language of msgs.
+func (msgs Messages) TrecACL() string {
+	return Catalog.Format(msgs.locale, "trecACL", nil)
+}
+
+// TrecUpstream says "Upstream proxy"
+// in the language the app shows.
+func TrecUpstream() string { return In(i18n.Locale()).TrecUpstream() }
+
+// TrecUpstream says "Upstream proxy"
+// in the language of msgs.
+func (msgs Messages) TrecUpstream() string {
+	return Catalog.Format(msgs.locale, "trecUpstream", nil)
+}
+
+// TrecDirect says "Direct connection"
+// in the language the app shows.
+func TrecDirect() string { return In(i18n.Locale()).TrecDirect() }
+
+// TrecDirect says "Direct connection"
+// in the language of msgs.
+func (msgs Messages) TrecDirect() string {
+	return Catalog.Format(msgs.locale, "trecDirect", nil)
+}
+
+// TrecDetected says "Listening ports on this computer (protocol not verified)"
+// in the language the app shows.
+func TrecDetected() string { return In(i18n.Locale()).TrecDetected() }
+
+// TrecDetected says "Listening ports on this computer (protocol not verified)"
+// in the language of msgs.
+func (msgs Messages) TrecDetected() string {
+	return Catalog.Format(msgs.locale, "trecDetected", nil)
+}
+
+// TrecUseProxy says "Use {proxy}"
+// in the language the app shows.
+func TrecUseProxy(proxy string) string { return In(i18n.Locale()).TrecUseProxy(proxy) }
+
+// TrecUseProxy says "Use {proxy}"
+// in the language of msgs.
+func (msgs Messages) TrecUseProxy(proxy string) string {
+	return Catalog.Format(msgs.locale, "trecUseProxy", map[string]any{"proxy": proxy})
+}
+
+// TrecInvalidSocket says "Enter an absolute Unix socket path."
+// in the language the app shows.
+func TrecInvalidSocket() string { return In(i18n.Locale()).TrecInvalidSocket() }
+
+// TrecInvalidSocket says "Enter an absolute Unix socket path."
+// in the language of msgs.
+func (msgs Messages) TrecInvalidSocket() string {
+	return Catalog.Format(msgs.locale, "trecInvalidSocket", nil)
+}
+
+// TrecInvalidACL says "Enter IP addresses or CIDRs separated by commas."
+// in the language the app shows.
+func TrecInvalidACL() string { return In(i18n.Locale()).TrecInvalidACL() }
+
+// TrecInvalidACL says "Enter IP addresses or CIDRs separated by commas."
+// in the language of msgs.
+func (msgs Messages) TrecInvalidACL() string {
+	return Catalog.Format(msgs.locale, "trecInvalidACL", nil)
+}
+
+// TrecRequireLAN says "Add your LAN subnet to the allowlist, or use a loopback address instead."
+// in the language the app shows.
+func TrecRequireLAN() string { return In(i18n.Locale()).TrecRequireLAN() }
+
+// TrecRequireLAN says "Add your LAN subnet to the allowlist, or use a loopback address instead."
+// in the language of msgs.
+func (msgs Messages) TrecRequireLAN() string {
+	return Catalog.Format(msgs.locale, "trecRequireLAN", nil)
+}
+
+// TrecInvalidUpstream says "Enter an HTTP or SOCKS5 proxy URL with a port and no credentials."
+// in the language the app shows.
+func TrecInvalidUpstream() string { return In(i18n.Locale()).TrecInvalidUpstream() }
+
+// TrecInvalidUpstream says "Enter an HTTP or SOCKS5 proxy URL with a port and no credentials."
+// in the language of msgs.
+func (msgs Messages) TrecInvalidUpstream() string {
+	return Catalog.Format(msgs.locale, "trecInvalidUpstream", nil)
+}
+
+// TrecDockerWarn says "Docker socket access can grant root-equivalent control of the server. Keep this tunnel on loopback."
+// in the language the app shows.
+func TrecDockerWarn() string { return In(i18n.Locale()).TrecDockerWarn() }
+
+// TrecDockerWarn says "Docker socket access can grant root-equivalent control of the server. Keep this tunnel on loopback."
+// in the language of msgs.
+func (msgs Messages) TrecDockerWarn() string {
+	return Catalog.Format(msgs.locale, "trecDockerWarn", nil)
+}
+
+// TrecGateway says "Before publishing, use Public access to check GatewayPorts and the server firewall. This recipe changes neither."
+// in the language the app shows.
+func TrecGateway() string { return In(i18n.Locale()).TrecGateway() }
+
+// TrecGateway says "Before publishing, use Public access to check GatewayPorts and the server firewall. This recipe changes neither."
+// in the language of msgs.
+func (msgs Messages) TrecGateway() string {
+	return Catalog.Format(msgs.locale, "trecGateway", nil)
+}
+
+// TrecAllowWarn says "Clients in {clients} may connect to {address} if they can reach it."
+// in the language the app shows.
+func TrecAllowWarn(clients string, address string) string {
+	return In(i18n.Locale()).TrecAllowWarn(clients, address)
+}
+
+// TrecAllowWarn says "Clients in {clients} may connect to {address} if they can reach it."
+// in the language of msgs.
+func (msgs Messages) TrecAllowWarn(clients string, address string) string {
+	return Catalog.Format(msgs.locale, "trecAllowWarn", map[string]any{"clients": clients, "address": address})
+}
+
+// TrecRemoteWarn says "Anyone who can reach {address} on the SSH server may connect, including internet users if the port is public."
+// in the language the app shows.
+func TrecRemoteWarn(address string) string { return In(i18n.Locale()).TrecRemoteWarn(address) }
+
+// TrecRemoteWarn says "Anyone who can reach {address} on the SSH server may connect, including internet users if the port is public."
+// in the language of msgs.
+func (msgs Messages) TrecRemoteWarn(address string) string {
+	return Catalog.Format(msgs.locale, "trecRemoteWarn", map[string]any{"address": address})
+}
+
+// TrecLocalWarn says "Other devices that can reach {address} on this computer may connect."
+// in the language the app shows.
+func TrecLocalWarn(address string) string { return In(i18n.Locale()).TrecLocalWarn(address) }
+
+// TrecLocalWarn says "Other devices that can reach {address} on this computer may connect."
+// in the language of msgs.
+func (msgs Messages) TrecLocalWarn(address string) string {
+	return Catalog.Format(msgs.locale, "trecLocalWarn", map[string]any{"address": address})
+}
+
+// TrecNoAuthWarn says "Warning: this proxy has no authentication. Anyone permitted to connect can use it. Set proxy authentication in the tu…"
+// in the language the app shows.
+func TrecNoAuthWarn() string { return In(i18n.Locale()).TrecNoAuthWarn() }
+
+// TrecNoAuthWarn says "Warning: this proxy has no authentication. Anyone permitted to connect can use it. Set proxy authentication in the tu…"
+// in the language of msgs.
+func (msgs Messages) TrecNoAuthWarn() string {
+	return Catalog.Format(msgs.locale, "trecNoAuthWarn", nil)
+}
+
+// TrecAcceptAccess says "I understand who can connect to this listener."
+// in the language the app shows.
+func TrecAcceptAccess() string { return In(i18n.Locale()).TrecAcceptAccess() }
+
+// TrecAcceptAccess says "I understand who can connect to this listener."
+// in the language of msgs.
+func (msgs Messages) TrecAcceptAccess() string {
+	return Catalog.Format(msgs.locale, "trecAcceptAccess", nil)
+}
+
+// TrecBack says "Back to recipes"
+// in the language the app shows.
+func TrecBack() string { return In(i18n.Locale()).TrecBack() }
+
+// TrecBack says "Back to recipes"
+// in the language of msgs.
+func (msgs Messages) TrecBack() string {
+	return Catalog.Format(msgs.locale, "trecBack", nil)
+}
+
+// TrecAdd says "Add to connection"
+// in the language the app shows.
+func TrecAdd() string { return In(i18n.Locale()).TrecAdd() }
+
+// TrecAdd says "Add to connection"
+// in the language of msgs.
+func (msgs Messages) TrecAdd() string {
+	return Catalog.Format(msgs.locale, "trecAdd", nil)
+}
+
+// TrecAutoPort says "After starting the tunnel, use the assigned port shown in the tunnel manager."
+// in the language the app shows.
+func TrecAutoPort() string { return In(i18n.Locale()).TrecAutoPort() }
+
+// TrecAutoPort says "After starting the tunnel, use the assigned port shown in the tunnel manager."
+// in the language of msgs.
+func (msgs Messages) TrecAutoPort() string {
+	return Catalog.Format(msgs.locale, "trecAutoPort", nil)
+}
+
+// TrecUseClient says "After starting the tunnel, point your client at {address}."
+// in the language the app shows.
+func TrecUseClient(address string) string { return In(i18n.Locale()).TrecUseClient(address) }
+
+// TrecUseClient says "After starting the tunnel, point your client at {address}."
+// in the language of msgs.
+func (msgs Messages) TrecUseClient(address string) string {
+	return Catalog.Format(msgs.locale, "trecUseClient", map[string]any{"address": address})
+}
+
+// TrecUseRDP says "After starting the tunnel, enter {address} in your Remote Desktop client."
+// in the language the app shows.
+func TrecUseRDP(address string) string { return In(i18n.Locale()).TrecUseRDP(address) }
+
+// TrecUseRDP says "After starting the tunnel, enter {address} in your Remote Desktop client."
+// in the language of msgs.
+func (msgs Messages) TrecUseRDP(address string) string {
+	return Catalog.Format(msgs.locale, "trecUseRDP", map[string]any{"address": address})
+}
+
+// TrecUsePublished says "After checking public access and starting the tunnel, connect to the server’s reachable address on port {port}."
+// in the language the app shows.
+func TrecUsePublished(port string) string { return In(i18n.Locale()).TrecUsePublished(port) }
+
+// TrecUsePublished says "After checking public access and starting the tunnel, connect to the server’s reachable address on port {port}."
+// in the language of msgs.
+func (msgs Messages) TrecUsePublished(port string) string {
+	return Catalog.Format(msgs.locale, "trecUsePublished", map[string]any{"port": port})
+}
+
+// TrecUseLAN says "After starting the tunnel, connect to this computer’s LAN address on port {port}."
+// in the language the app shows.
+func TrecUseLAN(port string) string { return In(i18n.Locale()).TrecUseLAN(port) }
+
+// TrecUseLAN says "After starting the tunnel, connect to this computer’s LAN address on port {port}."
+// in the language of msgs.
+func (msgs Messages) TrecUseLAN(port string) string {
+	return Catalog.Format(msgs.locale, "trecUseLAN", map[string]any{"port": port})
+}
+
+// TrecUseDocker says "After starting the tunnel, run this locally with the Docker client."
+// in the language the app shows.
+func TrecUseDocker() string { return In(i18n.Locale()).TrecUseDocker() }
+
+// TrecUseDocker says "After starting the tunnel, run this locally with the Docker client."
+// in the language of msgs.
+func (msgs Messages) TrecUseDocker() string {
+	return Catalog.Format(msgs.locale, "trecUseDocker", nil)
+}
+
+// TrecUseRemoteProxy says "After starting the tunnel, use these settings on the SSH server."
+// in the language the app shows.
+func TrecUseRemoteProxy() string { return In(i18n.Locale()).TrecUseRemoteProxy() }
+
+// TrecUseRemoteProxy says "After starting the tunnel, use these settings on the SSH server."
+// in the language of msgs.
+func (msgs Messages) TrecUseRemoteProxy() string {
+	return Catalog.Format(msgs.locale, "trecUseRemoteProxy", nil)
+}
+
+// TrecShell says "Shell command"
+// in the language the app shows.
+func TrecShell() string { return In(i18n.Locale()).TrecShell() }
+
+// TrecShell says "Shell command"
+// in the language of msgs.
+func (msgs Messages) TrecShell() string {
+	return Catalog.Format(msgs.locale, "trecShell", nil)
+}
+
+// TrecAPT says "APT proxy settings"
+// in the language the app shows.
+func TrecAPT() string { return In(i18n.Locale()).TrecAPT() }
+
+// TrecAPT says "APT proxy settings"
+// in the language of msgs.
+func (msgs Messages) TrecAPT() string {
+	return Catalog.Format(msgs.locale, "trecAPT", nil)
+}
+
+// TrecDockerEnv says "Docker daemon systemd drop-in (example only)"
+// in the language the app shows.
+func TrecDockerEnv() string { return In(i18n.Locale()).TrecDockerEnv() }
+
+// TrecDockerEnv says "Docker daemon systemd drop-in (example only)"
+// in the language of msgs.
+func (msgs Messages) TrecDockerEnv() string {
+	return Catalog.Format(msgs.locale, "trecDockerEnv", nil)
+}
+
+// TrecSend says "Send to terminal…"
+// in the language the app shows.
+func TrecSend() string { return In(i18n.Locale()).TrecSend() }
+
+// TrecSend says "Send to terminal…"
+// in the language of msgs.
+func (msgs Messages) TrecSend() string {
+	return Catalog.Format(msgs.locale, "trecSend", nil)
+}
+
+// TrecSendConfirm says "Paste these proxy exports into the current SSH terminal’s input? They will not run until you press Enter. Start the…"
+// in the language the app shows.
+func TrecSendConfirm() string { return In(i18n.Locale()).TrecSendConfirm() }
+
+// TrecSendConfirm says "Paste these proxy exports into the current SSH terminal’s input? They will not run until you press Enter. Start the…"
+// in the language of msgs.
+func (msgs Messages) TrecSendConfirm() string {
+	return Catalog.Format(msgs.locale, "trecSendConfirm", nil)
+}
+
+// TrecConnectFirst says "Open a connected terminal for this host to send the shell exports."
+// in the language the app shows.
+func TrecConnectFirst() string { return In(i18n.Locale()).TrecConnectFirst() }
+
+// TrecConnectFirst says "Open a connected terminal for this host to send the shell exports."
+// in the language of msgs.
+func (msgs Messages) TrecConnectFirst() string {
+	return Catalog.Format(msgs.locale, "trecConnectFirst", nil)
+}
+
+// TrecImport says "Import from ssh command…"
+// in the language the app shows.
+func TrecImport() string { return In(i18n.Locale()).TrecImport() }
+
+// TrecImport says "Import from ssh command…"
+// in the language of msgs.
+func (msgs Messages) TrecImport() string {
+	return Catalog.Format(msgs.locale, "trecImport", nil)
+}
+
+// TrecImportIntro says "Paste an OpenSSH command or forwarding directives. Nothing is executed, and the destination remains this connection."
+// in the language the app shows.
+func TrecImportIntro() string { return In(i18n.Locale()).TrecImportIntro() }
+
+// TrecImportIntro says "Paste an OpenSSH command or forwarding directives. Nothing is executed, and the destination remains this connection."
+// in the language of msgs.
+func (msgs Messages) TrecImportIntro() string {
+	return Catalog.Format(msgs.locale, "trecImportIntro", nil)
+}
+
+// TrecSSHText says "OpenSSH forwarding options"
+// in the language the app shows.
+func TrecSSHText() string { return In(i18n.Locale()).TrecSSHText() }
+
+// TrecSSHText says "OpenSSH forwarding options"
+// in the language of msgs.
+func (msgs Messages) TrecSSHText() string {
+	return Catalog.Format(msgs.locale, "trecSSHText", nil)
+}
+
+// TrecPreview says "Preview"
+// in the language the app shows.
+func TrecPreview() string { return In(i18n.Locale()).TrecPreview() }
+
+// TrecPreview says "Preview"
+// in the language of msgs.
+func (msgs Messages) TrecPreview() string {
+	return Catalog.Format(msgs.locale, "trecPreview", nil)
+}
+
+// TrecPreviewFirst says "Preview the forwarding options first."
+// in the language the app shows.
+func TrecPreviewFirst() string { return In(i18n.Locale()).TrecPreviewFirst() }
+
+// TrecPreviewFirst says "Preview the forwarding options first."
+// in the language of msgs.
+func (msgs Messages) TrecPreviewFirst() string {
+	return Catalog.Format(msgs.locale, "trecPreviewFirst", nil)
+}
+
+// TrecInvalidSSH says "The text contains invalid or unsupported OpenSSH forwarding syntax."
+// in the language the app shows.
+func TrecInvalidSSH() string { return In(i18n.Locale()).TrecInvalidSSH() }
+
+// TrecInvalidSSH says "The text contains invalid or unsupported OpenSSH forwarding syntax."
+// in the language of msgs.
+func (msgs Messages) TrecInvalidSSH() string {
+	return Catalog.Format(msgs.locale, "trecInvalidSSH", nil)
+}
+
+// TrecNoForwards says "No forwarding options found."
+// in the language the app shows.
+func TrecNoForwards() string { return In(i18n.Locale()).TrecNoForwards() }
+
+// TrecNoForwards says "No forwarding options found."
+// in the language of msgs.
+func (msgs Messages) TrecNoForwards() string {
+	return Catalog.Format(msgs.locale, "trecNoForwards", nil)
+}
+
+// TrecExitIgnored says "ExitOnForwardFailure is recognized but does not change how the app starts tunnels."
+// in the language the app shows.
+func TrecExitIgnored() string { return In(i18n.Locale()).TrecExitIgnored() }
+
+// TrecExitIgnored says "ExitOnForwardFailure is recognized but does not change how the app starts tunnels."
+// in the language of msgs.
+func (msgs Messages) TrecExitIgnored() string {
+	return Catalog.Format(msgs.locale, "trecExitIgnored", nil)
+}
+
+// TrecImportPublicDisabled says "Non-loopback tunnels are imported disabled; review who can connect before enabling them."
+// in the language the app shows.
+func TrecImportPublicDisabled() string { return In(i18n.Locale()).TrecImportPublicDisabled() }
+
+// TrecImportPublicDisabled says "Non-loopback tunnels are imported disabled; review who can connect before enabling them."
+// in the language of msgs.
+func (msgs Messages) TrecImportPublicDisabled() string {
+	return Catalog.Format(msgs.locale, "trecImportPublicDisabled", nil)
+}
+
+// TrecCopyCommand says "Copy as ssh command"
+// in the language the app shows.
+func TrecCopyCommand() string { return In(i18n.Locale()).TrecCopyCommand() }
+
+// TrecCopyCommand says "Copy as ssh command"
+// in the language of msgs.
+func (msgs Messages) TrecCopyCommand() string {
+	return Catalog.Format(msgs.locale, "trecCopyCommand", nil)
+}
+
+// TrecCopyConfig says "Copy as ssh_config"
+// in the language the app shows.
+func TrecCopyConfig() string { return In(i18n.Locale()).TrecCopyConfig() }
+
+// TrecCopyConfig says "Copy as ssh_config"
+// in the language of msgs.
+func (msgs Messages) TrecCopyConfig() string {
+	return Catalog.Format(msgs.locale, "trecCopyConfig", nil)
+}
+
+// TrecExportHostRequired says "Enter a valid SSH destination and port first."
+// in the language the app shows.
+func TrecExportHostRequired() string { return In(i18n.Locale()).TrecExportHostRequired() }
+
+// TrecExportHostRequired says "Enter a valid SSH destination and port first."
+// in the language of msgs.
+func (msgs Messages) TrecExportHostRequired() string {
+	return Catalog.Format(msgs.locale, "trecExportHostRequired", nil)
+}
+
+// SysproxyEnable says "Use as system proxy when running"
+// in the language the app shows.
+func SysproxyEnable() string { return In(i18n.Locale()).SysproxyEnable() }
+
+// SysproxyEnable says "Use as system proxy when running"
+// in the language of msgs.
+func (msgs Messages) SysproxyEnable() string {
+	return Catalog.Format(msgs.locale, "sysproxyEnable", nil)
+}
+
+// SysproxyLoopbackOnly says "The system proxy requires a local loopback listener without proxy authentication or an allowlist."
+// in the language the app shows.
+func SysproxyLoopbackOnly() string { return In(i18n.Locale()).SysproxyLoopbackOnly() }
+
+// SysproxyLoopbackOnly says "The system proxy requires a local loopback listener without proxy authentication or an allowlist."
+// in the language of msgs.
+func (msgs Messages) SysproxyLoopbackOnly() string {
+	return Catalog.Format(msgs.locale, "sysproxyLoopbackOnly", nil)
+}
+
+// SysproxyNote says "This replaces the current system proxy. The app restores the previous settings when the active tunnel stops or the ap…"
+// in the language the app shows.
+func SysproxyNote() string { return In(i18n.Locale()).SysproxyNote() }
+
+// SysproxyNote says "This replaces the current system proxy. The app restores the previous settings when the active tunnel stops or the ap…"
+// in the language of msgs.
+func (msgs Messages) SysproxyNote() string {
+	return Catalog.Format(msgs.locale, "sysproxyNote", nil)
+}
+
+// SysproxyPAC says "PAC rules (blank for manual proxy)"
+// in the language the app shows.
+func SysproxyPAC() string { return In(i18n.Locale()).SysproxyPAC() }
+
+// SysproxyPAC says "PAC rules (blank for manual proxy)"
+// in the language of msgs.
+func (msgs Messages) SysproxyPAC() string {
+	return Catalog.Format(msgs.locale, "sysproxyPAC", nil)
+}
+
+// SysproxyPACExample says "all, *.example.org, 10.0.0.0/8"
+// in the language the app shows.
+func SysproxyPACExample() string { return In(i18n.Locale()).SysproxyPACExample() }
+
+// SysproxyPACExample says "all, *.example.org, 10.0.0.0/8"
+// in the language of msgs.
+func (msgs Messages) SysproxyPACExample() string {
+	return Catalog.Format(msgs.locale, "sysproxyPACExample", nil)
+}
+
+// SysproxyInvalidPAC says "Enter domain names, *.domain patterns, CIDRs, or all."
+// in the language the app shows.
+func SysproxyInvalidPAC() string { return In(i18n.Locale()).SysproxyInvalidPAC() }
+
+// SysproxyInvalidPAC says "Enter domain names, *.domain patterns, CIDRs, or all."
+// in the language of msgs.
+func (msgs Messages) SysproxyInvalidPAC() string {
+	return Catalog.Format(msgs.locale, "sysproxyInvalidPAC", nil)
+}
+
+// SysproxyRestore says "Restore system proxy"
+// in the language the app shows.
+func SysproxyRestore() string { return In(i18n.Locale()).SysproxyRestore() }
+
+// SysproxyRestore says "Restore system proxy"
+// in the language of msgs.
+func (msgs Messages) SysproxyRestore() string {
+	return Catalog.Format(msgs.locale, "sysproxyRestore", nil)
+}
+
+// SysproxyRestoreConfirm says "Restore this computer’s saved proxy settings now? Running tunnels stay open."
+// in the language the app shows.
+func SysproxyRestoreConfirm() string { return In(i18n.Locale()).SysproxyRestoreConfirm() }
+
+// SysproxyRestoreConfirm says "Restore this computer’s saved proxy settings now? Running tunnels stay open."
+// in the language of msgs.
+func (msgs Messages) SysproxyRestoreConfirm() string {
+	return Catalog.Format(msgs.locale, "sysproxyRestoreConfirm", nil)
+}
+
+// SysproxyUnsupported says "The local desktop or its existing proxy settings are not supported."
+// in the language the app shows.
+func SysproxyUnsupported() string { return In(i18n.Locale()).SysproxyUnsupported() }
+
+// SysproxyUnsupported says "The local desktop or its existing proxy settings are not supported."
+// in the language of msgs.
+func (msgs Messages) SysproxyUnsupported() string {
+	return Catalog.Format(msgs.locale, "sysproxyUnsupported", nil)
+}
+
+// SysproxyFailed says "Could not update the system proxy. If a backup remains, use Restore system proxy to retry."
+// in the language the app shows.
+func SysproxyFailed() string { return In(i18n.Locale()).SysproxyFailed() }
+
+// SysproxyFailed says "Could not update the system proxy. If a backup remains, use Restore system proxy to retry."
+// in the language of msgs.
+func (msgs Messages) SysproxyFailed() string {
+	return Catalog.Format(msgs.locale, "sysproxyFailed", nil)
 }
 
 // DuCanceled says "Scan canceled"
@@ -20824,6 +23256,1024 @@ func RdpAdminHint() string { return In(i18n.Locale()).RdpAdminHint() }
 // in the language of msgs.
 func (msgs Messages) RdpAdminHint() string {
 	return Catalog.Format(msgs.locale, "rdpAdminHint", nil)
+}
+
+// TexpPublic says "Public access…"
+// in the language the app shows.
+func TexpPublic() string { return In(i18n.Locale()).TexpPublic() }
+
+// TexpPublic says "Public access…"
+// in the language of msgs.
+func (msgs Messages) TexpPublic() string {
+	return Catalog.Format(msgs.locale, "texpPublic", nil)
+}
+
+// TexpTitle says "Public access through SSH"
+// in the language the app shows.
+func TexpTitle() string { return In(i18n.Locale()).TexpTitle() }
+
+// TexpTitle says "Public access through SSH"
+// in the language of msgs.
+func (msgs Messages) TexpTitle() string {
+	return Catalog.Format(msgs.locale, "texpTitle", nil)
+}
+
+// TexpMakePublic says "Make it public…"
+// in the language the app shows.
+func TexpMakePublic() string { return In(i18n.Locale()).TexpMakePublic() }
+
+// TexpMakePublic says "Make it public…"
+// in the language of msgs.
+func (msgs Messages) TexpMakePublic() string {
+	return Catalog.Format(msgs.locale, "texpMakePublic", nil)
+}
+
+// TexpLAN says "Share with the LAN…"
+// in the language the app shows.
+func TexpLAN() string { return In(i18n.Locale()).TexpLAN() }
+
+// TexpLAN says "Share with the LAN…"
+// in the language of msgs.
+func (msgs Messages) TexpLAN() string {
+	return Catalog.Format(msgs.locale, "texpLAN", nil)
+}
+
+// TexpLANLoopback says "This tunnel listens on loopback only."
+// in the language the app shows.
+func TexpLANLoopback() string { return In(i18n.Locale()).TexpLANLoopback() }
+
+// TexpLANLoopback says "This tunnel listens on loopback only."
+// in the language of msgs.
+func (msgs Messages) TexpLANLoopback() string {
+	return Catalog.Format(msgs.locale, "texpLANLoopback", nil)
+}
+
+// TexpLANTitle says "Share with the LAN"
+// in the language the app shows.
+func TexpLANTitle() string { return In(i18n.Locale()).TexpLANTitle() }
+
+// TexpLANTitle says "Share with the LAN"
+// in the language of msgs.
+func (msgs Messages) TexpLANTitle() string {
+	return Catalog.Format(msgs.locale, "texpLANTitle", nil)
+}
+
+// TexpOffline says "Connect to this SSH host to run server checks or change server settings."
+// in the language the app shows.
+func TexpOffline() string { return In(i18n.Locale()).TexpOffline() }
+
+// TexpOffline says "Connect to this SSH host to run server checks or change server settings."
+// in the language of msgs.
+func (msgs Messages) TexpOffline() string {
+	return Catalog.Format(msgs.locale, "texpOffline", nil)
+}
+
+// TexpWaiting says "Checking…"
+// in the language the app shows.
+func TexpWaiting() string { return In(i18n.Locale()).TexpWaiting() }
+
+// TexpWaiting says "Checking…"
+// in the language of msgs.
+func (msgs Messages) TexpWaiting() string {
+	return Catalog.Format(msgs.locale, "texpWaiting", nil)
+}
+
+// TexpUnchecked says "Not checked"
+// in the language the app shows.
+func TexpUnchecked() string { return In(i18n.Locale()).TexpUnchecked() }
+
+// TexpUnchecked says "Not checked"
+// in the language of msgs.
+func (msgs Messages) TexpUnchecked() string {
+	return Catalog.Format(msgs.locale, "texpUnchecked", nil)
+}
+
+// TexpRefresh says "Run checks"
+// in the language the app shows.
+func TexpRefresh() string { return In(i18n.Locale()).TexpRefresh() }
+
+// TexpRefresh says "Run checks"
+// in the language of msgs.
+func (msgs Messages) TexpRefresh() string {
+	return Catalog.Format(msgs.locale, "texpRefresh", nil)
+}
+
+// TexpGateway says "1. SSH server · GatewayPorts"
+// in the language the app shows.
+func TexpGateway() string { return In(i18n.Locale()).TexpGateway() }
+
+// TexpGateway says "1. SSH server · GatewayPorts"
+// in the language of msgs.
+func (msgs Messages) TexpGateway() string {
+	return Catalog.Format(msgs.locale, "texpGateway", nil)
+}
+
+// TexpGatewayNo says "Off. SSH forwards can listen only on the server’s loopback address."
+// in the language the app shows.
+func TexpGatewayNo() string { return In(i18n.Locale()).TexpGatewayNo() }
+
+// TexpGatewayNo says "Off. SSH forwards can listen only on the server’s loopback address."
+// in the language of msgs.
+func (msgs Messages) TexpGatewayNo() string {
+	return Catalog.Format(msgs.locale, "texpGatewayNo", nil)
+}
+
+// TexpGatewayYes says "On for every interface. sshd can ignore even a loopback bind request."
+// in the language the app shows.
+func TexpGatewayYes() string { return In(i18n.Locale()).TexpGatewayYes() }
+
+// TexpGatewayYes says "On for every interface. sshd can ignore even a loopback bind request."
+// in the language of msgs.
+func (msgs Messages) TexpGatewayYes() string {
+	return Catalog.Format(msgs.locale, "texpGatewayYes", nil)
+}
+
+// TexpGatewayClient says "Client chooses the listening address."
+// in the language the app shows.
+func TexpGatewayClient() string { return In(i18n.Locale()).TexpGatewayClient() }
+
+// TexpGatewayClient says "Client chooses the listening address."
+// in the language of msgs.
+func (msgs Messages) TexpGatewayClient() string {
+	return Catalog.Format(msgs.locale, "texpGatewayClient", nil)
+}
+
+// TexpGatewayMatch says "Match or custom Include rules may change the effective settings. Review them manually."
+// in the language the app shows.
+func TexpGatewayMatch() string { return In(i18n.Locale()).TexpGatewayMatch() }
+
+// TexpGatewayMatch says "Match or custom Include rules may change the effective settings. Review them manually."
+// in the language of msgs.
+func (msgs Messages) TexpGatewayMatch() string {
+	return Catalog.Format(msgs.locale, "texpGatewayMatch", nil)
+}
+
+// TexpAllowGateway says "Allow (clientspecified)"
+// in the language the app shows.
+func TexpAllowGateway() string { return In(i18n.Locale()).TexpAllowGateway() }
+
+// TexpAllowGateway says "Allow (clientspecified)"
+// in the language of msgs.
+func (msgs Messages) TexpAllowGateway() string {
+	return Catalog.Format(msgs.locale, "texpAllowGateway", nil)
+}
+
+// TexpGatewayConfirm says "Set GatewayPorts clientspecified on {host}? This allows SSH users with forwarding permission to request non-loopback …"
+// in the language the app shows.
+func TexpGatewayConfirm(host string) string { return In(i18n.Locale()).TexpGatewayConfirm(host) }
+
+// TexpGatewayConfirm says "Set GatewayPorts clientspecified on {host}? This allows SSH users with forwarding permission to request non-loopback …"
+// in the language of msgs.
+func (msgs Messages) TexpGatewayConfirm(host string) string {
+	return Catalog.Format(msgs.locale, "texpGatewayConfirm", map[string]any{"host": host})
+}
+
+// TexpReconnect says "Reloaded sshd. Reconnect SSH, then restart the tunnel; restarting it on the old connection is not enough."
+// in the language the app shows.
+func TexpReconnect() string { return In(i18n.Locale()).TexpReconnect() }
+
+// TexpReconnect says "Reloaded sshd. Reconnect SSH, then restart the tunnel; restarting it on the old connection is not enough."
+// in the language of msgs.
+func (msgs Messages) TexpReconnect() string {
+	return Catalog.Format(msgs.locale, "texpReconnect", nil)
+}
+
+// TexpReconnectAction says "Reconnect SSH…"
+// in the language the app shows.
+func TexpReconnectAction() string { return In(i18n.Locale()).TexpReconnectAction() }
+
+// TexpReconnectAction says "Reconnect SSH…"
+// in the language of msgs.
+func (msgs Messages) TexpReconnectAction() string {
+	return Catalog.Format(msgs.locale, "texpReconnectAction", nil)
+}
+
+// TexpReconnectConfirm says "Reconnect to {host}? Open shells, transfers and tunnels on this SSH connection are interrupted."
+// in the language the app shows.
+func TexpReconnectConfirm(host string) string { return In(i18n.Locale()).TexpReconnectConfirm(host) }
+
+// TexpReconnectConfirm says "Reconnect to {host}? Open shells, transfers and tunnels on this SSH connection are interrupted."
+// in the language of msgs.
+func (msgs Messages) TexpReconnectConfirm(host string) string {
+	return Catalog.Format(msgs.locale, "texpReconnectConfirm", map[string]any{"host": host})
+}
+
+// TexpRelay says "2. Server relay"
+// in the language the app shows.
+func TexpRelay() string { return In(i18n.Locale()).TexpRelay() }
+
+// TexpRelay says "2. Server relay"
+// in the language of msgs.
+func (msgs Messages) TexpRelay() string {
+	return Catalog.Format(msgs.locale, "texpRelay", nil)
+}
+
+// TexpRelayAction says "Use a relay on the server"
+// in the language the app shows.
+func TexpRelayAction() string { return In(i18n.Locale()).TexpRelayAction() }
+
+// TexpRelayAction says "Use a relay on the server"
+// in the language of msgs.
+func (msgs Messages) TexpRelayAction() string {
+	return Catalog.Format(msgs.locale, "texpRelayAction", nil)
+}
+
+// TexpRelaySwitchOff says "Use direct SSH forwarding"
+// in the language the app shows.
+func TexpRelaySwitchOff() string { return In(i18n.Locale()).TexpRelaySwitchOff() }
+
+// TexpRelaySwitchOff says "Use direct SSH forwarding"
+// in the language of msgs.
+func (msgs Messages) TexpRelaySwitchOff() string {
+	return Catalog.Format(msgs.locale, "texpRelaySwitchOff", nil)
+}
+
+// TexpRelayRunning says "The server relay is listening. Stopping the tunnel also stops the relay."
+// in the language the app shows.
+func TexpRelayRunning() string { return In(i18n.Locale()).TexpRelayRunning() }
+
+// TexpRelayRunning says "The server relay is listening. Stopping the tunnel also stops the relay."
+// in the language of msgs.
+func (msgs Messages) TexpRelayRunning() string {
+	return Catalog.Format(msgs.locale, "texpRelayRunning", nil)
+}
+
+// TexpRelayConfigured says "Configured but stopped. Run checks, then start the relay here."
+// in the language the app shows.
+func TexpRelayConfigured() string { return In(i18n.Locale()).TexpRelayConfigured() }
+
+// TexpRelayConfigured says "Configured but stopped. Run checks, then start the relay here."
+// in the language of msgs.
+func (msgs Messages) TexpRelayConfigured() string {
+	return Catalog.Format(msgs.locale, "texpRelayConfigured", nil)
+}
+
+// TexpRelayTool says "Available: {tool}. Leaves sshd settings unchanged."
+// in the language the app shows.
+func TexpRelayTool(tool string) string { return In(i18n.Locale()).TexpRelayTool(tool) }
+
+// TexpRelayTool says "Available: {tool}. Leaves sshd settings unchanged."
+// in the language of msgs.
+func (msgs Messages) TexpRelayTool(tool string) string {
+	return Catalog.Format(msgs.locale, "texpRelayTool", map[string]any{"tool": tool})
+}
+
+// TexpRelayMissing says "Requires setsid and one of socat, ncat or Python 3.8+ on the server."
+// in the language the app shows.
+func TexpRelayMissing() string { return In(i18n.Locale()).TexpRelayMissing() }
+
+// TexpRelayMissing says "Requires setsid and one of socat, ncat or Python 3.8+ on the server."
+// in the language of msgs.
+func (msgs Messages) TexpRelayMissing() string {
+	return Catalog.Format(msgs.locale, "texpRelayMissing", nil)
+}
+
+// TexpRelayUnsupported says "Use a fixed port and an IP bind address with GatewayPorts off or clientspecified. Relays cannot enforce the tunnel…"
+// in the language the app shows.
+func TexpRelayUnsupported() string { return In(i18n.Locale()).TexpRelayUnsupported() }
+
+// TexpRelayUnsupported says "Use a fixed port and an IP bind address with GatewayPorts off or clientspecified. Relays cannot enforce the tunnel…"
+// in the language of msgs.
+func (msgs Messages) TexpRelayUnsupported() string {
+	return Catalog.Format(msgs.locale, "texpRelayUnsupported", nil)
+}
+
+// TexpRelayExited says "The server relay exited."
+// in the language the app shows.
+func TexpRelayExited() string { return In(i18n.Locale()).TexpRelayExited() }
+
+// TexpRelayExited says "The server relay exited."
+// in the language of msgs.
+func (msgs Messages) TexpRelayExited() string {
+	return Catalog.Format(msgs.locale, "texpRelayExited", nil)
+}
+
+// TexpTunnelChanged says "This tunnel or its SSH host changed. Close this window and reopen it from the current tunnel list."
+// in the language the app shows.
+func TexpTunnelChanged() string { return In(i18n.Locale()).TexpTunnelChanged() }
+
+// TexpTunnelChanged says "This tunnel or its SSH host changed. Close this window and reopen it from the current tunnel list."
+// in the language of msgs.
+func (msgs Messages) TexpTunnelChanged() string {
+	return Catalog.Format(msgs.locale, "texpTunnelChanged", nil)
+}
+
+// TexpRelayConfirm says "Use a relay on {host} to listen on {address}? Machines that can reach it can connect. An active tunnel restarts. Futu…"
+// in the language the app shows.
+func TexpRelayConfirm(host string, address string) string {
+	return In(i18n.Locale()).TexpRelayConfirm(host, address)
+}
+
+// TexpRelayConfirm says "Use a relay on {host} to listen on {address}? Machines that can reach it can connect. An active tunnel restarts. Futu…"
+// in the language of msgs.
+func (msgs Messages) TexpRelayConfirm(host string, address string) string {
+	return Catalog.Format(msgs.locale, "texpRelayConfirm", map[string]any{"host": host, "address": address})
+}
+
+// TexpDirectConfirm says "Switch {address} back to direct SSH forwarding on {host}? If the tunnel is running, it restarts."
+// in the language the app shows.
+func TexpDirectConfirm(address string, host string) string {
+	return In(i18n.Locale()).TexpDirectConfirm(address, host)
+}
+
+// TexpDirectConfirm says "Switch {address} back to direct SSH forwarding on {host}? If the tunnel is running, it restarts."
+// in the language of msgs.
+func (msgs Messages) TexpDirectConfirm(address string, host string) string {
+	return Catalog.Format(msgs.locale, "texpDirectConfirm", map[string]any{"address": address, "host": host})
+}
+
+// TexpPublicConfirm says "Listen on {address} on {host}? Anyone who can reach this address and port can try to connect. No firewall or cloud se…"
+// in the language the app shows.
+func TexpPublicConfirm(address string, host string) string {
+	return In(i18n.Locale()).TexpPublicConfirm(address, host)
+}
+
+// TexpPublicConfirm says "Listen on {address} on {host}? Anyone who can reach this address and port can try to connect. No firewall or cloud se…"
+// in the language of msgs.
+func (msgs Messages) TexpPublicConfirm(address string, host string) string {
+	return Catalog.Format(msgs.locale, "texpPublicConfirm", map[string]any{"address": address, "host": host})
+}
+
+// TexpPublicBind says "Server listen address"
+// in the language the app shows.
+func TexpPublicBind() string { return In(i18n.Locale()).TexpPublicBind() }
+
+// TexpPublicBind says "Server listen address"
+// in the language of msgs.
+func (msgs Messages) TexpPublicBind() string {
+	return Catalog.Format(msgs.locale, "texpPublicBind", nil)
+}
+
+// TexpPublicPort says "Server listen port"
+// in the language the app shows.
+func TexpPublicPort() string { return In(i18n.Locale()).TexpPublicPort() }
+
+// TexpPublicPort says "Server listen port"
+// in the language of msgs.
+func (msgs Messages) TexpPublicPort() string {
+	return Catalog.Format(msgs.locale, "texpPublicPort", nil)
+}
+
+// TexpPublicWarn says "Anyone who can reach {address} on the SSH server can try to connect unless you restrict access."
+// in the language the app shows.
+func TexpPublicWarn(address string) string { return In(i18n.Locale()).TexpPublicWarn(address) }
+
+// TexpPublicWarn says "Anyone who can reach {address} on the SSH server can try to connect unless you restrict access."
+// in the language of msgs.
+func (msgs Messages) TexpPublicWarn(address string) string {
+	return Catalog.Format(msgs.locale, "texpPublicWarn", map[string]any{"address": address})
+}
+
+// TexpProxyWarn says "Warning: without authentication, any reachable client can use this proxy and reach networks available to its exit host."
+// in the language the app shows.
+func TexpProxyWarn() string { return In(i18n.Locale()).TexpProxyWarn() }
+
+// TexpProxyWarn says "Warning: without authentication, any reachable client can use this proxy and reach networks available to its exit host."
+// in the language of msgs.
+func (msgs Messages) TexpProxyWarn() string {
+	return Catalog.Format(msgs.locale, "texpProxyWarn", nil)
+}
+
+// TexpPersisted says "Saved. Starts with these settings the next time you connect or start the tunnel."
+// in the language the app shows.
+func TexpPersisted() string { return In(i18n.Locale()).TexpPersisted() }
+
+// TexpPersisted says "Saved. Starts with these settings the next time you connect or start the tunnel."
+// in the language of msgs.
+func (msgs Messages) TexpPersisted() string {
+	return Catalog.Format(msgs.locale, "texpPersisted", nil)
+}
+
+// TexpFirewall says "3. Server firewall"
+// in the language the app shows.
+func TexpFirewall() string { return In(i18n.Locale()).TexpFirewall() }
+
+// TexpFirewall says "3. Server firewall"
+// in the language of msgs.
+func (msgs Messages) TexpFirewall() string {
+	return Catalog.Format(msgs.locale, "texpFirewall", nil)
+}
+
+// TexpFirewallOpen says "A TCP port rule already allows {port}."
+// in the language the app shows.
+func TexpFirewallOpen(port string) string { return In(i18n.Locale()).TexpFirewallOpen(port) }
+
+// TexpFirewallOpen says "A TCP port rule already allows {port}."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallOpen(port string) string {
+	return Catalog.Format(msgs.locale, "texpFirewallOpen", map[string]any{"port": port})
+}
+
+// TexpFirewallInactive says "UFW is inactive. No rule was added."
+// in the language the app shows.
+func TexpFirewallInactive() string { return In(i18n.Locale()).TexpFirewallInactive() }
+
+// TexpFirewallInactive says "UFW is inactive. No rule was added."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallInactive() string {
+	return Catalog.Format(msgs.locale, "texpFirewallInactive", nil)
+}
+
+// TexpFirewallClosed says "No matching allow rule for {port}/tcp was found. Custom rules may still apply."
+// in the language the app shows.
+func TexpFirewallClosed(port string) string { return In(i18n.Locale()).TexpFirewallClosed(port) }
+
+// TexpFirewallClosed says "No matching allow rule for {port}/tcp was found. Custom rules may still apply."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallClosed(port string) string {
+	return Catalog.Format(msgs.locale, "texpFirewallClosed", map[string]any{"port": port})
+}
+
+// TexpFirewallManual says "Could not determine a single firewall policy. Review the active interfaces, zones and rules on the server."
+// in the language the app shows.
+func TexpFirewallManual() string { return In(i18n.Locale()).TexpFirewallManual() }
+
+// TexpFirewallManual says "Could not determine a single firewall policy. Review the active interfaces, zones and rules on the server."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallManual() string {
+	return Catalog.Format(msgs.locale, "texpFirewallManual", nil)
+}
+
+// TexpAllowPort says "Allow {port}/tcp…"
+// in the language the app shows.
+func TexpAllowPort(port string) string { return In(i18n.Locale()).TexpAllowPort(port) }
+
+// TexpAllowPort says "Allow {port}/tcp…"
+// in the language of msgs.
+func (msgs Messages) TexpAllowPort(port string) string {
+	return Catalog.Format(msgs.locale, "texpAllowPort", map[string]any{"port": port})
+}
+
+// TexpRemoveRule says "Remove our rule…"
+// in the language the app shows.
+func TexpRemoveRule() string { return In(i18n.Locale()).TexpRemoveRule() }
+
+// TexpRemoveRule says "Remove our rule…"
+// in the language of msgs.
+func (msgs Messages) TexpRemoveRule() string {
+	return Catalog.Format(msgs.locale, "texpRemoveRule", nil)
+}
+
+// TexpAllowConfirm says "Allow inbound TCP {port} on {host} ({scope})? The rule can allow anyone who can reach this server to try connecting a…"
+// in the language the app shows.
+func TexpAllowConfirm(port string, host string, scope string) string {
+	return In(i18n.Locale()).TexpAllowConfirm(port, host, scope)
+}
+
+// TexpAllowConfirm says "Allow inbound TCP {port} on {host} ({scope})? The rule can allow anyone who can reach this server to try connecting a…"
+// in the language of msgs.
+func (msgs Messages) TexpAllowConfirm(port string, host string, scope string) string {
+	return Catalog.Format(msgs.locale, "texpAllowConfirm", map[string]any{"port": port, "host": host, "scope": scope})
+}
+
+// TexpRemoveConfirm says "Remove the managed TCP {port} rule on {host} ({scope})? Clients relying on that rule may lose access."
+// in the language the app shows.
+func TexpRemoveConfirm(port string, host string, scope string) string {
+	return In(i18n.Locale()).TexpRemoveConfirm(port, host, scope)
+}
+
+// TexpRemoveConfirm says "Remove the managed TCP {port} rule on {host} ({scope})? Clients relying on that rule may lose access."
+// in the language of msgs.
+func (msgs Messages) TexpRemoveConfirm(port string, host string, scope string) string {
+	return Catalog.Format(msgs.locale, "texpRemoveConfirm", map[string]any{"port": port, "host": host, "scope": scope})
+}
+
+// TexpFirewallOwned says "Finallyshell added a rule for this port. Remove it when you no longer need the tunnel."
+// in the language the app shows.
+func TexpFirewallOwned() string { return In(i18n.Locale()).TexpFirewallOwned() }
+
+// TexpFirewallOwned says "Finallyshell added a rule for this port. Remove it when you no longer need the tunnel."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallOwned() string {
+	return Catalog.Format(msgs.locale, "texpFirewallOwned", nil)
+}
+
+// TexpFirewallOrphan says "The tunnel for TCP {port} is no longer in the saved list. Consider removing this rule."
+// in the language the app shows.
+func TexpFirewallOrphan(port string) string { return In(i18n.Locale()).TexpFirewallOrphan(port) }
+
+// TexpFirewallOrphan says "The tunnel for TCP {port} is no longer in the saved list. Consider removing this rule."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallOrphan(port string) string {
+	return Catalog.Format(msgs.locale, "texpFirewallOrphan", map[string]any{"port": port})
+}
+
+// TexpFirewallChanged says "The firewall changed since the check. No rule was modified. Run checks again."
+// in the language the app shows.
+func TexpFirewallChanged() string { return In(i18n.Locale()).TexpFirewallChanged() }
+
+// TexpFirewallChanged says "The firewall changed since the check. No rule was modified. Run checks again."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallChanged() string {
+	return Catalog.Format(msgs.locale, "texpFirewallChanged", nil)
+}
+
+// TexpFirewallRemoved says "The managed firewall rule was removed."
+// in the language the app shows.
+func TexpFirewallRemoved() string { return In(i18n.Locale()).TexpFirewallRemoved() }
+
+// TexpFirewallRemoved says "The managed firewall rule was removed."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallRemoved() string {
+	return Catalog.Format(msgs.locale, "texpFirewallRemoved", nil)
+}
+
+// TexpFirewallSaved says "The rule was added. Finallyshell remembers it on this computer."
+// in the language the app shows.
+func TexpFirewallSaved() string { return In(i18n.Locale()).TexpFirewallSaved() }
+
+// TexpFirewallSaved says "The rule was added. Finallyshell remembers it on this computer."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallSaved() string {
+	return Catalog.Format(msgs.locale, "texpFirewallSaved", nil)
+}
+
+// TexpFirewallRecordFailed says "Could not update the local firewall record. Check the server firewall before continuing: {reason}"
+// in the language the app shows.
+func TexpFirewallRecordFailed(reason string) string {
+	return In(i18n.Locale()).TexpFirewallRecordFailed(reason)
+}
+
+// TexpFirewallRecordFailed says "Could not update the local firewall record. Check the server firewall before continuing: {reason}"
+// in the language of msgs.
+func (msgs Messages) TexpFirewallRecordFailed(reason string) string {
+	return Catalog.Format(msgs.locale, "texpFirewallRecordFailed", map[string]any{"reason": reason})
+}
+
+// TexpFirewallRemovals says "Managed rules…"
+// in the language the app shows.
+func TexpFirewallRemovals() string { return In(i18n.Locale()).TexpFirewallRemovals() }
+
+// TexpFirewallRemovals says "Managed rules…"
+// in the language of msgs.
+func (msgs Messages) TexpFirewallRemovals() string {
+	return Catalog.Format(msgs.locale, "texpFirewallRemovals", nil)
+}
+
+// TexpFirewallUFW says "UFW, all interfaces"
+// in the language the app shows.
+func TexpFirewallUFW() string { return In(i18n.Locale()).TexpFirewallUFW() }
+
+// TexpFirewallUFW says "UFW, all interfaces"
+// in the language of msgs.
+func (msgs Messages) TexpFirewallUFW() string {
+	return Catalog.Format(msgs.locale, "texpFirewallUFW", nil)
+}
+
+// TexpCloud says "4. Cloud security groups"
+// in the language the app shows.
+func TexpCloud() string { return In(i18n.Locale()).TexpCloud() }
+
+// TexpCloud says "4. Cloud security groups"
+// in the language of msgs.
+func (msgs Messages) TexpCloud() string {
+	return Catalog.Format(msgs.locale, "texpCloud", nil)
+}
+
+// TexpCloudHint says "If the server is on Alibaba Cloud, Tencent Cloud, AWS or another provider, verify that the security group also allows…"
+// in the language the app shows.
+func TexpCloudHint() string { return In(i18n.Locale()).TexpCloudHint() }
+
+// TexpCloudHint says "If the server is on Alibaba Cloud, Tencent Cloud, AWS or another provider, verify that the security group also allows…"
+// in the language of msgs.
+func (msgs Messages) TexpCloudHint() string {
+	return Catalog.Format(msgs.locale, "texpCloudHint", nil)
+}
+
+// TexpOutside says "5. Test reachability from this computer"
+// in the language the app shows.
+func TexpOutside() string { return In(i18n.Locale()).TexpOutside() }
+
+// TexpOutside says "5. Test reachability from this computer"
+// in the language of msgs.
+func (msgs Messages) TexpOutside() string {
+	return Catalog.Format(msgs.locale, "texpOutside", nil)
+}
+
+// TexpOutsideHost says "Public IP or domain"
+// in the language the app shows.
+func TexpOutsideHost() string { return In(i18n.Locale()).TexpOutsideHost() }
+
+// TexpOutsideHost says "Public IP or domain"
+// in the language of msgs.
+func (msgs Messages) TexpOutsideHost() string {
+	return Catalog.Format(msgs.locale, "texpOutsideHost", nil)
+}
+
+// TexpCheckTCP says "Test TCP"
+// in the language the app shows.
+func TexpCheckTCP() string { return In(i18n.Locale()).TexpCheckTCP() }
+
+// TexpCheckTCP says "Test TCP"
+// in the language of msgs.
+func (msgs Messages) TexpCheckTCP() string {
+	return Catalog.Format(msgs.locale, "texpCheckTCP", nil)
+}
+
+// TexpCheckHTTP says "Test HTTP GET"
+// in the language the app shows.
+func TexpCheckHTTP() string { return In(i18n.Locale()).TexpCheckHTTP() }
+
+// TexpCheckHTTP says "Test HTTP GET"
+// in the language of msgs.
+func (msgs Messages) TexpCheckHTTP() string {
+	return Catalog.Format(msgs.locale, "texpCheckHTTP", nil)
+}
+
+// TexpOutsideTCP says "TCP connection succeeded from this computer. This does not verify the tunnel’s target."
+// in the language the app shows.
+func TexpOutsideTCP() string { return In(i18n.Locale()).TexpOutsideTCP() }
+
+// TexpOutsideTCP says "TCP connection succeeded from this computer. This does not verify the tunnel’s target."
+// in the language of msgs.
+func (msgs Messages) TexpOutsideTCP() string {
+	return Catalog.Format(msgs.locale, "texpOutsideTCP", nil)
+}
+
+// TexpOutsideHTTP says "GET / returned HTTP {status}. This is the response from the address, not proof the service is reachable everywhere."
+// in the language the app shows.
+func TexpOutsideHTTP(status string) string { return In(i18n.Locale()).TexpOutsideHTTP(status) }
+
+// TexpOutsideHTTP says "GET / returned HTTP {status}. This is the response from the address, not proof the service is reachable everywhere."
+// in the language of msgs.
+func (msgs Messages) TexpOutsideHTTP(status string) string {
+	return Catalog.Format(msgs.locale, "texpOutsideHTTP", map[string]any{"status": status})
+}
+
+// TexpOutsideBad says "Enter a host or IP address and a port from 1 to 65535. For an automatic port, start the tunnel first."
+// in the language the app shows.
+func TexpOutsideBad() string { return In(i18n.Locale()).TexpOutsideBad() }
+
+// TexpOutsideBad says "Enter a host or IP address and a port from 1 to 65535. For an automatic port, start the tunnel first."
+// in the language of msgs.
+func (msgs Messages) TexpOutsideBad() string {
+	return Catalog.Format(msgs.locale, "texpOutsideBad", nil)
+}
+
+// TexpOutsideLoopback says "Set a non-loopback bind before testing public access; an unrelated service could answer on that port."
+// in the language the app shows.
+func TexpOutsideLoopback() string { return In(i18n.Locale()).TexpOutsideLoopback() }
+
+// TexpOutsideLoopback says "Set a non-loopback bind before testing public access; an unrelated service could answer on that port."
+// in the language of msgs.
+func (msgs Messages) TexpOutsideLoopback() string {
+	return Catalog.Format(msgs.locale, "texpOutsideLoopback", nil)
+}
+
+// TexpOpenBrowser says "Open in browser"
+// in the language the app shows.
+func TexpOpenBrowser() string { return In(i18n.Locale()).TexpOpenBrowser() }
+
+// TexpOpenBrowser says "Open in browser"
+// in the language of msgs.
+func (msgs Messages) TexpOpenBrowser() string {
+	return Catalog.Format(msgs.locale, "texpOpenBrowser", nil)
+}
+
+// TexpLANHint says "Only share on a trusted network. Other machines that can reach this address and port can try to connect."
+// in the language the app shows.
+func TexpLANHint() string { return In(i18n.Locale()).TexpLANHint() }
+
+// TexpLANHint says "Only share on a trusted network. Other machines that can reach this address and port can try to connect."
+// in the language of msgs.
+func (msgs Messages) TexpLANHint() string {
+	return Catalog.Format(msgs.locale, "texpLANHint", nil)
+}
+
+// TexpLANAllowlist says "Set the tunnel’s source allowlist to the LAN subnet. Require authentication when sharing a proxy."
+// in the language the app shows.
+func TexpLANAllowlist() string { return In(i18n.Locale()).TexpLANAllowlist() }
+
+// TexpLANAllowlist says "Set the tunnel’s source allowlist to the LAN subnet. Require authentication when sharing a proxy."
+// in the language of msgs.
+func (msgs Messages) TexpLANAllowlist() string {
+	return Catalog.Format(msgs.locale, "texpLANAllowlist", nil)
+}
+
+// TexpLANNoAddresses says "No matching LAN address found on an active adapter."
+// in the language the app shows.
+func TexpLANNoAddresses() string { return In(i18n.Locale()).TexpLANNoAddresses() }
+
+// TexpLANNoAddresses says "No matching LAN address found on an active adapter."
+// in the language of msgs.
+func (msgs Messages) TexpLANNoAddresses() string {
+	return Catalog.Format(msgs.locale, "texpLANNoAddresses", nil)
+}
+
+// TexpLANAddresses says "Addresses for other devices"
+// in the language the app shows.
+func TexpLANAddresses() string { return In(i18n.Locale()).TexpLANAddresses() }
+
+// TexpLANAddresses says "Addresses for other devices"
+// in the language of msgs.
+func (msgs Messages) TexpLANAddresses() string {
+	return Catalog.Format(msgs.locale, "texpLANAddresses", nil)
+}
+
+// TexpLANBindUnknown says "The configured bind did not match a current LAN address. Start the tunnel to check the actual listener."
+// in the language the app shows.
+func TexpLANBindUnknown() string { return In(i18n.Locale()).TexpLANBindUnknown() }
+
+// TexpLANBindUnknown says "The configured bind did not match a current LAN address. Start the tunnel to check the actual listener."
+// in the language of msgs.
+func (msgs Messages) TexpLANBindUnknown() string {
+	return Catalog.Format(msgs.locale, "texpLANBindUnknown", nil)
+}
+
+// TexpLANPortPending says "Start the tunnel to see its assigned port."
+// in the language the app shows.
+func TexpLANPortPending() string { return In(i18n.Locale()).TexpLANPortPending() }
+
+// TexpLANPortPending says "Start the tunnel to see its assigned port."
+// in the language of msgs.
+func (msgs Messages) TexpLANPortPending() string {
+	return Catalog.Format(msgs.locale, "texpLANPortPending", nil)
+}
+
+// TexpLANFirewall says "Inbound firewall"
+// in the language the app shows.
+func TexpLANFirewall() string { return In(i18n.Locale()).TexpLANFirewall() }
+
+// TexpLANFirewall says "Inbound firewall"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewall() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewall", nil)
+}
+
+// TexpLANFirewallCheck says "Check firewall"
+// in the language the app shows.
+func TexpLANFirewallCheck() string { return In(i18n.Locale()).TexpLANFirewallCheck() }
+
+// TexpLANFirewallCheck says "Check firewall"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallCheck() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallCheck", nil)
+}
+
+// TexpLANFirewallMatch says "Found an enabled inbound allow rule for this program and port. A profile, scope or block rule can still prevent access."
+// in the language the app shows.
+func TexpLANFirewallMatch() string { return In(i18n.Locale()).TexpLANFirewallMatch() }
+
+// TexpLANFirewallMatch says "Found an enabled inbound allow rule for this program and port. A profile, scope or block rule can still prevent access."
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallMatch() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallMatch", nil)
+}
+
+// TexpLANFirewallBlock says "Found an enabled inbound block rule for this program and port. Review it in Windows Defender Firewall."
+// in the language the app shows.
+func TexpLANFirewallBlock() string { return In(i18n.Locale()).TexpLANFirewallBlock() }
+
+// TexpLANFirewallBlock says "Found an enabled inbound block rule for this program and port. Review it in Windows Defender Firewall."
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallBlock() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallBlock", nil)
+}
+
+// TexpLANFirewallUnknown says "No matching rule could be verified. Windows Defender Firewall may block inbound traffic; check the active network pro…"
+// in the language the app shows.
+func TexpLANFirewallUnknown() string { return In(i18n.Locale()).TexpLANFirewallUnknown() }
+
+// TexpLANFirewallUnknown says "No matching rule could be verified. Windows Defender Firewall may block inbound traffic; check the active network pro…"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallUnknown() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallUnknown", nil)
+}
+
+// TexpLANFirewallOther says "If the system firewall is on, allow inbound TCP traffic for this port (macOS: allow the app). Restrict access to your…"
+// in the language the app shows.
+func TexpLANFirewallOther() string { return In(i18n.Locale()).TexpLANFirewallOther() }
+
+// TexpLANFirewallOther says "If the system firewall is on, allow inbound TCP traffic for this port (macOS: allow the app). Restrict access to your…"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallOther() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallOther", nil)
+}
+
+// TexpLANFirewallAdd says "Allow in Windows Firewall…"
+// in the language the app shows.
+func TexpLANFirewallAdd() string { return In(i18n.Locale()).TexpLANFirewallAdd() }
+
+// TexpLANFirewallAdd says "Allow in Windows Firewall…"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallAdd() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallAdd", nil)
+}
+
+// TexpLANFirewallConfirm says "Add Windows Firewall rule “Finallyshell tunnel {port}” for inbound TCP {port}? It applies to every program and ne…"
+// in the language the app shows.
+func TexpLANFirewallConfirm(port string) string {
+	return In(i18n.Locale()).TexpLANFirewallConfirm(port)
+}
+
+// TexpLANFirewallConfirm says "Add Windows Firewall rule “Finallyshell tunnel {port}” for inbound TCP {port}? It applies to every program and ne…"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallConfirm(port string) string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallConfirm", map[string]any{"port": port})
+}
+
+// TexpLANFirewallOpened says "Windows opened the administrator command. Check Windows Defender Firewall to verify the rule."
+// in the language the app shows.
+func TexpLANFirewallOpened() string { return In(i18n.Locale()).TexpLANFirewallOpened() }
+
+// TexpLANFirewallOpened says "Windows opened the administrator command. Check Windows Defender Firewall to verify the rule."
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallOpened() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallOpened", nil)
+}
+
+// TexpError says "Could not complete this step: {reason}"
+// in the language the app shows.
+func TexpError(reason string) string { return In(i18n.Locale()).TexpError(reason) }
+
+// TexpError says "Could not complete this step: {reason}"
+// in the language of msgs.
+func (msgs Messages) TexpError(reason string) string {
+	return Catalog.Format(msgs.locale, "texpError", map[string]any{"reason": reason})
+}
+
+// RdpsshSection says "Remote Desktop through SSH"
+// in the language the app shows.
+func RdpsshSection() string { return In(i18n.Locale()).RdpsshSection() }
+
+// RdpsshSection says "Remote Desktop through SSH"
+// in the language of msgs.
+func (msgs Messages) RdpsshSection() string {
+	return Catalog.Format(msgs.locale, "rdpsshSection", nil)
+}
+
+// RdpsshHost says "Connect through SSH host"
+// in the language the app shows.
+func RdpsshHost() string { return In(i18n.Locale()).RdpsshHost() }
+
+// RdpsshHost says "Connect through SSH host"
+// in the language of msgs.
+func (msgs Messages) RdpsshHost() string {
+	return Catalog.Format(msgs.locale, "rdpsshHost", nil)
+}
+
+// RdpsshHostHint says "Uses the SSH host’s normal sign-in and opens a loopback-only tunnel on this computer."
+// in the language the app shows.
+func RdpsshHostHint() string { return In(i18n.Locale()).RdpsshHostHint() }
+
+// RdpsshHostHint says "Uses the SSH host’s normal sign-in and opens a loopback-only tunnel on this computer."
+// in the language of msgs.
+func (msgs Messages) RdpsshHostHint() string {
+	return Catalog.Format(msgs.locale, "rdpsshHostHint", nil)
+}
+
+// RdpsshDirect says "None (direct connection)"
+// in the language the app shows.
+func RdpsshDirect() string { return In(i18n.Locale()).RdpsshDirect() }
+
+// RdpsshDirect says "None (direct connection)"
+// in the language of msgs.
+func (msgs Messages) RdpsshDirect() string {
+	return Catalog.Format(msgs.locale, "rdpsshDirect", nil)
+}
+
+// RdpsshTarget says "Target as seen from the SSH host"
+// in the language the app shows.
+func RdpsshTarget() string { return In(i18n.Locale()).RdpsshTarget() }
+
+// RdpsshTarget says "Target as seen from the SSH host"
+// in the language of msgs.
+func (msgs Messages) RdpsshTarget() string {
+	return Catalog.Format(msgs.locale, "rdpsshTarget", nil)
+}
+
+// RdpsshTargetHint says "Leave empty to use this connection’s address and port. A host without a port uses 3389; put brackets around IPv6 ad…"
+// in the language the app shows.
+func RdpsshTargetHint() string { return In(i18n.Locale()).RdpsshTargetHint() }
+
+// RdpsshTargetHint says "Leave empty to use this connection’s address and port. A host without a port uses 3389; put brackets around IPv6 ad…"
+// in the language of msgs.
+func (msgs Messages) RdpsshTargetHint() string {
+	return Catalog.Format(msgs.locale, "rdpsshTargetHint", nil)
+}
+
+// RdpsshMissing says "The selected SSH host is missing. Choose an SSH host from the connection tree."
+// in the language the app shows.
+func RdpsshMissing() string { return In(i18n.Locale()).RdpsshMissing() }
+
+// RdpsshMissing says "The selected SSH host is missing. Choose an SSH host from the connection tree."
+// in the language of msgs.
+func (msgs Messages) RdpsshMissing() string {
+	return Catalog.Format(msgs.locale, "rdpsshMissing", nil)
+}
+
+// RdpsshCancelled says "SSH sign-in was cancelled. No Remote Desktop tunnel was opened."
+// in the language the app shows.
+func RdpsshCancelled() string { return In(i18n.Locale()).RdpsshCancelled() }
+
+// RdpsshCancelled says "SSH sign-in was cancelled. No Remote Desktop tunnel was opened."
+// in the language of msgs.
+func (msgs Messages) RdpsshCancelled() string {
+	return Catalog.Format(msgs.locale, "rdpsshCancelled", nil)
+}
+
+// RdpsshNoGateway says "Turn off Remote Desktop Gateway to use SSH forwarding."
+// in the language the app shows.
+func RdpsshNoGateway() string { return In(i18n.Locale()).RdpsshNoGateway() }
+
+// RdpsshNoGateway says "Turn off Remote Desktop Gateway to use SSH forwarding."
+// in the language of msgs.
+func (msgs Messages) RdpsshNoGateway() string {
+	return Catalog.Format(msgs.locale, "rdpsshNoGateway", nil)
+}
+
+// RdpsshBadTarget says "Enter a valid host or IP address, optionally with a port from 1 to 65535."
+// in the language the app shows.
+func RdpsshBadTarget() string { return In(i18n.Locale()).RdpsshBadTarget() }
+
+// RdpsshBadTarget says "Enter a valid host or IP address, optionally with a port from 1 to 65535."
+// in the language of msgs.
+func (msgs Messages) RdpsshBadTarget() string {
+	return Catalog.Format(msgs.locale, "rdpsshBadTarget", nil)
+}
+
+// RdpsshConnecting says "Connecting to SSH host {host}…"
+// in the language the app shows.
+func RdpsshConnecting(host string) string { return In(i18n.Locale()).RdpsshConnecting(host) }
+
+// RdpsshConnecting says "Connecting to SSH host {host}…"
+// in the language of msgs.
+func (msgs Messages) RdpsshConnecting(host string) string {
+	return Catalog.Format(msgs.locale, "rdpsshConnecting", map[string]any{"host": host})
+}
+
+// RdpsshPreparing says "Checking {target} through SSH…"
+// in the language the app shows.
+func RdpsshPreparing(target string) string { return In(i18n.Locale()).RdpsshPreparing(target) }
+
+// RdpsshPreparing says "Checking {target} through SSH…"
+// in the language of msgs.
+func (msgs Messages) RdpsshPreparing(target string) string {
+	return Catalog.Format(msgs.locale, "rdpsshPreparing", map[string]any{"target": target})
+}
+
+// RdpsshDialFailed says "Could not connect to SSH host {host}: {reason}"
+// in the language the app shows.
+func RdpsshDialFailed(host string, reason string) string {
+	return In(i18n.Locale()).RdpsshDialFailed(host, reason)
+}
+
+// RdpsshDialFailed says "Could not connect to SSH host {host}: {reason}"
+// in the language of msgs.
+func (msgs Messages) RdpsshDialFailed(host string, reason string) string {
+	return Catalog.Format(msgs.locale, "rdpsshDialFailed", map[string]any{"host": host, "reason": reason})
+}
+
+// RdpsshTargetFailed says "The SSH host could not reach the Remote Desktop target {target}: {reason}"
+// in the language the app shows.
+func RdpsshTargetFailed(target string, reason string) string {
+	return In(i18n.Locale()).RdpsshTargetFailed(target, reason)
+}
+
+// RdpsshTargetFailed says "The SSH host could not reach the Remote Desktop target {target}: {reason}"
+// in the language of msgs.
+func (msgs Messages) RdpsshTargetFailed(target string, reason string) string {
+	return Catalog.Format(msgs.locale, "rdpsshTargetFailed", map[string]any{"target": target, "reason": reason})
+}
+
+// RdpsshTunnelFailed says "Could not start the Remote Desktop tunnel: {reason}"
+// in the language the app shows.
+func RdpsshTunnelFailed(reason string) string { return In(i18n.Locale()).RdpsshTunnelFailed(reason) }
+
+// RdpsshTunnelFailed says "Could not start the Remote Desktop tunnel: {reason}"
+// in the language of msgs.
+func (msgs Messages) RdpsshTunnelFailed(reason string) string {
+	return Catalog.Format(msgs.locale, "rdpsshTunnelFailed", map[string]any{"reason": reason})
+}
+
+// RdpsshOpening says "Opening Remote Desktop through SSH. The tunnel stops when the client exits."
+// in the language the app shows.
+func RdpsshOpening() string { return In(i18n.Locale()).RdpsshOpening() }
+
+// RdpsshOpening says "Opening Remote Desktop through SSH. The tunnel stops when the client exits."
+// in the language of msgs.
+func (msgs Messages) RdpsshOpening() string {
+	return Catalog.Format(msgs.locale, "rdpsshOpening", nil)
+}
+
+// RdpsshStopManually says "Opening Windows App through SSH. It asks for your password. When finished, stop the connection in the Tunnels tab."
+// in the language the app shows.
+func RdpsshStopManually() string { return In(i18n.Locale()).RdpsshStopManually() }
+
+// RdpsshStopManually says "Opening Windows App through SSH. It asks for your password. When finished, stop the connection in the Tunnels tab."
+// in the language of msgs.
+func (msgs Messages) RdpsshStopManually() string {
+	return Catalog.Format(msgs.locale, "rdpsshStopManually", nil)
+}
+
+// RdpsshSession says "Remote Desktop · {name}"
+// in the language the app shows.
+func RdpsshSession(name string) string { return In(i18n.Locale()).RdpsshSession(name) }
+
+// RdpsshSession says "Remote Desktop · {name}"
+// in the language of msgs.
+func (msgs Messages) RdpsshSession(name string) string {
+	return Catalog.Format(msgs.locale, "rdpsshSession", map[string]any{"name": name})
 }
 
 // KeysTitle says "SSH keys"

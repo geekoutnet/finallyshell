@@ -20,7 +20,7 @@ type bulkPaletteAction struct {
 func (a *App) showBulkPalette(commands []bulkPaletteAction) {
 	const kind WindowKind = "command-palette"
 	var query string
-	a.openWindow(WindowSpec{Kind: kind, Title: locales.BulkCommandPalette, Width: 480, Height: 215}, func(c *ui.Context) {
+	a.openWindow(WindowSpec{Kind: kind, Title: locales.BulkCommandPalette, Width: 480, Height: max(215, 68+35*len(commands))}, func(c *ui.Context) {
 		ui.Column(c).Fill().Padding(12).Gap(8).Children(func() {
 			enter := ui.SearchField(c, &query).Label(locales.BulkCommandPalette()).AutoFocus().FillWidth().Submitted()
 			search := strings.ToLower(strings.TrimSpace(query))

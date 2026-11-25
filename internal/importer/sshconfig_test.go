@@ -90,6 +90,46 @@ func TestReadSSHConfig(t *testing.T) {
 	}
 }
 
+func TestSSHConfigForwards(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "config")
+	const text = `Host *
+  LocalForward 3306 localhost:3306
+  ExitOnForwardFailure yes
+Host app
+  LocalForward [::1]:2375 "/var/run/docker socket"
+  LocalForward 3306 localhost:3306
+  RemoteForward 3128
+  DynamicForward 0.0.0.0:1080
+  DynamicForward broken
+Host other
+  RemoteForward [::1]:4400 [2001:db8::1]:443
+  DynamicForward 1080
+Host cleared
+  ClearAllForwardings yes
+`
+	if err := os.WriteFile(path, []byte(text), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	source, err := ReadSSHConfig(path)
+	if err != nil || len(source.Entries) != 3 {
+		t.Fatalf("source %+v: %v", source, err)
+	}
+	app, cleared, other := source.Entries[0].Host.Tunnels, source.Entries[1].Host.Tunnels, source.Entries[2].Host.Tunnels
+	if len(cleared) != 0 {
+		t.Fatalf("ClearAllForwardings: %+v", cleared)
+	}
+	if len(app) != 4 || app[0].ListenPort != 3306 || app[1].TargetSocket != "/var/run/docker socket" || app[1].ListenHost != "::1" ||
+		app[2].Kind != config.TunnelRemoteDynamic || app[3].Kind != config.TunnelDynamic || !app[3].Disabled {
+		t.Fatalf("app forwards: %+v", app)
+	}
+	if len(other) != 3 || other[1].TargetHost != "2001:db8::1" || other[2].Disabled || other[2].ID == "" {
+		t.Fatalf("other forwards: %+v", other)
+	}
+	if len(source.Problems) != 2 {
+		t.Fatalf("problems: %+v", source.Problems)
+	}
+}
+
 // writeFiles writes files, by their names in dir, and returns dir.
 func writeFiles(t *testing.T, files map[string]string) string {
 	t.Helper()

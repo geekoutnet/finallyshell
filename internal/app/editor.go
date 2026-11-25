@@ -192,11 +192,11 @@ func (a *App) openEditor(h *config.Host, from WindowKind) {
 		ed.password, ed.passphrase = "", ""
 		ed.totpText = ""
 	}
-	if from == WindowManager && a.windowOpen(WindowManager) {
+	if (from == WindowManager || from == windowTunnelManager) && a.windowOpen(from) {
 		// A sheet of the manager on macOS, showing its title inside;
 		// on Linux GTK blocks the main window too while it is open, as
 		// FinalShell's own dialogs do. Saving shows in the manager.
-		spec.Parent, spec.Modal = WindowManager, true
+		spec.Parent, spec.Modal = from, true
 	}
 	a.openWindow(spec, a.editorView)
 }
@@ -249,7 +249,7 @@ func (ed *connEditor) problems() map[editorField]string {
 // and keeps the editor open.
 func (a *App) saveEditor() {
 	ed := a.editor
-	if ed.totpBusy {
+	if ed.totpBusy || ed.tunnels.dialog || ed.tunnels.removeOpen {
 		return
 	}
 	ed.checked = true
@@ -292,6 +292,7 @@ func (a *App) saveEditorFields(ed *connEditor, newID string) bool {
 	}
 	port, _ := strconv.Atoi(strings.TrimSpace(ed.port))
 	h.Name, h.Addr, h.Port, h.Notes = strings.TrimSpace(ed.name), strings.TrimSpace(ed.addr), port, ed.notes
+	previousTunnels := h.Tunnels
 	wasRDP := h.IsRDP()
 	wasTelnet := h.Kind == config.KindTelnet
 	if !wasTelnet && ed.kind == config.KindTelnet {
@@ -326,6 +327,9 @@ func (a *App) saveEditorFields(ed *connEditor, newID string) bool {
 		ed.saveErr = func() string { return locales.ErrSaveFailed(err.Error()) }
 		return false
 	}
+	if h.Kind == config.KindSSH {
+		a.saveTunnelSecrets(h, previousTunnels, ed.tunnels.secrets)
+	}
 	ed.saveErr = nil
 	a.closeWindow(WindowEditor)
 	return true
@@ -358,6 +362,7 @@ func (a *App) saveSSH(h *config.Host, ed *connEditor) {
 	}
 	a.saveProxy(h, &ed.proxy)
 	h.Tunnels = ed.tunnels.result()
+	h.EnsureTunnelIDs()
 	a.keepProxySecret(h, ed.remember, ed.readingProxySecret)
 }
 
@@ -400,7 +405,8 @@ func (a *App) editorView(c *ui.Context) {
 	}
 	// Enter where no field takes it, and Enter in a text input, which
 	// takes it as submitting.
-	submit := c.Shortcut(0, ui.KeyEnter)
+	blocked := ed.tunnels.dialog || ed.tunnels.removeOpen
+	submit := !blocked && c.Shortcut(0, ui.KeyEnter)
 	input := func(e ui.Element) ui.Element {
 		submit = e.Submitted() || submit
 		return e
@@ -431,10 +437,10 @@ func (a *App) editorView(c *ui.Context) {
 			} else {
 				ui.Spacer(c)
 			}
-			if ui.Button(c, locales.Cancel()).Disabled(ed.totpBusy).Clicked() {
+			if ui.Button(c, locales.Cancel()).Disabled(ed.totpBusy || blocked).Clicked() {
 				a.closeWindow(WindowEditor)
 			}
-			if ui.PrimaryButton(c, locales.Ok()).Disabled(ed.totpBusy).Clicked() {
+			if ui.PrimaryButton(c, locales.Ok()).Disabled(ed.totpBusy || blocked).Clicked() {
 				submit = true
 			}
 		})

@@ -71,16 +71,28 @@ func (a *App) openRDP(h *config.Host) {
 		a.askSecret(need, func() { a.openRDP(h) })
 		return
 	}
+	if config.RDPOf(h).SSHHostID != "" {
+		a.openRDPThroughSSH(h)
+		return
+	}
 	req := rdp.Request{Host: h.Clone(), Password: a.passwords[h.ID]}
 	if usesGatewayPassword(h) {
 		req.GatewayPassword = a.passwords[gatewaySecretKey(h.ID)]
 	}
+	a.launchRDP(h, req, nil)
+}
+
+func (a *App) launchRDP(h *config.Host, req rdp.Request, stopTunnel func()) {
 	start := a.rdpStart
+	tracksClient := start != nil || rdp.TracksClient()
 	if start == nil {
 		start = rdp.Start
 	}
 	wait, err := start(req)
 	if err != nil {
+		if stopTunnel != nil {
+			stopTunnel()
+		}
 		a.rdpFailed(h, err)
 		return
 	}
@@ -91,11 +103,19 @@ func (a *App) openRDP(h *config.Host) {
 	note := locales.RdpOpening()
 	if runtime.GOOS == "darwin" {
 		note = locales.RdpOpeningNoPassword()
+		if stopTunnel != nil && !tracksClient {
+			note = locales.RdpsshStopManually()
+		}
+	} else if stopTunnel != nil {
+		note = locales.RdpsshOpening()
 	}
 	a.notify(note)
 	title := h.Title()
 	go func() {
 		err := wait()
+		if stopTunnel != nil && (tracksClient || err != nil) {
+			a.post(stopTunnel)
+		}
 		var exit *rdp.ExitError
 		if errors.As(err, &exit) {
 			a.post(func() { a.rdpErr = &rdpError{host: title, err: err} })
@@ -188,6 +208,16 @@ func (a *App) rdpConnInfoFields(h *config.Host, add func(label, value string), s
 		}
 		if usesGatewayPassword(h) {
 			secret(locales.RdpGatewayPasswordTitle(), gatewayNeed(h), locales.ConnInfoNoPassword())
+		}
+	}
+	if r.SSHHostID != "" {
+		name := r.SSHHostID
+		if sshHost := a.hosts.Host(name); sshHost.IsSSH() && !sshHost.Deleted() {
+			name = sshHost.Title()
+		}
+		add(locales.RdpsshHost(), name)
+		if target, err := config.RDPSSHTarget(h); err == nil {
+			add(locales.RdpsshTarget(), target)
 		}
 	}
 	if r.Admin {

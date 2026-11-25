@@ -443,6 +443,9 @@ func (a *App) importTable(c *ui.Context, st *importState, statuses []importStatu
 			if r.e.Note != "" {
 				notes = append(notes, importNoteText(r.e.Note))
 			}
+			if slices.ContainsFunc(h.Tunnels, func(t config.Tunnel) bool { return !config.IsLoopback(t.ListenHost) }) {
+				notes = append(notes, locales.TrecImportPublicDisabled())
+			}
 			text(strings.Join(notes, locales.ListSeparator())).Tooltip(strings.Join(notes, "\n"))
 		}
 	}).Grow(1).MinHeight(0).Border(1, theme.Border).Radius(4)

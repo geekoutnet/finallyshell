@@ -38,6 +38,7 @@ instead.
 | `hosts.v1.json` | The original file, kept when a version 1 `hosts.json` is migrated. |
 | `hosts.json.broken-<date-time>` | A copy of a `hosts.json` that could not be read. |
 | `settings.json` | The options (see below). |
+| `sysproxy-backup.json` | Local recovery snapshot of this computer’s system proxy before a tunnel replaces it. |
 | `db.json` | Local database connection profiles by SSH host ID; no credentials or query history. |
 | `log-paths/<host-hash>.json` | Up to 12 recently entered remote log paths per connection; local only. No log contents are stored here. Previous versions use the `.bak-YYYYMMDDHHMMSS` suffix. |
 | `known_hosts` | Host keys you have trusted. |
@@ -91,6 +92,15 @@ version 2.
 }
 ```
 
+### Remote Desktop through SSH
+
+On a host with `kind: "rdp"`, the optional `rdp.sshHostId` is the ID of a
+saved SSH host. Without it, the Remote Desktop client connects directly as
+before. `rdp.sshTarget` is the optional `host[:port]` as the SSH host sees
+it; an omitted port defaults to 3389. With no target override, the app uses
+the RDP host's `addr` and `port`. These fields contain no credentials. The
+normal SSH and RDP credentials remain in the system credential store.
+
 ### Telnet and serial fields
 
 - `kind` is absent for SSH, `telnet` for Telnet, or `serial` for a serial port.
@@ -107,17 +117,46 @@ version 2.
 
 ### Tunnels
 
-`tunnels` are the host's port forwards:
+`hosts.json` stores each host's `tunnels`. Each entry has a stable `id`
+(assigned when saving old entries), optional `name` and `description`, and
+a `kind`: `local`, `remote`, `dynamic`, `http`, `remoteDynamic`, or `remoteHTTP`.
+Unknown properties are preserved.
 
-- `kind` is `local` (`-L`), `remote` (`-R`) or `dynamic` (`-D`, which has
-  no `targetHost` or `targetPort`).
-- Without `listenHost`, the tunnel listens on `127.0.0.1` only.
-- With `disabled` set to `true`, the tunnel does not start with the
-  session.
-- Unknown fields in a tunnel are kept as they are.
+- `listenHost` defaults to `127.0.0.1`; `listenPort` of `0` means automatic.
+  Remote listeners require an IP address or `localhost`.
+- Fixed forwards use `targetHost` and `targetPort`; a local forward can instead
+  use `targetSocket`. Proxy clients specify their own targets. `mixed` enables
+  both protocols on a local SOCKS5 or HTTP listener.
+- `proxyUser` enables incoming authentication. `upstream` on a remote tunnel
+  is `socks5://host:port` or `http://host:port`, with optional `user@` and no
+  password. An empty `upstream` means direct.
+- `allowFrom` holds IP addresses or CIDRs; `maxConns`, `rateKBps` (KiB/s per
+  direction) and `idleSeconds` default to unlimited. `disabled: true` skips
+  automatic start with the session.
+- `background: true` makes a tunnel eligible for autostart on a dedicated
+  SSH connection instead of with a terminal. `settings.json` can opt out
+  on this device with `"tunnelManager": {"noAutostart": true}`; this setting
+  is not synced. Background SSH uses the same `known_hosts`, existing
+  host credential keys and `keepAliveSeconds` as interactive SSH. The
+  manager stores no additional SSH credentials.
+- `systemProxy` and `pac` (a list of rules) make a running local proxy
+  tunnel this computer's system proxy. The previous system settings are kept
+  in the local `sysproxy-backup.json`, which is not synced and is removed
+  only after restoring successfully; do not copy it to a different machine.
+  On macOS, formerly empty proxy addresses can retain inactive values after
+  restore; the corresponding proxies are disabled.
 
-The listen address of a remote tunnel must be an IP address or
-`localhost`; see [Tunnels](features.md#tunnels-page).
+Tunnel credentials are not stored in `hosts.json` or synced. The system
+credential store uses `host/<host-id>/tunnel/<tunnel-id>/password` and
+`host/<host-id>/tunnel/<tunnel-id>/upstream/password`. A configured username
+without a corresponding stored password prevents the listener from starting.
+See [Tunnels](features.md#tunnels) for behavior and exposure warnings.
+
+`serverRelay` selects a server relay for a remote tunnel. The local-only
+`tunnel-firewall.json` records rules the public access assistant added:
+the SSH host and endpoint, tunnel ID, port, backend, and rule tag or zone.
+It contains no credentials and is not synced. Deleting this file does
+not remove the server's rules.
 
 ### Proxy
 
@@ -187,6 +226,7 @@ default.
 | `minimizeToTray` | `true` hides the main window to the tray when it is closed. | Closing quits. |
 | `noConfirmClose` | `true` closes and quits without asking while sessions are open. | Ask first. |
 | `keepAliveSeconds` | Seconds between the SSH keepalives of each connection, 1 to 3600 (higher reads as 3600); `-1` (any negative number) turns them off, which the options show as 0. Applies to new connections. | 30 (also for `0`) |
+| `tunnelManager.noAutostart` | When `true`, skips background tunnel autostart on this device. Manual starts still work. Not synced. | `false` |
 | `sshAgent` | The SSH agent of the hosts with `"auth": "agent"`: a Unix socket's path (`~` for the home folder), such as `~/.bitwarden-ssh-agent.sock`, or on Windows a named pipe, `\\.\pipe\<name>`. This computer's own: not synced. Applies to new connections. | `SSH_AUTH_SOCK`; `\\.\pipe\openssh-ssh-agent` on Windows. |
 | `x11Display` | Override the local X display for X11 forwarding (for example `localhost:1`). This computer's own: not synced. | `$DISPLAY`, or `localhost:0` on Windows when unset. |
 | `downloadDir` | Folder downloads go into. | The system's Downloads folder. |

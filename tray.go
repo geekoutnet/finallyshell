@@ -49,6 +49,12 @@ func (p *platform) trayMenu() *mygo.Menu {
 	}
 	return mygo.NewMenu([]*mygo.MenuItem{
 		{Label: locales.TrayShow(), Click: func(*mygo.MenuItem, *mygo.Window) { p.showMain() }},
+		{Label: locales.TmgrTitle(), Disabled: p.app == nil || p.app.Locked(), Click: func(*mygo.MenuItem, *mygo.Window) {
+			if p.app != nil && !p.app.Locked() {
+				p.showMain()
+				p.app.OpenTunnelManager()
+			}
+		}},
 		{Label: locales.LockNow(), Disabled: p.app == nil || !p.app.CanLock(), Click: func(*mygo.MenuItem, *mygo.Window) {
 			if p.app != nil {
 				p.app.LockNow()

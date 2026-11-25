@@ -1,13 +1,13 @@
 package sshx
 
 import (
-	"encoding/binary"
+	"context"
 	"errors"
 	"fmt"
 	"io"
 	"net"
+	"net/netip"
 	"runtime"
-	"slices"
 	"strconv"
 	"strings"
 	"sync"
@@ -61,24 +61,36 @@ func (e *TunnelError) Unwrap() error { return e.Err }
 // -D: a listener, and the connections it has open. Its methods are safe
 // to call from any goroutine.
 type Tunnel struct {
-	spec   config.Tunnel
-	client *ssh.Client
-	ln     net.Listener
-	notify func()
+	spec               config.Tunnel
+	client             *ssh.Client
+	ln                 net.Listener
+	notify             func()
+	opts               TunnelOptions
+	ctx                context.Context
+	cancel             context.CancelFunc
+	allow              []netip.Prefix
+	upstream           *config.ProxyConfig
+	limitUp, limitDown *tunnelLimiter
+	idle               time.Duration
 
 	active   atomic.Int64
 	total    atomic.Int64
+	rejected atomic.Int64
 	up, down atomic.Int64
 
 	wg   sync.WaitGroup // the accept loop and every connection
 	done chan struct{}
 
-	mu      sync.Mutex
-	stopped bool
-	err     error // why it stopped by itself; nil once closed
-	dialErr error // why the last connection could not reach the target
-	conns   map[io.Closer]struct{}
-	timer   *time.Timer // a notify that is due
+	mu          sync.Mutex
+	stopped     bool
+	err         error // why it stopped by itself; nil once closed
+	dialErr     error // why the last connection could not reach the target
+	conns       map[io.Closer]struct{}
+	timer       *time.Timer // a notify that is due
+	history     tunnelHistory
+	lastErr     error
+	rates       [TunnelRateSamples]tunnelRateSlot
+	lastTraffic time.Time
 }
 
 // TunnelStats are what a tunnel has carried.
@@ -87,7 +99,18 @@ type TunnelStats struct {
 	Active, Total int64
 	// Up are the bytes from the side that connected to the target, Down
 	// the bytes back.
-	Up, Down int64
+	Up, Down               int64
+	Rejected               int64
+	UpRate, DownRate       float64
+	UpHistory, DownHistory [TunnelRateSamples]float64
+	LastError              error
+}
+
+// TunnelOptions supplies runtime-only credentials and notifications. Never persist it.
+type TunnelOptions struct {
+	ProxyPassword    string
+	UpstreamPassword string
+	Notify           func()
 }
 
 // notifyEvery is how often a tunnel calls notify at most.
@@ -100,16 +123,27 @@ const notifyEvery = 250 * time.Millisecond
 // second; it must not block. The tunnel stops on Stop or Close, or by
 // itself when the listener fails, as when the connection is lost.
 func StartTunnel(client *ssh.Client, t config.Tunnel, notify func()) (*Tunnel, error) {
+	return StartTunnelWithOptions(client, t, TunnelOptions{Notify: notify})
+}
+
+// StartTunnelWithOptions starts a tunnel with runtime-only options.
+func StartTunnelWithOptions(client *ssh.Client, t config.Tunnel, opts TunnelOptions) (*Tunnel, error) {
+	if !t.Kind.Known() {
+		return nil, ErrUnknownTunnel
+	}
+	allow, upstream, err := tunnelPolicy(t, opts)
+	if err != nil {
+		return nil, err
+	}
 	addr := t.ListenAddr()
 	var ln net.Listener
-	var err error
 	switch t.Kind {
-	case config.TunnelLocal, config.TunnelDynamic:
+	case config.TunnelLocal, config.TunnelDynamic, config.TunnelHTTP:
 		ln, err = net.Listen("tcp", addr)
 		if err != nil {
 			return nil, &TunnelError{Addr: addr, InUse: addrInUse(err), Err: err}
 		}
-	case config.TunnelRemote:
+	case config.TunnelRemote, config.TunnelRemoteDynamic, config.TunnelRemoteHTTP:
 		// x/crypto resolves the address on this computer: only an IP
 		// address means the same on the server.
 		var raddr string
@@ -121,10 +155,11 @@ func StartTunnel(client *ssh.Client, t config.Tunnel, notify func()) (*Tunnel, e
 		if err != nil {
 			return nil, &TunnelError{Addr: addr, Remote: true, Err: err}
 		}
-	default:
-		return nil, ErrUnknownTunnel
 	}
-	tun := &Tunnel{spec: t, client: client, ln: ln, notify: notify, done: make(chan struct{}), conns: map[io.Closer]struct{}{}}
+	ctx, cancel := context.WithCancel(context.Background())
+	tun := &Tunnel{spec: t, client: client, ln: ln, notify: opts.Notify, opts: opts, ctx: ctx, cancel: cancel, done: make(chan struct{}),
+		conns: map[io.Closer]struct{}{}, allow: allow, upstream: upstream, idle: time.Duration(t.IdleSeconds) * time.Second,
+		limitUp: newTunnelLimiter(t.RateKBps), limitDown: newTunnelLimiter(t.RateKBps)}
 	tun.wg.Add(1)
 	go tun.accept()
 	return tun, nil
@@ -136,7 +171,15 @@ func (t *Tunnel) Addr() net.Addr { return t.ln.Addr() }
 
 // Stats are what the tunnel has carried so far.
 func (t *Tunnel) Stats() TunnelStats {
-	return TunnelStats{Active: t.active.Load(), Total: t.total.Load(), Up: t.up.Load(), Down: t.down.Load()}
+	st := TunnelStats{Active: t.active.Load(), Total: t.total.Load(), Up: t.up.Load(), Down: t.down.Load(), Rejected: t.rejected.Load()}
+	t.mu.Lock()
+	defer t.mu.Unlock()
+	st.LastError = t.lastErr
+	if t.err != nil {
+		st.LastError = t.err
+	}
+	st.readRates(t.rates, time.Now())
+	return st
 }
 
 // Done is closed once the tunnel stops listening.
@@ -191,21 +234,26 @@ func (t *Tunnel) stop(err error) {
 	t.stopped, t.err = true, err
 	conns := t.conns
 	t.conns = nil
-	t.mu.Unlock()
-	if t.spec.Kind == config.TunnelRemote {
-		// Cancelling the forward waits for the server's answer. The
-		// counter is above zero, for the accept loop, or Close calls stop
-		// before it waits.
+	if t.spec.Kind.IsRemote() || len(conns) != 0 {
+		t.wg.Add(1)
+		go func() {
+			defer t.wg.Done()
+			for conn := range conns {
+				conn.Close()
+			}
+		}()
+	}
+	if t.spec.Kind.IsRemote() {
 		t.wg.Add(1)
 		go func() {
 			defer t.wg.Done()
 			t.ln.Close()
 		}()
-	} else {
-		t.ln.Close()
 	}
-	for c := range conns {
-		c.Close()
+	t.mu.Unlock()
+	t.cancel()
+	if !t.spec.Kind.IsRemote() {
+		t.ln.Close()
 	}
 	close(t.done)
 	t.changed()
@@ -215,12 +263,13 @@ func (t *Tunnel) stop(err error) {
 // has stopped.
 func (t *Tunnel) track(c io.Closer) bool {
 	t.mu.Lock()
-	defer t.mu.Unlock()
 	if t.stopped {
+		t.mu.Unlock()
 		c.Close()
 		return false
 	}
 	t.conns[c] = struct{}{}
+	t.mu.Unlock()
 	return true
 }
 
@@ -242,8 +291,12 @@ func (t *Tunnel) changed() {
 		t.timer = time.AfterFunc(notifyEvery, func() {
 			t.mu.Lock()
 			t.timer = nil
+			ticking := !t.stopped && time.Since(t.lastTraffic) < (TunnelRateSamples+1)*time.Second
 			t.mu.Unlock()
 			t.notify()
+			if ticking {
+				t.changed()
+			}
 		})
 	}
 }
@@ -266,19 +319,33 @@ func (t *Tunnel) accept() {
 			}
 			return
 		}
-		// Added under the lock that stop takes, so that Close, waiting,
-		// sees it.
+		peer := c.RemoteAddr().String()
 		t.mu.Lock()
 		if t.stopped {
 			t.mu.Unlock()
 			c.Close()
 			return
 		}
+		t.total.Add(1)
+		var reject error
+		switch {
+		case !allowsTunnelPeer(t.allow, peer):
+			reject = ErrTunnelPeerDenied
+		case t.spec.MaxConns > 0 && t.active.Load() >= int64(t.spec.MaxConns):
+			reject = ErrTunnelCapacity
+		}
+		if reject != nil {
+			t.mu.Unlock()
+			c.Close()
+			t.rejected.Add(1)
+			t.record(TunnelConn{Started: time.Now(), Client: peer, Err: reject})
+			t.changed()
+			continue
+		}
 		t.wg.Add(1)
 		t.conns[c] = struct{}{}
-		t.mu.Unlock()
-		t.total.Add(1)
 		t.active.Add(1)
+		t.mu.Unlock()
 		t.changed()
 		go t.handle(c)
 	}
@@ -299,204 +366,96 @@ func addrInUse(err error) bool {
 var ErrConnectionClosed = errors.New("the connection to the server closed")
 
 func (t *Tunnel) handle(c net.Conn) {
+	flow := newTunnelFlow(t, c)
 	defer func() {
+		flow.finish()
+		if t.ctx.Err() != nil && (errors.Is(flow.entry.Err, context.Canceled) || errors.Is(flow.entry.Err, net.ErrClosed) || errors.Is(flow.entry.Err, io.EOF)) {
+			flow.entry.Err = nil
+		}
 		t.untrack(c)
+		t.record(flow.entry)
 		t.active.Add(-1)
 		t.changed()
 		t.wg.Done()
 	}()
-	var target string
-	if t.spec.Kind == config.TunnelDynamic {
-		c.SetDeadline(time.Now().Add(30 * time.Second))
-		var err error
-		if target, err = socksRequest(c); err != nil {
-			return
-		}
-		c.SetDeadline(time.Time{})
-	} else {
-		target = t.spec.TargetAddr()
-	}
-	var out net.Conn
-	var err error
-	if t.spec.Kind == config.TunnelRemote {
-		out, err = net.DialTimeout("tcp", target, 15*time.Second)
-	} else {
-		out, err = t.client.Dial("tcp", target)
-	}
-	if t.spec.Kind == config.TunnelDynamic {
-		code := byte(socksOK)
-		if err != nil {
-			code = socksCode(err)
-		}
-		if werr := socksReply(c, code); werr != nil && err == nil {
-			out.Close()
-			return
-		}
-	}
-	if err != nil {
-		t.noteDial(fmt.Errorf("%s: %w", target, err))
-		t.changed()
+	if t.spec.Kind.IsProxy() {
+		flow.entry.Err = t.serveProxy(flow, c)
 		return
 	}
-	t.noteDial(nil)
-	if !t.track(out) {
+	network, target := "tcp", t.spec.TargetAddr()
+	if t.spec.TargetSocket != "" {
+		network, target = "unix", t.spec.TargetSocket
+	}
+	flow.entry.Target = target
+	out, err := t.dialTarget(flow.ctx, network, target)
+	if err != nil {
+		flow.entry.Err = err
 		return
 	}
 	defer t.untrack(out)
-	t.pipe(c, out)
+	flow.entry.Err = t.pipe(c, out, flow)
 }
 
 // pipe copies between in, the connection that came in, and out, the one
 // to the target, until both directions end. As one direction ends, the
 // other side is told no more is coming, if it can be, as ssh does.
-func (t *Tunnel) pipe(in, out net.Conn) {
+func (t *Tunnel) pipe(in, out net.Conn, flow *tunnelFlow) error {
+	stop := context.AfterFunc(flow.ctx, func() { out.Close() })
+	defer stop()
 	var wg sync.WaitGroup
+	var upErr error
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		t.copy(out, in, &t.up)
+		_, upErr = io.CopyBuffer(flow.writer(out, true), tunnelReader{Reader: in}, make([]byte, 32*1024))
+		endTunnelCopy(out, in, upErr)
 	}()
-	t.copy(in, out, &t.down)
+	_, downErr := io.CopyBuffer(flow.writer(in, false), tunnelReader{Reader: out}, make([]byte, 32*1024))
+	endTunnelCopy(in, out, downErr)
 	wg.Wait()
+	for _, err := range []error{upErr, downErr} {
+		if err != nil && !errors.Is(err, net.ErrClosed) && !errors.Is(err, io.ErrClosedPipe) && t.ctx.Err() == nil {
+			return errors.New("tunnel traffic interrupted")
+		}
+	}
+	return nil
 }
 
 type closeWriter interface{ CloseWrite() error }
+type tunnelReader struct{ io.Reader }
 
-func (t *Tunnel) copy(dst, src net.Conn, n *atomic.Int64) {
-	buf := make([]byte, 32*1024)
-	var err error
-	for {
-		k, rerr := src.Read(buf)
-		if k > 0 {
-			if _, werr := dst.Write(buf[:k]); werr != nil {
-				err = werr
-				break
-			}
-			n.Add(int64(k))
-			t.changed()
-		}
-		if rerr != nil {
-			if rerr != io.EOF {
-				err = rerr
-			}
-			break
-		}
-	}
+func endTunnelCopy(dst, src net.Conn, err error) {
 	if cw, ok := dst.(closeWriter); ok && err == nil {
 		cw.CloseWrite()
 		return
 	}
-	// One side failed: neither direction can go on.
 	dst.Close()
 	src.Close()
 }
 
-// SOCKS5 (RFC 1928), as ssh -D serves it: no authentication, CONNECT
-// only, to an IPv4 or IPv6 address or a name that the server resolves.
-const (
-	socksVersion   = 5
-	socksNoAuth    = 0
-	socksNoMethod  = 0xff
-	socksConnect   = 1
-	socksIPv4      = 1
-	socksDomain    = 3
-	socksIPv6      = 4
-	socksOK        = 0
-	socksFailure   = 1
-	socksNotAllow  = 2
-	socksNetUnr    = 3
-	socksRefused   = 5
-	socksBadCmd    = 7
-	socksBadAddrTy = 8
-)
-
-// socksRequest reads a SOCKS5 greeting and CONNECT request from c, and
-// returns the host:port asked for. It answers what it cannot serve.
-func socksRequest(c net.Conn) (string, error) {
-	var head [2]byte
-	if _, err := io.ReadFull(c, head[:]); err != nil {
-		return "", err
-	}
-	if head[0] != socksVersion {
-		return "", fmt.Errorf("socks: version %d", head[0])
-	}
-	methods := make([]byte, head[1])
-	if _, err := io.ReadFull(c, methods); err != nil {
-		return "", err
-	}
-	if !slices.Contains(methods, socksNoAuth) {
-		c.Write([]byte{socksVersion, socksNoMethod})
-		return "", errors.New("socks: the client needs authentication")
-	}
-	if _, err := c.Write([]byte{socksVersion, socksNoAuth}); err != nil {
-		return "", err
-	}
-	var req [4]byte // version, command, reserved, address type
-	if _, err := io.ReadFull(c, req[:]); err != nil {
-		return "", err
-	}
-	if req[0] != socksVersion {
-		return "", fmt.Errorf("socks: version %d", req[0])
-	}
-	var host string
-	switch req[3] {
-	case socksIPv4, socksIPv6:
-		ip := make(net.IP, 4)
-		if req[3] == socksIPv6 {
-			ip = make(net.IP, 16)
-		}
-		if _, err := io.ReadFull(c, ip); err != nil {
-			return "", err
-		}
-		host = ip.String()
-	case socksDomain:
-		var n [1]byte
-		if _, err := io.ReadFull(c, n[:]); err != nil {
-			return "", err
-		}
-		name := make([]byte, n[0])
-		if _, err := io.ReadFull(c, name); err != nil {
-			return "", err
-		}
-		host = string(name)
+func (t *Tunnel) dialTarget(ctx context.Context, network, target string) (net.Conn, error) {
+	ctx, cancel := context.WithTimeout(ctx, tunnelDialTimeout)
+	defer cancel()
+	var conn net.Conn
+	var err error
+	switch {
+	case t.upstream != nil:
+		conn, err = t.dialUpstream(ctx, target)
+	case t.spec.Kind.IsRemote():
+		conn, err = (&net.Dialer{}).DialContext(ctx, network, target)
 	default:
-		socksReply(c, socksBadAddrTy)
-		return "", fmt.Errorf("socks: address type %d", req[3])
+		conn, err = t.client.DialContext(ctx, network, target)
 	}
-	var port [2]byte
-	if _, err := io.ReadFull(c, port[:]); err != nil {
-		return "", err
-	}
-	if req[1] != socksConnect {
-		socksReply(c, socksBadCmd)
-		return "", fmt.Errorf("socks: command %d", req[1])
-	}
-	return net.JoinHostPort(host, strconv.Itoa(int(binary.BigEndian.Uint16(port[:])))), nil
-}
-
-// socksReply answers a request with code, and no bound address: the
-// server's own is no use to the client.
-func socksReply(c net.Conn, code byte) error {
-	_, err := c.Write([]byte{socksVersion, code, 0, socksIPv4, 0, 0, 0, 0, 0, 0})
-	return err
-}
-
-// socksCode is the reply for a connection the server could not open.
-func socksCode(err error) byte {
-	var open *ssh.OpenChannelError
-	if errors.As(err, &open) {
-		switch open.Reason {
-		case ssh.Prohibited:
-			return socksNotAllow
-		case ssh.ConnectionFailed:
-			msg := strings.ToLower(open.Message)
-			switch {
-			case strings.Contains(msg, "refused"):
-				return socksRefused
-			case strings.Contains(msg, "unreachable"):
-				return socksNetUnr
-			}
+	if err != nil {
+		err = safeTunnelDialError(err)
+		if !errors.Is(err, context.Canceled) {
+			t.noteDial(fmt.Errorf("%s: %w", target, err))
 		}
+		return nil, err
 	}
-	return socksFailure
+	if !t.track(conn) {
+		return nil, net.ErrClosed
+	}
+	t.noteDial(nil)
+	return conn, nil
 }

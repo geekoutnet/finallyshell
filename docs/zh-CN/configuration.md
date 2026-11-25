@@ -31,6 +31,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `hosts.v1.json` | 迁移第 1 版的 `hosts.json` 时保留的原文件。 |
 | `hosts.json.broken-<日期-时间>` | 读不出来的 `hosts.json` 的副本。 |
 | `settings.json` | 选项（见下面）。 |
+| `sysproxy-backup.json` | 隧道接管系统代理前的本机设置恢复快照。 |
 | `db.json` | 按 SSH 主机 ID 保存的本机数据库连接配置，不含凭据和查询历史。 |
 | `log-paths/<连接哈希>.json` | 每个连接最近输入的最多 12 个远程日志路径，仅存本机，不保存日志内容。旧版本以 `.bak-YYYYMMDDHHMMSS` 为后缀。 |
 | `known_hosts` | 信任过的主机指纹。 |
@@ -78,6 +79,13 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 }
 ```
 
+### 通过 SSH 使用远程桌面
+
+对 `kind: "rdp"` 的连接，可选字段 `rdp.sshHostId` 保存所选 SSH 主机的 ID。
+缺省时，远程桌面客户端仍像以前一样直连。可选字段 `rdp.sshTarget` 保存 SSH
+主机可访问的 `主机[:端口]`，不填端口则用 3389。不覆盖目标时，使用远程桌面
+连接的 `addr` 和 `port`。这些字段不包含凭据；SSH 和远程桌面凭据仍使用系统凭据库。
+
 ### Telnet 和串口字段
 
 - `kind` 缺省表示 SSH，`telnet` 表示 Telnet，`serial` 表示串口。
@@ -86,14 +94,20 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 
 ### 隧道
 
-`tunnels` 是这台主机的端口转发：
+`hosts.json` 的 `tunnels` 保存每台主机的隧道。每条隧道有稳定的 `id`（旧条目再次保存时自动分配）、可选的 `name` 和 `description`，以及 `kind`：`local`、`remote`、`dynamic`、`http`、`remoteDynamic` 或 `remoteHTTP`。未知字段会原样保留。
 
-- `kind` 为 `local`（`-L`）、`remote`（`-R`）或 `dynamic`（`-D`，没有 `targetHost`、`targetPort`）。
-- 没有 `listenHost` 就是只监听 `127.0.0.1`。
-- `disabled` 为 `true` 时，这条隧道不随会话启动。
-- 隧道里不认识的字段也原样保留。
+- `listenHost` 默认是 `127.0.0.1`，`listenPort` 填 `0` 表示自动分配。远程监听必须用 IP 地址或 `localhost`。
+- 固定转发使用 `targetHost` 和 `targetPort`；本地转发也可以使用 `targetSocket`。代理目标由客户端指定。`mixed` 让本机的 HTTP 或 SOCKS5 监听端同时提供两种协议。
+- `proxyUser` 启用入站认证。远程隧道的 `upstream` 可填 `socks5://host:port` 或 `http://host:port`，可加 `user@`，不能包含密码；留空则直连。
+- `allowFrom` 保存 IP 地址或 CIDR 网段。`maxConns`、`rateKBps`（单向 KiB/秒）、`idleSeconds` 默认不限制。`disabled: true` 表示不随会话自动启动。
+- `background: true` 将隧道标记为通过独立 SSH 连接自动启动，而不是随终端会话启动。本设备可在 `settings.json` 中通过 `"tunnelManager": {"noAutostart": true}` 禁用后台自动启动；该设置不参与同步。后台 SSH 沿用交互式 SSH 的 `known_hosts`、既有主机凭据键和 `keepAliveSeconds`，管理器不另外存储 SSH 凭据。
+- `systemProxy` 和 `pac`（规则列表）让运行中的本机代理隧道成为这台电脑的系统代理。原来的系统设置保存在本机的 `sysproxy-backup.json`，不同步，只在成功恢复后删除，不要复制到其他电脑。在 macOS 上，恢复后原本为空的代理地址可能保留未生效的值，对应代理仍为禁用状态。
 
-远程隧道的监听地址只能是 IP 地址或 `localhost`，见[隧道](features.md#tunnels-page)。
+隧道密码不写入 `hosts.json`，也不同步。系统凭据库的键是 `host/<主机 ID>/tunnel/<隧道 ID>/password` 和 `host/<主机 ID>/tunnel/<隧道 ID>/upstream/password`。配置了用户名但没有对应密码时，不会打开监听。开放监听的注意事项见[隧道](features.md#隧道)。
+
+`serverRelay` 为远程隧道启用服务器中继。本机的 `tunnel-firewall.json` 记录
+公网访问助手添加的规则，包括 SSH 主机及端点、隧道 ID、端口、后端及规则标记
+或区域。此文件不含凭据、不参与同步。删除该文件不会移除服务器上的规则。
 
 ### 代理
 
@@ -144,6 +158,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `minimizeToTray` | `true` 时关闭主窗口会把它隐藏到托盘。 | 关闭就退出。 |
 | `noConfirmClose` | `true` 时有会话打开也不问，直接关闭、退出。 | 先问。 |
 | `keepAliveSeconds` | 每个连接发送 SSH 保活消息的间隔秒数，1 到 3600（更大按 3600）；`-1`（任何负数）关闭保活，选项里显示为 0。对新建的连接生效。 | 30（`0` 也是） |
+| `tunnelManager.noAutostart` | 设为 `true` 时，本设备启动应用不自动启动后台隧道，仍可手动启动。不参与同步。 | `false` |
 | `sshAgent` | `"auth": "agent"` 的主机用的 SSH Agent：Unix socket 的路径（`~` 表示主目录），比如 `~/.bitwarden-ssh-agent.sock`，Windows 上也可以是命名管道 `\\.\pipe\<名字>`。这台电脑自己的，不同步。对新建的连接生效。 | `SSH_AUTH_SOCK`；Windows 上是 `\\.\pipe\openssh-ssh-agent`。 |
 | `x11Display` | X11 转发使用的本地显示地址，例如 `localhost:1`。仅保存在本机，不同步。 | `$DISPLAY`；Windows 未设置时为 `localhost:0`。 |
 | `downloadDir` | 下载存到的文件夹。 | 系统的下载文件夹。 |

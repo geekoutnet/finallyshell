@@ -2146,8 +2146,9 @@ administrator privileges to read failed attempts with `lastb`.
 DNS shows effective resolvers and supports presets, custom IPv4/IPv6
 nameservers and search domains. It writes through systemd-resolved, the
 NetworkManager profile for the default route, or a regular
-`/etc/resolv.conf`. An unknown manager or managed symbolic link is never
-overwritten. The first backup is kept and can be restored. The dialog
+`/etc/resolv.conf`. An unknown manager, managed symbolic link or resolver
+file mounted by the container runtime is never overwritten. The first
+backup of an editable configuration is kept and can be restored. The dialog
 names the files or commands; NetworkManager reactivation can interrupt
 SSH. After a change, the desktop tests `example.com`. Global
 systemd-resolved settings do not change per-interface DNS.

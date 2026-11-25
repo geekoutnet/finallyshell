@@ -198,3 +198,16 @@ func privilegeTestAction(t *testing.T, channel ssh.Channel, command, method, pas
 func privilegeTestExit(channel ssh.Channel, status uint32) {
 	channel.SendRequest("exit-status", false, ssh.Marshal(struct{ Status uint32 }{status}))
 }
+
+func TestPrivilegeSSHSudoPromptWithoutSpace(t *testing.T) {
+	const prompt = "fixture-prompt:"
+	stream := newPrivilegeStream(PrivilegeRequest{method: PrivilegeSudo, prompt: prompt, ready: "fixture-ready"})
+	stream.write(false, []byte(prompt))
+	stream.write(false, []byte("warning before root command\n"))
+	stream.write(true, []byte("fixture-ready\n"))
+	stream.write(false, []byte("action failed\n"))
+	result := stream.result()
+	if !result.Started || !result.Authenticated || result.Stderr != "warning before root command\naction failed\n" {
+		t.Fatalf("sudo prompt leaked into the action error: %+v", result)
+	}
+}

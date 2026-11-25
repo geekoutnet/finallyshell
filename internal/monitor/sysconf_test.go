@@ -53,6 +53,16 @@ Filesystem 1024-blocks Used Available Capacity Mounted on
 	}
 }
 
+func TestDesktopSettingsMountedResolver(t *testing.T) {
+	dns := ParseSysConfDNS("---FINALLYSHELL:manager---\nMODE=managed\nMOUNT=yes\n---FINALLYSHELL:file---\nnameserver 127.0.0.11\n---FINALLYSHELL:end---\n")
+	if dns.Mode != SysConfDNSManaged || !dns.MountPoint || !slices.Equal(dns.File.Servers, []string{"127.0.0.11"}) {
+		t.Fatalf("mounted DNS status: %+v", dns)
+	}
+	if _, err := BuildSysConfDNS(dns, DNSValues{Servers: []string{"1.1.1.1"}}, false); !errors.Is(err, ErrSysConfDNSMode) {
+		t.Fatalf("mounted DNS edit: %v", err)
+	}
+}
+
 func TestDesktopSettingsCommands(t *testing.T) {
 	good, err := ValidateSysConfDNS("2001:4860:4860::8888, 1.1.1.1", "home.example\nlab.example")
 	if err != nil || len(good.Servers) != 2 || len(good.Search) != 2 {

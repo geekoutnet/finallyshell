@@ -120,10 +120,15 @@ func TestDesktopTaskProcessList(t *testing.T) {
 	const stat = "83 (worker ) one) S 2 0 0 0 0 0 0 0 0 0 5 3 0 0 20 -4 7 0 200"
 	out := taskTestSection("uname", "Linux") + taskTestSection("self", "899") + taskTestSection("clock", "100") +
 		taskTestSection("cpu", "cpu 20 0 5 90\ncpu0 20 0 5 90\nbtime 1700000000") +
-		taskTestSection("ps", "83 2 demo 64 10 /bin/worker --once") + taskTestSection("stat", stat) + taskTestSection("end", "")
+		taskTestSection("ps", "83 2 demo 64 10 /bin/worker --once 中文.log") + taskTestSection("stat", stat) + taskTestSection("end", "")
 	var lister TaskProcessLister
-	rows, err := lister.parse(out)
-	if err != nil || len(rows) != 1 || rows[0].Name != "worker ) one" || rows[0].PPID != 2 || rows[0].Threads != 7 || rows[0].Nice != -4 || !rows[0].Started.Equal(time.Unix(1700000002, 0)) {
+	rows, err := lister.List(t.Context(), func(_ context.Context, script string) (string, string, error) {
+		if !strings.Contains(script, "LC_ALL='C.UTF-8' ps '-e' '-ww'") {
+			t.Error("procps must preserve UTF-8 and full command lines")
+		}
+		return out, "", nil
+	})
+	if err != nil || len(rows) != 1 || rows[0].Name != "worker ) one" || rows[0].Args != "/bin/worker --once 中文.log" || rows[0].PPID != 2 || rows[0].Threads != 7 || rows[0].Nice != -4 || !rows[0].Started.Equal(time.Unix(1700000002, 0)) {
 		t.Fatalf("list = %+v, %v", rows, err)
 	}
 }

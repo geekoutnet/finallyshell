@@ -142,8 +142,14 @@ func ParseSSHLog(output string) []SSHLogin {
 
 const Fail2banStatusScript = `if command -v 'fail2ban-client' >/dev/null 2>&1; then
   printf '%s\n' 'installed'
-  LC_ALL=C 'fail2ban-client' 'status' 2>/dev/null || printf '%s
-' '---stopped---'
+  data=$(LC_ALL=C 'fail2ban-client' 'status' 2>&1) || {
+    status=$?
+    case "$data" in
+      *'Failed to access socket path:'*'Is fail2ban running?'*) printf '%s\n' '---stopped---'; exit 0;;
+      *) printf '%s\n' "$data" >&2; exit "$status";;
+    esac
+  }
+  printf '%s\n' "$data"
 fi`
 
 // Fail2banStopped reports whether Fail2banStatusScript found Fail2ban

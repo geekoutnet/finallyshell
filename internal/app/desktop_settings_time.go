@@ -147,6 +147,9 @@ func (a *App) desktopSetTimeSync(c *ui.Context, window *desktopWindow, state *de
 	}).Children(func() {
 		desktopSetHeading(c, "refresh-cw", locales.DesktopSetSync())
 		widgets.Muted(c, locales.DesktopSetSyncNote()).FillWidth()
+		if page.load.loaded && !page.data.CanNTP && !supported {
+			widgets.Muted(c, locales.DesktopSetSyncUnavailable()).FillWidth()
+		}
 		ui.Row(c).Gap(6).Wrap().Children(func() {
 			if ui.Button(c, ntpLabel).Disabled(!canNTP).Clicked() {
 				a.desktopSetChange(window, state, ntpLabel, locales.DesktopSetNTPNote(), monitor.BuildSysConfNTP(!ntp), false, refresh)

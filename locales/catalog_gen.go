@@ -18572,6 +18572,882 @@ func (msgs Messages) DesktopAppSettings() string {
 	return Catalog.Format(msgs.locale, "desktopAppSettings", nil)
 }
 
+// DesktopSetPersonalize says "Personalization"
+// in the language the app shows.
+func DesktopSetPersonalize() string { return In(i18n.Locale()).DesktopSetPersonalize() }
+
+// DesktopSetPersonalize says "Personalization"
+// in the language of msgs.
+func (msgs Messages) DesktopSetPersonalize() string {
+	return Catalog.Format(msgs.locale, "desktopSetPersonalize", nil)
+}
+
+// DesktopSetLog says "Operation log"
+// in the language the app shows.
+func DesktopSetLog() string { return In(i18n.Locale()).DesktopSetLog() }
+
+// DesktopSetLog says "Operation log"
+// in the language of msgs.
+func (msgs Messages) DesktopSetLog() string {
+	return Catalog.Format(msgs.locale, "desktopSetLog", nil)
+}
+
+// DesktopSetDNS says "DNS settings"
+// in the language the app shows.
+func DesktopSetDNS() string { return In(i18n.Locale()).DesktopSetDNS() }
+
+// DesktopSetDNS says "DNS settings"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNS() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNS", nil)
+}
+
+// DesktopSetTime says "Time zone & time"
+// in the language the app shows.
+func DesktopSetTime() string { return In(i18n.Locale()).DesktopSetTime() }
+
+// DesktopSetTime says "Time zone & time"
+// in the language of msgs.
+func (msgs Messages) DesktopSetTime() string {
+	return Catalog.Format(msgs.locale, "desktopSetTime", nil)
+}
+
+// DesktopSetSecurity says "Security"
+// in the language the app shows.
+func DesktopSetSecurity() string { return In(i18n.Locale()).DesktopSetSecurity() }
+
+// DesktopSetSecurity says "Security"
+// in the language of msgs.
+func (msgs Messages) DesktopSetSecurity() string {
+	return Catalog.Format(msgs.locale, "desktopSetSecurity", nil)
+}
+
+// DesktopSetUnknown says "Not available"
+// in the language the app shows.
+func DesktopSetUnknown() string { return In(i18n.Locale()).DesktopSetUnknown() }
+
+// DesktopSetUnknown says "Not available"
+// in the language of msgs.
+func (msgs Messages) DesktopSetUnknown() string {
+	return Catalog.Format(msgs.locale, "desktopSetUnknown", nil)
+}
+
+// DesktopSetOverview says "System overview"
+// in the language the app shows.
+func DesktopSetOverview() string { return In(i18n.Locale()).DesktopSetOverview() }
+
+// DesktopSetOverview says "System overview"
+// in the language of msgs.
+func (msgs Messages) DesktopSetOverview() string {
+	return Catalog.Format(msgs.locale, "desktopSetOverview", nil)
+}
+
+// DesktopSetCopyAll says "Copy all"
+// in the language the app shows.
+func DesktopSetCopyAll() string { return In(i18n.Locale()).DesktopSetCopyAll() }
+
+// DesktopSetCopyAll says "Copy all"
+// in the language of msgs.
+func (msgs Messages) DesktopSetCopyAll() string {
+	return Catalog.Format(msgs.locale, "desktopSetCopyAll", nil)
+}
+
+// DesktopSetAlias says "Server alias"
+// in the language the app shows.
+func DesktopSetAlias() string { return In(i18n.Locale()).DesktopSetAlias() }
+
+// DesktopSetAlias says "Server alias"
+// in the language of msgs.
+func (msgs Messages) DesktopSetAlias() string {
+	return Catalog.Format(msgs.locale, "desktopSetAlias", nil)
+}
+
+// DesktopSetEditConnection says "Edit connection"
+// in the language the app shows.
+func DesktopSetEditConnection() string { return In(i18n.Locale()).DesktopSetEditConnection() }
+
+// DesktopSetEditConnection says "Edit connection"
+// in the language of msgs.
+func (msgs Messages) DesktopSetEditConnection() string {
+	return Catalog.Format(msgs.locale, "desktopSetEditConnection", nil)
+}
+
+// DesktopSetUser says "SSH user"
+// in the language the app shows.
+func DesktopSetUser() string { return In(i18n.Locale()).DesktopSetUser() }
+
+// DesktopSetUser says "SSH user"
+// in the language of msgs.
+func (msgs Messages) DesktopSetUser() string {
+	return Catalog.Format(msgs.locale, "desktopSetUser", nil)
+}
+
+// DesktopSetVirtualization says "Virtualization"
+// in the language the app shows.
+func DesktopSetVirtualization() string { return In(i18n.Locale()).DesktopSetVirtualization() }
+
+// DesktopSetVirtualization says "Virtualization"
+// in the language of msgs.
+func (msgs Messages) DesktopSetVirtualization() string {
+	return Catalog.Format(msgs.locale, "desktopSetVirtualization", nil)
+}
+
+// DesktopSetAddresses says "IP addresses"
+// in the language the app shows.
+func DesktopSetAddresses() string { return In(i18n.Locale()).DesktopSetAddresses() }
+
+// DesktopSetAddresses says "IP addresses"
+// in the language of msgs.
+func (msgs Messages) DesktopSetAddresses() string {
+	return Catalog.Format(msgs.locale, "desktopSetAddresses", nil)
+}
+
+// DesktopSetShowIP says "Show IP addresses"
+// in the language the app shows.
+func DesktopSetShowIP() string { return In(i18n.Locale()).DesktopSetShowIP() }
+
+// DesktopSetShowIP says "Show IP addresses"
+// in the language of msgs.
+func (msgs Messages) DesktopSetShowIP() string {
+	return Catalog.Format(msgs.locale, "desktopSetShowIP", nil)
+}
+
+// DesktopSetHideIP says "Hide IP addresses"
+// in the language the app shows.
+func DesktopSetHideIP() string { return In(i18n.Locale()).DesktopSetHideIP() }
+
+// DesktopSetHideIP says "Hide IP addresses"
+// in the language of msgs.
+func (msgs Messages) DesktopSetHideIP() string {
+	return Catalog.Format(msgs.locale, "desktopSetHideIP", nil)
+}
+
+// DesktopSetDetectIP says "Detect public IP"
+// in the language the app shows.
+func DesktopSetDetectIP() string { return In(i18n.Locale()).DesktopSetDetectIP() }
+
+// DesktopSetDetectIP says "Detect public IP"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDetectIP() string {
+	return Catalog.Format(msgs.locale, "desktopSetDetectIP", nil)
+}
+
+// DesktopSetIPHidden says "IP addresses are hidden, including when you copy the overview."
+// in the language the app shows.
+func DesktopSetIPHidden() string { return In(i18n.Locale()).DesktopSetIPHidden() }
+
+// DesktopSetIPHidden says "IP addresses are hidden, including when you copy the overview."
+// in the language of msgs.
+func (msgs Messages) DesktopSetIPHidden() string {
+	return Catalog.Format(msgs.locale, "desktopSetIPHidden", nil)
+}
+
+// DesktopSetPublicIP says "Public IP / SSH address"
+// in the language the app shows.
+func DesktopSetPublicIP() string { return In(i18n.Locale()).DesktopSetPublicIP() }
+
+// DesktopSetPublicIP says "Public IP / SSH address"
+// in the language of msgs.
+func (msgs Messages) DesktopSetPublicIP() string {
+	return Catalog.Format(msgs.locale, "desktopSetPublicIP", nil)
+}
+
+// DesktopSetPrivateIP says "Interface addresses"
+// in the language the app shows.
+func DesktopSetPrivateIP() string { return In(i18n.Locale()).DesktopSetPrivateIP() }
+
+// DesktopSetPrivateIP says "Interface addresses"
+// in the language of msgs.
+func (msgs Messages) DesktopSetPrivateIP() string {
+	return Catalog.Format(msgs.locale, "desktopSetPrivateIP", nil)
+}
+
+// DesktopSetIPNotice says "Detection contacts api.ipify.org from the server. Without detection, the connection address is shown."
+// in the language the app shows.
+func DesktopSetIPNotice() string { return In(i18n.Locale()).DesktopSetIPNotice() }
+
+// DesktopSetIPNotice says "Detection contacts api.ipify.org from the server. Without detection, the connection address is shown."
+// in the language of msgs.
+func (msgs Messages) DesktopSetIPNotice() string {
+	return Catalog.Format(msgs.locale, "desktopSetIPNotice", nil)
+}
+
+// DesktopSetStorage says "Mounted storage"
+// in the language the app shows.
+func DesktopSetStorage() string { return In(i18n.Locale()).DesktopSetStorage() }
+
+// DesktopSetStorage says "Mounted storage"
+// in the language of msgs.
+func (msgs Messages) DesktopSetStorage() string {
+	return Catalog.Format(msgs.locale, "desktopSetStorage", nil)
+}
+
+// DesktopSetTaskMgr says "Open Task Manager"
+// in the language the app shows.
+func DesktopSetTaskMgr() string { return In(i18n.Locale()).DesktopSetTaskMgr() }
+
+// DesktopSetTaskMgr says "Open Task Manager"
+// in the language of msgs.
+func (msgs Messages) DesktopSetTaskMgr() string {
+	return Catalog.Format(msgs.locale, "desktopSetTaskMgr", nil)
+}
+
+// DesktopSetFree says "{free} free of {total}"
+// in the language the app shows.
+func DesktopSetFree(free string, total string) string {
+	return In(i18n.Locale()).DesktopSetFree(free, total)
+}
+
+// DesktopSetFree says "{free} free of {total}"
+// in the language of msgs.
+func (msgs Messages) DesktopSetFree(free string, total string) string {
+	return Catalog.Format(msgs.locale, "desktopSetFree", map[string]any{"free": free, "total": total})
+}
+
+// DesktopSetUptime says "{days, plural, one {# day} other {# days}} {hours, plural, one {# hour} other {# hours}}"
+// in the language the app shows.
+func DesktopSetUptime(days int, hours int) string {
+	return In(i18n.Locale()).DesktopSetUptime(days, hours)
+}
+
+// DesktopSetUptime says "{days, plural, one {# day} other {# days}} {hours, plural, one {# hour} other {# hours}}"
+// in the language of msgs.
+func (msgs Messages) DesktopSetUptime(days int, hours int) string {
+	return Catalog.Format(msgs.locale, "desktopSetUptime", map[string]any{"days": days, "hours": hours})
+}
+
+// DesktopSetLogins says "Server logins"
+// in the language the app shows.
+func DesktopSetLogins() string { return In(i18n.Locale()).DesktopSetLogins() }
+
+// DesktopSetLogins says "Server logins"
+// in the language of msgs.
+func (msgs Messages) DesktopSetLogins() string {
+	return Catalog.Format(msgs.locale, "desktopSetLogins", nil)
+}
+
+// DesktopSetFilterLog says "Filter operations…"
+// in the language the app shows.
+func DesktopSetFilterLog() string { return In(i18n.Locale()).DesktopSetFilterLog() }
+
+// DesktopSetFilterLog says "Filter operations…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetFilterLog() string {
+	return Catalog.Format(msgs.locale, "desktopSetFilterLog", nil)
+}
+
+// DesktopSetAllApps says "All apps"
+// in the language the app shows.
+func DesktopSetAllApps() string { return In(i18n.Locale()).DesktopSetAllApps() }
+
+// DesktopSetAllApps says "All apps"
+// in the language of msgs.
+func (msgs Messages) DesktopSetAllApps() string {
+	return Catalog.Format(msgs.locale, "desktopSetAllApps", nil)
+}
+
+// DesktopSetExport says "Export log…"
+// in the language the app shows.
+func DesktopSetExport() string { return In(i18n.Locale()).DesktopSetExport() }
+
+// DesktopSetExport says "Export log…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetExport() string {
+	return Catalog.Format(msgs.locale, "desktopSetExport", nil)
+}
+
+// DesktopSetClear says "Clear log…"
+// in the language the app shows.
+func DesktopSetClear() string { return In(i18n.Locale()).DesktopSetClear() }
+
+// DesktopSetClear says "Clear log…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetClear() string {
+	return Catalog.Format(msgs.locale, "desktopSetClear", nil)
+}
+
+// DesktopSetClearQuestion says "Clear the desktop operation log?"
+// in the language the app shows.
+func DesktopSetClearQuestion() string { return In(i18n.Locale()).DesktopSetClearQuestion() }
+
+// DesktopSetClearQuestion says "Clear the desktop operation log?"
+// in the language of msgs.
+func (msgs Messages) DesktopSetClearQuestion() string {
+	return Catalog.Format(msgs.locale, "desktopSetClearQuestion", nil)
+}
+
+// DesktopSetClearNote says "All entries for this desktop will be removed, including entries hidden by filters. Server logs will not change."
+// in the language the app shows.
+func DesktopSetClearNote() string { return In(i18n.Locale()).DesktopSetClearNote() }
+
+// DesktopSetClearNote says "All entries for this desktop will be removed, including entries hidden by filters. Server logs will not change."
+// in the language of msgs.
+func (msgs Messages) DesktopSetClearNote() string {
+	return Catalog.Format(msgs.locale, "desktopSetClearNote", nil)
+}
+
+// DesktopSetNoOperations says "No operations match the current filters."
+// in the language the app shows.
+func DesktopSetNoOperations() string { return In(i18n.Locale()).DesktopSetNoOperations() }
+
+// DesktopSetNoOperations says "No operations match the current filters."
+// in the language of msgs.
+func (msgs Messages) DesktopSetNoOperations() string {
+	return Catalog.Format(msgs.locale, "desktopSetNoOperations", nil)
+}
+
+// DesktopSetLoginsNote says "Shows up to 50 entries per login history. Reading failed attempts may require administrator privileges."
+// in the language the app shows.
+func DesktopSetLoginsNote() string { return In(i18n.Locale()).DesktopSetLoginsNote() }
+
+// DesktopSetLoginsNote says "Shows up to 50 entries per login history. Reading failed attempts may require administrator privileges."
+// in the language of msgs.
+func (msgs Messages) DesktopSetLoginsNote() string {
+	return Catalog.Format(msgs.locale, "desktopSetLoginsNote", nil)
+}
+
+// DesktopSetLoadFailed says "Load failed attempts"
+// in the language the app shows.
+func DesktopSetLoadFailed() string { return In(i18n.Locale()).DesktopSetLoadFailed() }
+
+// DesktopSetLoadFailed says "Load failed attempts"
+// in the language of msgs.
+func (msgs Messages) DesktopSetLoadFailed() string {
+	return Catalog.Format(msgs.locale, "desktopSetLoadFailed", nil)
+}
+
+// DesktopSetFailedLogin says "Failed login"
+// in the language the app shows.
+func DesktopSetFailedLogin() string { return In(i18n.Locale()).DesktopSetFailedLogin() }
+
+// DesktopSetFailedLogin says "Failed login"
+// in the language of msgs.
+func (msgs Messages) DesktopSetFailedLogin() string {
+	return Catalog.Format(msgs.locale, "desktopSetFailedLogin", nil)
+}
+
+// DesktopSetNoLogins says "No login records found."
+// in the language the app shows.
+func DesktopSetNoLogins() string { return In(i18n.Locale()).DesktopSetNoLogins() }
+
+// DesktopSetNoLogins says "No login records found."
+// in the language of msgs.
+func (msgs Messages) DesktopSetNoLogins() string {
+	return Catalog.Format(msgs.locale, "desktopSetNoLogins", nil)
+}
+
+// DesktopSetDNSStatus says "Effective resolvers"
+// in the language the app shows.
+func DesktopSetDNSStatus() string { return In(i18n.Locale()).DesktopSetDNSStatus() }
+
+// DesktopSetDNSStatus says "Effective resolvers"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSStatus() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSStatus", nil)
+}
+
+// DesktopSetDNSBackend says "Resolver manager"
+// in the language the app shows.
+func DesktopSetDNSBackend() string { return In(i18n.Locale()).DesktopSetDNSBackend() }
+
+// DesktopSetDNSBackend says "Resolver manager"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSBackend() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSBackend", nil)
+}
+
+// DesktopSetDNSExternal says "Managed externally"
+// in the language the app shows.
+func DesktopSetDNSExternal() string { return In(i18n.Locale()).DesktopSetDNSExternal() }
+
+// DesktopSetDNSExternal says "Managed externally"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSExternal() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSExternal", nil)
+}
+
+// DesktopSetDNSManaged says "Another service owns the resolver file, or its owner could not be identified. This app will not overwrite it."
+// in the language the app shows.
+func DesktopSetDNSManaged() string { return In(i18n.Locale()).DesktopSetDNSManaged() }
+
+// DesktopSetDNSManaged says "Another service owns the resolver file, or its owner could not be identified. This app will not overwrite it."
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSManaged() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSManaged", nil)
+}
+
+// DesktopSetDNSNetworkManager says "NetworkManager detected · default-route interface: {device}"
+// in the language the app shows.
+func DesktopSetDNSNetworkManager(device string) string {
+	return In(i18n.Locale()).DesktopSetDNSNetworkManager(device)
+}
+
+// DesktopSetDNSNetworkManager says "NetworkManager detected · default-route interface: {device}"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSNetworkManager(device string) string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSNetworkManager", map[string]any{"device": device})
+}
+
+// DesktopSetDNSGlobal says "Global"
+// in the language the app shows.
+func DesktopSetDNSGlobal() string { return In(i18n.Locale()).DesktopSetDNSGlobal() }
+
+// DesktopSetDNSGlobal says "Global"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSGlobal() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSGlobal", nil)
+}
+
+// DesktopSetDNSServers says "Nameservers (IPv4 or IPv6)"
+// in the language the app shows.
+func DesktopSetDNSServers() string { return In(i18n.Locale()).DesktopSetDNSServers() }
+
+// DesktopSetDNSServers says "Nameservers (IPv4 or IPv6)"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSServers() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSServers", nil)
+}
+
+// DesktopSetDNSSearch says "Search domains"
+// in the language the app shows.
+func DesktopSetDNSSearch() string { return In(i18n.Locale()).DesktopSetDNSSearch() }
+
+// DesktopSetDNSSearch says "Search domains"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSSearch() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSSearch", nil)
+}
+
+// DesktopSetDNSCurrent says "Current nameserver"
+// in the language the app shows.
+func DesktopSetDNSCurrent() string { return In(i18n.Locale()).DesktopSetDNSCurrent() }
+
+// DesktopSetDNSCurrent says "Current nameserver"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSCurrent() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSCurrent", nil)
+}
+
+// DesktopSetDNSFileServers says "Nameservers in /etc/resolv.conf"
+// in the language the app shows.
+func DesktopSetDNSFileServers() string { return In(i18n.Locale()).DesktopSetDNSFileServers() }
+
+// DesktopSetDNSFileServers says "Nameservers in /etc/resolv.conf"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSFileServers() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSFileServers", nil)
+}
+
+// DesktopSetDNSOptions says "Resolver options"
+// in the language the app shows.
+func DesktopSetDNSOptions() string { return In(i18n.Locale()).DesktopSetDNSOptions() }
+
+// DesktopSetDNSOptions says "Resolver options"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSOptions() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSOptions", nil)
+}
+
+// DesktopSetDNSEdit says "Resolver configuration"
+// in the language the app shows.
+func DesktopSetDNSEdit() string { return In(i18n.Locale()).DesktopSetDNSEdit() }
+
+// DesktopSetDNSEdit says "Resolver configuration"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSEdit() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSEdit", nil)
+}
+
+// DesktopSetDNSLinksStay says "Global changes do not remove per-interface DNS or routing domains. Those settings may still take precedence."
+// in the language the app shows.
+func DesktopSetDNSLinksStay() string { return In(i18n.Locale()).DesktopSetDNSLinksStay() }
+
+// DesktopSetDNSLinksStay says "Global changes do not remove per-interface DNS or routing domains. Those settings may still take precedence."
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSLinksStay() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSLinksStay", nil)
+}
+
+// DesktopSetDNSPresets says "DNS presets"
+// in the language the app shows.
+func DesktopSetDNSPresets() string { return In(i18n.Locale()).DesktopSetDNSPresets() }
+
+// DesktopSetDNSPresets says "DNS presets"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSPresets() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSPresets", nil)
+}
+
+// DesktopSetDNSApply says "Apply DNS…"
+// in the language the app shows.
+func DesktopSetDNSApply() string { return In(i18n.Locale()).DesktopSetDNSApply() }
+
+// DesktopSetDNSApply says "Apply DNS…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSApply() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSApply", nil)
+}
+
+// DesktopSetDNSRestore says "Restore backup…"
+// in the language the app shows.
+func DesktopSetDNSRestore() string { return In(i18n.Locale()).DesktopSetDNSRestore() }
+
+// DesktopSetDNSRestore says "Restore backup…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSRestore() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSRestore", nil)
+}
+
+// DesktopSetDNSTest says "Test lookup"
+// in the language the app shows.
+func DesktopSetDNSTest() string { return In(i18n.Locale()).DesktopSetDNSTest() }
+
+// DesktopSetDNSTest says "Test lookup"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSTest() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSTest", nil)
+}
+
+// DesktopSetDNSInvalidIP says "Enter 1–16 valid IPv4 or IPv6 addresses without zone suffixes."
+// in the language the app shows.
+func DesktopSetDNSInvalidIP() string { return In(i18n.Locale()).DesktopSetDNSInvalidIP() }
+
+// DesktopSetDNSInvalidIP says "Enter 1–16 valid IPv4 or IPv6 addresses without zone suffixes."
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSInvalidIP() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSInvalidIP", nil)
+}
+
+// DesktopSetDNSInvalidDomain says "Enter valid search domains, separated by spaces or commas."
+// in the language the app shows.
+func DesktopSetDNSInvalidDomain() string { return In(i18n.Locale()).DesktopSetDNSInvalidDomain() }
+
+// DesktopSetDNSInvalidDomain says "Enter valid search domains, separated by spaces or commas."
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSInvalidDomain() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSInvalidDomain", nil)
+}
+
+// DesktopSetDNSLimit says "/etc/resolv.conf supports up to three nameservers."
+// in the language the app shows.
+func DesktopSetDNSLimit() string { return In(i18n.Locale()).DesktopSetDNSLimit() }
+
+// DesktopSetDNSLimit says "/etc/resolv.conf supports up to three nameservers."
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSLimit() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSLimit", nil)
+}
+
+// DesktopSetDNSChanged says "The resolver manager or active network profile changed. Refresh before applying again."
+// in the language the app shows.
+func DesktopSetDNSChanged() string { return In(i18n.Locale()).DesktopSetDNSChanged() }
+
+// DesktopSetDNSChanged says "The resolver manager or active network profile changed. Refresh before applying again."
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSChanged() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSChanged", nil)
+}
+
+// DesktopSetDNSConfirmNote says "This changes the server’s DNS. The first backup is kept. After the change, the server will look up example.com to c…"
+// in the language the app shows.
+func DesktopSetDNSConfirmNote() string { return In(i18n.Locale()).DesktopSetDNSConfirmNote() }
+
+// DesktopSetDNSConfirmNote says "This changes the server’s DNS. The first backup is kept. After the change, the server will look up example.com to c…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSConfirmNote() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSConfirmNote", nil)
+}
+
+// DesktopSetDNSDisconnect says "Reactivating the network profile can temporarily interrupt SSH. Have another way to reach the server before continuing."
+// in the language the app shows.
+func DesktopSetDNSDisconnect() string { return In(i18n.Locale()).DesktopSetDNSDisconnect() }
+
+// DesktopSetDNSDisconnect says "Reactivating the network profile can temporarily interrupt SSH. Have another way to reach the server before continuing."
+// in the language of msgs.
+func (msgs Messages) DesktopSetDNSDisconnect() string {
+	return Catalog.Format(msgs.locale, "desktopSetDNSDisconnect", nil)
+}
+
+// DesktopSetTimeStatus says "Server clock"
+// in the language the app shows.
+func DesktopSetTimeStatus() string { return In(i18n.Locale()).DesktopSetTimeStatus() }
+
+// DesktopSetTimeStatus says "Server clock"
+// in the language of msgs.
+func (msgs Messages) DesktopSetTimeStatus() string {
+	return Catalog.Format(msgs.locale, "desktopSetTimeStatus", nil)
+}
+
+// DesktopSetTimeSkew says "Estimated difference from this computer: {offset}"
+// in the language the app shows.
+func DesktopSetTimeSkew(offset string) string { return In(i18n.Locale()).DesktopSetTimeSkew(offset) }
+
+// DesktopSetTimeSkew says "Estimated difference from this computer: {offset}"
+// in the language of msgs.
+func (msgs Messages) DesktopSetTimeSkew(offset string) string {
+	return Catalog.Format(msgs.locale, "desktopSetTimeSkew", map[string]any{"offset": offset})
+}
+
+// DesktopSetZone says "Time zone"
+// in the language the app shows.
+func DesktopSetZone() string { return In(i18n.Locale()).DesktopSetZone() }
+
+// DesktopSetZone says "Time zone"
+// in the language of msgs.
+func (msgs Messages) DesktopSetZone() string {
+	return Catalog.Format(msgs.locale, "desktopSetZone", nil)
+}
+
+// DesktopSetNTP says "NTP enabled"
+// in the language the app shows.
+func DesktopSetNTP() string { return In(i18n.Locale()).DesktopSetNTP() }
+
+// DesktopSetNTP says "NTP enabled"
+// in the language of msgs.
+func (msgs Messages) DesktopSetNTP() string {
+	return Catalog.Format(msgs.locale, "desktopSetNTP", nil)
+}
+
+// DesktopSetSynced says "NTP synchronized"
+// in the language the app shows.
+func DesktopSetSynced() string { return In(i18n.Locale()).DesktopSetSynced() }
+
+// DesktopSetSynced says "NTP synchronized"
+// in the language of msgs.
+func (msgs Messages) DesktopSetSynced() string {
+	return Catalog.Format(msgs.locale, "desktopSetSynced", nil)
+}
+
+// DesktopSetRTC says "Hardware clock (RTC)"
+// in the language the app shows.
+func DesktopSetRTC() string { return In(i18n.Locale()).DesktopSetRTC() }
+
+// DesktopSetRTC says "Hardware clock (RTC)"
+// in the language of msgs.
+func (msgs Messages) DesktopSetRTC() string {
+	return Catalog.Format(msgs.locale, "desktopSetRTC", nil)
+}
+
+// DesktopSetRTCLocal says "RTC uses local time"
+// in the language the app shows.
+func DesktopSetRTCLocal() string { return In(i18n.Locale()).DesktopSetRTCLocal() }
+
+// DesktopSetRTCLocal says "RTC uses local time"
+// in the language of msgs.
+func (msgs Messages) DesktopSetRTCLocal() string {
+	return Catalog.Format(msgs.locale, "desktopSetRTCLocal", nil)
+}
+
+// DesktopSetYes says "Yes"
+// in the language the app shows.
+func DesktopSetYes() string { return In(i18n.Locale()).DesktopSetYes() }
+
+// DesktopSetYes says "Yes"
+// in the language of msgs.
+func (msgs Messages) DesktopSetYes() string {
+	return Catalog.Format(msgs.locale, "desktopSetYes", nil)
+}
+
+// DesktopSetNo says "No"
+// in the language the app shows.
+func DesktopSetNo() string { return In(i18n.Locale()).DesktopSetNo() }
+
+// DesktopSetNo says "No"
+// in the language of msgs.
+func (msgs Messages) DesktopSetNo() string {
+	return Catalog.Format(msgs.locale, "desktopSetNo", nil)
+}
+
+// DesktopSetNoTimeZones says "The server did not return a time zone list."
+// in the language the app shows.
+func DesktopSetNoTimeZones() string { return In(i18n.Locale()).DesktopSetNoTimeZones() }
+
+// DesktopSetNoTimeZones says "The server did not return a time zone list."
+// in the language of msgs.
+func (msgs Messages) DesktopSetNoTimeZones() string {
+	return Catalog.Format(msgs.locale, "desktopSetNoTimeZones", nil)
+}
+
+// DesktopSetSearchZones says "Search time zones…"
+// in the language the app shows.
+func DesktopSetSearchZones() string { return In(i18n.Locale()).DesktopSetSearchZones() }
+
+// DesktopSetSearchZones says "Search time zones…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetSearchZones() string {
+	return Catalog.Format(msgs.locale, "desktopSetSearchZones", nil)
+}
+
+// DesktopSetChooseZone says "Choose a time zone"
+// in the language the app shows.
+func DesktopSetChooseZone() string { return In(i18n.Locale()).DesktopSetChooseZone() }
+
+// DesktopSetChooseZone says "Choose a time zone"
+// in the language of msgs.
+func (msgs Messages) DesktopSetChooseZone() string {
+	return Catalog.Format(msgs.locale, "desktopSetChooseZone", nil)
+}
+
+// DesktopSetZoneMatches says "{count, plural, one {# match} other {# matches}}. Refine the search to see more than the first 16."
+// in the language the app shows.
+func DesktopSetZoneMatches(count int) string { return In(i18n.Locale()).DesktopSetZoneMatches(count) }
+
+// DesktopSetZoneMatches says "{count, plural, one {# match} other {# matches}}. Refine the search to see more than the first 16."
+// in the language of msgs.
+func (msgs Messages) DesktopSetZoneMatches(count int) string {
+	return Catalog.Format(msgs.locale, "desktopSetZoneMatches", map[string]any{"count": count})
+}
+
+// DesktopSetNoZoneMatches says "No matching time zones."
+// in the language the app shows.
+func DesktopSetNoZoneMatches() string { return In(i18n.Locale()).DesktopSetNoZoneMatches() }
+
+// DesktopSetNoZoneMatches says "No matching time zones."
+// in the language of msgs.
+func (msgs Messages) DesktopSetNoZoneMatches() string {
+	return Catalog.Format(msgs.locale, "desktopSetNoZoneMatches", nil)
+}
+
+// DesktopSetSetZone says "Set time zone…"
+// in the language the app shows.
+func DesktopSetSetZone() string { return In(i18n.Locale()).DesktopSetSetZone() }
+
+// DesktopSetSetZone says "Set time zone…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetSetZone() string {
+	return Catalog.Format(msgs.locale, "desktopSetSetZone", nil)
+}
+
+// DesktopSetZoneNote says "This changes the server’s local time zone, including how it schedules jobs and displays timestamps."
+// in the language the app shows.
+func DesktopSetZoneNote() string { return In(i18n.Locale()).DesktopSetZoneNote() }
+
+// DesktopSetZoneNote says "This changes the server’s local time zone, including how it schedules jobs and displays timestamps."
+// in the language of msgs.
+func (msgs Messages) DesktopSetZoneNote() string {
+	return Catalog.Format(msgs.locale, "desktopSetZoneNote", nil)
+}
+
+// DesktopSetSync says "Time synchronization"
+// in the language the app shows.
+func DesktopSetSync() string { return In(i18n.Locale()).DesktopSetSync() }
+
+// DesktopSetSync says "Time synchronization"
+// in the language of msgs.
+func (msgs Messages) DesktopSetSync() string {
+	return Catalog.Format(msgs.locale, "desktopSetSync", nil)
+}
+
+// DesktopSetEnableNTP says "Enable NTP…"
+// in the language the app shows.
+func DesktopSetEnableNTP() string { return In(i18n.Locale()).DesktopSetEnableNTP() }
+
+// DesktopSetEnableNTP says "Enable NTP…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetEnableNTP() string {
+	return Catalog.Format(msgs.locale, "desktopSetEnableNTP", nil)
+}
+
+// DesktopSetDisableNTP says "Disable NTP…"
+// in the language the app shows.
+func DesktopSetDisableNTP() string { return In(i18n.Locale()).DesktopSetDisableNTP() }
+
+// DesktopSetDisableNTP says "Disable NTP…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetDisableNTP() string {
+	return Catalog.Format(msgs.locale, "desktopSetDisableNTP", nil)
+}
+
+// DesktopSetSyncNow says "Sync now…"
+// in the language the app shows.
+func DesktopSetSyncNow() string { return In(i18n.Locale()).DesktopSetSyncNow() }
+
+// DesktopSetSyncNow says "Sync now…"
+// in the language of msgs.
+func (msgs Messages) DesktopSetSyncNow() string {
+	return Catalog.Format(msgs.locale, "desktopSetSyncNow", nil)
+}
+
+// DesktopSetNTPNote says "This changes whether the server automatically synchronizes its clock."
+// in the language the app shows.
+func DesktopSetNTPNote() string { return In(i18n.Locale()).DesktopSetNTPNote() }
+
+// DesktopSetNTPNote says "This changes whether the server automatically synchronizes its clock."
+// in the language of msgs.
+func (msgs Messages) DesktopSetNTPNote() string {
+	return Catalog.Format(msgs.locale, "desktopSetNTPNote", nil)
+}
+
+// DesktopSetSyncNote says "The clock may jump when synchronized. This can affect logs, scheduled jobs and time-sensitive services."
+// in the language the app shows.
+func DesktopSetSyncNote() string { return In(i18n.Locale()).DesktopSetSyncNote() }
+
+// DesktopSetSyncNote says "The clock may jump when synchronized. This can affect logs, scheduled jobs and time-sensitive services."
+// in the language of msgs.
+func (msgs Messages) DesktopSetSyncNote() string {
+	return Catalog.Format(msgs.locale, "desktopSetSyncNote", nil)
+}
+
+// DesktopSetAppLock says "App lock"
+// in the language the app shows.
+func DesktopSetAppLock() string { return In(i18n.Locale()).DesktopSetAppLock() }
+
+// DesktopSetAppLock says "App lock"
+// in the language of msgs.
+func (msgs Messages) DesktopSetAppLock() string {
+	return Catalog.Format(msgs.locale, "desktopSetAppLock", nil)
+}
+
+// DesktopSetAppLockNote says "Require a passphrase when unlocking Finallyshell. This protects this computer’s app, not the SSH server."
+// in the language the app shows.
+func DesktopSetAppLockNote() string { return In(i18n.Locale()).DesktopSetAppLockNote() }
+
+// DesktopSetAppLockNote says "Require a passphrase when unlocking Finallyshell. This protects this computer’s app, not the SSH server."
+// in the language of msgs.
+func (msgs Messages) DesktopSetAppLockNote() string {
+	return Catalog.Format(msgs.locale, "desktopSetAppLockNote", nil)
+}
+
+// DesktopSetKeysNote says "Manage SSH keys and control how you authenticate to servers."
+// in the language the app shows.
+func DesktopSetKeysNote() string { return In(i18n.Locale()).DesktopSetKeysNote() }
+
+// DesktopSetKeysNote says "Manage SSH keys and control how you authenticate to servers."
+// in the language of msgs.
+func (msgs Messages) DesktopSetKeysNote() string {
+	return Catalog.Format(msgs.locale, "desktopSetKeysNote", nil)
+}
+
+// DesktopSetServerSecurity says "Server security"
+// in the language the app shows.
+func DesktopSetServerSecurity() string { return In(i18n.Locale()).DesktopSetServerSecurity() }
+
+// DesktopSetServerSecurity says "Server security"
+// in the language of msgs.
+func (msgs Messages) DesktopSetServerSecurity() string {
+	return Catalog.Format(msgs.locale, "desktopSetServerSecurity", nil)
+}
+
+// DesktopSetServerSecurityNote says "Review SSH login records, server users, SSH configuration and Fail2ban in the System tab."
+// in the language the app shows.
+func DesktopSetServerSecurityNote() string { return In(i18n.Locale()).DesktopSetServerSecurityNote() }
+
+// DesktopSetServerSecurityNote says "Review SSH login records, server users, SSH configuration and Fail2ban in the System tab."
+// in the language of msgs.
+func (msgs Messages) DesktopSetServerSecurityNote() string {
+	return Catalog.Format(msgs.locale, "desktopSetServerSecurityNote", nil)
+}
+
+// DesktopSetOpen says "Open {page}"
+// in the language the app shows.
+func DesktopSetOpen(page string) string { return In(i18n.Locale()).DesktopSetOpen(page) }
+
+// DesktopSetOpen says "Open {page}"
+// in the language of msgs.
+func (msgs Messages) DesktopSetOpen(page string) string {
+	return Catalog.Format(msgs.locale, "desktopSetOpen", map[string]any{"page": page})
+}
+
 // DesktopAppTerminal says "Terminal"
 // in the language the app shows.
 func DesktopAppTerminal() string { return In(i18n.Locale()).DesktopAppTerminal() }

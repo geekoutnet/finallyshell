@@ -318,6 +318,17 @@ an existing `settings.json` as `settings.json.bak-<yyyymmddHHMMSS>`.
 
 The Websites section adds no host or application settings. It reads Nginx configuration on the remote server, creates site files under `/etc/nginx/sites-available/` or `/etc/nginx/conf.d/`, and manages corresponding Debian links under `/etc/nginx/sites-enabled/`. Backups use the sibling name `<file>.bak-<YYYYMMDDHHMMSS>`. The app reads public certificates configured by Nginx and `/etc/letsencrypt/live/*/fullchain.pem`; it does not download private keys or cache configuration locally.
 
+### Desktop Settings: server DNS files
+
+The DNS page does not add local settings keys. On the server, a regular
+`/etc/resolv.conf` is backed up to `/etc/resolv.conf.finallyshell.bak`.
+For systemd-resolved the page writes
+`/etc/systemd/resolved.conf.d/finallyshell.conf`; its original state is
+recorded in the adjacent `.bak` or `.bak.absent` file. For NetworkManager,
+`/etc/NetworkManager/finallyshell-dns-<profile-uuid>.bak` stores the six
+DNS properties the page changes. Restoring leaves the first backup in
+place. These files are not copied to this computer or synced.
+
 ## db.json
 
 This optional file maps SSH host IDs to arrays of Database tab connection

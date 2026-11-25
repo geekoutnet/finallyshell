@@ -85,12 +85,27 @@ func systemRedact(text string) string {
 var logError = regexp.MustCompile(`(?i)\b(?:err(?:or)?s?|fail(?:ed|ure)?|fatal|panic|critical)\b`)
 var logWarning = regexp.MustCompile(`(?i)\bwarn(?:ing)?s?\b`)
 
+// logStructured finds the level a JSON or logfmt line states itself,
+// as Caddy's "level":"info": it wins over words in the message.
+var logStructured = regexp.MustCompile(`(?i)"?\blevel"?\s*[:=]\s*"?([a-z]+)`)
+
 func systemLogLevel(line string, keywords []string) int {
-	if logError.MatchString(line) {
-		return 3
+	level := ""
+	if match := logStructured.FindStringSubmatch(line); match != nil {
+		level = strings.ToLower(match[1])
 	}
-	if logWarning.MatchString(line) {
+	switch level {
+	case "error", "err", "fatal", "panic", "dpanic", "critical", "crit", "emerg", "alert":
+		return 3
+	case "warn", "warning":
 		return 2
+	case "":
+		if logError.MatchString(line) {
+			return 3
+		}
+		if logWarning.MatchString(line) {
+			return 2
+		}
 	}
 	line = strings.ToLower(line)
 	for _, key := range keywords {

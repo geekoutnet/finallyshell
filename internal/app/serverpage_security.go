@@ -23,7 +23,7 @@ type serverSecurityPage struct {
 	peer                             netip.Addr
 	logins                           []monitor.SSHLogin
 	users, last, sudo, settings      string
-	installed                        bool
+	installed, stopped               bool
 	jails                            []securityJail
 	table                            ui.ListState
 	sort                             ui.SortOrder
@@ -86,7 +86,7 @@ func (a *App) refreshServerSecurity(s *Session) {
 			}
 			page.reading, page.err = false, opsReadError(errors.Join(authErr, failErr), login)
 			page.logins, page.users, page.last, page.sudo, page.settings = logins, opsTail(current), opsTail(last), opsTail(sudo), opsTail(settings)
-			page.installed, page.jails, page.peer = strings.HasPrefix(status, "installed"), jails, peer
+			page.installed, page.stopped, page.jails, page.peer = strings.HasPrefix(status, "installed"), monitor.Fail2banStopped(status), jails, peer
 			page.jail, page.row = min(page.jail, max(len(jails)-1, 0)), -1
 		})
 	}()
@@ -314,6 +314,8 @@ func (a *App) securityBans(c *ui.Context, s *Session) {
 		message := locales.SecNoJails()
 		if !page.installed {
 			message = locales.SecNoFail2ban()
+		} else if page.stopped {
+			message = locales.SecFail2banStopped()
 		}
 		opsTextView(c, "", message)
 		return

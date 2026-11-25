@@ -9,7 +9,10 @@ import (
 	"strings"
 )
 
-const FirewallDetectScript = `for tool in 'ufw' 'firewall-cmd' 'nft' 'iptables'; do
+// FirewallDetectScript runs as the login user, whose PATH on Debian and
+// others leaves out the sbin folders the firewall tools live in.
+const FirewallDetectScript = `PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
+for tool in 'ufw' 'firewall-cmd' 'nft' 'iptables'; do
   if command -v "$tool" >/dev/null 2>&1; then printf '%s\n' "$tool"; fi
 done`
 

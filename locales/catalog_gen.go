@@ -14698,6 +14698,16 @@ func (msgs Messages) SecNoFail2ban() string {
 	return Catalog.Format(msgs.locale, "secNoFail2ban", nil)
 }
 
+// SecFail2banStopped says "Fail2ban is installed but not running. Start fail2ban.service under Services to read its jails."
+// in the language the app shows.
+func SecFail2banStopped() string { return In(i18n.Locale()).SecFail2banStopped() }
+
+// SecFail2banStopped says "Fail2ban is installed but not running. Start fail2ban.service under Services to read its jails."
+// in the language of msgs.
+func (msgs Messages) SecFail2banStopped() string {
+	return Catalog.Format(msgs.locale, "secFail2banStopped", nil)
+}
+
 // SecJail says "Jail"
 // in the language the app shows.
 func SecJail() string { return In(i18n.Locale()).SecJail() }
@@ -16532,6 +16542,16 @@ func SiteOtherServer(server string, file string) string {
 // in the language of msgs.
 func (msgs Messages) SiteOtherServer(server string, file string) string {
 	return Catalog.Format(msgs.locale, "siteOtherServer", map[string]any{"server": server, "file": file})
+}
+
+// SiteCaddyServer says "Caddy detected · {file} · manage it in the Caddy tab"
+// in the language the app shows.
+func SiteCaddyServer(file string) string { return In(i18n.Locale()).SiteCaddyServer(file) }
+
+// SiteCaddyServer says "Caddy detected · {file} · manage it in the Caddy tab"
+// in the language of msgs.
+func (msgs Messages) SiteCaddyServer(file string) string {
+	return Catalog.Format(msgs.locale, "siteCaddyServer", map[string]any{"file": file})
 }
 
 // SitePorts says "Listen ports"

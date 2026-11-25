@@ -20886,6 +20886,1000 @@ func (msgs Messages) DesktopAppTaskManager() string {
 	return Catalog.Format(msgs.locale, "desktopAppTaskManager", nil)
 }
 
+// DesktopTaskPerformance says "Performance"
+// in the language the app shows.
+func DesktopTaskPerformance() string { return In(i18n.Locale()).DesktopTaskPerformance() }
+
+// DesktopTaskPerformance says "Performance"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskPerformance() string {
+	return Catalog.Format(msgs.locale, "desktopTaskPerformance", nil)
+}
+
+// DesktopTaskProcesses says "Processes"
+// in the language the app shows.
+func DesktopTaskProcesses() string { return In(i18n.Locale()).DesktopTaskProcesses() }
+
+// DesktopTaskProcesses says "Processes"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskProcesses() string {
+	return Catalog.Format(msgs.locale, "desktopTaskProcesses", nil)
+}
+
+// DesktopTaskUsers says "Users"
+// in the language the app shows.
+func DesktopTaskUsers() string { return In(i18n.Locale()).DesktopTaskUsers() }
+
+// DesktopTaskUsers says "Users"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskUsers() string {
+	return Catalog.Format(msgs.locale, "desktopTaskUsers", nil)
+}
+
+// DesktopTaskServices says "Services"
+// in the language the app shows.
+func DesktopTaskServices() string { return In(i18n.Locale()).DesktopTaskServices() }
+
+// DesktopTaskServices says "Services"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskServices() string {
+	return Catalog.Format(msgs.locale, "desktopTaskServices", nil)
+}
+
+// DesktopTaskLive says "Live · 2 s"
+// in the language the app shows.
+func DesktopTaskLive() string { return In(i18n.Locale()).DesktopTaskLive() }
+
+// DesktopTaskLive says "Live · 2 s"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskLive() string {
+	return Catalog.Format(msgs.locale, "desktopTaskLive", nil)
+}
+
+// DesktopTaskPaused says "Paused"
+// in the language the app shows.
+func DesktopTaskPaused() string { return In(i18n.Locale()).DesktopTaskPaused() }
+
+// DesktopTaskPaused says "Paused"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskPaused() string {
+	return Catalog.Format(msgs.locale, "desktopTaskPaused", nil)
+}
+
+// DesktopTaskPause says "Pause refresh"
+// in the language the app shows.
+func DesktopTaskPause() string { return In(i18n.Locale()).DesktopTaskPause() }
+
+// DesktopTaskPause says "Pause refresh"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskPause() string {
+	return Catalog.Format(msgs.locale, "desktopTaskPause", nil)
+}
+
+// DesktopTaskResume says "Resume refresh"
+// in the language the app shows.
+func DesktopTaskResume() string { return In(i18n.Locale()).DesktopTaskResume() }
+
+// DesktopTaskResume says "Resume refresh"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskResume() string {
+	return Catalog.Format(msgs.locale, "desktopTaskResume", nil)
+}
+
+// DesktopTaskUnavailable says "No data available"
+// in the language the app shows.
+func DesktopTaskUnavailable() string { return In(i18n.Locale()).DesktopTaskUnavailable() }
+
+// DesktopTaskUnavailable says "No data available"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskUnavailable() string {
+	return Catalog.Format(msgs.locale, "desktopTaskUnavailable", nil)
+}
+
+// DesktopTaskNoProcesses says "No matching processes"
+// in the language the app shows.
+func DesktopTaskNoProcesses() string { return In(i18n.Locale()).DesktopTaskNoProcesses() }
+
+// DesktopTaskNoProcesses says "No matching processes"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskNoProcesses() string {
+	return Catalog.Format(msgs.locale, "desktopTaskNoProcesses", nil)
+}
+
+// DesktopTaskNoUsers says "No login sessions reported by the server"
+// in the language the app shows.
+func DesktopTaskNoUsers() string { return In(i18n.Locale()).DesktopTaskNoUsers() }
+
+// DesktopTaskNoUsers says "No login sessions reported by the server"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskNoUsers() string {
+	return Catalog.Format(msgs.locale, "desktopTaskNoUsers", nil)
+}
+
+// DesktopTaskLoad says "Load"
+// in the language the app shows.
+func DesktopTaskLoad() string { return In(i18n.Locale()).DesktopTaskLoad() }
+
+// DesktopTaskLoad says "Load"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskLoad() string {
+	return Catalog.Format(msgs.locale, "desktopTaskLoad", nil)
+}
+
+// DesktopTaskSmooth says "Running smoothly"
+// in the language the app shows.
+func DesktopTaskSmooth() string { return In(i18n.Locale()).DesktopTaskSmooth() }
+
+// DesktopTaskSmooth says "Running smoothly"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskSmooth() string {
+	return Catalog.Format(msgs.locale, "desktopTaskSmooth", nil)
+}
+
+// DesktopTaskBusy says "Busy"
+// in the language the app shows.
+func DesktopTaskBusy() string { return In(i18n.Locale()).DesktopTaskBusy() }
+
+// DesktopTaskBusy says "Busy"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskBusy() string {
+	return Catalog.Format(msgs.locale, "desktopTaskBusy", nil)
+}
+
+// DesktopTaskOverloaded says "Overloaded"
+// in the language the app shows.
+func DesktopTaskOverloaded() string { return In(i18n.Locale()).DesktopTaskOverloaded() }
+
+// DesktopTaskOverloaded says "Overloaded"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskOverloaded() string {
+	return Catalog.Format(msgs.locale, "desktopTaskOverloaded", nil)
+}
+
+// DesktopTaskLoadPerCore says "One-minute load per logical CPU"
+// in the language the app shows.
+func DesktopTaskLoadPerCore() string { return In(i18n.Locale()).DesktopTaskLoadPerCore() }
+
+// DesktopTaskLoadPerCore says "One-minute load per logical CPU"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskLoadPerCore() string {
+	return Catalog.Format(msgs.locale, "desktopTaskLoadPerCore", nil)
+}
+
+// DesktopTaskOneMinute says "1 minute"
+// in the language the app shows.
+func DesktopTaskOneMinute() string { return In(i18n.Locale()).DesktopTaskOneMinute() }
+
+// DesktopTaskOneMinute says "1 minute"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskOneMinute() string {
+	return Catalog.Format(msgs.locale, "desktopTaskOneMinute", nil)
+}
+
+// DesktopTaskFiveMinutes says "5 minutes"
+// in the language the app shows.
+func DesktopTaskFiveMinutes() string { return In(i18n.Locale()).DesktopTaskFiveMinutes() }
+
+// DesktopTaskFiveMinutes says "5 minutes"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskFiveMinutes() string {
+	return Catalog.Format(msgs.locale, "desktopTaskFiveMinutes", nil)
+}
+
+// DesktopTaskFifteenMinutes says "15 minutes"
+// in the language the app shows.
+func DesktopTaskFifteenMinutes() string { return In(i18n.Locale()).DesktopTaskFifteenMinutes() }
+
+// DesktopTaskFifteenMinutes says "15 minutes"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskFifteenMinutes() string {
+	return Catalog.Format(msgs.locale, "desktopTaskFifteenMinutes", nil)
+}
+
+// DesktopTaskRunning says "Running"
+// in the language the app shows.
+func DesktopTaskRunning() string { return In(i18n.Locale()).DesktopTaskRunning() }
+
+// DesktopTaskRunning says "Running"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskRunning() string {
+	return Catalog.Format(msgs.locale, "desktopTaskRunning", nil)
+}
+
+// DesktopTaskBlocked says "Blocked"
+// in the language the app shows.
+func DesktopTaskBlocked() string { return In(i18n.Locale()).DesktopTaskBlocked() }
+
+// DesktopTaskBlocked says "Blocked"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskBlocked() string {
+	return Catalog.Format(msgs.locale, "desktopTaskBlocked", nil)
+}
+
+// DesktopTaskCPU says "CPU"
+// in the language the app shows.
+func DesktopTaskCPU() string { return In(i18n.Locale()).DesktopTaskCPU() }
+
+// DesktopTaskCPU says "CPU"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskCPU() string {
+	return Catalog.Format(msgs.locale, "desktopTaskCPU", nil)
+}
+
+// DesktopTaskCPUUsage says "CPU utilization"
+// in the language the app shows.
+func DesktopTaskCPUUsage() string { return In(i18n.Locale()).DesktopTaskCPUUsage() }
+
+// DesktopTaskCPUUsage says "CPU utilization"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskCPUUsage() string {
+	return Catalog.Format(msgs.locale, "desktopTaskCPUUsage", nil)
+}
+
+// DesktopTaskPerCPU says "Logical CPU utilization"
+// in the language the app shows.
+func DesktopTaskPerCPU() string { return In(i18n.Locale()).DesktopTaskPerCPU() }
+
+// DesktopTaskPerCPU says "Logical CPU utilization"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskPerCPU() string {
+	return Catalog.Format(msgs.locale, "desktopTaskPerCPU", nil)
+}
+
+// DesktopTaskCPUTime says "CPU time breakdown"
+// in the language the app shows.
+func DesktopTaskCPUTime() string { return In(i18n.Locale()).DesktopTaskCPUTime() }
+
+// DesktopTaskCPUTime says "CPU time breakdown"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskCPUTime() string {
+	return Catalog.Format(msgs.locale, "desktopTaskCPUTime", nil)
+}
+
+// DesktopTaskCPUTimeNames says "User|Nice|System|Idle|I/O wait|IRQ|Soft IRQ|Steal|Guest|Guest nice"
+// in the language the app shows.
+func DesktopTaskCPUTimeNames() string { return In(i18n.Locale()).DesktopTaskCPUTimeNames() }
+
+// DesktopTaskCPUTimeNames says "User|Nice|System|Idle|I/O wait|IRQ|Soft IRQ|Steal|Guest|Guest nice"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskCPUTimeNames() string {
+	return Catalog.Format(msgs.locale, "desktopTaskCPUTimeNames", nil)
+}
+
+// DesktopTaskModel says "Model"
+// in the language the app shows.
+func DesktopTaskModel() string { return In(i18n.Locale()).DesktopTaskModel() }
+
+// DesktopTaskModel says "Model"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskModel() string {
+	return Catalog.Format(msgs.locale, "desktopTaskModel", nil)
+}
+
+// DesktopTaskCurrentSpeed says "Current speed"
+// in the language the app shows.
+func DesktopTaskCurrentSpeed() string { return In(i18n.Locale()).DesktopTaskCurrentSpeed() }
+
+// DesktopTaskCurrentSpeed says "Current speed"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskCurrentSpeed() string {
+	return Catalog.Format(msgs.locale, "desktopTaskCurrentSpeed", nil)
+}
+
+// DesktopTaskBaseSpeed says "Base speed"
+// in the language the app shows.
+func DesktopTaskBaseSpeed() string { return In(i18n.Locale()).DesktopTaskBaseSpeed() }
+
+// DesktopTaskBaseSpeed says "Base speed"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskBaseSpeed() string {
+	return Catalog.Format(msgs.locale, "desktopTaskBaseSpeed", nil)
+}
+
+// DesktopTaskSockets says "Sockets"
+// in the language the app shows.
+func DesktopTaskSockets() string { return In(i18n.Locale()).DesktopTaskSockets() }
+
+// DesktopTaskSockets says "Sockets"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskSockets() string {
+	return Catalog.Format(msgs.locale, "desktopTaskSockets", nil)
+}
+
+// DesktopTaskCores says "Cores"
+// in the language the app shows.
+func DesktopTaskCores() string { return In(i18n.Locale()).DesktopTaskCores() }
+
+// DesktopTaskCores says "Cores"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskCores() string {
+	return Catalog.Format(msgs.locale, "desktopTaskCores", nil)
+}
+
+// DesktopTaskThreads says "Threads"
+// in the language the app shows.
+func DesktopTaskThreads() string { return In(i18n.Locale()).DesktopTaskThreads() }
+
+// DesktopTaskThreads says "Threads"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskThreads() string {
+	return Catalog.Format(msgs.locale, "desktopTaskThreads", nil)
+}
+
+// DesktopTaskVirtualization says "Virtualization"
+// in the language the app shows.
+func DesktopTaskVirtualization() string { return In(i18n.Locale()).DesktopTaskVirtualization() }
+
+// DesktopTaskVirtualization says "Virtualization"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskVirtualization() string {
+	return Catalog.Format(msgs.locale, "desktopTaskVirtualization", nil)
+}
+
+// DesktopTaskUptime says "Uptime"
+// in the language the app shows.
+func DesktopTaskUptime() string { return In(i18n.Locale()).DesktopTaskUptime() }
+
+// DesktopTaskUptime says "Uptime"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskUptime() string {
+	return Catalog.Format(msgs.locale, "desktopTaskUptime", nil)
+}
+
+// DesktopTaskMemory says "Memory"
+// in the language the app shows.
+func DesktopTaskMemory() string { return In(i18n.Locale()).DesktopTaskMemory() }
+
+// DesktopTaskMemory says "Memory"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskMemory() string {
+	return Catalog.Format(msgs.locale, "desktopTaskMemory", nil)
+}
+
+// DesktopTaskUsed says "Used"
+// in the language the app shows.
+func DesktopTaskUsed() string { return In(i18n.Locale()).DesktopTaskUsed() }
+
+// DesktopTaskUsed says "Used"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskUsed() string {
+	return Catalog.Format(msgs.locale, "desktopTaskUsed", nil)
+}
+
+// DesktopTaskAvailable says "Available"
+// in the language the app shows.
+func DesktopTaskAvailable() string { return In(i18n.Locale()).DesktopTaskAvailable() }
+
+// DesktopTaskAvailable says "Available"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskAvailable() string {
+	return Catalog.Format(msgs.locale, "desktopTaskAvailable", nil)
+}
+
+// DesktopTaskCached says "Cached"
+// in the language the app shows.
+func DesktopTaskCached() string { return In(i18n.Locale()).DesktopTaskCached() }
+
+// DesktopTaskCached says "Cached"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskCached() string {
+	return Catalog.Format(msgs.locale, "desktopTaskCached", nil)
+}
+
+// DesktopTaskBuffers says "Buffers"
+// in the language the app shows.
+func DesktopTaskBuffers() string { return In(i18n.Locale()).DesktopTaskBuffers() }
+
+// DesktopTaskBuffers says "Buffers"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskBuffers() string {
+	return Catalog.Format(msgs.locale, "desktopTaskBuffers", nil)
+}
+
+// DesktopTaskShared says "Shared"
+// in the language the app shows.
+func DesktopTaskShared() string { return In(i18n.Locale()).DesktopTaskShared() }
+
+// DesktopTaskShared says "Shared"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskShared() string {
+	return Catalog.Format(msgs.locale, "desktopTaskShared", nil)
+}
+
+// DesktopTaskSlab says "Slab"
+// in the language the app shows.
+func DesktopTaskSlab() string { return In(i18n.Locale()).DesktopTaskSlab() }
+
+// DesktopTaskSlab says "Slab"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskSlab() string {
+	return Catalog.Format(msgs.locale, "desktopTaskSlab", nil)
+}
+
+// DesktopTaskSwap says "Swap"
+// in the language the app shows.
+func DesktopTaskSwap() string { return In(i18n.Locale()).DesktopTaskSwap() }
+
+// DesktopTaskSwap says "Swap"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskSwap() string {
+	return Catalog.Format(msgs.locale, "desktopTaskSwap", nil)
+}
+
+// DesktopTaskRelease says "Release memory"
+// in the language the app shows.
+func DesktopTaskRelease() string { return In(i18n.Locale()).DesktopTaskRelease() }
+
+// DesktopTaskRelease says "Release memory"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskRelease() string {
+	return Catalog.Format(msgs.locale, "desktopTaskRelease", nil)
+}
+
+// DesktopTaskDisk says "Disk"
+// in the language the app shows.
+func DesktopTaskDisk() string { return In(i18n.Locale()).DesktopTaskDisk() }
+
+// DesktopTaskDisk says "Disk"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskDisk() string {
+	return Catalog.Format(msgs.locale, "desktopTaskDisk", nil)
+}
+
+// DesktopTaskRead says "Read"
+// in the language the app shows.
+func DesktopTaskRead() string { return In(i18n.Locale()).DesktopTaskRead() }
+
+// DesktopTaskRead says "Read"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskRead() string {
+	return Catalog.Format(msgs.locale, "desktopTaskRead", nil)
+}
+
+// DesktopTaskWrite says "Write"
+// in the language the app shows.
+func DesktopTaskWrite() string { return In(i18n.Locale()).DesktopTaskWrite() }
+
+// DesktopTaskWrite says "Write"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskWrite() string {
+	return Catalog.Format(msgs.locale, "desktopTaskWrite", nil)
+}
+
+// DesktopTaskDiskBusy says "Active time"
+// in the language the app shows.
+func DesktopTaskDiskBusy() string { return In(i18n.Locale()).DesktopTaskDiskBusy() }
+
+// DesktopTaskDiskBusy says "Active time"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskDiskBusy() string {
+	return Catalog.Format(msgs.locale, "desktopTaskDiskBusy", nil)
+}
+
+// DesktopTaskCapacity says "Capacity"
+// in the language the app shows.
+func DesktopTaskCapacity() string { return In(i18n.Locale()).DesktopTaskCapacity() }
+
+// DesktopTaskCapacity says "Capacity"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskCapacity() string {
+	return Catalog.Format(msgs.locale, "desktopTaskCapacity", nil)
+}
+
+// DesktopTaskMounts says "Mount points"
+// in the language the app shows.
+func DesktopTaskMounts() string { return In(i18n.Locale()).DesktopTaskMounts() }
+
+// DesktopTaskMounts says "Mount points"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskMounts() string {
+	return Catalog.Format(msgs.locale, "desktopTaskMounts", nil)
+}
+
+// DesktopTaskNetwork says "Network"
+// in the language the app shows.
+func DesktopTaskNetwork() string { return In(i18n.Locale()).DesktopTaskNetwork() }
+
+// DesktopTaskNetwork says "Network"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskNetwork() string {
+	return Catalog.Format(msgs.locale, "desktopTaskNetwork", nil)
+}
+
+// DesktopTaskReceive says "Receive"
+// in the language the app shows.
+func DesktopTaskReceive() string { return In(i18n.Locale()).DesktopTaskReceive() }
+
+// DesktopTaskReceive says "Receive"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskReceive() string {
+	return Catalog.Format(msgs.locale, "desktopTaskReceive", nil)
+}
+
+// DesktopTaskSend says "Send"
+// in the language the app shows.
+func DesktopTaskSend() string { return In(i18n.Locale()).DesktopTaskSend() }
+
+// DesktopTaskSend says "Send"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskSend() string {
+	return Catalog.Format(msgs.locale, "desktopTaskSend", nil)
+}
+
+// DesktopTaskReceived says "Total received"
+// in the language the app shows.
+func DesktopTaskReceived() string { return In(i18n.Locale()).DesktopTaskReceived() }
+
+// DesktopTaskReceived says "Total received"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskReceived() string {
+	return Catalog.Format(msgs.locale, "desktopTaskReceived", nil)
+}
+
+// DesktopTaskSent says "Total sent"
+// in the language the app shows.
+func DesktopTaskSent() string { return In(i18n.Locale()).DesktopTaskSent() }
+
+// DesktopTaskSent says "Total sent"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskSent() string {
+	return Catalog.Format(msgs.locale, "desktopTaskSent", nil)
+}
+
+// DesktopTaskAddresses says "IP addresses"
+// in the language the app shows.
+func DesktopTaskAddresses() string { return In(i18n.Locale()).DesktopTaskAddresses() }
+
+// DesktopTaskAddresses says "IP addresses"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskAddresses() string {
+	return Catalog.Format(msgs.locale, "desktopTaskAddresses", nil)
+}
+
+// DesktopTaskLink says "Link speed"
+// in the language the app shows.
+func DesktopTaskLink() string { return In(i18n.Locale()).DesktopTaskLink() }
+
+// DesktopTaskLink says "Link speed"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskLink() string {
+	return Catalog.Format(msgs.locale, "desktopTaskLink", nil)
+}
+
+// DesktopTaskHistory says "Last 60 samples"
+// in the language the app shows.
+func DesktopTaskHistory() string { return In(i18n.Locale()).DesktopTaskHistory() }
+
+// DesktopTaskHistory says "Last 60 samples"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskHistory() string {
+	return Catalog.Format(msgs.locale, "desktopTaskHistory", nil)
+}
+
+// DesktopTaskState says "State"
+// in the language the app shows.
+func DesktopTaskState() string { return In(i18n.Locale()).DesktopTaskState() }
+
+// DesktopTaskState says "State"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskState() string {
+	return Catalog.Format(msgs.locale, "desktopTaskState", nil)
+}
+
+// DesktopTaskRSS says "RSS"
+// in the language the app shows.
+func DesktopTaskRSS() string { return In(i18n.Locale()).DesktopTaskRSS() }
+
+// DesktopTaskRSS says "RSS"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskRSS() string {
+	return Catalog.Format(msgs.locale, "desktopTaskRSS", nil)
+}
+
+// DesktopTaskMemoryPercent says "Memory %"
+// in the language the app shows.
+func DesktopTaskMemoryPercent() string { return In(i18n.Locale()).DesktopTaskMemoryPercent() }
+
+// DesktopTaskMemoryPercent says "Memory %"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskMemoryPercent() string {
+	return Catalog.Format(msgs.locale, "desktopTaskMemoryPercent", nil)
+}
+
+// DesktopTaskStarted says "Started"
+// in the language the app shows.
+func DesktopTaskStarted() string { return In(i18n.Locale()).DesktopTaskStarted() }
+
+// DesktopTaskStarted says "Started"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskStarted() string {
+	return Catalog.Format(msgs.locale, "desktopTaskStarted", nil)
+}
+
+// DesktopTaskSearch says "Search by name, PID, user or command"
+// in the language the app shows.
+func DesktopTaskSearch() string { return In(i18n.Locale()).DesktopTaskSearch() }
+
+// DesktopTaskSearch says "Search by name, PID, user or command"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskSearch() string {
+	return Catalog.Format(msgs.locale, "desktopTaskSearch", nil)
+}
+
+// DesktopTaskTree says "Process tree"
+// in the language the app shows.
+func DesktopTaskTree() string { return In(i18n.Locale()).DesktopTaskTree() }
+
+// DesktopTaskTree says "Process tree"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskTree() string {
+	return Catalog.Format(msgs.locale, "desktopTaskTree", nil)
+}
+
+// DesktopTaskActions says "Process actions"
+// in the language the app shows.
+func DesktopTaskActions() string { return In(i18n.Locale()).DesktopTaskActions() }
+
+// DesktopTaskActions says "Process actions"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskActions() string {
+	return Catalog.Format(msgs.locale, "desktopTaskActions", nil)
+}
+
+// DesktopTaskProperties says "Properties"
+// in the language the app shows.
+func DesktopTaskProperties() string { return In(i18n.Locale()).DesktopTaskProperties() }
+
+// DesktopTaskProperties says "Properties"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskProperties() string {
+	return Catalog.Format(msgs.locale, "desktopTaskProperties", nil)
+}
+
+// DesktopTaskTerminate says "End process"
+// in the language the app shows.
+func DesktopTaskTerminate() string { return In(i18n.Locale()).DesktopTaskTerminate() }
+
+// DesktopTaskTerminate says "End process"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskTerminate() string {
+	return Catalog.Format(msgs.locale, "desktopTaskTerminate", nil)
+}
+
+// DesktopTaskKill says "Force kill"
+// in the language the app shows.
+func DesktopTaskKill() string { return In(i18n.Locale()).DesktopTaskKill() }
+
+// DesktopTaskKill says "Force kill"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskKill() string {
+	return Catalog.Format(msgs.locale, "desktopTaskKill", nil)
+}
+
+// DesktopTaskStop says "Stop process"
+// in the language the app shows.
+func DesktopTaskStop() string { return In(i18n.Locale()).DesktopTaskStop() }
+
+// DesktopTaskStop says "Stop process"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskStop() string {
+	return Catalog.Format(msgs.locale, "desktopTaskStop", nil)
+}
+
+// DesktopTaskContinue says "Continue process"
+// in the language the app shows.
+func DesktopTaskContinue() string { return In(i18n.Locale()).DesktopTaskContinue() }
+
+// DesktopTaskContinue says "Continue process"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskContinue() string {
+	return Catalog.Format(msgs.locale, "desktopTaskContinue", nil)
+}
+
+// DesktopTaskRenice says "Change priority"
+// in the language the app shows.
+func DesktopTaskRenice() string { return In(i18n.Locale()).DesktopTaskRenice() }
+
+// DesktopTaskRenice says "Change priority"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskRenice() string {
+	return Catalog.Format(msgs.locale, "desktopTaskRenice", nil)
+}
+
+// DesktopTaskNice says "Nice value"
+// in the language the app shows.
+func DesktopTaskNice() string { return In(i18n.Locale()).DesktopTaskNice() }
+
+// DesktopTaskNice says "Nice value"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskNice() string {
+	return Catalog.Format(msgs.locale, "desktopTaskNice", nil)
+}
+
+// DesktopTaskNiceHint says "Enter a nice value from −20 to 19. A lower value gives the process higher scheduling priority."
+// in the language the app shows.
+func DesktopTaskNiceHint() string { return In(i18n.Locale()).DesktopTaskNiceHint() }
+
+// DesktopTaskNiceHint says "Enter a nice value from −20 to 19. A lower value gives the process higher scheduling priority."
+// in the language of msgs.
+func (msgs Messages) DesktopTaskNiceHint() string {
+	return Catalog.Format(msgs.locale, "desktopTaskNiceHint", nil)
+}
+
+// DesktopTaskActionTitle says "{action}: {name} (PID {pid})"
+// in the language the app shows.
+func DesktopTaskActionTitle(action string, name string, pid string) string {
+	return In(i18n.Locale()).DesktopTaskActionTitle(action, name, pid)
+}
+
+// DesktopTaskActionTitle says "{action}: {name} (PID {pid})"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskActionTitle(action string, name string, pid string) string {
+	return Catalog.Format(msgs.locale, "desktopTaskActionTitle", map[string]any{"action": action, "name": name, "pid": pid})
+}
+
+// DesktopTaskConfirm says "Confirm"
+// in the language the app shows.
+func DesktopTaskConfirm() string { return In(i18n.Locale()).DesktopTaskConfirm() }
+
+// DesktopTaskConfirm says "Confirm"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskConfirm() string {
+	return Catalog.Format(msgs.locale, "desktopTaskConfirm", nil)
+}
+
+// DesktopTaskNiceLog says "{action}: {name} (PID {pid}) → {nice}"
+// in the language the app shows.
+func DesktopTaskNiceLog(action string, name string, pid string, nice string) string {
+	return In(i18n.Locale()).DesktopTaskNiceLog(action, name, pid, nice)
+}
+
+// DesktopTaskNiceLog says "{action}: {name} (PID {pid}) → {nice}"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskNiceLog(action string, name string, pid string, nice string) string {
+	return Catalog.Format(msgs.locale, "desktopTaskNiceLog", map[string]any{"action": action, "name": name, "pid": pid, "nice": nice})
+}
+
+// DesktopTaskCancelled says "Request cancelled. Refresh to check whether the remote operation completed."
+// in the language the app shows.
+func DesktopTaskCancelled() string { return In(i18n.Locale()).DesktopTaskCancelled() }
+
+// DesktopTaskCancelled says "Request cancelled. Refresh to check whether the remote operation completed."
+// in the language of msgs.
+func (msgs Messages) DesktopTaskCancelled() string {
+	return Catalog.Format(msgs.locale, "desktopTaskCancelled", nil)
+}
+
+// DesktopTaskSuccess says "Operation completed successfully."
+// in the language the app shows.
+func DesktopTaskSuccess() string { return In(i18n.Locale()).DesktopTaskSuccess() }
+
+// DesktopTaskSuccess says "Operation completed successfully."
+// in the language of msgs.
+func (msgs Messages) DesktopTaskSuccess() string {
+	return Catalog.Format(msgs.locale, "desktopTaskSuccess", nil)
+}
+
+// DesktopTaskBasic says "Basic"
+// in the language the app shows.
+func DesktopTaskBasic() string { return In(i18n.Locale()).DesktopTaskBasic() }
+
+// DesktopTaskBasic says "Basic"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskBasic() string {
+	return Catalog.Format(msgs.locale, "desktopTaskBasic", nil)
+}
+
+// DesktopTaskBack says "Back to processes"
+// in the language the app shows.
+func DesktopTaskBack() string { return In(i18n.Locale()).DesktopTaskBack() }
+
+// DesktopTaskBack says "Back to processes"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskBack() string {
+	return Catalog.Format(msgs.locale, "desktopTaskBack", nil)
+}
+
+// DesktopTaskParent says "Parent PID"
+// in the language the app shows.
+func DesktopTaskParent() string { return In(i18n.Locale()).DesktopTaskParent() }
+
+// DesktopTaskParent says "Parent PID"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskParent() string {
+	return Catalog.Format(msgs.locale, "desktopTaskParent", nil)
+}
+
+// DesktopTaskLocal says "Local address"
+// in the language the app shows.
+func DesktopTaskLocal() string { return In(i18n.Locale()).DesktopTaskLocal() }
+
+// DesktopTaskLocal says "Local address"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskLocal() string {
+	return Catalog.Format(msgs.locale, "desktopTaskLocal", nil)
+}
+
+// DesktopTaskRemote says "Remote address"
+// in the language the app shows.
+func DesktopTaskRemote() string { return In(i18n.Locale()).DesktopTaskRemote() }
+
+// DesktopTaskRemote says "Remote address"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskRemote() string {
+	return Catalog.Format(msgs.locale, "desktopTaskRemote", nil)
+}
+
+// DesktopTaskProtocol says "Protocol"
+// in the language the app shows.
+func DesktopTaskProtocol() string { return In(i18n.Locale()).DesktopTaskProtocol() }
+
+// DesktopTaskProtocol says "Protocol"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskProtocol() string {
+	return Catalog.Format(msgs.locale, "desktopTaskProtocol", nil)
+}
+
+// DesktopTaskMaps says "Memory maps"
+// in the language the app shows.
+func DesktopTaskMaps() string { return In(i18n.Locale()).DesktopTaskMaps() }
+
+// DesktopTaskMaps says "Memory maps"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskMaps() string {
+	return Catalog.Format(msgs.locale, "desktopTaskMaps", nil)
+}
+
+// DesktopTaskFiles says "Open files"
+// in the language the app shows.
+func DesktopTaskFiles() string { return In(i18n.Locale()).DesktopTaskFiles() }
+
+// DesktopTaskFiles says "Open files"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskFiles() string {
+	return Catalog.Format(msgs.locale, "desktopTaskFiles", nil)
+}
+
+// DesktopTaskEnvironment says "Environment"
+// in the language the app shows.
+func DesktopTaskEnvironment() string { return In(i18n.Locale()).DesktopTaskEnvironment() }
+
+// DesktopTaskEnvironment says "Environment"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskEnvironment() string {
+	return Catalog.Format(msgs.locale, "desktopTaskEnvironment", nil)
+}
+
+// DesktopTaskConnections says "Connections"
+// in the language the app shows.
+func DesktopTaskConnections() string { return In(i18n.Locale()).DesktopTaskConnections() }
+
+// DesktopTaskConnections says "Connections"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskConnections() string {
+	return Catalog.Format(msgs.locale, "desktopTaskConnections", nil)
+}
+
+// DesktopTaskAsRoot says "Read as root"
+// in the language the app shows.
+func DesktopTaskAsRoot() string { return In(i18n.Locale()).DesktopTaskAsRoot() }
+
+// DesktopTaskAsRoot says "Read as root"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskAsRoot() string {
+	return Catalog.Format(msgs.locale, "desktopTaskAsRoot", nil)
+}
+
+// DesktopTaskLimited says "Some data could not be read. It may require root access."
+// in the language the app shows.
+func DesktopTaskLimited() string { return In(i18n.Locale()).DesktopTaskLimited() }
+
+// DesktopTaskLimited says "Some data could not be read. It may require root access."
+// in the language of msgs.
+func (msgs Messages) DesktopTaskLimited() string {
+	return Catalog.Format(msgs.locale, "desktopTaskLimited", nil)
+}
+
+// DesktopTaskTruncated says "Output was limited; more entries may exist on the server."
+// in the language the app shows.
+func DesktopTaskTruncated() string { return In(i18n.Locale()).DesktopTaskTruncated() }
+
+// DesktopTaskTruncated says "Output was limited; more entries may exist on the server."
+// in the language of msgs.
+func (msgs Messages) DesktopTaskTruncated() string {
+	return Catalog.Format(msgs.locale, "desktopTaskTruncated", nil)
+}
+
+// DesktopTaskReveal says "Reveal sensitive values"
+// in the language the app shows.
+func DesktopTaskReveal() string { return In(i18n.Locale()).DesktopTaskReveal() }
+
+// DesktopTaskReveal says "Reveal sensitive values"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskReveal() string {
+	return Catalog.Format(msgs.locale, "desktopTaskReveal", nil)
+}
+
+// DesktopTaskHide says "Hide sensitive values"
+// in the language the app shows.
+func DesktopTaskHide() string { return In(i18n.Locale()).DesktopTaskHide() }
+
+// DesktopTaskHide says "Hide sensitive values"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskHide() string {
+	return Catalog.Format(msgs.locale, "desktopTaskHide", nil)
+}
+
+// DesktopTaskMappedRange says "Address range"
+// in the language the app shows.
+func DesktopTaskMappedRange() string { return In(i18n.Locale()).DesktopTaskMappedRange() }
+
+// DesktopTaskMappedRange says "Address range"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskMappedRange() string {
+	return Catalog.Format(msgs.locale, "desktopTaskMappedRange", nil)
+}
+
+// DesktopTaskMappedPath says "Mapped file or region"
+// in the language the app shows.
+func DesktopTaskMappedPath() string { return In(i18n.Locale()).DesktopTaskMappedPath() }
+
+// DesktopTaskMappedPath says "Mapped file or region"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskMappedPath() string {
+	return Catalog.Format(msgs.locale, "desktopTaskMappedPath", nil)
+}
+
+// DesktopTaskAccess says "Permissions"
+// in the language the app shows.
+func DesktopTaskAccess() string { return In(i18n.Locale()).DesktopTaskAccess() }
+
+// DesktopTaskAccess says "Permissions"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskAccess() string {
+	return Catalog.Format(msgs.locale, "desktopTaskAccess", nil)
+}
+
+// DesktopTaskFileDescriptor says "FD"
+// in the language the app shows.
+func DesktopTaskFileDescriptor() string { return In(i18n.Locale()).DesktopTaskFileDescriptor() }
+
+// DesktopTaskFileDescriptor says "FD"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskFileDescriptor() string {
+	return Catalog.Format(msgs.locale, "desktopTaskFileDescriptor", nil)
+}
+
+// DesktopTaskTarget says "Target"
+// in the language the app shows.
+func DesktopTaskTarget() string { return In(i18n.Locale()).DesktopTaskTarget() }
+
+// DesktopTaskTarget says "Target"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskTarget() string {
+	return Catalog.Format(msgs.locale, "desktopTaskTarget", nil)
+}
+
+// DesktopTaskTTY says "Terminal"
+// in the language the app shows.
+func DesktopTaskTTY() string { return In(i18n.Locale()).DesktopTaskTTY() }
+
+// DesktopTaskTTY says "Terminal"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskTTY() string {
+	return Catalog.Format(msgs.locale, "desktopTaskTTY", nil)
+}
+
+// DesktopTaskSource says "Source"
+// in the language the app shows.
+func DesktopTaskSource() string { return In(i18n.Locale()).DesktopTaskSource() }
+
+// DesktopTaskSource says "Source"
+// in the language of msgs.
+func (msgs Messages) DesktopTaskSource() string {
+	return Catalog.Format(msgs.locale, "desktopTaskSource", nil)
+}
+
 // DesktopAppSettings says "Settings"
 // in the language the app shows.
 func DesktopAppSettings() string { return In(i18n.Locale()).DesktopAppSettings() }

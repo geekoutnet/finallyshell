@@ -303,8 +303,7 @@ func (a *App) browseDockerVolume(s *Session, page *dockerResourcesPage, mount st
 				return
 			}
 			page.closeDialog()
-			a.openBottomTab(tabFiles)
-			a.openDir(s, mount)
+			a.openFilesAt(s, mount)
 		})
 	}()
 }

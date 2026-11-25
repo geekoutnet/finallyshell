@@ -1,7 +1,6 @@
 package app
 
 import (
-	"maps"
 	"slices"
 	"strings"
 
@@ -235,77 +234,32 @@ func (a *App) desktopCenterMenu(menu *ui.Menu, s *Session, app *desktopApp) {
 	}
 }
 
-func (a *App) desktopCenterPreferences() config.DesktopSettings {
-	if settings := a.settings.Desktop; settings != nil {
-		return *settings
-	}
-	return config.DesktopSettings{}
-}
-
 func (a *App) desktopCenterPinned(app *desktopApp) bool {
-	settings := a.desktopCenterPreferences()
-	if settings.Pinned == nil {
-		return app.pinned
-	}
-	return slices.Contains(*settings.Pinned, string(app.id))
+	return slices.Contains(a.desktopPinned(), string(app.id))
 }
 
 func (a *App) desktopCenterTogglePinned(app *desktopApp) {
-	settings := a.desktopCenterPreferences()
-	var pinned []string
-	if settings.Pinned != nil {
-		pinned = append([]string{}, (*settings.Pinned)...)
-	} else {
-		for _, candidate := range desktopApps {
-			if candidate.pinned {
-				pinned = append(pinned, string(candidate.id))
-			}
-		}
-	}
+	pinned := slices.Clone(a.desktopPinned())
 	if index := slices.Index(pinned, string(app.id)); index >= 0 {
 		pinned = slices.Delete(pinned, index, index+1)
 	} else {
 		pinned = append(pinned, string(app.id))
 	}
-	settings.Pinned = &pinned
-	a.changeSettings(func() { a.settings.Desktop = &settings })
+	a.desktopSetPinned(pinned)
 }
 
 func (a *App) desktopCenterOnDesktop(s *Session, app *desktopApp) bool {
-	icons := a.desktopCenterPreferences().Hosts[s.Host.ID].Icons
-	if icons == nil {
-		return app.onDesktop
-	}
-	return slices.ContainsFunc(icons, func(icon config.DesktopIcon) bool { return icon.App == string(app.id) && icon.Folder == "" })
+	return slices.ContainsFunc(a.desktopHostIcons(s, a.desktopHost(s)), func(icon config.DesktopIcon) bool {
+		return icon.App == string(app.id) && icon.Folder == ""
+	})
 }
 
 func (a *App) desktopCenterToggleOnDesktop(s *Session, app *desktopApp) {
-	settings := a.desktopCenterPreferences()
-	settings.Hosts = maps.Clone(settings.Hosts)
-	if settings.Hosts == nil {
-		settings.Hosts = make(map[string]config.DesktopHost)
+	if !a.desktopCenterOnDesktop(s, app) {
+		a.desktopAddIcon(s, string(app.id))
+		return
 	}
-	host := settings.Hosts[s.Host.ID]
-	icons := slices.Clone(host.Icons)
-	if icons == nil {
-		for _, candidate := range desktopAppsFor(s) {
-			if candidate.onDesktop {
-				icons = append(icons, config.DesktopIcon{App: string(candidate.id), Col: -1, Row: -1})
-			}
-		}
-	}
-	if a.desktopCenterOnDesktop(s, app) {
-		icons = slices.DeleteFunc(icons, func(icon config.DesktopIcon) bool { return icon.App == string(app.id) && icon.Folder == "" })
-	} else if index := slices.IndexFunc(icons, func(icon config.DesktopIcon) bool { return icon.App == string(app.id) }); index >= 0 {
-		icons[index] = config.DesktopIcon{App: string(app.id), Col: -1, Row: -1}
-	} else {
-		icons = slices.DeleteFunc(icons, func(icon config.DesktopIcon) bool { return icon.App == "" })
-		icons = append(icons, config.DesktopIcon{App: string(app.id), Col: -1, Row: -1})
-	}
-	if len(icons) == 0 {
-		icons = []config.DesktopIcon{{App: "", Col: -1, Row: -1}}
-	}
-	host.Icons = icons
-	settings.Hosts[s.Host.ID] = host
-	a.changeSettings(func() { a.settings.Desktop = &settings })
+	a.changeDesktopIcons(s, func(h *config.DesktopHost) {
+		h.Icons = slices.DeleteFunc(h.Icons, func(icon config.DesktopIcon) bool { return icon.App == string(app.id) && icon.Folder == "" })
+	})
 }

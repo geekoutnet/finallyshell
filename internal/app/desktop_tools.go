@@ -233,3 +233,14 @@ func desktopToolsCaddy(a *App, c *ui.Context, _ *desktopWindow) {
 		overviewMessage(c, "shield-check", locales.DesktopToolsCaddyUnavailable(), nil)
 	})
 }
+
+// openFilesAt shows the remote folder dir of s: in a Files window when the
+// desktop is the current row, else in the file panel.
+func (a *App) openFilesAt(s *Session, dir string) {
+	if cur := a.current(); cur.isDesktopRow() && cur.panelOf == s {
+		a.desktopOpen(s, appFiles, dir)
+		return
+	}
+	a.openBottomTab(tabFiles)
+	a.openDir(s, dir)
+}

@@ -42,6 +42,12 @@ func (a *App) toggleBottomPanel() { a.setBottomPanelHidden(!a.bottomHidden) }
 // panel row's own, else the one under the terminal, which opens if it
 // was collapsed.
 func (a *App) openBottomTab(tab int) {
+	if cur := a.current(); cur.isDesktopRow() {
+		// On a desktop the tab's page opens in a window of its own: the
+		// desktop row stays a desktop.
+		a.desktopToolsOpenTab(cur.panelOf, tab, nil)
+		return
+	}
 	*a.shownBottomTab() = tab
 	if !a.current().isPanelTab() {
 		a.setBottomPanelHidden(false)

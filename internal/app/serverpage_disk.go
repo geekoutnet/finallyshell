@@ -341,8 +341,7 @@ func (a *App) diskOpen(s *Session, entry monitor.DiskEntry) {
 	if entry.File {
 		target = path.Dir(target)
 	}
-	a.openBottomTab(tabFiles)
-	a.openDir(s, target)
+	a.openFilesAt(s, target)
 }
 
 func (a *App) diskEntryMenu(c *ui.Context, menu *ui.Menu, s *Session, entry monitor.DiskEntry, entries []monitor.DiskEntry) {

@@ -18,7 +18,6 @@ func (a *App) desktopPersonalizePage(c *ui.Context) {
 	prefs := a.desktopPreferences()
 	ui.Scroll(c).Fill().MinWidth(0).MinHeight(0).Children(func() {
 		ui.Column(c).FillWidth().Padding(14).Gap(13).Children(func() {
-			ui.Text(c, locales.DesktopShellPersonalize()).FontSize(20).Bold()
 			ui.Text(c, locales.DesktopShellPersonalizeHint()).TextColor(theme.TextMuted)
 			ui.Row(c).Wrap().Gap(6).AlignItems(ui.Center).Children(func() {
 				if ui.Button(c, locales.DesktopWallpaperChoose()).Disabled(a.desktopWall.choosing).Clicked() {

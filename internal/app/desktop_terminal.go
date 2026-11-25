@@ -191,6 +191,7 @@ func (a *App) desktopTerminalBody(c *ui.Context, w *desktopWindow, state *deskto
 				pane.find.opened++
 			}
 			a.findBar(c, pane, view)
+			a.desktopAITerminal(c, w.session, w, pane.term, view)
 		} else {
 			state.focusZ = 0
 			view.HandleInput(func(ev ui.InputEvent) bool { return true })

@@ -61,8 +61,7 @@ type managerState struct {
 	kind        kindFilter
 	showDeleted bool
 
-	opened bool // once opened, with every folder open
-	focus  bool // the tree takes the focus in the next frame
+	focus bool // the tree takes the focus in the next frame
 	// pick is the item to choose in the next frame, showing it.
 	pick *managerItem
 	// beforeSearch are the folders open before the search opened those
@@ -114,17 +113,12 @@ func (a *App) showManager(newHost bool) {
 		a.plat.FocusWindow(WindowManager)
 		return
 	}
-	if !m.opened {
-		m.opened = true
-		for _, f := range a.hosts.Folders {
-			m.tree.Open.Add(managerItem{folder: f.ID})
-		}
-	}
 	m.focus, m.prompt, m.question, m.notice = true, nil, nil, nil
 	if m.query != "" { // it opens without the last search
 		m.query = ""
 		a.searchChanged(m)
 	}
+	m.tree.Open.Clear() // it opens with every folder closed
 	a.openWindow(managerSpec, a.managerView)
 	if newHost && len(a.hosts.Live()) == 0 {
 		a.openEditor(nil, WindowManager)

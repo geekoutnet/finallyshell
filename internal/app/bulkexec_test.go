@@ -315,6 +315,7 @@ func TestBulkEntries(t *testing.T) {
 	a, platform := testApp(t)
 	hosts := bulkDemoHosts(a)
 	a.showManager(false)
+	expandManager(a)
 	manager := platform.show(t, WindowManager)
 	manager.Frame()
 	managerClickWith(t, manager, 0, hosts[0].Name)

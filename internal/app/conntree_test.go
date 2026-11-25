@@ -319,6 +319,7 @@ func TestConnectionPageKeepsFolders(t *testing.T) {
 func TestConnectionPageAndManager(t *testing.T) {
 	a, p, tt := connPageApp(t, "en")
 	a.openManager()
+	expandManager(a)
 	mw := p.show(t, WindowManager)
 	mw.Frame()
 

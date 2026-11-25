@@ -37,7 +37,7 @@ func init() {
 	for index, tool := range desktopServerTools() {
 		registerDesktopApp(desktopApp{
 			id: tool.id, icon: tool.icon, tint: ui.Hex(tool.tint), name: tool.name,
-			category: desktopCatServer, order: 100 + index, onDesktop: index < 2, single: true,
+			category: desktopCatServer, order: 100 + index, onDesktop: true, single: true,
 			minSize: desktopSize{W: tool.width, H: 410}, view: tool.view,
 			opened: func(a *App, w *desktopWindow, _ any) { a.desktopToolsNoteOpened(w) },
 		})

@@ -139,6 +139,7 @@ func TestConnInfoStoredSecrets(t *testing.T) {
 func TestConnInfoManager(t *testing.T) {
 	a, p, _, _ := connInfoApp(t)
 	a.openManager()
+	expandManager(a)
 	mt := p.show(t, WindowManager)
 	mt.Frame()
 	rowMenu(t, mt, "web-1", locales.ViewConnInfo())

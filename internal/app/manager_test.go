@@ -36,19 +36,28 @@ func managerHosts(a *App) {
 	}
 }
 
-// openTestManager opens the manager on the hosts of managerHosts and
-// shows its window.
+// openTestManager opens the manager on the hosts of managerHosts, with
+// every folder open, and shows its window.
 func openTestManager(t *testing.T) (*App, *fakePlatform, *ui.Tester) {
 	t.Helper()
 	a, p := testApp(t)
 	managerHosts(a)
 	a.openManager()
+	expandManager(a)
 	tt := p.show(t, WindowManager)
 	tt.Frame()
 	return a, p, tt
 }
 
 // shown are the titles of the rows the manager shows, in order.
+// expandManager opens every folder in the manager, which opens with them
+// closed.
+func expandManager(a *App) {
+	for _, f := range a.hosts.Folders {
+		a.manager.tree.Open.Add(managerItem{folder: f.ID})
+	}
+}
+
 func shown(a *App) []string {
 	m := &a.manager
 	var out []string
@@ -171,6 +180,27 @@ func TestManagerWindow(t *testing.T) {
 
 // With nothing to list, the manager opens the editor for a new host, modal
 // to it; with a new host saved in a folder chosen, it goes in the folder.
+// The manager opens with every folder closed, each time it opens.
+func TestManagerOpensCollapsed(t *testing.T) {
+	a, p := testApp(t)
+	managerHosts(a)
+	a.openManager()
+	tt := p.show(t, WindowManager)
+	tt.Frame()
+	want := []string{"Production", "Lab", "vps"}
+	if got := shown(a); !slices.Equal(got, want) {
+		t.Fatalf("first open: %q", got)
+	}
+	expandManager(a)
+	tt.Frame()
+	a.closeWindow(WindowManager)
+	a.openManager()
+	p.show(t, WindowManager).Frame()
+	if got := shown(a); !slices.Equal(got, want) {
+		t.Errorf("reopened: %q", got)
+	}
+}
+
 func TestManagerEditorModal(t *testing.T) {
 	a, p := testApp(t)
 	a.hosts.Add(&config.Host{ID: "gone", Name: "gone-host", Addr: "10.0.0.9", User: "root", Auth: config.AuthPassword, DeletedAt: time.Now()})
@@ -582,6 +612,7 @@ func TestManagerMenu(t *testing.T) {
 			p.SetLocale(lang)
 			managerHosts(a)
 			a.openManager()
+			expandManager(a)
 			w := p.windows[WindowManager]
 			tt := ui.NewTester(func(c *ui.Context) {
 				c.SetMenuPresentation(ui.PopoverMenus)
@@ -629,6 +660,7 @@ func TestConnectFromManager(t *testing.T) {
 	mainWin := ui.NewTester(a.View, 1280, 820)
 	p.tt = mainWin
 	a.openManager()
+	expandManager(a)
 	tt := p.show(t, WindowManager)
 	tt.Frame()
 	x, y := rowCenter(t, tt, "web-2")
@@ -653,6 +685,7 @@ func TestConnectFromManager(t *testing.T) {
 
 	// Kept open: the next session gets a tab of its own.
 	a.openManager()
+	expandManager(a)
 	tt = p.show(t, WindowManager)
 	tt.Frame()
 	if err := tt.Click(locales.CloseAfterConnect()); err != nil {

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"net/netip"
 	"os"
+	"regexp"
 	"slices"
 	"strconv"
 	"strings"
@@ -475,6 +476,11 @@ finally:
 		if otherPID > 1 {
 			live.rootCheck(t, fmt.Sprintf("kill -KILL %d 2>/dev/null || :", otherPID))
 		}
+		// The sudo or runuser around it stops with it (Stop process) and
+		// would wait, stopped, forever: kill it too, by the pid file in
+		// its command line (a pattern that does not match this pkill's own
+		// command line, which holds it too).
+		live.rootCheck(t, "pkill -KILL -f -- "+monitor.SystemCommand(regexp.QuoteMeta(scratch)+"/[o]ther[.]pid")+" 2>/dev/null || :")
 		other.Close()
 	})
 	if err := other.Start(otherCommand); err != nil {

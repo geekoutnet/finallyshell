@@ -2003,6 +2003,14 @@ file is saved through another connected session to the same host.
 Not supported: saving with sudo. A file without write permission fails to
 save with "permission denied".
 
+### Desktop mode › This PC and Files
+
+**This PC** shows quick access to the remote home folder, common Linux folders and favorites, plus mount points with their filesystem and available space. Double-click a location to open it in **Files**. Each Files window has its own folder, navigation history, selection, sort order and view. Use the address bar to jump to an absolute path, type to filter the current folder, or press Enter in the search field to search subfolders (up to 300 results). The sidebar stores the last 20 locations and allows reordering favorites by drag. Notes are stored per host on this device and appear in the Details view and icon tooltips.
+
+Create and rename items inline, or use the command bar and context menus to open a terminal, transfer files, compress, extract, or edit properties. Opening text uses the remote file editor; other files can be downloaded and opened with the system app. Upload files or folders from the picker, by drag and drop, or by pasting a file list from the system clipboard. Remote download supports HTTP, HTTPS and FTP, and runs on the server. Operations that need SSH command execution are unavailable on connections where it is disabled.
+
+Cut and copy work between Files windows. On one server Paste copies or moves; between servers it copies using the transfer queue, directly when the servers support it and otherwise through the client without writing the data to disk. Replace preserves the original as a backup; Keep both gives the copy a numbered name. Upload and archive extraction refuse existing destinations. Archives are extracted on the server into a temporary folder and only regular files and directories are supported. Properties can change octal permissions and ownership, including recursive changes after confirmation. Delete moves items to Trash; Shift+Delete explicitly confirms permanent deletion.
+
 ## System tab
 
 The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.

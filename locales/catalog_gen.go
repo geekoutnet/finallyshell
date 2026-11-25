@@ -18542,6 +18542,1090 @@ func (msgs Messages) DesktopAppFiles() string {
 	return Catalog.Format(msgs.locale, "desktopAppFiles", nil)
 }
 
+// DesktopFilesAccessed says "Last accessed"
+// in the language the app shows.
+func DesktopFilesAccessed() string { return In(i18n.Locale()).DesktopFilesAccessed() }
+
+// DesktopFilesAccessed says "Last accessed"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesAccessed() string {
+	return Catalog.Format(msgs.locale, "desktopFilesAccessed", nil)
+}
+
+// DesktopFilesAcross says "Copy from {source} to {target}"
+// in the language the app shows.
+func DesktopFilesAcross(source string, target string) string {
+	return In(i18n.Locale()).DesktopFilesAcross(source, target)
+}
+
+// DesktopFilesAcross says "Copy from {source} to {target}"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesAcross(source string, target string) string {
+	return Catalog.Format(msgs.locale, "desktopFilesAcross", map[string]any{"source": source, "target": target})
+}
+
+// DesktopFilesActions says "File actions"
+// in the language the app shows.
+func DesktopFilesActions() string { return In(i18n.Locale()).DesktopFilesActions() }
+
+// DesktopFilesActions says "File actions"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesActions() string {
+	return Catalog.Format(msgs.locale, "desktopFilesActions", nil)
+}
+
+// DesktopFilesAddFavorite says "Add to favorites"
+// in the language the app shows.
+func DesktopFilesAddFavorite() string { return In(i18n.Locale()).DesktopFilesAddFavorite() }
+
+// DesktopFilesAddFavorite says "Add to favorites"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesAddFavorite() string {
+	return Catalog.Format(msgs.locale, "desktopFilesAddFavorite", nil)
+}
+
+// DesktopFilesAddress says "Path"
+// in the language the app shows.
+func DesktopFilesAddress() string { return In(i18n.Locale()).DesktopFilesAddress() }
+
+// DesktopFilesAddress says "Path"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesAddress() string {
+	return Catalog.Format(msgs.locale, "desktopFilesAddress", nil)
+}
+
+// DesktopFilesAncestors says "Parent locations"
+// in the language the app shows.
+func DesktopFilesAncestors() string { return In(i18n.Locale()).DesktopFilesAncestors() }
+
+// DesktopFilesAncestors says "Parent locations"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesAncestors() string {
+	return Catalog.Format(msgs.locale, "desktopFilesAncestors", nil)
+}
+
+// DesktopFilesApply says "Apply"
+// in the language the app shows.
+func DesktopFilesApply() string { return In(i18n.Locale()).DesktopFilesApply() }
+
+// DesktopFilesApply says "Apply"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesApply() string {
+	return Catalog.Format(msgs.locale, "desktopFilesApply", nil)
+}
+
+// DesktopFilesApplyAll says "Use this choice for all remaining conflicts"
+// in the language the app shows.
+func DesktopFilesApplyAll() string { return In(i18n.Locale()).DesktopFilesApplyAll() }
+
+// DesktopFilesApplyAll says "Use this choice for all remaining conflicts"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesApplyAll() string {
+	return Catalog.Format(msgs.locale, "desktopFilesApplyAll", nil)
+}
+
+// DesktopFilesApplyPermissions says "Change permissions and ownership"
+// in the language the app shows.
+func DesktopFilesApplyPermissions() string { return In(i18n.Locale()).DesktopFilesApplyPermissions() }
+
+// DesktopFilesApplyPermissions says "Change permissions and ownership"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesApplyPermissions() string {
+	return Catalog.Format(msgs.locale, "desktopFilesApplyPermissions", nil)
+}
+
+// DesktopFilesAsc says "Ascending"
+// in the language the app shows.
+func DesktopFilesAsc() string { return In(i18n.Locale()).DesktopFilesAsc() }
+
+// DesktopFilesAsc says "Ascending"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesAsc() string {
+	return Catalog.Format(msgs.locale, "desktopFilesAsc", nil)
+}
+
+// DesktopFilesBack says "Back"
+// in the language the app shows.
+func DesktopFilesBack() string { return In(i18n.Locale()).DesktopFilesBack() }
+
+// DesktopFilesBack says "Back"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesBack() string {
+	return Catalog.Format(msgs.locale, "desktopFilesBack", nil)
+}
+
+// DesktopFilesBackupAt says "The original item was kept at {path}."
+// in the language the app shows.
+func DesktopFilesBackupAt(path string) string { return In(i18n.Locale()).DesktopFilesBackupAt(path) }
+
+// DesktopFilesBackupAt says "The original item was kept at {path}."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesBackupAt(path string) string {
+	return Catalog.Format(msgs.locale, "desktopFilesBackupAt", map[string]any{"path": path})
+}
+
+// DesktopFilesBadPath says "Enter a valid absolute server path without control characters."
+// in the language the app shows.
+func DesktopFilesBadPath() string { return In(i18n.Locale()).DesktopFilesBadPath() }
+
+// DesktopFilesBadPath says "Enter a valid absolute server path without control characters."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesBadPath() string {
+	return Catalog.Format(msgs.locale, "desktopFilesBadPath", nil)
+}
+
+// DesktopFilesBadPermissions says "Enter valid user and group names or IDs and a mode such as 0755. The root path is protected."
+// in the language the app shows.
+func DesktopFilesBadPermissions() string { return In(i18n.Locale()).DesktopFilesBadPermissions() }
+
+// DesktopFilesBadPermissions says "Enter valid user and group names or IDs and a mode such as 0755. The root path is protected."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesBadPermissions() string {
+	return Catalog.Format(msgs.locale, "desktopFilesBadPermissions", nil)
+}
+
+// DesktopFilesCalculating says "Calculating…"
+// in the language the app shows.
+func DesktopFilesCalculating() string { return In(i18n.Locale()).DesktopFilesCalculating() }
+
+// DesktopFilesCalculating says "Calculating…"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesCalculating() string {
+	return Catalog.Format(msgs.locale, "desktopFilesCalculating", nil)
+}
+
+// DesktopFilesCompress says "Compress"
+// in the language the app shows.
+func DesktopFilesCompress() string { return In(i18n.Locale()).DesktopFilesCompress() }
+
+// DesktopFilesCompress says "Compress"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesCompress() string {
+	return Catalog.Format(msgs.locale, "desktopFilesCompress", nil)
+}
+
+// DesktopFilesConfirmDeletion says "Confirm permanent deletion"
+// in the language the app shows.
+func DesktopFilesConfirmDeletion() string { return In(i18n.Locale()).DesktopFilesConfirmDeletion() }
+
+// DesktopFilesConfirmDeletion says "Confirm permanent deletion"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesConfirmDeletion() string {
+	return Catalog.Format(msgs.locale, "desktopFilesConfirmDeletion", nil)
+}
+
+// DesktopFilesConfirmPaste says "Confirm paste"
+// in the language the app shows.
+func DesktopFilesConfirmPaste() string { return In(i18n.Locale()).DesktopFilesConfirmPaste() }
+
+// DesktopFilesConfirmPaste says "Confirm paste"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesConfirmPaste() string {
+	return Catalog.Format(msgs.locale, "desktopFilesConfirmPaste", nil)
+}
+
+// DesktopFilesConfirmRename says "Confirm rename"
+// in the language the app shows.
+func DesktopFilesConfirmRename() string { return In(i18n.Locale()).DesktopFilesConfirmRename() }
+
+// DesktopFilesConfirmRename says "Confirm rename"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesConfirmRename() string {
+	return Catalog.Format(msgs.locale, "desktopFilesConfirmRename", nil)
+}
+
+// DesktopFilesConflict says "A name is already in use"
+// in the language the app shows.
+func DesktopFilesConflict() string { return In(i18n.Locale()).DesktopFilesConflict() }
+
+// DesktopFilesConflict says "A name is already in use"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesConflict() string {
+	return Catalog.Format(msgs.locale, "desktopFilesConflict", nil)
+}
+
+// DesktopFilesConflictBody says "Choose what to do with the item at the destination."
+// in the language the app shows.
+func DesktopFilesConflictBody() string { return In(i18n.Locale()).DesktopFilesConflictBody() }
+
+// DesktopFilesConflictBody says "Choose what to do with the item at the destination."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesConflictBody() string {
+	return Catalog.Format(msgs.locale, "desktopFilesConflictBody", nil)
+}
+
+// DesktopFilesCount says "{count, plural, one {# item} other {# items}}"
+// in the language the app shows.
+func DesktopFilesCount(count int) string { return In(i18n.Locale()).DesktopFilesCount(count) }
+
+// DesktopFilesCount says "{count, plural, one {# item} other {# items}}"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesCount(count int) string {
+	return Catalog.Format(msgs.locale, "desktopFilesCount", map[string]any{"count": count})
+}
+
+// DesktopFilesCreate says "Create"
+// in the language the app shows.
+func DesktopFilesCreate() string { return In(i18n.Locale()).DesktopFilesCreate() }
+
+// DesktopFilesCreate says "Create"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesCreate() string {
+	return Catalog.Format(msgs.locale, "desktopFilesCreate", nil)
+}
+
+// DesktopFilesCut says "Cut"
+// in the language the app shows.
+func DesktopFilesCut() string { return In(i18n.Locale()).DesktopFilesCut() }
+
+// DesktopFilesCut says "Cut"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesCut() string {
+	return Catalog.Format(msgs.locale, "desktopFilesCut", nil)
+}
+
+// DesktopFilesDesc says "Descending"
+// in the language the app shows.
+func DesktopFilesDesc() string { return In(i18n.Locale()).DesktopFilesDesc() }
+
+// DesktopFilesDesc says "Descending"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesDesc() string {
+	return Catalog.Format(msgs.locale, "desktopFilesDesc", nil)
+}
+
+// DesktopFilesDetails says "Details"
+// in the language the app shows.
+func DesktopFilesDetails() string { return In(i18n.Locale()).DesktopFilesDetails() }
+
+// DesktopFilesDetails says "Details"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesDetails() string {
+	return Catalog.Format(msgs.locale, "desktopFilesDetails", nil)
+}
+
+// DesktopFilesDisconnected says "The SFTP connection is not available."
+// in the language the app shows.
+func DesktopFilesDisconnected() string { return In(i18n.Locale()).DesktopFilesDisconnected() }
+
+// DesktopFilesDisconnected says "The SFTP connection is not available."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesDisconnected() string {
+	return Catalog.Format(msgs.locale, "desktopFilesDisconnected", nil)
+}
+
+// DesktopFilesDuplicateDownload says "Multiple selected items are named {name}. Download them separately."
+// in the language the app shows.
+func DesktopFilesDuplicateDownload(name string) string {
+	return In(i18n.Locale()).DesktopFilesDuplicateDownload(name)
+}
+
+// DesktopFilesDuplicateDownload says "Multiple selected items are named {name}. Download them separately."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesDuplicateDownload(name string) string {
+	return Catalog.Format(msgs.locale, "desktopFilesDuplicateDownload", map[string]any{"name": name})
+}
+
+// DesktopFilesEmpty says "This folder is empty"
+// in the language the app shows.
+func DesktopFilesEmpty() string { return In(i18n.Locale()).DesktopFilesEmpty() }
+
+// DesktopFilesEmpty says "This folder is empty"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesEmpty() string {
+	return Catalog.Format(msgs.locale, "desktopFilesEmpty", nil)
+}
+
+// DesktopFilesExecDisabled says "This action requires SSH command execution on this connection."
+// in the language the app shows.
+func DesktopFilesExecDisabled() string { return In(i18n.Locale()).DesktopFilesExecDisabled() }
+
+// DesktopFilesExecDisabled says "This action requires SSH command execution on this connection."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesExecDisabled() string {
+	return Catalog.Format(msgs.locale, "desktopFilesExecDisabled", nil)
+}
+
+// DesktopFilesExecute says "Execute"
+// in the language the app shows.
+func DesktopFilesExecute() string { return In(i18n.Locale()).DesktopFilesExecute() }
+
+// DesktopFilesExecute says "Execute"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesExecute() string {
+	return Catalog.Format(msgs.locale, "desktopFilesExecute", nil)
+}
+
+// DesktopFilesExtract says "Extract"
+// in the language the app shows.
+func DesktopFilesExtract() string { return In(i18n.Locale()).DesktopFilesExtract() }
+
+// DesktopFilesExtract says "Extract"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesExtract() string {
+	return Catalog.Format(msgs.locale, "desktopFilesExtract", nil)
+}
+
+// DesktopFilesExtractHere says "Extract here"
+// in the language the app shows.
+func DesktopFilesExtractHere() string { return In(i18n.Locale()).DesktopFilesExtractHere() }
+
+// DesktopFilesExtractHere says "Extract here"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesExtractHere() string {
+	return Catalog.Format(msgs.locale, "desktopFilesExtractHere", nil)
+}
+
+// DesktopFilesExtractTo says "Extract to new folder…"
+// in the language the app shows.
+func DesktopFilesExtractTo() string { return In(i18n.Locale()).DesktopFilesExtractTo() }
+
+// DesktopFilesExtractTo says "Extract to new folder…"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesExtractTo() string {
+	return Catalog.Format(msgs.locale, "desktopFilesExtractTo", nil)
+}
+
+// DesktopFilesFavorites says "Favorites"
+// in the language the app shows.
+func DesktopFilesFavorites() string { return In(i18n.Locale()).DesktopFilesFavorites() }
+
+// DesktopFilesFavorites says "Favorites"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesFavorites() string {
+	return Catalog.Format(msgs.locale, "desktopFilesFavorites", nil)
+}
+
+// DesktopFilesForward says "Forward"
+// in the language the app shows.
+func DesktopFilesForward() string { return In(i18n.Locale()).DesktopFilesForward() }
+
+// DesktopFilesForward says "Forward"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesForward() string {
+	return Catalog.Format(msgs.locale, "desktopFilesForward", nil)
+}
+
+// DesktopFilesFree says "{size} free"
+// in the language the app shows.
+func DesktopFilesFree(size string) string { return In(i18n.Locale()).DesktopFilesFree(size) }
+
+// DesktopFilesFree says "{size} free"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesFree(size string) string {
+	return Catalog.Format(msgs.locale, "desktopFilesFree", map[string]any{"size": size})
+}
+
+// DesktopFilesGroup says "Group"
+// in the language the app shows.
+func DesktopFilesGroup() string { return In(i18n.Locale()).DesktopFilesGroup() }
+
+// DesktopFilesGroup says "Group"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesGroup() string {
+	return Catalog.Format(msgs.locale, "desktopFilesGroup", nil)
+}
+
+// DesktopFilesHistory says "Navigation history"
+// in the language the app shows.
+func DesktopFilesHistory() string { return In(i18n.Locale()).DesktopFilesHistory() }
+
+// DesktopFilesHistory says "Navigation history"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesHistory() string {
+	return Catalog.Format(msgs.locale, "desktopFilesHistory", nil)
+}
+
+// DesktopFilesKeepBoth says "Keep both"
+// in the language the app shows.
+func DesktopFilesKeepBoth() string { return In(i18n.Locale()).DesktopFilesKeepBoth() }
+
+// DesktopFilesKeepBoth says "Keep both"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesKeepBoth() string {
+	return Catalog.Format(msgs.locale, "desktopFilesKeepBoth", nil)
+}
+
+// DesktopFilesLarge says "Large icons"
+// in the language the app shows.
+func DesktopFilesLarge() string { return In(i18n.Locale()).DesktopFilesLarge() }
+
+// DesktopFilesLarge says "Large icons"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesLarge() string {
+	return Catalog.Format(msgs.locale, "desktopFilesLarge", nil)
+}
+
+// DesktopFilesList says "List"
+// in the language the app shows.
+func DesktopFilesList() string { return In(i18n.Locale()).DesktopFilesList() }
+
+// DesktopFilesList says "List"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesList() string {
+	return Catalog.Format(msgs.locale, "desktopFilesList", nil)
+}
+
+// DesktopFilesLoading says "Reading the server…"
+// in the language the app shows.
+func DesktopFilesLoading() string { return In(i18n.Locale()).DesktopFilesLoading() }
+
+// DesktopFilesLoading says "Reading the server…"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesLoading() string {
+	return Catalog.Format(msgs.locale, "desktopFilesLoading", nil)
+}
+
+// DesktopFilesMedium says "Medium icons"
+// in the language the app shows.
+func DesktopFilesMedium() string { return In(i18n.Locale()).DesktopFilesMedium() }
+
+// DesktopFilesMedium says "Medium icons"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesMedium() string {
+	return Catalog.Format(msgs.locale, "desktopFilesMedium", nil)
+}
+
+// DesktopFilesMissingTool says "The server does not have the required tool: {tool}."
+// in the language the app shows.
+func DesktopFilesMissingTool(tool string) string {
+	return In(i18n.Locale()).DesktopFilesMissingTool(tool)
+}
+
+// DesktopFilesMissingTool says "The server does not have the required tool: {tool}."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesMissingTool(tool string) string {
+	return Catalog.Format(msgs.locale, "desktopFilesMissingTool", map[string]any{"tool": tool})
+}
+
+// DesktopFilesMode says "Mode"
+// in the language the app shows.
+func DesktopFilesMode() string { return In(i18n.Locale()).DesktopFilesMode() }
+
+// DesktopFilesMode says "Mode"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesMode() string {
+	return Catalog.Format(msgs.locale, "desktopFilesMode", nil)
+}
+
+// DesktopFilesMove says "Move items"
+// in the language the app shows.
+func DesktopFilesMove() string { return In(i18n.Locale()).DesktopFilesMove() }
+
+// DesktopFilesMove says "Move items"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesMove() string {
+	return Catalog.Format(msgs.locale, "desktopFilesMove", nil)
+}
+
+// DesktopFilesNew says "New"
+// in the language the app shows.
+func DesktopFilesNew() string { return In(i18n.Locale()).DesktopFilesNew() }
+
+// DesktopFilesNew says "New"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesNew() string {
+	return Catalog.Format(msgs.locale, "desktopFilesNew", nil)
+}
+
+// DesktopFilesNewText says "New text file"
+// in the language the app shows.
+func DesktopFilesNewText() string { return In(i18n.Locale()).DesktopFilesNewText() }
+
+// DesktopFilesNewText says "New text file"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesNewText() string {
+	return Catalog.Format(msgs.locale, "desktopFilesNewText", nil)
+}
+
+// DesktopFilesNoMatches says "No matching files or folders"
+// in the language the app shows.
+func DesktopFilesNoMatches() string { return In(i18n.Locale()).DesktopFilesNoMatches() }
+
+// DesktopFilesNoMatches says "No matching files or folders"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesNoMatches() string {
+	return Catalog.Format(msgs.locale, "desktopFilesNoMatches", nil)
+}
+
+// DesktopFilesNote says "Note"
+// in the language the app shows.
+func DesktopFilesNote() string { return In(i18n.Locale()).DesktopFilesNote() }
+
+// DesktopFilesNote says "Note"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesNote() string {
+	return Catalog.Format(msgs.locale, "desktopFilesNote", nil)
+}
+
+// DesktopFilesNoteEdit says "Edit note…"
+// in the language the app shows.
+func DesktopFilesNoteEdit() string { return In(i18n.Locale()).DesktopFilesNoteEdit() }
+
+// DesktopFilesNoteEdit says "Edit note…"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesNoteEdit() string {
+	return Catalog.Format(msgs.locale, "desktopFilesNoteEdit", nil)
+}
+
+// DesktopFilesOctal says "Octal mode (for example, 0755)"
+// in the language the app shows.
+func DesktopFilesOctal() string { return In(i18n.Locale()).DesktopFilesOctal() }
+
+// DesktopFilesOctal says "Octal mode (for example, 0755)"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesOctal() string {
+	return Catalog.Format(msgs.locale, "desktopFilesOctal", nil)
+}
+
+// DesktopFilesOpenLocalWarning says "Opening a downloaded file may run it on this computer. Continue only if you trust this file."
+// in the language the app shows.
+func DesktopFilesOpenLocalWarning() string { return In(i18n.Locale()).DesktopFilesOpenLocalWarning() }
+
+// DesktopFilesOpenLocalWarning says "Opening a downloaded file may run it on this computer. Continue only if you trust this file."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesOpenLocalWarning() string {
+	return Catalog.Format(msgs.locale, "desktopFilesOpenLocalWarning", nil)
+}
+
+// DesktopFilesOpenNew says "Open in new window"
+// in the language the app shows.
+func DesktopFilesOpenNew() string { return In(i18n.Locale()).DesktopFilesOpenNew() }
+
+// DesktopFilesOpenNew says "Open in new window"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesOpenNew() string {
+	return Catalog.Format(msgs.locale, "desktopFilesOpenNew", nil)
+}
+
+// DesktopFilesOthers says "Others"
+// in the language the app shows.
+func DesktopFilesOthers() string { return In(i18n.Locale()).DesktopFilesOthers() }
+
+// DesktopFilesOthers says "Others"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesOthers() string {
+	return Catalog.Format(msgs.locale, "desktopFilesOthers", nil)
+}
+
+// DesktopFilesOwner says "Owner"
+// in the language the app shows.
+func DesktopFilesOwner() string { return In(i18n.Locale()).DesktopFilesOwner() }
+
+// DesktopFilesOwner says "Owner"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesOwner() string {
+	return Catalog.Format(msgs.locale, "desktopFilesOwner", nil)
+}
+
+// DesktopFilesOwnerGroup says "Owner / group"
+// in the language the app shows.
+func DesktopFilesOwnerGroup() string { return In(i18n.Locale()).DesktopFilesOwnerGroup() }
+
+// DesktopFilesOwnerGroup says "Owner / group"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesOwnerGroup() string {
+	return Catalog.Format(msgs.locale, "desktopFilesOwnerGroup", nil)
+}
+
+// DesktopFilesPaste says "Paste"
+// in the language the app shows.
+func DesktopFilesPaste() string { return In(i18n.Locale()).DesktopFilesPaste() }
+
+// DesktopFilesPaste says "Paste"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesPaste() string {
+	return Catalog.Format(msgs.locale, "desktopFilesPaste", nil)
+}
+
+// DesktopFilesPermanent says "Delete permanently"
+// in the language the app shows.
+func DesktopFilesPermanent() string { return In(i18n.Locale()).DesktopFilesPermanent() }
+
+// DesktopFilesPermanent says "Delete permanently"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesPermanent() string {
+	return Catalog.Format(msgs.locale, "desktopFilesPermanent", nil)
+}
+
+// DesktopFilesPermanentWarning says "This cannot be undone. The selected files and folders will bypass Trash."
+// in the language the app shows.
+func DesktopFilesPermanentWarning() string { return In(i18n.Locale()).DesktopFilesPermanentWarning() }
+
+// DesktopFilesPermanentWarning says "This cannot be undone. The selected files and folders will bypass Trash."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesPermanentWarning() string {
+	return Catalog.Format(msgs.locale, "desktopFilesPermanentWarning", nil)
+}
+
+// DesktopFilesProperties says "Properties"
+// in the language the app shows.
+func DesktopFilesProperties() string { return In(i18n.Locale()).DesktopFilesProperties() }
+
+// DesktopFilesProperties says "Properties"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesProperties() string {
+	return Catalog.Format(msgs.locale, "desktopFilesProperties", nil)
+}
+
+// DesktopFilesRead says "Read"
+// in the language the app shows.
+func DesktopFilesRead() string { return In(i18n.Locale()).DesktopFilesRead() }
+
+// DesktopFilesRead says "Read"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesRead() string {
+	return Catalog.Format(msgs.locale, "desktopFilesRead", nil)
+}
+
+// DesktopFilesRecent says "Recent"
+// in the language the app shows.
+func DesktopFilesRecent() string { return In(i18n.Locale()).DesktopFilesRecent() }
+
+// DesktopFilesRecent says "Recent"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesRecent() string {
+	return Catalog.Format(msgs.locale, "desktopFilesRecent", nil)
+}
+
+// DesktopFilesRecursive says "Apply to items inside this folder"
+// in the language the app shows.
+func DesktopFilesRecursive() string { return In(i18n.Locale()).DesktopFilesRecursive() }
+
+// DesktopFilesRecursive says "Apply to items inside this folder"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesRecursive() string {
+	return Catalog.Format(msgs.locale, "desktopFilesRecursive", nil)
+}
+
+// DesktopFilesRecursiveWarning says "This also changes items below this folder. Permissions do not follow symbolic links."
+// in the language the app shows.
+func DesktopFilesRecursiveWarning() string { return In(i18n.Locale()).DesktopFilesRecursiveWarning() }
+
+// DesktopFilesRecursiveWarning says "This also changes items below this folder. Permissions do not follow symbolic links."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesRecursiveWarning() string {
+	return Catalog.Format(msgs.locale, "desktopFilesRecursiveWarning", nil)
+}
+
+// DesktopFilesRemoteDownload says "Remote download"
+// in the language the app shows.
+func DesktopFilesRemoteDownload() string { return In(i18n.Locale()).DesktopFilesRemoteDownload() }
+
+// DesktopFilesRemoteDownload says "Remote download"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesRemoteDownload() string {
+	return Catalog.Format(msgs.locale, "desktopFilesRemoteDownload", nil)
+}
+
+// DesktopFilesRemoveFavorite says "Remove from favorites"
+// in the language the app shows.
+func DesktopFilesRemoveFavorite() string { return In(i18n.Locale()).DesktopFilesRemoveFavorite() }
+
+// DesktopFilesRemoveFavorite says "Remove from favorites"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesRemoveFavorite() string {
+	return Catalog.Format(msgs.locale, "desktopFilesRemoveFavorite", nil)
+}
+
+// DesktopFilesReplaceBackup says "Replace keeps the original item as a .bak copy."
+// in the language the app shows.
+func DesktopFilesReplaceBackup() string { return In(i18n.Locale()).DesktopFilesReplaceBackup() }
+
+// DesktopFilesReplaceBackup says "Replace keeps the original item as a .bak copy."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesReplaceBackup() string {
+	return Catalog.Format(msgs.locale, "desktopFilesReplaceBackup", nil)
+}
+
+// DesktopFilesResultLimit says "Showing the first {count} matches"
+// in the language the app shows.
+func DesktopFilesResultLimit(count string) string {
+	return In(i18n.Locale()).DesktopFilesResultLimit(count)
+}
+
+// DesktopFilesResultLimit says "Showing the first {count} matches"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesResultLimit(count string) string {
+	return Catalog.Format(msgs.locale, "desktopFilesResultLimit", map[string]any{"count": count})
+}
+
+// DesktopFilesSearch says "Search files and folders"
+// in the language the app shows.
+func DesktopFilesSearch() string { return In(i18n.Locale()).DesktopFilesSearch() }
+
+// DesktopFilesSearch says "Search files and folders"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSearch() string {
+	return Catalog.Format(msgs.locale, "desktopFilesSearch", nil)
+}
+
+// DesktopFilesSearchDeep says "Search subfolders"
+// in the language the app shows.
+func DesktopFilesSearchDeep() string { return In(i18n.Locale()).DesktopFilesSearchDeep() }
+
+// DesktopFilesSearchDeep says "Search subfolders"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSearchDeep() string {
+	return Catalog.Format(msgs.locale, "desktopFilesSearchDeep", nil)
+}
+
+// DesktopFilesSearchHint says "Type to filter this folder. Press Enter to search subfolders."
+// in the language the app shows.
+func DesktopFilesSearchHint() string { return In(i18n.Locale()).DesktopFilesSearchHint() }
+
+// DesktopFilesSearchHint says "Type to filter this folder. Press Enter to search subfolders."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSearchHint() string {
+	return Catalog.Format(msgs.locale, "desktopFilesSearchHint", nil)
+}
+
+// DesktopFilesSearchPartial says "Search could not read every folder: {error}"
+// in the language the app shows.
+func DesktopFilesSearchPartial(error string) string {
+	return In(i18n.Locale()).DesktopFilesSearchPartial(error)
+}
+
+// DesktopFilesSearchPartial says "Search could not read every folder: {error}"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSearchPartial(error string) string {
+	return Catalog.Format(msgs.locale, "desktopFilesSearchPartial", map[string]any{"error": error})
+}
+
+// DesktopFilesSearchShort says "Search"
+// in the language the app shows.
+func DesktopFilesSearchShort() string { return In(i18n.Locale()).DesktopFilesSearchShort() }
+
+// DesktopFilesSearchShort says "Search"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSearchShort() string {
+	return Catalog.Format(msgs.locale, "desktopFilesSearchShort", nil)
+}
+
+// DesktopFilesSelected says "{count, plural, one {# selected} other {# selected}} · {size}"
+// in the language the app shows.
+func DesktopFilesSelected(count int, size string) string {
+	return In(i18n.Locale()).DesktopFilesSelected(count, size)
+}
+
+// DesktopFilesSelected says "{count, plural, one {# selected} other {# selected}} · {size}"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSelected(count int, size string) string {
+	return Catalog.Format(msgs.locale, "desktopFilesSelected", map[string]any{"count": count, "size": size})
+}
+
+// DesktopFilesSetgid says "Set group ID"
+// in the language the app shows.
+func DesktopFilesSetgid() string { return In(i18n.Locale()).DesktopFilesSetgid() }
+
+// DesktopFilesSetgid says "Set group ID"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSetgid() string {
+	return Catalog.Format(msgs.locale, "desktopFilesSetgid", nil)
+}
+
+// DesktopFilesSetuid says "Set user ID"
+// in the language the app shows.
+func DesktopFilesSetuid() string { return In(i18n.Locale()).DesktopFilesSetuid() }
+
+// DesktopFilesSetuid says "Set user ID"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSetuid() string {
+	return Catalog.Format(msgs.locale, "desktopFilesSetuid", nil)
+}
+
+// DesktopFilesShortcut says "Send to desktop"
+// in the language the app shows.
+func DesktopFilesShortcut() string { return In(i18n.Locale()).DesktopFilesShortcut() }
+
+// DesktopFilesShortcut says "Send to desktop"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesShortcut() string {
+	return Catalog.Format(msgs.locale, "desktopFilesShortcut", nil)
+}
+
+// DesktopFilesSkip says "Skip"
+// in the language the app shows.
+func DesktopFilesSkip() string { return In(i18n.Locale()).DesktopFilesSkip() }
+
+// DesktopFilesSkip says "Skip"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSkip() string {
+	return Catalog.Format(msgs.locale, "desktopFilesSkip", nil)
+}
+
+// DesktopFilesSort says "Sort"
+// in the language the app shows.
+func DesktopFilesSort() string { return In(i18n.Locale()).DesktopFilesSort() }
+
+// DesktopFilesSort says "Sort"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSort() string {
+	return Catalog.Format(msgs.locale, "desktopFilesSort", nil)
+}
+
+// DesktopFilesSource says "Source"
+// in the language the app shows.
+func DesktopFilesSource() string { return In(i18n.Locale()).DesktopFilesSource() }
+
+// DesktopFilesSource says "Source"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSource() string {
+	return Catalog.Format(msgs.locale, "desktopFilesSource", nil)
+}
+
+// DesktopFilesStartUpload says "Start upload"
+// in the language the app shows.
+func DesktopFilesStartUpload() string { return In(i18n.Locale()).DesktopFilesStartUpload() }
+
+// DesktopFilesStartUpload says "Start upload"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesStartUpload() string {
+	return Catalog.Format(msgs.locale, "desktopFilesStartUpload", nil)
+}
+
+// DesktopFilesSticky says "Sticky bit"
+// in the language the app shows.
+func DesktopFilesSticky() string { return In(i18n.Locale()).DesktopFilesSticky() }
+
+// DesktopFilesSticky says "Sticky bit"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesSticky() string {
+	return Catalog.Format(msgs.locale, "desktopFilesSticky", nil)
+}
+
+// DesktopFilesTaken says "The destination already exists: {path}"
+// in the language the app shows.
+func DesktopFilesTaken(path string) string { return In(i18n.Locale()).DesktopFilesTaken(path) }
+
+// DesktopFilesTaken says "The destination already exists: {path}"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesTaken(path string) string {
+	return Catalog.Format(msgs.locale, "desktopFilesTaken", map[string]any{"path": path})
+}
+
+// DesktopFilesTarget says "Destination"
+// in the language the app shows.
+func DesktopFilesTarget() string { return In(i18n.Locale()).DesktopFilesTarget() }
+
+// DesktopFilesTarget says "Destination"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesTarget() string {
+	return Catalog.Format(msgs.locale, "desktopFilesTarget", nil)
+}
+
+// DesktopFilesTerminal says "Terminal"
+// in the language the app shows.
+func DesktopFilesTerminal() string { return In(i18n.Locale()).DesktopFilesTerminal() }
+
+// DesktopFilesTerminal says "Terminal"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesTerminal() string {
+	return Catalog.Format(msgs.locale, "desktopFilesTerminal", nil)
+}
+
+// DesktopFilesTerminalHere says "Open terminal here"
+// in the language the app shows.
+func DesktopFilesTerminalHere() string { return In(i18n.Locale()).DesktopFilesTerminalHere() }
+
+// DesktopFilesTerminalHere says "Open terminal here"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesTerminalHere() string {
+	return Catalog.Format(msgs.locale, "desktopFilesTerminalHere", nil)
+}
+
+// DesktopFilesToggleSidebar says "Toggle sidebar"
+// in the language the app shows.
+func DesktopFilesToggleSidebar() string { return In(i18n.Locale()).DesktopFilesToggleSidebar() }
+
+// DesktopFilesToggleSidebar says "Toggle sidebar"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesToggleSidebar() string {
+	return Catalog.Format(msgs.locale, "desktopFilesToggleSidebar", nil)
+}
+
+// DesktopFilesTrash says "Move to Trash"
+// in the language the app shows.
+func DesktopFilesTrash() string { return In(i18n.Locale()).DesktopFilesTrash() }
+
+// DesktopFilesTrash says "Move to Trash"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesTrash() string {
+	return Catalog.Format(msgs.locale, "desktopFilesTrash", nil)
+}
+
+// DesktopFilesTrashUnavailable says "Trash is not available"
+// in the language the app shows.
+func DesktopFilesTrashUnavailable() string { return In(i18n.Locale()).DesktopFilesTrashUnavailable() }
+
+// DesktopFilesTrashUnavailable says "Trash is not available"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesTrashUnavailable() string {
+	return Catalog.Format(msgs.locale, "desktopFilesTrashUnavailable", nil)
+}
+
+// DesktopFilesType says "Type"
+// in the language the app shows.
+func DesktopFilesType() string { return In(i18n.Locale()).DesktopFilesType() }
+
+// DesktopFilesType says "Type"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesType() string {
+	return Catalog.Format(msgs.locale, "desktopFilesType", nil)
+}
+
+// DesktopFilesUnsafeArchive says "The archive contains unsupported entries. Only regular files and directories can be extracted."
+// in the language the app shows.
+func DesktopFilesUnsafeArchive() string { return In(i18n.Locale()).DesktopFilesUnsafeArchive() }
+
+// DesktopFilesUnsafeArchive says "The archive contains unsupported entries. Only regular files and directories can be extracted."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesUnsafeArchive() string {
+	return Catalog.Format(msgs.locale, "desktopFilesUnsafeArchive", nil)
+}
+
+// DesktopFilesUnsupportedType says "This file type or name cannot be used for this action."
+// in the language the app shows.
+func DesktopFilesUnsupportedType() string { return In(i18n.Locale()).DesktopFilesUnsupportedType() }
+
+// DesktopFilesUnsupportedType says "This file type or name cannot be used for this action."
+// in the language of msgs.
+func (msgs Messages) DesktopFilesUnsupportedType() string {
+	return Catalog.Format(msgs.locale, "desktopFilesUnsupportedType", nil)
+}
+
+// DesktopFilesUpload says "Upload"
+// in the language the app shows.
+func DesktopFilesUpload() string { return In(i18n.Locale()).DesktopFilesUpload() }
+
+// DesktopFilesUpload says "Upload"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesUpload() string {
+	return Catalog.Format(msgs.locale, "desktopFilesUpload", nil)
+}
+
+// DesktopFilesUploadTo says "Upload to {path}"
+// in the language the app shows.
+func DesktopFilesUploadTo(path string) string { return In(i18n.Locale()).DesktopFilesUploadTo(path) }
+
+// DesktopFilesUploadTo says "Upload to {path}"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesUploadTo(path string) string {
+	return Catalog.Format(msgs.locale, "desktopFilesUploadTo", map[string]any{"path": path})
+}
+
+// DesktopFilesURL says "URL (HTTP, HTTPS or FTP)"
+// in the language the app shows.
+func DesktopFilesURL() string { return In(i18n.Locale()).DesktopFilesURL() }
+
+// DesktopFilesURL says "URL (HTTP, HTTPS or FTP)"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesURL() string {
+	return Catalog.Format(msgs.locale, "desktopFilesURL", nil)
+}
+
+// DesktopFilesViewMode says "View"
+// in the language the app shows.
+func DesktopFilesViewMode() string { return In(i18n.Locale()).DesktopFilesViewMode() }
+
+// DesktopFilesViewMode says "View"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesViewMode() string {
+	return Catalog.Format(msgs.locale, "desktopFilesViewMode", nil)
+}
+
+// DesktopFilesWrite says "Write"
+// in the language the app shows.
+func DesktopFilesWrite() string { return In(i18n.Locale()).DesktopFilesWrite() }
+
+// DesktopFilesWrite says "Write"
+// in the language of msgs.
+func (msgs Messages) DesktopFilesWrite() string {
+	return Catalog.Format(msgs.locale, "desktopFilesWrite", nil)
+}
+
+// DesktopPCDriveCount says "{count, plural, one {# drive} other {# drives}}"
+// in the language the app shows.
+func DesktopPCDriveCount(count int) string { return In(i18n.Locale()).DesktopPCDriveCount(count) }
+
+// DesktopPCDriveCount says "{count, plural, one {# drive} other {# drives}}"
+// in the language of msgs.
+func (msgs Messages) DesktopPCDriveCount(count int) string {
+	return Catalog.Format(msgs.locale, "desktopPCDriveCount", map[string]any{"count": count})
+}
+
+// DesktopPCDrives says "Devices and drives"
+// in the language the app shows.
+func DesktopPCDrives() string { return In(i18n.Locale()).DesktopPCDrives() }
+
+// DesktopPCDrives says "Devices and drives"
+// in the language of msgs.
+func (msgs Messages) DesktopPCDrives() string {
+	return Catalog.Format(msgs.locale, "desktopPCDrives", nil)
+}
+
+// DesktopPCDriveSpace says "{free} free of {total}"
+// in the language the app shows.
+func DesktopPCDriveSpace(free string, total string) string {
+	return In(i18n.Locale()).DesktopPCDriveSpace(free, total)
+}
+
+// DesktopPCDriveSpace says "{free} free of {total}"
+// in the language of msgs.
+func (msgs Messages) DesktopPCDriveSpace(free string, total string) string {
+	return Catalog.Format(msgs.locale, "desktopPCDriveSpace", map[string]any{"free": free, "total": total})
+}
+
+// DesktopPCNoDrives says "No physical or persistent mounts were reported."
+// in the language the app shows.
+func DesktopPCNoDrives() string { return In(i18n.Locale()).DesktopPCNoDrives() }
+
+// DesktopPCNoDrives says "No physical or persistent mounts were reported."
+// in the language of msgs.
+func (msgs Messages) DesktopPCNoDrives() string {
+	return Catalog.Format(msgs.locale, "desktopPCNoDrives", nil)
+}
+
+// DesktopPCNoQuick says "No quick locations available."
+// in the language the app shows.
+func DesktopPCNoQuick() string { return In(i18n.Locale()).DesktopPCNoQuick() }
+
+// DesktopPCNoQuick says "No quick locations available."
+// in the language of msgs.
+func (msgs Messages) DesktopPCNoQuick() string {
+	return Catalog.Format(msgs.locale, "desktopPCNoQuick", nil)
+}
+
+// DesktopPCOverview says "Overview"
+// in the language the app shows.
+func DesktopPCOverview() string { return In(i18n.Locale()).DesktopPCOverview() }
+
+// DesktopPCOverview says "Overview"
+// in the language of msgs.
+func (msgs Messages) DesktopPCOverview() string {
+	return Catalog.Format(msgs.locale, "desktopPCOverview", nil)
+}
+
+// DesktopPCQuick says "Quick access"
+// in the language the app shows.
+func DesktopPCQuick() string { return In(i18n.Locale()).DesktopPCQuick() }
+
+// DesktopPCQuick says "Quick access"
+// in the language of msgs.
+func (msgs Messages) DesktopPCQuick() string {
+	return Catalog.Format(msgs.locale, "desktopPCQuick", nil)
+}
+
+// DesktopPCSystemDisk says "System disk"
+// in the language the app shows.
+func DesktopPCSystemDisk() string { return In(i18n.Locale()).DesktopPCSystemDisk() }
+
+// DesktopPCSystemDisk says "System disk"
+// in the language of msgs.
+func (msgs Messages) DesktopPCSystemDisk() string {
+	return Catalog.Format(msgs.locale, "desktopPCSystemDisk", nil)
+}
+
 // DesktopAppTrash says "Trash"
 // in the language the app shows.
 func DesktopAppTrash() string { return In(i18n.Locale()).DesktopAppTrash() }

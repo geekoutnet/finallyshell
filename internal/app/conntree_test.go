@@ -435,7 +435,7 @@ func TestConnectionPageMenus(t *testing.T) {
 			tt.Frame()
 			tt.RightClickAt(connRow(t, tt, "web-1"))
 			tt.Frame()
-			for _, s := range []string{locales.Connect(), locales.Edit(), locales.TmgrHostMenu(), locales.Duplicate(), locales.Rename(), locales.MoveToFolder(), locales.CopyHost(), locales.Delete()} {
+			for _, s := range []string{locales.Connect(), locales.OpenDesktop(), locales.Edit(), locales.TmgrHostMenu(), locales.Duplicate(), locales.Rename(), locales.MoveToFolder(), locales.CopyHost(), locales.Delete()} {
 				if !tt.HasText(s) {
 					t.Errorf("menu without %q; texts %q", s, tt.Texts())
 				}

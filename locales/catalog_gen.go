@@ -18522,6 +18522,738 @@ func (msgs Messages) DesktopMaximize() string {
 	return Catalog.Format(msgs.locale, "desktopMaximize", nil)
 }
 
+// DesktopWinRestore says "Restore window"
+// in the language the app shows.
+func DesktopWinRestore() string { return In(i18n.Locale()).DesktopWinRestore() }
+
+// DesktopWinRestore says "Restore window"
+// in the language of msgs.
+func (msgs Messages) DesktopWinRestore() string {
+	return Catalog.Format(msgs.locale, "desktopWinRestore", nil)
+}
+
+// DesktopWinKeepOnTop says "Keep on top"
+// in the language the app shows.
+func DesktopWinKeepOnTop() string { return In(i18n.Locale()).DesktopWinKeepOnTop() }
+
+// DesktopWinKeepOnTop says "Keep on top"
+// in the language of msgs.
+func (msgs Messages) DesktopWinKeepOnTop() string {
+	return Catalog.Format(msgs.locale, "desktopWinKeepOnTop", nil)
+}
+
+// DesktopWinCloseKey says "Close desktop window"
+// in the language the app shows.
+func DesktopWinCloseKey() string { return In(i18n.Locale()).DesktopWinCloseKey() }
+
+// DesktopWinCloseKey says "Close desktop window"
+// in the language of msgs.
+func (msgs Messages) DesktopWinCloseKey() string {
+	return Catalog.Format(msgs.locale, "desktopWinCloseKey", nil)
+}
+
+// DesktopWinMinimizeKey says "Minimize desktop window"
+// in the language the app shows.
+func DesktopWinMinimizeKey() string { return In(i18n.Locale()).DesktopWinMinimizeKey() }
+
+// DesktopWinMinimizeKey says "Minimize desktop window"
+// in the language of msgs.
+func (msgs Messages) DesktopWinMinimizeKey() string {
+	return Catalog.Format(msgs.locale, "desktopWinMinimizeKey", nil)
+}
+
+// DesktopWinMaximizeKey says "Maximize or restore desktop window"
+// in the language the app shows.
+func DesktopWinMaximizeKey() string { return In(i18n.Locale()).DesktopWinMaximizeKey() }
+
+// DesktopWinMaximizeKey says "Maximize or restore desktop window"
+// in the language of msgs.
+func (msgs Messages) DesktopWinMaximizeKey() string {
+	return Catalog.Format(msgs.locale, "desktopWinMaximizeKey", nil)
+}
+
+// DesktopWinSnapLeftKey says "Snap desktop window left"
+// in the language the app shows.
+func DesktopWinSnapLeftKey() string { return In(i18n.Locale()).DesktopWinSnapLeftKey() }
+
+// DesktopWinSnapLeftKey says "Snap desktop window left"
+// in the language of msgs.
+func (msgs Messages) DesktopWinSnapLeftKey() string {
+	return Catalog.Format(msgs.locale, "desktopWinSnapLeftKey", nil)
+}
+
+// DesktopWinSnapRightKey says "Snap desktop window right"
+// in the language the app shows.
+func DesktopWinSnapRightKey() string { return In(i18n.Locale()).DesktopWinSnapRightKey() }
+
+// DesktopWinSnapRightKey says "Snap desktop window right"
+// in the language of msgs.
+func (msgs Messages) DesktopWinSnapRightKey() string {
+	return Catalog.Format(msgs.locale, "desktopWinSnapRightKey", nil)
+}
+
+// DesktopWinCycleKey says "Cycle desktop windows"
+// in the language the app shows.
+func DesktopWinCycleKey() string { return In(i18n.Locale()).DesktopWinCycleKey() }
+
+// DesktopWinCycleKey says "Cycle desktop windows"
+// in the language of msgs.
+func (msgs Messages) DesktopWinCycleKey() string {
+	return Catalog.Format(msgs.locale, "desktopWinCycleKey", nil)
+}
+
+// DesktopShellView says "View"
+// in the language the app shows.
+func DesktopShellView() string { return In(i18n.Locale()).DesktopShellView() }
+
+// DesktopShellView says "View"
+// in the language of msgs.
+func (msgs Messages) DesktopShellView() string {
+	return Catalog.Format(msgs.locale, "desktopShellView", nil)
+}
+
+// DesktopShellSmall says "Small icons"
+// in the language the app shows.
+func DesktopShellSmall() string { return In(i18n.Locale()).DesktopShellSmall() }
+
+// DesktopShellSmall says "Small icons"
+// in the language of msgs.
+func (msgs Messages) DesktopShellSmall() string {
+	return Catalog.Format(msgs.locale, "desktopShellSmall", nil)
+}
+
+// DesktopShellMedium says "Medium icons"
+// in the language the app shows.
+func DesktopShellMedium() string { return In(i18n.Locale()).DesktopShellMedium() }
+
+// DesktopShellMedium says "Medium icons"
+// in the language of msgs.
+func (msgs Messages) DesktopShellMedium() string {
+	return Catalog.Format(msgs.locale, "desktopShellMedium", nil)
+}
+
+// DesktopShellLarge says "Large icons"
+// in the language the app shows.
+func DesktopShellLarge() string { return In(i18n.Locale()).DesktopShellLarge() }
+
+// DesktopShellLarge says "Large icons"
+// in the language of msgs.
+func (msgs Messages) DesktopShellLarge() string {
+	return Catalog.Format(msgs.locale, "desktopShellLarge", nil)
+}
+
+// DesktopShellAutoArrange says "Auto-arrange icons"
+// in the language the app shows.
+func DesktopShellAutoArrange() string { return In(i18n.Locale()).DesktopShellAutoArrange() }
+
+// DesktopShellAutoArrange says "Auto-arrange icons"
+// in the language of msgs.
+func (msgs Messages) DesktopShellAutoArrange() string {
+	return Catalog.Format(msgs.locale, "desktopShellAutoArrange", nil)
+}
+
+// DesktopShellSort says "Sort by"
+// in the language the app shows.
+func DesktopShellSort() string { return In(i18n.Locale()).DesktopShellSort() }
+
+// DesktopShellSort says "Sort by"
+// in the language of msgs.
+func (msgs Messages) DesktopShellSort() string {
+	return Catalog.Format(msgs.locale, "desktopShellSort", nil)
+}
+
+// DesktopShellSortName says "Name"
+// in the language the app shows.
+func DesktopShellSortName() string { return In(i18n.Locale()).DesktopShellSortName() }
+
+// DesktopShellSortName says "Name"
+// in the language of msgs.
+func (msgs Messages) DesktopShellSortName() string {
+	return Catalog.Format(msgs.locale, "desktopShellSortName", nil)
+}
+
+// DesktopShellSortType says "Type"
+// in the language the app shows.
+func DesktopShellSortType() string { return In(i18n.Locale()).DesktopShellSortType() }
+
+// DesktopShellSortType says "Type"
+// in the language of msgs.
+func (msgs Messages) DesktopShellSortType() string {
+	return Catalog.Format(msgs.locale, "desktopShellSortType", nil)
+}
+
+// DesktopShellNew says "New"
+// in the language the app shows.
+func DesktopShellNew() string { return In(i18n.Locale()).DesktopShellNew() }
+
+// DesktopShellNew says "New"
+// in the language of msgs.
+func (msgs Messages) DesktopShellNew() string {
+	return Catalog.Format(msgs.locale, "desktopShellNew", nil)
+}
+
+// DesktopShellOpen says "Open"
+// in the language the app shows.
+func DesktopShellOpen() string { return In(i18n.Locale()).DesktopShellOpen() }
+
+// DesktopShellOpen says "Open"
+// in the language of msgs.
+func (msgs Messages) DesktopShellOpen() string {
+	return Catalog.Format(msgs.locale, "desktopShellOpen", nil)
+}
+
+// DesktopShellOpenTerminal says "Open terminal"
+// in the language the app shows.
+func DesktopShellOpenTerminal() string { return In(i18n.Locale()).DesktopShellOpenTerminal() }
+
+// DesktopShellOpenTerminal says "Open terminal"
+// in the language of msgs.
+func (msgs Messages) DesktopShellOpenTerminal() string {
+	return Catalog.Format(msgs.locale, "desktopShellOpenTerminal", nil)
+}
+
+// DesktopShellOpenFiles says "Open Files"
+// in the language the app shows.
+func DesktopShellOpenFiles() string { return In(i18n.Locale()).DesktopShellOpenFiles() }
+
+// DesktopShellOpenFiles says "Open Files"
+// in the language of msgs.
+func (msgs Messages) DesktopShellOpenFiles() string {
+	return Catalog.Format(msgs.locale, "desktopShellOpenFiles", nil)
+}
+
+// DesktopShellPersonalize says "Personalization"
+// in the language the app shows.
+func DesktopShellPersonalize() string { return In(i18n.Locale()).DesktopShellPersonalize() }
+
+// DesktopShellPersonalize says "Personalization"
+// in the language of msgs.
+func (msgs Messages) DesktopShellPersonalize() string {
+	return Catalog.Format(msgs.locale, "desktopShellPersonalize", nil)
+}
+
+// DesktopShellPersonalizeHint says "Changes apply immediately on this device."
+// in the language the app shows.
+func DesktopShellPersonalizeHint() string { return In(i18n.Locale()).DesktopShellPersonalizeHint() }
+
+// DesktopShellPersonalizeHint says "Changes apply immediately on this device."
+// in the language of msgs.
+func (msgs Messages) DesktopShellPersonalizeHint() string {
+	return Catalog.Format(msgs.locale, "desktopShellPersonalizeHint", nil)
+}
+
+// DesktopShellBehavior says "Desktop behavior"
+// in the language the app shows.
+func DesktopShellBehavior() string { return In(i18n.Locale()).DesktopShellBehavior() }
+
+// DesktopShellBehavior says "Desktop behavior"
+// in the language of msgs.
+func (msgs Messages) DesktopShellBehavior() string {
+	return Catalog.Format(msgs.locale, "desktopShellBehavior", nil)
+}
+
+// DesktopShellOpenIcons says "Open desktop icons"
+// in the language the app shows.
+func DesktopShellOpenIcons() string { return In(i18n.Locale()).DesktopShellOpenIcons() }
+
+// DesktopShellOpenIcons says "Open desktop icons"
+// in the language of msgs.
+func (msgs Messages) DesktopShellOpenIcons() string {
+	return Catalog.Format(msgs.locale, "desktopShellOpenIcons", nil)
+}
+
+// DesktopShellDoubleClick says "Double click"
+// in the language the app shows.
+func DesktopShellDoubleClick() string { return In(i18n.Locale()).DesktopShellDoubleClick() }
+
+// DesktopShellDoubleClick says "Double click"
+// in the language of msgs.
+func (msgs Messages) DesktopShellDoubleClick() string {
+	return Catalog.Format(msgs.locale, "desktopShellDoubleClick", nil)
+}
+
+// DesktopShellSingleClick says "Single click"
+// in the language the app shows.
+func DesktopShellSingleClick() string { return In(i18n.Locale()).DesktopShellSingleClick() }
+
+// DesktopShellSingleClick says "Single click"
+// in the language of msgs.
+func (msgs Messages) DesktopShellSingleClick() string {
+	return Catalog.Format(msgs.locale, "desktopShellSingleClick", nil)
+}
+
+// DesktopShellNewWindows says "New windows"
+// in the language the app shows.
+func DesktopShellNewWindows() string { return In(i18n.Locale()).DesktopShellNewWindows() }
+
+// DesktopShellNewWindows says "New windows"
+// in the language of msgs.
+func (msgs Messages) DesktopShellNewWindows() string {
+	return Catalog.Format(msgs.locale, "desktopShellNewWindows", nil)
+}
+
+// DesktopShellCascade says "Cascade"
+// in the language the app shows.
+func DesktopShellCascade() string { return In(i18n.Locale()).DesktopShellCascade() }
+
+// DesktopShellCascade says "Cascade"
+// in the language of msgs.
+func (msgs Messages) DesktopShellCascade() string {
+	return Catalog.Format(msgs.locale, "desktopShellCascade", nil)
+}
+
+// DesktopShellStack says "Stack"
+// in the language the app shows.
+func DesktopShellStack() string { return In(i18n.Locale()).DesktopShellStack() }
+
+// DesktopShellStack says "Stack"
+// in the language of msgs.
+func (msgs Messages) DesktopShellStack() string {
+	return Catalog.Format(msgs.locale, "desktopShellStack", nil)
+}
+
+// DesktopShellMaximized says "Maximized windows"
+// in the language the app shows.
+func DesktopShellMaximized() string { return In(i18n.Locale()).DesktopShellMaximized() }
+
+// DesktopShellMaximized says "Maximized windows"
+// in the language of msgs.
+func (msgs Messages) DesktopShellMaximized() string {
+	return Catalog.Format(msgs.locale, "desktopShellMaximized", nil)
+}
+
+// DesktopShellKeepDock says "Keep the dock visible"
+// in the language the app shows.
+func DesktopShellKeepDock() string { return In(i18n.Locale()).DesktopShellKeepDock() }
+
+// DesktopShellKeepDock says "Keep the dock visible"
+// in the language of msgs.
+func (msgs Messages) DesktopShellKeepDock() string {
+	return Catalog.Format(msgs.locale, "desktopShellKeepDock", nil)
+}
+
+// DesktopShellCoverDock says "Cover the dock"
+// in the language the app shows.
+func DesktopShellCoverDock() string { return In(i18n.Locale()).DesktopShellCoverDock() }
+
+// DesktopShellCoverDock says "Cover the dock"
+// in the language of msgs.
+func (msgs Messages) DesktopShellCoverDock() string {
+	return Catalog.Format(msgs.locale, "desktopShellCoverDock", nil)
+}
+
+// DesktopShellIconSize says "Icon size"
+// in the language the app shows.
+func DesktopShellIconSize() string { return In(i18n.Locale()).DesktopShellIconSize() }
+
+// DesktopShellIconSize says "Icon size"
+// in the language of msgs.
+func (msgs Messages) DesktopShellIconSize() string {
+	return Catalog.Format(msgs.locale, "desktopShellIconSize", nil)
+}
+
+// DesktopShellRemoveIcon says "Remove from desktop"
+// in the language the app shows.
+func DesktopShellRemoveIcon() string { return In(i18n.Locale()).DesktopShellRemoveIcon() }
+
+// DesktopShellRemoveIcon says "Remove from desktop"
+// in the language of msgs.
+func (msgs Messages) DesktopShellRemoveIcon() string {
+	return Catalog.Format(msgs.locale, "desktopShellRemoveIcon", nil)
+}
+
+// DesktopShellAddIcon says "Add to desktop"
+// in the language the app shows.
+func DesktopShellAddIcon() string { return In(i18n.Locale()).DesktopShellAddIcon() }
+
+// DesktopShellAddIcon says "Add to desktop"
+// in the language of msgs.
+func (msgs Messages) DesktopShellAddIcon() string {
+	return Catalog.Format(msgs.locale, "desktopShellAddIcon", nil)
+}
+
+// DesktopShellDeleteFolder says "Delete desktop folder"
+// in the language the app shows.
+func DesktopShellDeleteFolder() string { return In(i18n.Locale()).DesktopShellDeleteFolder() }
+
+// DesktopShellDeleteFolder says "Delete desktop folder"
+// in the language of msgs.
+func (msgs Messages) DesktopShellDeleteFolder() string {
+	return Catalog.Format(msgs.locale, "desktopShellDeleteFolder", nil)
+}
+
+// DesktopShellDeleteFolderPrompt says "Delete “{name}”? Its icons will return to your desktop. No server files will be changed."
+// in the language the app shows.
+func DesktopShellDeleteFolderPrompt(name string) string {
+	return In(i18n.Locale()).DesktopShellDeleteFolderPrompt(name)
+}
+
+// DesktopShellDeleteFolderPrompt says "Delete “{name}”? Its icons will return to your desktop. No server files will be changed."
+// in the language of msgs.
+func (msgs Messages) DesktopShellDeleteFolderPrompt(name string) string {
+	return Catalog.Format(msgs.locale, "desktopShellDeleteFolderPrompt", map[string]any{"name": name})
+}
+
+// DesktopShellEmptyFolder says "Drag desktop icons into this folder to organize them."
+// in the language the app shows.
+func DesktopShellEmptyFolder() string { return In(i18n.Locale()).DesktopShellEmptyFolder() }
+
+// DesktopShellEmptyFolder says "Drag desktop icons into this folder to organize them."
+// in the language of msgs.
+func (msgs Messages) DesktopShellEmptyFolder() string {
+	return Catalog.Format(msgs.locale, "desktopShellEmptyFolder", nil)
+}
+
+// DesktopShellLauncher says "App launcher"
+// in the language the app shows.
+func DesktopShellLauncher() string { return In(i18n.Locale()).DesktopShellLauncher() }
+
+// DesktopShellLauncher says "App launcher"
+// in the language of msgs.
+func (msgs Messages) DesktopShellLauncher() string {
+	return Catalog.Format(msgs.locale, "desktopShellLauncher", nil)
+}
+
+// DesktopShellSearch says "Search apps"
+// in the language the app shows.
+func DesktopShellSearch() string { return In(i18n.Locale()).DesktopShellSearch() }
+
+// DesktopShellSearch says "Search apps"
+// in the language of msgs.
+func (msgs Messages) DesktopShellSearch() string {
+	return Catalog.Format(msgs.locale, "desktopShellSearch", nil)
+}
+
+// DesktopShellNoApps says "No apps match your search."
+// in the language the app shows.
+func DesktopShellNoApps() string { return In(i18n.Locale()).DesktopShellNoApps() }
+
+// DesktopShellNoApps says "No apps match your search."
+// in the language of msgs.
+func (msgs Messages) DesktopShellNoApps() string {
+	return Catalog.Format(msgs.locale, "desktopShellNoApps", nil)
+}
+
+// DesktopShellSystem says "System"
+// in the language the app shows.
+func DesktopShellSystem() string { return In(i18n.Locale()).DesktopShellSystem() }
+
+// DesktopShellSystem says "System"
+// in the language of msgs.
+func (msgs Messages) DesktopShellSystem() string {
+	return Catalog.Format(msgs.locale, "desktopShellSystem", nil)
+}
+
+// DesktopShellTools says "Tools"
+// in the language the app shows.
+func DesktopShellTools() string { return In(i18n.Locale()).DesktopShellTools() }
+
+// DesktopShellTools says "Tools"
+// in the language of msgs.
+func (msgs Messages) DesktopShellTools() string {
+	return Catalog.Format(msgs.locale, "desktopShellTools", nil)
+}
+
+// DesktopShellServer says "Server tools"
+// in the language the app shows.
+func DesktopShellServer() string { return In(i18n.Locale()).DesktopShellServer() }
+
+// DesktopShellServer says "Server tools"
+// in the language of msgs.
+func (msgs Messages) DesktopShellServer() string {
+	return Catalog.Format(msgs.locale, "desktopShellServer", nil)
+}
+
+// DesktopDockPin says "Pin to dock"
+// in the language the app shows.
+func DesktopDockPin() string { return In(i18n.Locale()).DesktopDockPin() }
+
+// DesktopDockPin says "Pin to dock"
+// in the language of msgs.
+func (msgs Messages) DesktopDockPin() string {
+	return Catalog.Format(msgs.locale, "desktopDockPin", nil)
+}
+
+// DesktopDockUnpin says "Unpin from dock"
+// in the language the app shows.
+func DesktopDockUnpin() string { return In(i18n.Locale()).DesktopDockUnpin() }
+
+// DesktopDockUnpin says "Unpin from dock"
+// in the language of msgs.
+func (msgs Messages) DesktopDockUnpin() string {
+	return Catalog.Format(msgs.locale, "desktopDockUnpin", nil)
+}
+
+// DesktopDockNewWindow says "New window"
+// in the language the app shows.
+func DesktopDockNewWindow() string { return In(i18n.Locale()).DesktopDockNewWindow() }
+
+// DesktopDockNewWindow says "New window"
+// in the language of msgs.
+func (msgs Messages) DesktopDockNewWindow() string {
+	return Catalog.Format(msgs.locale, "desktopDockNewWindow", nil)
+}
+
+// DesktopDockCloseAll says "Close all windows"
+// in the language the app shows.
+func DesktopDockCloseAll() string { return In(i18n.Locale()).DesktopDockCloseAll() }
+
+// DesktopDockCloseAll says "Close all windows"
+// in the language of msgs.
+func (msgs Messages) DesktopDockCloseAll() string {
+	return Catalog.Format(msgs.locale, "desktopDockCloseAll", nil)
+}
+
+// DesktopDockShowDesktop says "Show desktop / restore windows"
+// in the language the app shows.
+func DesktopDockShowDesktop() string { return In(i18n.Locale()).DesktopDockShowDesktop() }
+
+// DesktopDockShowDesktop says "Show desktop / restore windows"
+// in the language of msgs.
+func (msgs Messages) DesktopDockShowDesktop() string {
+	return Catalog.Format(msgs.locale, "desktopDockShowDesktop", nil)
+}
+
+// DesktopDockSwitch says "Switch desktop"
+// in the language the app shows.
+func DesktopDockSwitch() string { return In(i18n.Locale()).DesktopDockSwitch() }
+
+// DesktopDockSwitch says "Switch desktop"
+// in the language of msgs.
+func (msgs Messages) DesktopDockSwitch() string {
+	return Catalog.Format(msgs.locale, "desktopDockSwitch", nil)
+}
+
+// DesktopDockReset says "Reset dock pins"
+// in the language the app shows.
+func DesktopDockReset() string { return In(i18n.Locale()).DesktopDockReset() }
+
+// DesktopDockReset says "Reset dock pins"
+// in the language of msgs.
+func (msgs Messages) DesktopDockReset() string {
+	return Catalog.Format(msgs.locale, "desktopDockReset", nil)
+}
+
+// DesktopDockMore says "More dock apps"
+// in the language the app shows.
+func DesktopDockMore() string { return In(i18n.Locale()).DesktopDockMore() }
+
+// DesktopDockMore says "More dock apps"
+// in the language of msgs.
+func (msgs Messages) DesktopDockMore() string {
+	return Catalog.Format(msgs.locale, "desktopDockMore", nil)
+}
+
+// DesktopWallpaperChoose says "Choose image…"
+// in the language the app shows.
+func DesktopWallpaperChoose() string { return In(i18n.Locale()).DesktopWallpaperChoose() }
+
+// DesktopWallpaperChoose says "Choose image…"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperChoose() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperChoose", nil)
+}
+
+// DesktopWallpaperReset says "Reset wallpaper"
+// in the language the app shows.
+func DesktopWallpaperReset() string { return In(i18n.Locale()).DesktopWallpaperReset() }
+
+// DesktopWallpaperReset says "Reset wallpaper"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperReset() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperReset", nil)
+}
+
+// DesktopWallpaperBuiltins says "Wallpapers"
+// in the language the app shows.
+func DesktopWallpaperBuiltins() string { return In(i18n.Locale()).DesktopWallpaperBuiltins() }
+
+// DesktopWallpaperBuiltins says "Wallpapers"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperBuiltins() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperBuiltins", nil)
+}
+
+// DesktopWallpaperColors says "Solid colors"
+// in the language the app shows.
+func DesktopWallpaperColors() string { return In(i18n.Locale()).DesktopWallpaperColors() }
+
+// DesktopWallpaperColors says "Solid colors"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperColors() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperColors", nil)
+}
+
+// DesktopWallpaperCustom says "Custom image"
+// in the language the app shows.
+func DesktopWallpaperCustom() string { return In(i18n.Locale()).DesktopWallpaperCustom() }
+
+// DesktopWallpaperCustom says "Custom image"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperCustom() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperCustom", nil)
+}
+
+// DesktopWallpaperPrism says "Prism"
+// in the language the app shows.
+func DesktopWallpaperPrism() string { return In(i18n.Locale()).DesktopWallpaperPrism() }
+
+// DesktopWallpaperPrism says "Prism"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperPrism() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperPrism", nil)
+}
+
+// DesktopWallpaperSunset says "Sunset"
+// in the language the app shows.
+func DesktopWallpaperSunset() string { return In(i18n.Locale()).DesktopWallpaperSunset() }
+
+// DesktopWallpaperSunset says "Sunset"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperSunset() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperSunset", nil)
+}
+
+// DesktopWallpaperAurora says "Aurora"
+// in the language the app shows.
+func DesktopWallpaperAurora() string { return In(i18n.Locale()).DesktopWallpaperAurora() }
+
+// DesktopWallpaperAurora says "Aurora"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperAurora() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperAurora", nil)
+}
+
+// DesktopWallpaperOcean says "Ocean"
+// in the language the app shows.
+func DesktopWallpaperOcean() string { return In(i18n.Locale()).DesktopWallpaperOcean() }
+
+// DesktopWallpaperOcean says "Ocean"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperOcean() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperOcean", nil)
+}
+
+// DesktopWallpaperForest says "Forest"
+// in the language the app shows.
+func DesktopWallpaperForest() string { return In(i18n.Locale()).DesktopWallpaperForest() }
+
+// DesktopWallpaperForest says "Forest"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperForest() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperForest", nil)
+}
+
+// DesktopWallpaperGraphite says "Graphite"
+// in the language the app shows.
+func DesktopWallpaperGraphite() string { return In(i18n.Locale()).DesktopWallpaperGraphite() }
+
+// DesktopWallpaperGraphite says "Graphite"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperGraphite() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperGraphite", nil)
+}
+
+// DesktopWallpaperNebula says "Nebula"
+// in the language the app shows.
+func DesktopWallpaperNebula() string { return In(i18n.Locale()).DesktopWallpaperNebula() }
+
+// DesktopWallpaperNebula says "Nebula"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperNebula() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperNebula", nil)
+}
+
+// DesktopWallpaperDusk says "Dusk"
+// in the language the app shows.
+func DesktopWallpaperDusk() string { return In(i18n.Locale()).DesktopWallpaperDusk() }
+
+// DesktopWallpaperDusk says "Dusk"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperDusk() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperDusk", nil)
+}
+
+// DesktopWallpaperNavy says "Navy"
+// in the language the app shows.
+func DesktopWallpaperNavy() string { return In(i18n.Locale()).DesktopWallpaperNavy() }
+
+// DesktopWallpaperNavy says "Navy"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperNavy() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperNavy", nil)
+}
+
+// DesktopWallpaperBlue says "Cobalt"
+// in the language the app shows.
+func DesktopWallpaperBlue() string { return In(i18n.Locale()).DesktopWallpaperBlue() }
+
+// DesktopWallpaperBlue says "Cobalt"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperBlue() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperBlue", nil)
+}
+
+// DesktopWallpaperViolet says "Violet"
+// in the language the app shows.
+func DesktopWallpaperViolet() string { return In(i18n.Locale()).DesktopWallpaperViolet() }
+
+// DesktopWallpaperViolet says "Violet"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperViolet() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperViolet", nil)
+}
+
+// DesktopWallpaperPlum says "Plum"
+// in the language the app shows.
+func DesktopWallpaperPlum() string { return In(i18n.Locale()).DesktopWallpaperPlum() }
+
+// DesktopWallpaperPlum says "Plum"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperPlum() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperPlum", nil)
+}
+
+// DesktopWallpaperClay says "Clay"
+// in the language the app shows.
+func DesktopWallpaperClay() string { return In(i18n.Locale()).DesktopWallpaperClay() }
+
+// DesktopWallpaperClay says "Clay"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperClay() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperClay", nil)
+}
+
+// DesktopWallpaperTeal says "Teal"
+// in the language the app shows.
+func DesktopWallpaperTeal() string { return In(i18n.Locale()).DesktopWallpaperTeal() }
+
+// DesktopWallpaperTeal says "Teal"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperTeal() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperTeal", nil)
+}
+
+// DesktopWallpaperPine says "Pine"
+// in the language the app shows.
+func DesktopWallpaperPine() string { return In(i18n.Locale()).DesktopWallpaperPine() }
+
+// DesktopWallpaperPine says "Pine"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperPine() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperPine", nil)
+}
+
+// DesktopWallpaperSlate says "Slate"
+// in the language the app shows.
+func DesktopWallpaperSlate() string { return In(i18n.Locale()).DesktopWallpaperSlate() }
+
+// DesktopWallpaperSlate says "Slate"
+// in the language of msgs.
+func (msgs Messages) DesktopWallpaperSlate() string {
+	return Catalog.Format(msgs.locale, "desktopWallpaperSlate", nil)
+}
+
 // DesktopAppThisPC says "This PC"
 // in the language the app shows.
 func DesktopAppThisPC() string { return In(i18n.Locale()).DesktopAppThisPC() }

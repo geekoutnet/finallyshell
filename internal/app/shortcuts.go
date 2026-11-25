@@ -61,6 +61,15 @@ const (
 	scMovePaneRight
 	scMovePaneUp
 	scMovePaneDown
+	scOpenDesktop
+	scDesktopClose
+	scDesktopMinimize
+	scDesktopMaximize
+	scDesktopSnapLeft
+	scDesktopSnapRight
+	scDesktopCycle
+	scDesktopShow
+	scDesktopLauncher
 )
 
 // shortcutAction is an action of the shortcuts page.
@@ -228,6 +237,15 @@ var shortcutActions = []shortcutAction{
 		id: scMovePaneDown, title: locales.ScMovePaneDown, alt: true,
 		field: func(s *config.Shortcuts) *string { return &s.MovePaneDown },
 	},
+	desktopShortcutAction(scOpenDesktop, locales.OpenDesktop, func(s *config.Shortcuts) *string { return &s.OpenDesktop }, ui.KeyD, ui.KeyB),
+	desktopShortcutAction(scDesktopClose, locales.DesktopWinCloseKey, func(s *config.Shortcuts) *string { return &s.DesktopClose }, ui.KeyF4, ui.KeyF4),
+	desktopShortcutAction(scDesktopMinimize, locales.DesktopWinMinimizeKey, func(s *config.Shortcuts) *string { return &s.DesktopMinimize }, ui.KeyDown, ui.KeyDown),
+	desktopShortcutAction(scDesktopMaximize, locales.DesktopWinMaximizeKey, func(s *config.Shortcuts) *string { return &s.DesktopMaximize }, ui.KeyUp, ui.KeyUp),
+	desktopShortcutAction(scDesktopSnapLeft, locales.DesktopWinSnapLeftKey, func(s *config.Shortcuts) *string { return &s.DesktopSnapLeft }, ui.KeyLeft, ui.KeyLeft),
+	desktopShortcutAction(scDesktopSnapRight, locales.DesktopWinSnapRightKey, func(s *config.Shortcuts) *string { return &s.DesktopSnapRight }, ui.KeyRight, ui.KeyRight),
+	desktopShortcutAction(scDesktopCycle, locales.DesktopWinCycleKey, func(s *config.Shortcuts) *string { return &s.DesktopCycle }, ui.KeyF7, ui.KeyF7),
+	desktopShortcutAction(scDesktopShow, locales.DesktopDockShowDesktop, func(s *config.Shortcuts) *string { return &s.DesktopShow }, ui.KeyM, ui.KeyM),
+	desktopShortcutAction(scDesktopLauncher, locales.DesktopShellLauncher, func(s *config.Shortcuts) *string { return &s.DesktopLauncher }, ui.KeySpace, ui.KeySpace),
 }
 
 func actionOf(id shortcutID) *shortcutAction { return &shortcutActions[id] }
@@ -525,9 +543,11 @@ func (a *App) shortcuts(c *ui.Context) {
 		a.closeCurrent() // its focused pane first, while it has several
 	case pressed(scFind):
 		a.openFind()
-	case pressed(scFullScreen) && (a.fullScreen.on || !a.current().isPanelTab()):
-		// A panel row has no terminal to show alone; it leaves full screen.
+	case (a.fullScreen.on || !cur.isPanelTab() || cur.isDesktopRow()) && pressed(scFullScreen):
 		a.setFullScreen(!a.fullScreen.on)
+	case (canOpenDesktop(cur) || cur.isPanelTab()) && pressed(scOpenDesktop):
+		a.openDesktop(cur)
+	case cur.isDesktopRow() && a.desktopKeys(c, cur.desktop, pressed):
 	case a.commandBarOn() && pressed(scFocusBar):
 		a.toggleBarFocus()
 	case pressed(scLeftPanel):

@@ -47,6 +47,7 @@ supported. [configuration.md](configuration.md) covers the files on disk;
   - [Downloads popover](#downloads-popover)
   - [Progress on the app icon](#progress-on-the-app-icon)
 - [Remote file editor](#remote-file-editor)
+- [Desktop mode](#desktop-mode)
 - [Tunnels tab](#tunnels-tab)
 - [Processes tab](#processes-tab)
 - [Network tab](#network-tab)
@@ -2003,6 +2004,61 @@ file is saved through another connected session to the same host.
 Not supported: saving with sudo. A file without write permission fails to
 save with "permission denied".
 
+## Desktop mode
+
+Open **Open desktop** from an SSH session's menu, the bottom-panel corner,
+or an SSH host's menu in the connection manager or Connections page. From a
+saved host it reuses a connected session or starts a connection. The desktop
+has its own session row; it uses the existing SSH connection and installs
+nothing on the server. The app's full-screen shortcut works on this row too.
+
+### Desktop windows
+
+- Drag a title bar to move a window; drag any edge or corner to resize it.
+  Double-click the title bar to maximize or restore. Drag to the top, left,
+  or right edge to preview and apply a snap. A narrow desktop may allocate
+  more than half its width to respect an app's minimum width.
+- Press anywhere in a window to focus it. The title-bar menu restores,
+  minimizes, maximizes, keeps a window on top, or closes it. The shell
+  remembers each app's last resized size in memory, not its position.
+
+### Desktop icons and folders
+
+- Click to select; use Ctrl (Command on macOS) to toggle items, Shift to
+  select a range, or drag a rectangle from empty space. Double-click or
+  press Enter to open; single-click opening is optional.
+- Drag an icon onto another grid cell or onto a folder. **New › New folder**
+  creates a folder with an inline name field. Open it to see its apps,
+  drag icons back out, rename it, or delete it and return its icons to
+  the desktop. This never changes files on the server.
+- The desktop menu contains icon sizes, auto-arrange, name/type sorting,
+  refresh, Files, Terminal and Personalization. Removing an icon does not
+  uninstall the app; the launcher can add it back. Path shortcuts sent
+  from Files open the file manager at that path.
+
+### Dock, launcher and personalization
+
+The translucent dock groups the launcher and assistant, pinned and running
+apps, and desktop controls. A dot indicates a running app; the focused app
+has a wider marker. Click to open, focus, minimize or restore. For multiple
+windows, pick one from the list. Right-click for window and pin actions, or
+drag pinned apps to reorder. **Show desktop** hides the visible windows; use
+it again to restore them. The clock uses local time; the host popover shows
+the connection status and lets you return to the terminal or switch to
+another connected SSH session's desktop.
+
+The launcher groups available apps and searches names in the current
+language. Right-click an app to pin it or add it to the desktop. Escape or
+a press outside closes the launcher.
+
+In **Settings › Personalization**, choose one of eight illustrated wallpapers,
+eight solid colors, or a local PNG, JPEG, GIF (still frame), or WebP image.
+The same page sets icon size, single/double click, cascade/stack placement,
+and whether maximized windows cover the dock. In cover mode, move the
+pointer to the bottom edge to show the dock. You can reset the dock pins and
+wallpaper independently. Icon layouts and folders are saved per host; other
+personalization stays on this device.
+
 ## System tab
 
 The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.
@@ -2901,6 +2957,13 @@ Terminal › Shortcuts page.
 | Split the pane down | Cmd+Shift+D | Alt+Shift+- |
 | Zoom the focused pane, or show all panes | Cmd+Shift+Enter | Ctrl+Shift+X |
 | Focus the pane on the left / right / above / below | Cmd+Option+arrows | Alt+arrows |
+| Open desktop | Cmd+Shift+B | Ctrl+Shift+D |
+| Desktop: close window | Cmd+Shift+F4 | Ctrl+Shift+F4 |
+| Desktop: minimize / maximize or restore | Cmd+Shift+↓ / ↑ | Ctrl+Shift+↓ / ↑ |
+| Desktop: snap left / right | Cmd+Shift+← / → | Ctrl+Shift+← / → |
+| Desktop: cycle windows | Cmd+Shift+F7 | Ctrl+Shift+F7 |
+| Desktop: show desktop or restore windows | Cmd+Shift+M | Ctrl+Shift+M |
+| Desktop: open app launcher | Cmd+Shift+Space | Ctrl+Shift+Space |
 
 Close tab closes the focused pane of a [split](#splits) session first.
 

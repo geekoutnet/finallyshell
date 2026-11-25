@@ -33,15 +33,24 @@ type Shortcuts struct {
 	// all again; the FocusPane keys move the focus to the pane on that
 	// side, and the MovePane keys trade the focused pane's place with
 	// that pane's.
-	SplitRight     string `json:"splitRight,omitempty"`
-	SplitDown      string `json:"splitDown,omitempty"`
-	ZoomPane       string `json:"zoomPane,omitempty"`
-	FocusPaneLeft  string `json:"focusPaneLeft,omitempty"`
-	FocusPaneRight string `json:"focusPaneRight,omitempty"`
-	FocusPaneUp    string `json:"focusPaneUp,omitempty"`
-	FocusPaneDown  string `json:"focusPaneDown,omitempty"`
-	MovePaneLeft   string `json:"movePaneLeft,omitempty"`
-	MovePaneRight  string `json:"movePaneRight,omitempty"`
-	MovePaneUp     string `json:"movePaneUp,omitempty"`
-	MovePaneDown   string `json:"movePaneDown,omitempty"`
+	SplitRight       string `json:"splitRight,omitempty"`
+	SplitDown        string `json:"splitDown,omitempty"`
+	ZoomPane         string `json:"zoomPane,omitempty"`
+	FocusPaneLeft    string `json:"focusPaneLeft,omitempty"`
+	FocusPaneRight   string `json:"focusPaneRight,omitempty"`
+	FocusPaneUp      string `json:"focusPaneUp,omitempty"`
+	FocusPaneDown    string `json:"focusPaneDown,omitempty"`
+	MovePaneLeft     string `json:"movePaneLeft,omitempty"`
+	MovePaneRight    string `json:"movePaneRight,omitempty"`
+	MovePaneUp       string `json:"movePaneUp,omitempty"`
+	MovePaneDown     string `json:"movePaneDown,omitempty"`
+	OpenDesktop      string `json:"openDesktop,omitempty"`
+	DesktopClose     string `json:"desktopClose,omitempty"`
+	DesktopMinimize  string `json:"desktopMinimize,omitempty"`
+	DesktopMaximize  string `json:"desktopMaximize,omitempty"`
+	DesktopSnapLeft  string `json:"desktopSnapLeft,omitempty"`
+	DesktopSnapRight string `json:"desktopSnapRight,omitempty"`
+	DesktopCycle     string `json:"desktopCycle,omitempty"`
+	DesktopShow      string `json:"desktopShow,omitempty"`
+	DesktopLauncher  string `json:"desktopLauncher,omitempty"`
 }

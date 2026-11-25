@@ -718,6 +718,8 @@ type signalDialog struct {
 	gone    bool // ended before a signal was sent: nothing left to do
 	err     error
 	cancel  context.CancelFunc
+	root    bool
+	refusal error
 }
 
 // askSignal opens the dialog asking whether to send sig to p; kill for
@@ -746,10 +748,15 @@ func (a *App) sendSignal(d *signalDialog) {
 	if d.still {
 		sig = "KILL"
 	}
+	send := func(ctx context.Context) error { return api.signal(ctx, client, d.pid, d.start, sig) }
+	if d.root {
+		priv := a.sessionPrivilege(s).runner
+		send = func(ctx context.Context) error { return monitor.SendSignalAsRoot(ctx, priv, d.pid, d.start, sig) }
+	}
 	go func() {
 		defer cancel()
 		sctx, scancel := context.WithTimeout(ctx, procTimeout)
-		err := api.signal(sctx, client, d.pid, d.start, sig)
+		err := send(sctx)
 		scancel()
 		if err != nil || !kill {
 			a.post(func() { a.signalSent(d, err, false) })
@@ -788,6 +795,9 @@ func (a *App) signalSent(d *signalDialog, err error, running bool) {
 	}
 	if err != nil && !errors.Is(err, context.Canceled) {
 		d.err = err
+		if errors.Is(err, monitor.ErrPrivilegeCancelled) {
+			d.root, d.err = false, d.refusal
+		}
 		return
 	}
 	d.s.procs.poll.pollNow()
@@ -799,6 +809,9 @@ func (a *App) signalSent(d *signalDialog, err error, running bool) {
 }
 
 func signalErrorText(err error) string {
+	if errors.Is(err, monitor.ErrPrivilegeDenied) || errors.Is(err, monitor.ErrPrivilegeWrongPassword) {
+		return locales.PrivNeedsRoot()
+	}
 	var se *monitor.SignalError
 	if errors.As(err, &se) {
 		return locales.SignalRefused(se.Msg)
@@ -860,6 +873,13 @@ func (a *App) signalDialogView(c *ui.Context, d *signalDialog) {
 			}
 			if ui.Button(c, locales.Cancel()).Clicked() {
 				a.closeSignalDialog()
+			}
+			elevate := !d.root && d.start != 0 && monitor.SignalNeedsRoot(d.err)
+			if elevate {
+				if ui.Button(c, locales.PrivRun()).Disabled(d.busy).Clicked() && a.processes.dlg == d {
+					d.root, d.refusal = true, d.err
+					a.sendSignal(d)
+				}
 			}
 			if ui.PrimaryButton(c, ok).Disabled(d.busy).Clicked() && a.processes.dlg == d {
 				a.sendSignal(d)

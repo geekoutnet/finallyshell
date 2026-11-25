@@ -5,6 +5,7 @@ import (
 	"context"
 	"errors"
 	"io"
+	"strings"
 	"sync"
 	"time"
 
@@ -166,13 +167,7 @@ func (stream *privilegeStream) write(stdout bool, chunk []byte) {
 				if newline := bytes.IndexByte(prefix[end:], '\n'); newline >= 0 && len(bytes.TrimSpace(prefix[end:end+newline])) == 0 {
 					stream.started = true
 					chunk = prefix[end+newline+1:]
-					stderr := stream.before[1]
-					if stream.request.method == PrivilegeSudo && stream.request.prompt != "" {
-						stripped := bytes.ReplaceAll(stderr, []byte(stream.request.prompt+" "), nil)
-						defer clear(stripped)
-						stderr = stripped
-					}
-					stream.stderr.write(stderr)
+					stream.stderr.write(stream.before[1])
 					close(stream.ready)
 				}
 			}
@@ -222,7 +217,12 @@ func (stream *privilegeStream) result() PrivilegeResult {
 		}
 		return PrivilegeResult{Rejected: rejection}
 	}
-	return PrivilegeResult{Started: true, Authenticated: stream.prompted, Stdout: stream.stdout.finish(), Stderr: stream.stderr.finish()}
+	stderr := stream.stderr.finish()
+	if stream.request.method == PrivilegeSudo && stream.request.prompt != "" {
+		stderr = strings.ReplaceAll(stderr, stream.request.prompt+" ", "")
+		stderr = strings.ReplaceAll(stderr, stream.request.prompt, "")
+	}
+	return PrivilegeResult{Started: true, Authenticated: stream.prompted, Stdout: stream.stdout.finish(), Stderr: stderr}
 }
 
 func (stream *privilegeStream) send(ctx context.Context, input io.WriteCloser, password []byte, timeout time.Duration) error {

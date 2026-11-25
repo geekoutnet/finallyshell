@@ -2,9 +2,36 @@ package monitor
 
 import (
 	"net/netip"
+	"os/exec"
 	"strings"
 	"testing"
 )
+
+func TestUFWEnableGuardRecognizesVendorRules(t *testing.T) {
+	shell, err := exec.LookPath("sh")
+	if err != nil {
+		t.Skip("requires a POSIX shell")
+	}
+	dir := t.TempDir()
+	script, err := UFWToggleScript(true, 22, netip.MustParseAddr("192.0.2.1"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	guard, _, _ := strings.Cut(script, firewallBackups)
+	guard = strings.NewReplacer("/etc/ufw/", "local/", "/usr/share/ufw/", "vendor/").Replace(guard)
+	for _, changed := range []bool{false, true} {
+		setup := "set -e; mkdir -p local vendor; printf '%s\n' '-A ufw-not-local -j DROP' >vendor/before.rules; cp vendor/before.rules local/before.rules\n"
+		if changed {
+			setup += "printf '%s\n' '-A ufw-before-input -p tcp --dport 22 -j DROP' >>local/before.rules\n"
+		}
+		cmd := exec.Command(shell, "-c", setup+guard)
+		cmd.Dir = dir
+		out, err := cmd.CombinedOutput()
+		if (err != nil) != changed || changed && !strings.Contains(string(out), "Custom UFW pre-rules") {
+			t.Errorf("changed=%v: %v: %s", changed, err, out)
+		}
+	}
+}
 
 func TestOpsFirewallParsers(t *testing.T) {
 	state := ParseUFW("Status: active\nDefault: deny (incoming), allow (outgoing), disabled (routed)\n     To                         Action      From\n[ 1] 2200/tcp                   ALLOW IN    Anywhere\n[12] 8000:9000/udp (v6)         DENY IN     Anywhere (v6) # test\n")

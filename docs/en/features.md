@@ -938,6 +938,27 @@ keys, the server refused every key in the agent, or the agent did not
 sign (the user denied it). No password prompt opens. Agent forwarding
 (`ssh -A`) is not supported.
 
+### Remote Desktop
+
+Choose **Remote Desktop** to open the saved connection in the system's
+RDP client: mstsc on Windows, FreeRDP on Linux, or Windows App on macOS.
+The editor offers display, local resources, connection and gateway settings.
+
+#### Remote Desktop through SSH
+
+In **Connection**, choose **Connect through SSH host** and select a saved
+SSH host. **Target as seen from the SSH host** can be a private name or IP,
+with an optional port. Leave it empty to use the saved RDP address and port
+(3389 by default). Do not combine this mode with a Remote Desktop Gateway.
+
+Finallyshell uses the SSH host's usual sign-in and host-key verification,
+or reuses an open SSH session. It checks TCP reachability from that host
+before opening a local tunnel on `127.0.0.1` and handing its address to the
+RDP client. The RDP client's authentication and certificate checks still
+apply; it may warn that the certificate does not match the loopback address.
+On Windows and Linux, the tunnel stops when the client process exits. On
+macOS, stop it in **Tunnels** when done; Windows App asks for the password.
+
 ### Telnet connection
 
 Choose **Telnet** in the connection editor, enter a host and port (23 by
@@ -1078,6 +1099,48 @@ In the connection editor, open **Tunnels → Tunnel recipes…**. In the command
 Enable **Use as system proxy when running** on a local loopback SOCKS5, HTTP or mixed tunnel without proxy authentication or an allowlist. Blank PAC rules select a manual proxy; `all` routes globally through PAC. Otherwise enter exact domains, `*.example.org` patterns or CIDRs such as `10.0.0.0/8` separated by commas. Nonmatching traffic goes directly. IPv6 CIDRs depend on the PAC client’s `isInNetEx` support. Proxy and PAC support varies by application; some applications ignore system settings.
 
 Supported desktop settings are Windows per-user Internet Settings, macOS enabled network services and GNOME on Linux. The most recently applied tunnel replaces the previous system proxy; the original settings return when the active tunnel stops, on quit, or at the next launch after an unexpected exit. The command palette’s **Restore system proxy** action restores the backup without stopping tunnels.
+
+### Public access and LAN sharing
+
+Right-click a remote tunnel in the editor or in **Tunnels** and choose
+**Public access…** (or **Make it public…** for a loopback-only bind).
+Choose the server address explicitly. A wildcard bind can let anyone with
+network access to the server reach the port. Do not expose an unauthenticated
+proxy; use authentication and restrict its sources.
+
+- **Run checks** inspects `GatewayPorts`, available relay tools and the
+  server firewall. Changing `GatewayPorts` to `clientspecified` requires
+  confirmation and elevated access. The app backs up the configuration,
+  validates it, reloads sshd and rolls back on failure. Custom `Match` or
+  `Include` rules require manual review. Reconnect SSH after a successful
+  change; restarting a tunnel on the old connection is not enough.
+- A **server relay** uses a loopback-only remote SSH forward plus an SSH
+  command running `socat`, `ncat` or Python 3.8+ on the server. It needs
+  `setsid`, a fixed public port and a server that honors loopback binds.
+  It does not support source allowlists because it hides client IPs from
+  the tunnel. Server ports below 1024 use the app's privilege prompt.
+  Enabling a relay turns off automatic and background starts. Use the
+  assistant to start it; stopping the tunnel or losing its SSH connection
+  stops the relay as well.
+- The assistant can allow a TCP port in active UFW or an unambiguous
+  firewalld zone. It remembers rules it adds on this computer. Remove
+  unused rules from **Managed rules…**, including rules whose tunnel was
+  deleted. The assistant cannot inspect your cloud security groups;
+  check them separately and restrict them to the intended sources.
+- Test TCP or make an HTTP `GET /` from this computer. An HTTP response
+  (even an error code) proves only that something answered from here.
+  Copy the public address or open it in a browser. To verify access from
+  other networks, test from one of those networks too.
+
+For a local tunnel bound to a non-loopback address, right-click and choose
+**Share with the LAN…**. Copy the addresses of active, matching adapters
+and use the displayed subnet for the source allowlist. Prefer a trusted LAN
+and require proxy authentication. On Windows the dialog can check for an
+enabled program-specific inbound rule, copy a `netsh` command, or request
+UAC to add the rule. The check is best effort: profiles, scope and localized
+command output can make it inconclusive. The rule you add applies to all
+programs and profiles and remains after the tunnel stops; remove or narrow
+it in Windows Defender Firewall when no longer needed.
 
 ### Keys and other behavior
 

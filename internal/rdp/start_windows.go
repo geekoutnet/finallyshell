@@ -42,7 +42,11 @@ func Start(r Request) (wait func() error, err error) {
 		os.RemoveAll(dir)
 	}
 	if login := config.RDPLogin(h); login != "" && r.Password != "" {
-		release, err := holdCredential(credTypeGeneric, "TERMSRV/"+strings.TrimSpace(h.Addr), login, r.Password)
+		target := strings.TrimSpace(h.Addr)
+		if r.sshForward {
+			target = hostPort(target, h.PortOr22())
+		}
+		release, err := holdCredential(credTypeGeneric, "TERMSRV/"+target, login, r.Password)
 		if err != nil {
 			undo()
 			return nil, err

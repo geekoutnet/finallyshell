@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -24,6 +25,35 @@ type Request struct {
 	Host            *config.Host
 	Password        string
 	GatewayPassword string
+	sshForward      bool
+}
+
+func TracksClient() bool { return runtime.GOOS != "darwin" }
+
+func WithSSHForward(req Request, port int) Request {
+	req.Host = req.Host.Clone()
+	if req.Host.Name == "" {
+		req.Host.Name = req.Host.Title()
+	}
+	req.Host.Addr, req.Host.Port = config.LoopbackHost, port
+	req.sshForward = true
+	r := config.RDPOf(req.Host)
+	req.Host.RDP = r
+	r.GatewayUsage, req.GatewayPassword = config.GatewayOff, ""
+	var lines []string
+	for _, line := range strings.Split(r.Custom, "\n") {
+		name, _, _ := strings.Cut(strings.TrimSpace(line), ":")
+		name = strings.ToLower(strings.TrimSpace(name))
+		switch name {
+		case "full address", "alternate full address", "server port", "loadbalanceinfo", "use redirection server name":
+			continue
+		}
+		if !strings.HasPrefix(name, "gateway") {
+			lines = append(lines, line)
+		}
+	}
+	r.Custom = strings.Join(lines, "\n")
+	return req
 }
 
 // ErrNoClient is the system having no Remote Desktop client the app

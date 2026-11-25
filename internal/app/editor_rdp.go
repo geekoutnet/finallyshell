@@ -125,6 +125,15 @@ func (ed *connEditor) rdpProblems(errs map[editorField]string) {
 	if rf.cfg.GatewayUsage != config.GatewayOff && strings.TrimSpace(rf.cfg.GatewayHost) == "" {
 		errs[fieldRDPGateway] = locales.ErrHostRequired()
 	}
+	if rf.cfg.SSHHostID != "" {
+		if host := ed.proxy.hosts.Host(rf.cfg.SSHHostID); !host.IsSSH() || host.Deleted() || host.ID == ed.id {
+			errs[fieldRDPGateway] = locales.RdpsshMissing()
+		} else if rf.cfg.GatewayUsage != config.GatewayOff {
+			errs[fieldRDPGateway] = locales.RdpsshNoGateway()
+		} else if _, err := config.RDPSSHTarget(&config.Host{Kind: config.KindRDP, Addr: "placeholder", RDP: &rf.cfg}); err != nil {
+			errs[fieldRDPGateway] = locales.RdpsshBadTarget()
+		}
+	}
 }
 
 // result are the options as the fields have them, for saving.
@@ -151,6 +160,7 @@ func (rf *rdpFields) result() *config.RDPConfig {
 	r.Monitors = strings.TrimSpace(r.Monitors)
 	r.Program, r.ProgramFolder = strings.TrimSpace(r.Program), strings.TrimSpace(r.ProgramFolder)
 	r.GatewayHost, r.GatewayUser = strings.TrimSpace(r.GatewayHost), strings.TrimSpace(r.GatewayUser)
+	r.SSHTarget = strings.TrimSpace(r.SSHTarget)
 	r.Custom = strings.TrimSpace(r.Custom)
 	return &r
 }
@@ -444,7 +454,7 @@ func (a *App) rdpConnectionPage(c *ui.Context, ed *connEditor, errs map[editorFi
 			ui.Field(c, locales.FieldRDPServerAuth(), func() {
 				rdpSelect(c, locales.FieldRDPServerAuth(), &r.ServerAuth,
 					[]config.RDPServerAuth{config.ServerAuthWarn, config.ServerAuthConnect, config.ServerAuthRefuse, config.ServerAuthNone},
-					[]string{locales.RdpServerAuthWarn(), locales.RdpServerAuthConnect(), locales.RdpServerAuthRefuse(), locales.RdpServerAuthNone()}, 300)
+					[]string{locales.RdpServerAuthWarn(), locales.RdpServerAuthConnect(), locales.RdpServerAuthRefuse(), locales.RdpServerAuthNone()}, 260)
 			})
 			ui.Field(c, "", func() {
 				rdpCheck(c, &r.NoNLA, locales.RdpNLA())
@@ -454,14 +464,14 @@ func (a *App) rdpConnectionPage(c *ui.Context, ed *connEditor, errs map[editorFi
 			ui.Field(c, locales.FieldRDPGatewayUsage(), func() {
 				rdpSelect(c, locales.FieldRDPGatewayUsage(), &r.GatewayUsage,
 					[]config.RDPGatewayUsage{config.GatewayOff, config.GatewayAlways, config.GatewayFallback, config.GatewayDetect},
-					[]string{locales.RdpGatewayOff(), locales.RdpGatewayAlways(), locales.RdpGatewayFallback(), locales.RdpGatewayDetect()}, 300)
+					[]string{locales.RdpGatewayOff(), locales.RdpGatewayAlways(), locales.RdpGatewayFallback(), locales.RdpGatewayDetect()}, 260)
 			})
 			if r.GatewayUsage == config.GatewayOff {
 				return
 			}
 			ui.Field(c, locales.RdpGatewayHost(), func() {
 				input(ui.TextInput(c, &r.GatewayHost).Placeholder("gateway.example.com"))
-			}).Error(errs[fieldRDPGateway])
+			}).Error(map[bool]string{true: errs[fieldRDPGateway]}[r.SSHHostID == ""])
 			ui.Field(c, locales.FieldRDPGatewayAuth(), func() {
 				rdpSelect(c, locales.FieldRDPGatewayAuth(), &r.GatewayAuth,
 					[]config.RDPGatewayAuth{config.GatewayAuthAny, config.GatewayAuthPassword, config.GatewayAuthSmartCard},
@@ -480,6 +490,37 @@ func (a *App) rdpConnectionPage(c *ui.Context, ed *connEditor, errs map[editorFi
 				input(ui.TextInput(c, &rf.gatewayPassword).Password())
 			}).Description(a.rememberNote(ed.remember))
 		})
+		a.rdpSSHFields(c, ed, errs[fieldRDPGateway], input)
+	})
+}
+
+func (a *App) rdpSSHFields(c *ui.Context, ed *connEditor, problem string, input func(ui.Element) ui.Element) {
+	r := &ed.rdp.cfg
+	ui.Fieldset(c, locales.RdpsshSection(), func() {
+		ui.Field(c, locales.RdpsshHost(), func() {
+			ids, labels := []string{""}, []string{locales.RdpsshDirect()}
+			for _, host := range a.hosts.Live() {
+				if host.IsSSH() && host.ID != ed.id {
+					label := host.Title()
+					if slices.Contains(labels, label) {
+						label += " · " + host.Target()
+					}
+					if slices.Contains(labels, label) {
+						label += " · " + host.ID
+					}
+					ids, labels = append(ids, host.ID), append(labels, label)
+				}
+			}
+			if host := a.hosts.Host(r.SSHHostID); r.SSHHostID != "" && (!host.IsSSH() || host.Deleted() || host.ID == ed.id) {
+				ids, labels = append(ids, r.SSHHostID), append(labels, locales.RdpsshMissing())
+			}
+			rdpSelect(c, locales.RdpsshHost(), &r.SSHHostID, ids, labels, 260)
+		}).Description(locales.RdpsshHostHint())
+		if r.SSHHostID != "" {
+			ui.Field(c, locales.RdpsshTarget(), func() {
+				input(ui.TextInput(c, &r.SSHTarget).Placeholder("desktop.internal:3389"))
+			}).Description(locales.RdpsshTargetHint()).Error(problem)
+		}
 	})
 }
 

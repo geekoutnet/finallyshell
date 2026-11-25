@@ -79,6 +79,13 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 }
 ```
 
+### 通过 SSH 使用远程桌面
+
+对 `kind: "rdp"` 的连接，可选字段 `rdp.sshHostId` 保存所选 SSH 主机的 ID。
+缺省时，远程桌面客户端仍像以前一样直连。可选字段 `rdp.sshTarget` 保存 SSH
+主机可访问的 `主机[:端口]`，不填端口则用 3389。不覆盖目标时，使用远程桌面
+连接的 `addr` 和 `port`。这些字段不包含凭据；SSH 和远程桌面凭据仍使用系统凭据库。
+
 ### Telnet 和串口字段
 
 - `kind` 缺省表示 SSH，`telnet` 表示 Telnet，`serial` 表示串口。
@@ -97,6 +104,10 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - `systemProxy` 和 `pac`（规则列表）让运行中的本机代理隧道成为这台电脑的系统代理。原来的系统设置保存在本机的 `sysproxy-backup.json`，不同步，只在成功恢复后删除，不要复制到其他电脑。在 macOS 上，恢复后原本为空的代理地址可能保留未生效的值，对应代理仍为禁用状态。
 
 隧道密码不写入 `hosts.json`，也不同步。系统凭据库的键是 `host/<主机 ID>/tunnel/<隧道 ID>/password` 和 `host/<主机 ID>/tunnel/<隧道 ID>/upstream/password`。配置了用户名但没有对应密码时，不会打开监听。开放监听的注意事项见[隧道](features.md#隧道)。
+
+`serverRelay` 为远程隧道启用服务器中继。本机的 `tunnel-firewall.json` 记录
+公网访问助手添加的规则，包括 SSH 主机及端点、隧道 ID、端口、后端及规则标记
+或区域。此文件不含凭据、不参与同步。删除该文件不会移除服务器上的规则。
 
 ### 代理
 

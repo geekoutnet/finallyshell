@@ -47,7 +47,7 @@ func (a *App) startTunnels(s *Session, tunnels []config.Tunnel) {
 		}
 		run := &tunnelRun{spec: t}
 		s.tunnels.runs = append(s.tunnels.runs, run)
-		if t.Enabled() {
+		if t.Enabled() && !t.ServerRelay {
 			a.startTunnel(s, run)
 		}
 	}
@@ -90,6 +90,10 @@ func (a *App) stopSessionTunnel(s *Session, id string) bool {
 func (a *App) startTunnel(s *Session, run *tunnelRun) {
 	client := s.client
 	if client == nil || run.fwd != nil || run.starting {
+		return
+	}
+	if run.spec.ServerRelay {
+		a.openTunnelExposure(s.Host, run.spec, s, run, nil, WindowMain)
 		return
 	}
 	run.gen++
@@ -266,7 +270,11 @@ func (a *App) tunnelPanel(c *ui.Context) {
 		ts.table.Selected = &ts.selection
 		ts.table.Key = func(i int) any { return runs[i] }
 		ts.table.Label = func(i int) string { return tunnelName(&runs[i].spec) + " " + runs[i].address() }
-		ts.table.CellMenu = func(menu *ui.Menu, row, _ int) { a.tunnelMenu(c, menu, s, runs[row], connected) }
+		ts.table.CellMenu = func(menu *ui.Menu, row, _ int) {
+			a.tunnelMenu(c, menu, s, runs[row], connected)
+			a.exposeRunMenu(menu, s, runs[row])
+		}
+		ts.table.HeaderMenu = func(menu *ui.Menu, _ int) { a.exposeRunMenu(menu, s, nil) }
 		ui.Table(c, &ts.table, cols, len(runs), func(row, col int) {
 			a.tunnelCell(c, s, runs[row], cols[col].ID, connected, narrow)
 		}).Grow(1).MinHeight(0)

@@ -211,6 +211,12 @@ func (a *App) tunnelEditorTable(c *ui.Context, te *tunnelEditor) {
 		if resourceMenuItem(menu, locales.TunnelRemove(), "", true) {
 			te.askRemove(row)
 		}
+		if ed := a.editor; ed != nil && &ed.tunnels == te {
+			a.exposeEditorItem(menu, ed, row)
+		}
+	}
+	if ed := a.editor; ed != nil && &ed.tunnels == te {
+		te.table.HeaderMenu = a.exposeEditorHeaderMenu(ed)
 	}
 	table := ui.Table(c, &te.table, tunnelColumns(), len(list), func(row, col int) {
 		t := &list[row]

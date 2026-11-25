@@ -132,6 +132,7 @@ var (
 		// file of this device's own.
 		"commandEditorShown", "commandEditorWidth", "commandEditorPercent",
 		"commandEditorNoEnter", "commandEditorClear",
+		"codeEditorFontSize",
 		"termBackground", // a file in this device's config folder
 		"localShell",     // a program of this device's, whose path differs on others
 		"sshAgent",       // this device's agent, a socket or pipe of its own

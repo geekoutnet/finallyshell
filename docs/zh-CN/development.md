@@ -35,13 +35,9 @@ go test ./...
 
 界面代码用 `ui.NewTester` 在没有窗口的情况下测试，`tt.Image()` 返回窗口的一帧画面。
 
-用真实服务器跑集成测试（连接、终端、监控、拖拽上传、下载）：
+### 在真实机器上测试
 
-```sh
-FINALLYSHELL_TEST_SSH=user:password@127.0.0.1:22 go test ./internal/app -run SSH -v
-```
-
-隧道的测试（`internal/sshx` 的 `TestTunnels`、`internal/app` 的 `TestSSHTunnels`）也用这个变量。服务器要在本机（远程隧道的端口从本机去连），并允许 TCP 转发（`AllowTcpForwarding yes`）。不设变量时它们用进程内的测试服务器（`internal/sshtest`）。
+SSH 联机集成测试和需要 Linux 服务器的手工验证，都使用 [Docker 测试箱](testing.md)。不要在真实服务器或生产服务器上运行会修改服务器的测试。不需要真实服务的用例可使用进程内的 SSH 测试服务（`internal/sshtest`）。
 
 ## 提交前的检查
 

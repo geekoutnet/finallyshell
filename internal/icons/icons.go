@@ -6,6 +6,7 @@ package icons
 import (
 	"embed"
 	"sync"
+	"testing"
 
 	"github.com/egoist/mygo/ui"
 )
@@ -18,8 +19,9 @@ var (
 	parsed = map[string]*ui.SVG{}
 )
 
-// Get returns the icon named after its file in svg/, without ".svg". It
-// panics on a name that has no file, which is a bug in the app.
+// Get returns the icon named after its file in svg/, without ".svg". A
+// name with no file is a bug in the app: tests panic on it, while the
+// app draws a blank icon rather than crash over a decoration.
 func Get(name string) *ui.SVG { return get("svg/" + name + ".svg") }
 
 // Agent returns the logo of a coding agent, named after its file in
@@ -35,9 +37,15 @@ func get(file string) *ui.SVG {
 	}
 	data, err := files.ReadFile(file)
 	if err != nil {
-		panic("icons: no icon " + file)
+		if testing.Testing() {
+			panic("icons: no icon " + file)
+		}
+		data = blank
 	}
 	s := ui.MustParseSVG(data)
 	parsed[file] = s
 	return s
 }
+
+// blank is the icon drawn for a name with no file, outside tests.
+var blank = []byte(`<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"></svg>`)

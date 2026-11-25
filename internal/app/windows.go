@@ -146,6 +146,9 @@ func (a *App) windowOpen(kind WindowKind) bool { return a.windows[kind] }
 func (a *App) closeWindows() {
 	kinds := make([]WindowKind, 0, len(a.windows))
 	for k := range a.windows {
+		if window := a.codeEditors[k]; window != nil && !a.quitApproved && (window.unsaved() != 0 || window.cancel != nil) {
+			continue
+		}
 		if k == WindowFileEditor && !a.quitApproved && !a.fe.discard && a.unsavedFiles() > 0 {
 			continue
 		}

@@ -63,6 +63,7 @@ type Session struct {
 	overview overviewState // the Overview tab, see overview.go
 	docker   dockerPage    // the Docker tab, see dockerpage.go
 	server   serverPage    // the System tab, see serverpage.go
+	caddy    caddyPage     // the Caddy tab, see caddypage.go
 
 	hostKeyQ *sshx.HostKeyQuestion
 	cancel   context.CancelFunc

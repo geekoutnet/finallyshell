@@ -245,6 +245,7 @@ default.
 | `optionAsAlt` | `true` makes Option the Alt (Meta) key on macOS. | Off. |
 | `termFontFamily` | Terminal font, a comma-separated list. | JetBrains Mono, Cascadia Mono, Consolas, Menlo, DejaVu Sans Mono, monospace |
 | `termFontSize` | Font size, 6 to 48. | 13.5 |
+| `codeEditorFontSize` | Code editor font size, 9 to 36 DIPs. Stays on this computer. | 13 |
 | `termLineHeight` | Line height as a multiple of the font's, 0.8 to 2. | 1 |
 | `termFontWeight` | Font weight: 300, 400, 500, 600 or 700. | 400 |
 | `termNoLigatures` | `true` turns ligatures off. | Ligatures on. |
@@ -354,6 +355,10 @@ place. These files are not copied to this computer or synced.
 
 `ai` stores `provider`, `endpoint`, `model`, `systemPrompt`, and `sendContext`. These preferences can sync; the per-endpoint API key and the explicit opt-in for keyless local Ollama live only in the system credential store. `shortcuts.generateAI` overrides the default Ctrl+Shift+I (Cmd+I on macOS), or disables it with `none`. `chats.json` keeps up to 24 recent conversations and 48 messages per conversation on this device.
 
+### Caddy files
+
+The Caddy tab adds no host or application settings. It uses the detected configuration, environment file and data directory on the remote server. Typical defaults are `/etc/caddy/Caddyfile`, a `sites/` directory for the managed layout, backups under `/etc/caddy/.backups/`, and `/var/lib/caddy/.local/share/caddy` for service data. Docker paths and service overrides can differ. The local CA export contains only its public certificate.
+
 ## db.json
 
 This optional file maps SSH host IDs to arrays of Database tab connection
@@ -390,7 +395,7 @@ local: `sidebarWidth`, `monitorPercent`, `terminalPercent`, `treeWidth`,
 `monitorHidden`, `bottomPanelHidden`, `bottomPanelSide`, `rightPanelWidth`,
 `monitorSide`, `rightMonitorPercent`, `commandEditorShown`,
 `commandEditorWidth`, `commandEditorPercent`, `commandEditorNoEnter`,
-`commandEditorClear`, `termBackground`, `localShell`, `sshAgent`, `x11Display`, `downloadDir`,
+`commandEditorClear`, `codeEditorFontSize`, `termBackground`, `localShell`, `sshAgent`, `x11Display`, `downloadDir`,
 `askDownloadDir`, `sync`,
 `geoLocations`, `geoLocationsV6`, `geoOnline`, `leftPanelPage` and
 `connectionTreeExpanded` (the left panel's page and the folders open are
@@ -614,6 +619,10 @@ How passwords are used:
   (see the comment at the top of `internal/app/secrets.go`). They run in
   order on a background goroutine, and the results go back to the UI thread
   through `App.post`.
+
+## Caddy site and global files
+
+The Sites and Global options sections read the detected main Caddyfile (normally `/etc/caddy/Caddyfile`) and its imports. Existing sites are written back to their original file. In a managed layout, creating or duplicating a site writes `<sites directory>/<sanitized first address>.caddy`, with a numeric suffix if needed. An unexpected file at the chosen path is never overwritten. Other layouts append to the main file; new snippets and global options also go there. A disabled site remains in its original file as a marked comment block. Config transactions keep timestamped backups in `.backups` next to the main file; native uninstall recovery copies are stored under `/var/backups/finallyshell-caddy.*`. These sections do not write plaintext site passwords to local configuration or sync data and have no app settings of their own.
 
 ## Where SSH keys are stored
 

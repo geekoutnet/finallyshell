@@ -380,6 +380,8 @@ func (a *App) fileTable(c *ui.Context, s *Session) {
 				if m.Item(locales.Edit()).Chosen() {
 					a.openRemoteFile(s, path.Join(f.cwd, e.Name))
 				}
+				a.codeEditorMenuItem(m, s, path.Join(f.cwd, e.Name), false)
+				a.codeEditorMenuItem(m, s, path.Join(f.cwd, e.Name), true)
 				m.Separator()
 			}
 			a.downloadMenuItems(m, s, names)

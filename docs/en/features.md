@@ -2001,8 +2001,16 @@ there is no connection, and Save is disabled. After the session reconnects,
 saving uses its new SFTP connection. If the session's tab was closed, the
 file is saved through another connected session to the same host.
 
-Not supported: saving with sudo. A file without write permission fails to
-save with "permission denied".
+A file without write permission fails to save in the regular editor. Use
+the code editor to edit with elevated permissions.
+
+### Code editor
+
+- In the file list, choose **Open in code editor** or **Edit as root in code editor**. Each invocation opens a separate window. When a tool opens several files (such as a Caddyfile and its imports), a collapsible tree lets you open them in tabs. Modified files have a dot.
+- The editor highlights Caddyfile, Nginx, systemd units, dotenv and INI files, as well as MyGo's built-in languages. For Caddyfile, use `Ctrl+Space` for directives, global options and matchers, `Tab` to move between snippet fields, and `Ctrl+/` (`Cmd+/` on macOS) to toggle comments. The toolbar provides search, replace, line navigation, undo/redo, wrapping, folding and font sizing. The status bar lets you choose the language, indentation and LF or CRLF; UTF-8 BOMs are preserved.
+- **Save** (`Ctrl+S` / `Cmd+S`) and **Save All** show the exact paths and a split or unified diff before writing. The editor shows pending operations and their results, including validation output and backups. The Caddy save hook receives all modified files as one batch, with their original bytes for conflict detection. A rejected validation leaves edits unsaved; Caddy does not offer a bypass.
+- Without a save hook, the editor refuses changed files and symlinks, backs up each original as `<file>.bak-<yyyymmddHHMMSS>` and replaces it atomically, preserving owner and permissions. SSH-user saves require the SFTP server's atomic rename extension; root saves go through the shared escalation layer. Ordinary multi-file saves are atomic per file, not a single transaction. Files larger than 5 MiB open as a read-only preview of the first 256 KiB; non-UTF-8 text and binary files are not editable.
+- Disconnecting keeps edits in memory. Reconnect to the same host and retry; for an editor opened by a tool with its own checks, reconnect the original SSH session. A conflicting file is never overwritten. Closing a modified tab or window asks whether to save, discard or cancel.
 
 ## Desktop mode
 
@@ -2187,6 +2195,41 @@ The System tab of the bottom panel manages the connected server itself: a row at
 - **Configuration:** Create a static site or a reverse proxy to a port on `127.0.0.1`, optionally using existing TLS certificate and private-key paths. A new site goes in `sites-available` with a matching link or in `conf.d`. Changes require confirmation. An edit saves a sibling `.bak-YYYYMMDDHHMMSS` backup, refuses stale files, and reloads a running Nginx only after `nginx -t` succeeds. When the test fails, the previous file is put back at once and the editor shows your edits again, so the next start of Nginx never meets a broken file; if putting it back fails too, **Restore backup** does it by hand. Link and creation changes are rolled back on a failed test. Custom layouts, unsafe file ownership or permissions, and include patterns that would pick up a backup can prevent changes.
 - **Certificates:** View public certificates used by Nginx and Let's Encrypt `fullchain.pem` files, including the subject, SANs, issuer, public-key type and validity dates. Expiry turns yellow under 30 days and red under 7 days, including expired certificates. **Check domain** compares the certificate presented on port 443 from the SSH server with the certificate and trust result from this computer; the server-side probe does not verify trust.
 - **ACME:** Inspect Certbot lineages and common renewal timers or cron entries. `acme.sh` is detected only. Certbot renewal and its staging dry run both ask first because existing hooks may run. Issuing a certificate requires the Certbot Nginx plugin and asks before publishing names to an ACME CA and letting the plugin change Nginx. Supported Nginx configurations are backed up before running these tools. A canceled stream does not guarantee that the remote operation has been undone; refresh and inspect its state before retrying.
+
+## Caddy tab
+
+The Caddy tab manages the web server of an SSH connection. It includes Overview, Sites, Global options, Config files, Certificates, Logs, and Install & migrate. Open it as a full-size tab for more room. Server operations that need root use the connection's privilege escalation. Configuration changes are backed up, written atomically, and validated against the complete configuration before reloading a running service. A stopped native service stays stopped. If validation or reload fails, the previous files are restored.
+
+### Caddy tab › Overview and service
+
+The Overview detects an existing installation automatically and shows its service or container, version and available update, config and data directories, custom modules, admin API reachability, listening addresses and port conflicts. When the data is available it also shows service resource usage, websites, expiring certificates and reverse proxy upstream failures. Start, stop, restart, graceful reload, validate and boot settings each show a confirmation before running. Stopping Caddy takes its websites offline; port conflicts link to the System tab's Websites section.
+
+### Caddy tab › Sites
+
+- Filter sites by address, type, target or file. The full table shows TLS, the configuration file and line, and indicators for basic authentication, IP rules, headers and access logging. In a narrow panel, hover over an address for these details.
+- Create or duplicate a site with a live Caddyfile preview. Managed layouts create a separate file for each new site; other layouts append to the main Caddyfile. Templates cover static files, reverse proxies, Node.js and Go applications, PHP/WordPress, SPAs, www redirects, authenticated file browsing, API gateways, Docker ports, WebSocket and load balancing. PHP-FPM can look up sockets on the server; the Docker template uses published TCP ports from the connection's Docker overview.
+- The form covers TLS, client certificates, IP and authentication rules, compression, headers and CORS, request size, access logs, path routes and proxy health checks. Caddy hashes new basic-auth passwords on the server; plaintext never appears in the preview or saved configuration. Use the code editor for sites with settings or comments the form cannot preserve.
+- Use the row menu to disable, enable or delete a site, open an HTTP(S) address, or test response headers from this computer or the server. Validate checks the full candidate configuration without saving. Changes name the addresses and files, then back up, validate and hot-reload the configuration; a failure restores the previous files.
+
+### Caddy tab › Global options
+
+- Browse settings grouped into general, binding and ports, admin API, logging, TLS/ACME, on-demand TLS, servers, local CA and metrics. Compound settings accept Caddyfile syntax with examples, and server settings can be edited individually in the draft. Unknown and sensitive entries are not rewritten by the forms.
+- For trusted proxies, use Caddy's private ranges or download Cloudflare's official IPv4 and IPv6 ranges from this computer. Review the draft before saving and only trust proxies that actually forward your requests.
+- Add, edit or remove named snippets. Use the code editor to change an existing snippet's name and its imports together. Saving asks for confirmation, checks for intervening edits, validates the entire configuration and hot-reloads; a failure restores the previous files.
+
+### Caddy tab › Config files
+
+Browse the main config and its imports, and open them together in the code editor. Formatting and backup restoration show a diff before applying. A file that changed after it was read is not overwritten. Adapt a Caddyfile to JSON or view the running configuration from the admin API; both previews are read-only. The service's environment file can also be opened if detected. Keep private values out of shared screenshots.
+
+### Caddy tab › Certificates and logs
+
+The certificate list includes the issuer, key type, location and time remaining; less than seven days is red, and less than 30 days is amber. Caddy renews its managed certificates automatically. Copy the public local CA certificate or download it when its file is available via SFTP. The log viewer follows the service journal, container logs, or a detected access log file. Pause, clear, filter with text or a regular expression, or inspect JSON access logs in columns and view individual entries in full.
+
+### Caddy tab › Install, update and migrate
+
+The wizard recommends an installation method and previews startup, autostart and optional firewall changes (80/TCP, 443/TCP and 443/UDP in active UFW or the default firewalld zone). If another web service holds ports 80/443, leave Caddy stopped or explicitly confirm stopping and disabling recognized services. Failed installation attempts restore the affected firewall rules and service state. Updates use the detected installation method; Compose-managed containers should be updated through Compose. Uninstall keeps configuration and data by default. Removing them from a standard native installation requires typing `caddy`; the files are moved to a private recovery directory.
+
+Adopt an existing installation without editing it, review a diff for managed-layout conversion, or move a supported standalone binary to an official package. For Nginx, select and review editable drafts; complex rules are flagged for manual review. Optional cutover validates the reviewed config, stops and disables Nginx, enables and starts Caddy, and verifies that its service process owns both TCP ports 80 and 443. Failure restores the previous config and service states; Nginx files are never removed. Port checks do not verify individual websites. Migration between Docker and a host service is not supported.
 
 ## Tunnels tab
 

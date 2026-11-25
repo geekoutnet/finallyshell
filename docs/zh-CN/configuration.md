@@ -177,6 +177,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `optionAsAlt` | `true` 时在 macOS 上把 Option 用作 Alt（Meta）键。 | 关。 |
 | `termFontFamily` | 终端字体，逗号隔开的列表。 | JetBrains Mono, Cascadia Mono, Consolas, Menlo, DejaVu Sans Mono, monospace |
 | `termFontSize` | 字号，6 到 48。 | 13.5 |
+| `codeEditorFontSize` | 代码编辑器字号，9 到 36 DIP，仅保存在本机。 | 13 |
 | `termLineHeight` | 行高，字体本身行高的倍数，0.8 到 2。 | 1 |
 | `termFontWeight` | 粗细：300、400、500、600 或 700。 | 400 |
 | `termNoLigatures` | `true` 时关掉连字。 | 开启连字。 |
@@ -266,6 +267,10 @@ DNS 属性。恢复后仍保留首次备份。这些文件不会复制到本机�
 ### AI 助手设置
 
 `ai` 保存 `provider`、`endpoint`、`model`、`systemPrompt` 和 `sendContext`。这些偏好可以同步；每个接口的 API 密钥以及对本机 Ollama 免密钥访问的授权仅存系统凭据库。`shortcuts.generateAI` 可覆盖默认的 Ctrl+Shift+I（macOS 为 Cmd+I），也可设为 `none` 禁用。`chats.json` 在本机保留最近 24 个对话，每个最多 48 条消息。
+
+### Caddy 文件
+
+Caddy 页不添加主机或应用设置。它使用远程服务器上检测到的配置、环境变量文件和数据目录。常见路径有 `/etc/caddy/Caddyfile`、用于托管布局的 `sites/` 目录、`/etc/caddy/.backups/` 下的备份，以及 `/var/lib/caddy/.local/share/caddy` 下的服务数据。Docker 或自定义服务的路径可能不同。导出的本地根证书不包含私钥。
 
 ## db.json
 
@@ -396,6 +401,10 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 - 关掉“记住密码”会把密码从凭据存储里删掉，只留在内存里，退出程序后需要重新输入。这个选择按主机保存（`hosts.json` 的 `noRememberPassword`），以后密码框也默认不勾。
 - 系统没有凭据存储时（Linux 上没有 libsecret、没有会话 D-Bus，或者 D-Bus 上没有 Secret Service，服务器和精简桌面上常见），密码只存在内存里：编辑器和密码框里的“记住密码”变灰，下面写明原因。
 - 读写凭据存储时系统可能会询问用户：解锁钥匙串或密钥环；macOS 上重新编译过的程序第一次读以前存的条目时，会问是否允许。这些调用可能要等很久，所以程序从不在 UI 线程上调用它们（见 `internal/app/secrets.go` 开头的说明），而是放在一个后台 goroutine 里按顺序执行，结果通过 `App.post` 交回 UI 线程。
+
+## Caddy 网站和全局配置文件
+
+网站和全局设置会读取探测到的主 Caddyfile（通常为 `/etc/caddy/Caddyfile`）及其导入文件。已有网站写回原文件。托管布局下，新建或复制网站会写入 `<网站目录>/<清理后的首个地址>.caddy`，重名时加数字后缀；选定路径意外出现文件时不会覆盖。其他布局下，新网站追加到主文件；新建片段和全局设置也写入主文件。停用的网站保留在原文件的带标记注释块中。配置事务的带时间戳备份位于主文件旁的 `.backups`，原生卸载的恢复副本位于 `/var/backups/finallyshell-caddy.*`。这两个页面没有独立的应用设置，也不会将网站明文密码写入本地配置或同步数据。
 
 ## SSH 密钥存在哪里
 

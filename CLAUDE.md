@@ -60,8 +60,9 @@ Work is issue-driven; the `issue-workflow` skill
 - `go test -race ./...` must pass. UI code is tested with `ui.NewTester`
   (headless; `tt.Image()` gives a frame for screenshots, `SHOT_DIR=dir`
   makes the tests save theirs).
-- `TestSSH` in `internal/app` runs against a real server when
-  `FINALLYSHELL_TEST_SSH=user:password@host:port` is set.
+- Use the Docker test machine for all real-machine testing
+  ([testbox skill](.claude/skills/testbox/), [testing guide](docs/en/testing.md)).
+  Never run mutating tests against real or production servers.
 - New UI text goes in `locales/en.json` and `locales/zh-Hans.json`, then
   `go tool mygo generate`; commit the regenerated `locales/catalog_gen.go`.
 - Run `go vet ./...` and `go tool mygo vet` before committing.

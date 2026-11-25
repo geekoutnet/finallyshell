@@ -1027,39 +1027,41 @@ Type is one of None (connect directly), SOCKS5, HTTP or Jump host.
 
 ### Tunnels
 
-SSH port forwarding. A table lists Type, Listen on, Forward to and
-Enabled, with Add…, Edit… and Remove below it (double-clicking a row also
-edits it). Adding and editing use the same dialog.
+The connection editor lists each tunnel's name, type, listener, target
+or exit, restrictions, and whether it starts with the session. Double-click
+a row or use its menu to edit it. Changes take effect on the next connection.
 
-- Local (`-L`): listens on this computer, and forwards each connection
-  through the server to the target (the target address is resolved on the
-  server's side).
-- Remote (`-R`): listens on the server, and sends each connection back to
-  this computer, which connects to the target.
-- Dynamic (`-D`): a SOCKS5 proxy on this computer; the server connects to
-  the addresses that clients ask for. Only CONNECT is supported, without
-  authentication. Addresses can be IPv4, IPv6 or domain names (resolved
-  by the server). The SOCKS5 server is a small piece of code of its own
-  (`sshx/forward.go`), as none of the existing dependencies had one.
+| Type | Listener | Exit or destination |
+|---|---|---|
+| Local (`-L`) | This computer | The SSH server connects to a host and port, or to an absolute Unix socket path such as `/var/run/docker.sock`. |
+| Remote (`-R`) | SSH server | This computer connects to a fixed host and port. |
+| Dynamic (`-D`) | This computer | SOCKS5 CONNECT from the SSH server. UDP and BIND are not supported. |
+| HTTP proxy | This computer | HTTP requests and CONNECT from the SSH server. |
+| Reverse SOCKS5 | SSH server | SOCKS5 CONNECT from this computer. |
+| Reverse HTTP | SSH server | HTTP requests and CONNECT from this computer. |
 
-By default a tunnel listens on `127.0.0.1` only (for a remote tunnel, the
-server's `127.0.0.1`), so only the same machine can connect. Checking "Let
-other computers connect" allows another listen address (`0.0.0.0` by
-default) and shows a warning: anyone can use the tunnel without logging
-in. A remote tunnel also needs the server's `GatewayPorts` to allow it.
+Leave the listen port blank or use `0` to allocate a free port at start.
+Fixed ports are checked for conflicting listeners on the same side, including
+wildcard addresses. For remote tunnels, use an IP address or `localhost`.
+The default is `127.0.0.1` on the listening machine. Listening beyond
+loopback requires explicit acknowledgment; only use it for intended clients.
+For public access on the server, check the SSH server's `GatewayPorts` and
+firewall policy. The port reported by SSH is not proof of public reachability.
 
-The listen address of a remote tunnel must be an IP address (IPv4 or IPv6)
-or `localhost` (meaning `127.0.0.1`). The SSH library would resolve a host
-name on this computer rather than on the server, so host names are not
-accepted. If `hosts.json` was edited by hand to contain one, that tunnel
-reports an error explaining why when it starts, and the table shows a
-warning icon on it.
+Local SOCKS5 and HTTP proxies can serve both protocols on the same port.
+Set a username and password to require SOCKS5 username/password or HTTP
+Basic proxy authentication. These credentials are not encrypted between a
+proxy client and the listener itself; use loopback or a trusted network.
+Never expose an unauthenticated proxy or a Docker socket to an untrusted
+network. Remote tunnels can exit directly or through a SOCKS5 or HTTP CONNECT
+upstream reachable from this computer, with separate optional credentials.
 
-Ports must be from 1 to 65535, and the target host is required. When
-another tunnel on the same machine already listens on the same port, the
-dialog says "Another tunnel already listens on this port". A tunnel with
-"Start with the session" turned off does not start automatically, but can
-be started by hand on the Tunnels tab.
+**Advanced** accepts IPv4 and IPv6 addresses or CIDRs in an IP allowlist,
+a concurrent connection cap, a shared rate limit in KiB/s per direction,
+and a per-connection idle timeout. Blank or zero means no numeric limit.
+Remote allowlists use the origin address reported by the SSH server, not
+an HTTP header. Disabling **Start with the session** leaves the tunnel
+available for manual start.
 
 ### Tunnel recipes
 
@@ -1964,28 +1966,23 @@ The System tab of the bottom panel manages the connected server itself: a row at
 
 ## Tunnels tab
 
-The "Tunnels" tab at the bottom right lists the tunnels of the current
-session. Each shows:
+The session's **Tunnels** tab shows each listener (including its assigned
+port), target or exit, status, last error, open, total and rejected
+connections, and traffic in both directions. The chart shows recent
+one-second traffic samples. The tab count is the number of live listeners.
 
-- its status: Starting…, Listening, Stopped, or the reason it failed, such
-  as "Port 127.0.0.1:8080 is already in use" or "The server did not listen
-  on …: the port is in use there, or forwarding is not allowed";
-- the number of open connections and of connections in all;
-- bytes sent and received;
-- why the last connection that could not reach the target failed.
+Right-click a row or open **Tunnel actions** to start or stop it after
+confirmation, copy its address or an example command, view its connection
+log, or edit its definition. Copied proxy addresses and commands omit
+credentials. For a reverse proxy, use them on the server, not on this computer.
+The in-memory log shows the last 200 completed or rejected connections for
+that run and can be filtered or copied; it does not record URLs, headers or
+request bodies. With an HTTP keep-alive client the log lists its last target.
 
-Each row has Start or Stop. The number on the tab is the number of tunnels
-listening.
-
-- When a session connects, its enabled tunnels start. A tunnel that fails
-  (for example because its port is in use) only affects itself; the
-  session connects as usual.
-- Disconnecting, losing the connection or closing the session stops all of
-  them and frees their ports. Reconnecting starts them again with the
-  host's current settings.
-- When the host is reached through a proxy or jump host, tunnels use the
-  connection to the host itself.
-- "Edit tunnels…" opens the Tunnels page of the connection editor.
+Enabled tunnels start when the SSH session connects. A failed listener
+does not fail the session. Closing, disconnecting, or losing the session
+stops its tunnels; reconnecting uses the host's current settings. When the
+host uses a jump host, forwarding uses the connection to the final host.
 
 ## Tunnel manager
 

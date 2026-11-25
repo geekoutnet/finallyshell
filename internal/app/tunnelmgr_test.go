@@ -174,6 +174,7 @@ type tunnelManagerDemoHandle struct {
 func (handle tunnelManagerDemoHandle) Addr() net.Addr          { return handle.addr }
 func (handle tunnelManagerDemoHandle) Stats() sshx.TunnelStats { return handle.stats }
 func (tunnelManagerDemoHandle) Done() <-chan struct{}          { return nil }
+func (tunnelManagerDemoHandle) Conns() []sshx.TunnelConn       { return nil }
 func (tunnelManagerDemoHandle) Err() error                     { return nil }
 func (tunnelManagerDemoHandle) Stop()                          {}
 

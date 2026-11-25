@@ -178,6 +178,15 @@ func TestTunnelsLifecycle(t *testing.T) {
 	if err := tt.Click(locales.TunnelStart()); err != nil { // the first: the port taken
 		t.Fatal(err)
 	}
+	if runs[3].starting || s.tunnels.confirm == nil {
+		t.Fatal("started without confirmation")
+	}
+	clickButton(t, tt, locales.Cancel())
+	if runs[3].starting || s.tunnels.confirm != nil {
+		t.Fatal("cancel started a tunnel")
+	}
+	clickButton(t, tt, locales.TunnelStart())
+	clickButton(t, tt, locales.TunnelStart())
 	p.until(t, "the retry", func() bool { return !runs[3].starting })
 	if runs[3].err == nil || runs[3].fwd != nil {
 		t.Errorf("retry: %v", runs[3].err)
@@ -185,6 +194,7 @@ func TestTunnelsLifecycle(t *testing.T) {
 	if err := tt.Click(locales.TunnelStart()); err != nil {
 		t.Fatal(err)
 	}
+	clickButton(t, tt, locales.TunnelStart())
 	if !runs[3].starting {
 		t.Fatal("start did not start")
 	}

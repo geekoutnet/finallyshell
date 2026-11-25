@@ -2,9 +2,11 @@ package app
 
 import (
 	"strconv"
+	"strings"
 	"time"
 
 	"finallyshell/internal/config"
+	"finallyshell/internal/sshx"
 	"finallyshell/internal/widgets"
 	"finallyshell/locales"
 	"github.com/egoist/mygo/ui"
@@ -91,7 +93,7 @@ func (a *App) tunnelManagerLog(c *ui.Context, row tunnelManagerRow) {
 	}
 	open := true
 	ui.Modal(c, &open, func() {
-		ui.Column(c).Width(500).Gap(10).Children(func() {
+		ui.Column(c).Width(640).Gap(10).Children(func() {
 			ui.Text(c, locales.TmgrLog()).Bold().FontSize(16)
 			widgets.Muted(c, row.host+" · "+row.name()+" · "+row.bind())
 			ui.Text(c, locales.TmgrLastError()).Bold()
@@ -101,6 +103,23 @@ func (a *App) tunnelManagerLog(c *ui.Context, row tunnelManagerRow) {
 			if !row.retryAt.IsZero() {
 				widgets.Muted(c, locales.TmgrNextRetry(row.retryAt.Local().Format(time.TimeOnly), strconv.Itoa(row.attempt)))
 			}
+			// The tunnel's last connections, newest first, from its
+			// background run or the session that runs it.
+			var conns []sshx.TunnelConn
+			if run := a.tmgr.runs[row.key]; run != nil && run.handle != nil {
+				conns = run.handle.Conns()
+			} else if len(row.sessions) > 0 && row.sessions[0].run.last != nil {
+				conns = row.sessions[0].run.last.Conns()
+			}
+			ui.Text(c, locales.TunConnectionLog()).Bold()
+			ui.Scroll(c).MaxHeight(220).FillWidth().Children(func() {
+				if len(conns) == 0 {
+					widgets.Muted(c, locales.TunNoLog())
+				}
+				for i := len(conns) - 1; i >= 0; i-- {
+					ui.Text(c.Key(i), strings.Join(tunnelLogValues(conns[i]), "  ·  ")).FontSize(12).SingleLine().Tooltip(strings.Join(tunnelLogValues(conns[i]), "\n"))
+				}
+			})
 			ui.Row(c).Justify(ui.End).Children(func() {
 				if ui.Button(c, locales.Close()).AutoFocus().Clicked() {
 					open = false

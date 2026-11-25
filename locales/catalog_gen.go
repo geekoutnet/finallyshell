@@ -3508,6 +3508,780 @@ func (msgs Messages) TunnelKindDynamic() string {
 	return Catalog.Format(msgs.locale, "tunnelKindDynamic", nil)
 }
 
+// TunKindHTTP says "HTTP proxy"
+// in the language the app shows.
+func TunKindHTTP() string { return In(i18n.Locale()).TunKindHTTP() }
+
+// TunKindHTTP says "HTTP proxy"
+// in the language of msgs.
+func (msgs Messages) TunKindHTTP() string {
+	return Catalog.Format(msgs.locale, "tunKindHTTP", nil)
+}
+
+// TunKindRemoteDynamic says "Reverse SOCKS5"
+// in the language the app shows.
+func TunKindRemoteDynamic() string { return In(i18n.Locale()).TunKindRemoteDynamic() }
+
+// TunKindRemoteDynamic says "Reverse SOCKS5"
+// in the language of msgs.
+func (msgs Messages) TunKindRemoteDynamic() string {
+	return Catalog.Format(msgs.locale, "tunKindRemoteDynamic", nil)
+}
+
+// TunKindRemoteHTTP says "Reverse HTTP"
+// in the language the app shows.
+func TunKindRemoteHTTP() string { return In(i18n.Locale()).TunKindRemoteHTTP() }
+
+// TunKindRemoteHTTP says "Reverse HTTP"
+// in the language of msgs.
+func (msgs Messages) TunKindRemoteHTTP() string {
+	return Catalog.Format(msgs.locale, "tunKindRemoteHTTP", nil)
+}
+
+// TunHintHTTP says "Listens here as an HTTP proxy; connections exit from the server."
+// in the language the app shows.
+func TunHintHTTP() string { return In(i18n.Locale()).TunHintHTTP() }
+
+// TunHintHTTP says "Listens here as an HTTP proxy; connections exit from the server."
+// in the language of msgs.
+func (msgs Messages) TunHintHTTP() string {
+	return Catalog.Format(msgs.locale, "tunHintHTTP", nil)
+}
+
+// TunHintRemoteDynamic says "Listens on the server as a SOCKS5 proxy; connections exit from this computer."
+// in the language the app shows.
+func TunHintRemoteDynamic() string { return In(i18n.Locale()).TunHintRemoteDynamic() }
+
+// TunHintRemoteDynamic says "Listens on the server as a SOCKS5 proxy; connections exit from this computer."
+// in the language of msgs.
+func (msgs Messages) TunHintRemoteDynamic() string {
+	return Catalog.Format(msgs.locale, "tunHintRemoteDynamic", nil)
+}
+
+// TunHintRemoteHTTP says "Listens on the server as an HTTP proxy; connections exit from this computer."
+// in the language the app shows.
+func TunHintRemoteHTTP() string { return In(i18n.Locale()).TunHintRemoteHTTP() }
+
+// TunHintRemoteHTTP says "Listens on the server as an HTTP proxy; connections exit from this computer."
+// in the language of msgs.
+func (msgs Messages) TunHintRemoteHTTP() string {
+	return Catalog.Format(msgs.locale, "tunHintRemoteHTTP", nil)
+}
+
+// TunAutomatic says "Automatic port"
+// in the language the app shows.
+func TunAutomatic() string { return In(i18n.Locale()).TunAutomatic() }
+
+// TunAutomatic says "Automatic port"
+// in the language of msgs.
+func (msgs Messages) TunAutomatic() string {
+	return Catalog.Format(msgs.locale, "tunAutomatic", nil)
+}
+
+// TunPortHint says "Leave blank or enter 0 to choose a free port when starting."
+// in the language the app shows.
+func TunPortHint() string { return In(i18n.Locale()).TunPortHint() }
+
+// TunPortHint says "Leave blank or enter 0 to choose a free port when starting."
+// in the language of msgs.
+func (msgs Messages) TunPortHint() string {
+	return Catalog.Format(msgs.locale, "tunPortHint", nil)
+}
+
+// TunListenPortError says "Enter a port from 0 to 65535."
+// in the language the app shows.
+func TunListenPortError() string { return In(i18n.Locale()).TunListenPortError() }
+
+// TunListenPortError says "Enter a port from 0 to 65535."
+// in the language of msgs.
+func (msgs Messages) TunListenPortError() string {
+	return Catalog.Format(msgs.locale, "tunListenPortError", nil)
+}
+
+// TunSocketMode says "Unix socket on the server"
+// in the language the app shows.
+func TunSocketMode() string { return In(i18n.Locale()).TunSocketMode() }
+
+// TunSocketMode says "Unix socket on the server"
+// in the language of msgs.
+func (msgs Messages) TunSocketMode() string {
+	return Catalog.Format(msgs.locale, "tunSocketMode", nil)
+}
+
+// TunSocketPath says "Unix socket path"
+// in the language the app shows.
+func TunSocketPath() string { return In(i18n.Locale()).TunSocketPath() }
+
+// TunSocketPath says "Unix socket path"
+// in the language of msgs.
+func (msgs Messages) TunSocketPath() string {
+	return Catalog.Format(msgs.locale, "tunSocketPath", nil)
+}
+
+// TunSocketError says "Enter an absolute Unix path without line breaks."
+// in the language the app shows.
+func TunSocketError() string { return In(i18n.Locale()).TunSocketError() }
+
+// TunSocketError says "Enter an absolute Unix path without line breaks."
+// in the language of msgs.
+func (msgs Messages) TunSocketError() string {
+	return Catalog.Format(msgs.locale, "tunSocketError", nil)
+}
+
+// TunMixed says "Serve HTTP and SOCKS5 on the same port"
+// in the language the app shows.
+func TunMixed() string { return In(i18n.Locale()).TunMixed() }
+
+// TunMixed says "Serve HTTP and SOCKS5 on the same port"
+// in the language of msgs.
+func (msgs Messages) TunMixed() string {
+	return Catalog.Format(msgs.locale, "tunMixed", nil)
+}
+
+// TunMixedExit says "HTTP + SOCKS5 · server"
+// in the language the app shows.
+func TunMixedExit() string { return In(i18n.Locale()).TunMixedExit() }
+
+// TunMixedExit says "HTTP + SOCKS5 · server"
+// in the language of msgs.
+func (msgs Messages) TunMixedExit() string {
+	return Catalog.Format(msgs.locale, "tunMixedExit", nil)
+}
+
+// TunServerExit says "Via the SSH server"
+// in the language the app shows.
+func TunServerExit() string { return In(i18n.Locale()).TunServerExit() }
+
+// TunServerExit says "Via the SSH server"
+// in the language of msgs.
+func (msgs Messages) TunServerExit() string {
+	return Catalog.Format(msgs.locale, "tunServerExit", nil)
+}
+
+// TunLocalExit says "Via this computer"
+// in the language the app shows.
+func TunLocalExit() string { return In(i18n.Locale()).TunLocalExit() }
+
+// TunLocalExit says "Via this computer"
+// in the language of msgs.
+func (msgs Messages) TunLocalExit() string {
+	return Catalog.Format(msgs.locale, "tunLocalExit", nil)
+}
+
+// TunAuth says "Proxy authentication"
+// in the language the app shows.
+func TunAuth() string { return In(i18n.Locale()).TunAuth() }
+
+// TunAuth says "Proxy authentication"
+// in the language of msgs.
+func (msgs Messages) TunAuth() string {
+	return Catalog.Format(msgs.locale, "tunAuth", nil)
+}
+
+// TunUser says "Proxy username"
+// in the language the app shows.
+func TunUser() string { return In(i18n.Locale()).TunUser() }
+
+// TunUser says "Proxy username"
+// in the language of msgs.
+func (msgs Messages) TunUser() string {
+	return Catalog.Format(msgs.locale, "tunUser", nil)
+}
+
+// TunProxyPassword says "Tunnel proxy password"
+// in the language the app shows.
+func TunProxyPassword() string { return In(i18n.Locale()).TunProxyPassword() }
+
+// TunProxyPassword says "Tunnel proxy password"
+// in the language of msgs.
+func (msgs Messages) TunProxyPassword() string {
+	return Catalog.Format(msgs.locale, "tunProxyPassword", nil)
+}
+
+// TunUpstreamPassword says "Upstream password"
+// in the language the app shows.
+func TunUpstreamPassword() string { return In(i18n.Locale()).TunUpstreamPassword() }
+
+// TunUpstreamPassword says "Upstream password"
+// in the language of msgs.
+func (msgs Messages) TunUpstreamPassword() string {
+	return Catalog.Format(msgs.locale, "tunUpstreamPassword", nil)
+}
+
+// TunSecretHint says "Leave blank to keep the existing password for this username and endpoint. Passwords use the system credential store."
+// in the language the app shows.
+func TunSecretHint() string { return In(i18n.Locale()).TunSecretHint() }
+
+// TunSecretHint says "Leave blank to keep the existing password for this username and endpoint. Passwords use the system credential store."
+// in the language of msgs.
+func (msgs Messages) TunSecretHint() string {
+	return Catalog.Format(msgs.locale, "tunSecretHint", nil)
+}
+
+// TunSecretError says "Enter a valid username and password (up to 255 bytes each)."
+// in the language the app shows.
+func TunSecretError() string { return In(i18n.Locale()).TunSecretError() }
+
+// TunSecretError says "Enter a valid username and password (up to 255 bytes each)."
+// in the language of msgs.
+func (msgs Messages) TunSecretError() string {
+	return Catalog.Format(msgs.locale, "tunSecretError", nil)
+}
+
+// TunSecretMissing says "The proxy credentials are missing or invalid. Enter them in the tunnel editor."
+// in the language the app shows.
+func TunSecretMissing() string { return In(i18n.Locale()).TunSecretMissing() }
+
+// TunSecretMissing says "The proxy credentials are missing or invalid. Enter them in the tunnel editor."
+// in the language of msgs.
+func (msgs Messages) TunSecretMissing() string {
+	return Catalog.Format(msgs.locale, "tunSecretMissing", nil)
+}
+
+// TunSecretStoreError says "Could not save the tunnel password in the system credential store."
+// in the language the app shows.
+func TunSecretStoreError() string { return In(i18n.Locale()).TunSecretStoreError() }
+
+// TunSecretStoreError says "Could not save the tunnel password in the system credential store."
+// in the language of msgs.
+func (msgs Messages) TunSecretStoreError() string {
+	return Catalog.Format(msgs.locale, "tunSecretStoreError", nil)
+}
+
+// TunUpstream says "Upstream proxy"
+// in the language the app shows.
+func TunUpstream() string { return In(i18n.Locale()).TunUpstream() }
+
+// TunUpstream says "Upstream proxy"
+// in the language of msgs.
+func (msgs Messages) TunUpstream() string {
+	return Catalog.Format(msgs.locale, "tunUpstream", nil)
+}
+
+// TunUpstreamDirect says "Direct connection"
+// in the language the app shows.
+func TunUpstreamDirect() string { return In(i18n.Locale()).TunUpstreamDirect() }
+
+// TunUpstreamDirect says "Direct connection"
+// in the language of msgs.
+func (msgs Messages) TunUpstreamDirect() string {
+	return Catalog.Format(msgs.locale, "tunUpstreamDirect", nil)
+}
+
+// TunUpstreamAddress says "Upstream host:port"
+// in the language the app shows.
+func TunUpstreamAddress() string { return In(i18n.Locale()).TunUpstreamAddress() }
+
+// TunUpstreamAddress says "Upstream host:port"
+// in the language of msgs.
+func (msgs Messages) TunUpstreamAddress() string {
+	return Catalog.Format(msgs.locale, "tunUpstreamAddress", nil)
+}
+
+// TunUpstreamUser says "Upstream username"
+// in the language the app shows.
+func TunUpstreamUser() string { return In(i18n.Locale()).TunUpstreamUser() }
+
+// TunUpstreamUser says "Upstream username"
+// in the language of msgs.
+func (msgs Messages) TunUpstreamUser() string {
+	return Catalog.Format(msgs.locale, "tunUpstreamUser", nil)
+}
+
+// TunUpstreamError says "Enter a valid host and port and, if needed, a valid username. Do not include a password in the address."
+// in the language the app shows.
+func TunUpstreamError() string { return In(i18n.Locale()).TunUpstreamError() }
+
+// TunUpstreamError says "Enter a valid host and port and, if needed, a valid username. Do not include a password in the address."
+// in the language of msgs.
+func (msgs Messages) TunUpstreamError() string {
+	return Catalog.Format(msgs.locale, "tunUpstreamError", nil)
+}
+
+// TunAllow says "IP allowlist"
+// in the language the app shows.
+func TunAllow() string { return In(i18n.Locale()).TunAllow() }
+
+// TunAllow says "IP allowlist"
+// in the language of msgs.
+func (msgs Messages) TunAllow() string {
+	return Catalog.Format(msgs.locale, "tunAllow", nil)
+}
+
+// TunAllowHint says "One IP address or CIDR per line. Leave blank to allow any source."
+// in the language the app shows.
+func TunAllowHint() string { return In(i18n.Locale()).TunAllowHint() }
+
+// TunAllowHint says "One IP address or CIDR per line. Leave blank to allow any source."
+// in the language of msgs.
+func (msgs Messages) TunAllowHint() string {
+	return Catalog.Format(msgs.locale, "tunAllowHint", nil)
+}
+
+// TunAllowError says "Use IPv4 or IPv6 addresses or CIDRs in the allowlist."
+// in the language the app shows.
+func TunAllowError() string { return In(i18n.Locale()).TunAllowError() }
+
+// TunAllowError says "Use IPv4 or IPv6 addresses or CIDRs in the allowlist."
+// in the language of msgs.
+func (msgs Messages) TunAllowError() string {
+	return Catalog.Format(msgs.locale, "tunAllowError", nil)
+}
+
+// TunMaxConns says "Concurrent connections"
+// in the language the app shows.
+func TunMaxConns() string { return In(i18n.Locale()).TunMaxConns() }
+
+// TunMaxConns says "Concurrent connections"
+// in the language of msgs.
+func (msgs Messages) TunMaxConns() string {
+	return Catalog.Format(msgs.locale, "tunMaxConns", nil)
+}
+
+// TunRate says "Per-direction limit (KiB/s)"
+// in the language the app shows.
+func TunRate() string { return In(i18n.Locale()).TunRate() }
+
+// TunRate says "Per-direction limit (KiB/s)"
+// in the language of msgs.
+func (msgs Messages) TunRate() string {
+	return Catalog.Format(msgs.locale, "tunRate", nil)
+}
+
+// TunIdle says "Idle timeout (seconds)"
+// in the language the app shows.
+func TunIdle() string { return In(i18n.Locale()).TunIdle() }
+
+// TunIdle says "Idle timeout (seconds)"
+// in the language of msgs.
+func (msgs Messages) TunIdle() string {
+	return Catalog.Format(msgs.locale, "tunIdle", nil)
+}
+
+// TunLimitError says "Enter a nonnegative whole number."
+// in the language the app shows.
+func TunLimitError() string { return In(i18n.Locale()).TunLimitError() }
+
+// TunLimitError says "Enter a nonnegative whole number."
+// in the language of msgs.
+func (msgs Messages) TunLimitError() string {
+	return Catalog.Format(msgs.locale, "tunLimitError", nil)
+}
+
+// TunLimitsHint says "Zero or blank means no limit."
+// in the language the app shows.
+func TunLimitsHint() string { return In(i18n.Locale()).TunLimitsHint() }
+
+// TunLimitsHint says "Zero or blank means no limit."
+// in the language of msgs.
+func (msgs Messages) TunLimitsHint() string {
+	return Catalog.Format(msgs.locale, "tunLimitsHint", nil)
+}
+
+// TunDescription says "Description"
+// in the language the app shows.
+func TunDescription() string { return In(i18n.Locale()).TunDescription() }
+
+// TunDescription says "Description"
+// in the language of msgs.
+func (msgs Messages) TunDescription() string {
+	return Catalog.Format(msgs.locale, "tunDescription", nil)
+}
+
+// TunNameAndType says "Name / type"
+// in the language the app shows.
+func TunNameAndType() string { return In(i18n.Locale()).TunNameAndType() }
+
+// TunNameAndType says "Name / type"
+// in the language of msgs.
+func (msgs Messages) TunNameAndType() string {
+	return Catalog.Format(msgs.locale, "tunNameAndType", nil)
+}
+
+// TunTargetAndExit says "Target / exit"
+// in the language the app shows.
+func TunTargetAndExit() string { return In(i18n.Locale()).TunTargetAndExit() }
+
+// TunTargetAndExit says "Target / exit"
+// in the language of msgs.
+func (msgs Messages) TunTargetAndExit() string {
+	return Catalog.Format(msgs.locale, "tunTargetAndExit", nil)
+}
+
+// TunOptions says "Options"
+// in the language the app shows.
+func TunOptions() string { return In(i18n.Locale()).TunOptions() }
+
+// TunOptions says "Options"
+// in the language of msgs.
+func (msgs Messages) TunOptions() string {
+	return Catalog.Format(msgs.locale, "tunOptions", nil)
+}
+
+// TunPublicAuth says "Anyone who can reach this port can try to use the proxy. Proxy authentication is not encrypted between the client and…"
+// in the language the app shows.
+func TunPublicAuth() string { return In(i18n.Locale()).TunPublicAuth() }
+
+// TunPublicAuth says "Anyone who can reach this port can try to use the proxy. Proxy authentication is not encrypted between the client and…"
+// in the language of msgs.
+func (msgs Messages) TunPublicAuth() string {
+	return Catalog.Format(msgs.locale, "tunPublicAuth", nil)
+}
+
+// TunOpenProxy says "Warning: anyone who can reach this port and passes the IP allowlist can use this proxy without a password. They can r…"
+// in the language the app shows.
+func TunOpenProxy() string { return In(i18n.Locale()).TunOpenProxy() }
+
+// TunOpenProxy says "Warning: anyone who can reach this port and passes the IP allowlist can use this proxy without a password. They can r…"
+// in the language of msgs.
+func (msgs Messages) TunOpenProxy() string {
+	return Catalog.Format(msgs.locale, "tunOpenProxy", nil)
+}
+
+// TunSeePublic says "See Public access"
+// in the language the app shows.
+func TunSeePublic() string { return In(i18n.Locale()).TunSeePublic() }
+
+// TunSeePublic says "See Public access"
+// in the language of msgs.
+func (msgs Messages) TunSeePublic() string {
+	return Catalog.Format(msgs.locale, "tunSeePublic", nil)
+}
+
+// TunGatewayPorts says "A non-loopback remote listener requires GatewayPorts on the SSH server."
+// in the language the app shows.
+func TunGatewayPorts() string { return In(i18n.Locale()).TunGatewayPorts() }
+
+// TunGatewayPorts says "A non-loopback remote listener requires GatewayPorts on the SSH server."
+// in the language of msgs.
+func (msgs Messages) TunGatewayPorts() string {
+	return Catalog.Format(msgs.locale, "tunGatewayPorts", nil)
+}
+
+// TunPublicConfirm says "I understand who can connect to this listener"
+// in the language the app shows.
+func TunPublicConfirm() string { return In(i18n.Locale()).TunPublicConfirm() }
+
+// TunPublicConfirm says "I understand who can connect to this listener"
+// in the language of msgs.
+func (msgs Messages) TunPublicConfirm() string {
+	return Catalog.Format(msgs.locale, "tunPublicConfirm", nil)
+}
+
+// TunPublicError says "Acknowledge the exposure or use the loopback address."
+// in the language the app shows.
+func TunPublicError() string { return In(i18n.Locale()).TunPublicError() }
+
+// TunPublicError says "Acknowledge the exposure or use the loopback address."
+// in the language of msgs.
+func (msgs Messages) TunPublicError() string {
+	return Catalog.Format(msgs.locale, "tunPublicError", nil)
+}
+
+// TunRemoveQuestion says "Remove {name} from this connection? Its saved proxy passwords will be removed when you save the connection."
+// in the language the app shows.
+func TunRemoveQuestion(name string) string { return In(i18n.Locale()).TunRemoveQuestion(name) }
+
+// TunRemoveQuestion says "Remove {name} from this connection? Its saved proxy passwords will be removed when you save the connection."
+// in the language of msgs.
+func (msgs Messages) TunRemoveQuestion(name string) string {
+	return Catalog.Format(msgs.locale, "tunRemoveQuestion", map[string]any{"name": name})
+}
+
+// TunActions says "Tunnel actions"
+// in the language the app shows.
+func TunActions() string { return In(i18n.Locale()).TunActions() }
+
+// TunActions says "Tunnel actions"
+// in the language of msgs.
+func (msgs Messages) TunActions() string {
+	return Catalog.Format(msgs.locale, "tunActions", nil)
+}
+
+// TunSelectOne says "Select a tunnel first."
+// in the language the app shows.
+func TunSelectOne() string { return In(i18n.Locale()).TunSelectOne() }
+
+// TunSelectOne says "Select a tunnel first."
+// in the language of msgs.
+func (msgs Messages) TunSelectOne() string {
+	return Catalog.Format(msgs.locale, "tunSelectOne", nil)
+}
+
+// TunAlreadyRunning says "This tunnel is already running or starting."
+// in the language the app shows.
+func TunAlreadyRunning() string { return In(i18n.Locale()).TunAlreadyRunning() }
+
+// TunAlreadyRunning says "This tunnel is already running or starting."
+// in the language of msgs.
+func (msgs Messages) TunAlreadyRunning() string {
+	return Catalog.Format(msgs.locale, "tunAlreadyRunning", nil)
+}
+
+// TunNotRunning says "This tunnel is not running."
+// in the language the app shows.
+func TunNotRunning() string { return In(i18n.Locale()).TunNotRunning() }
+
+// TunNotRunning says "This tunnel is not running."
+// in the language of msgs.
+func (msgs Messages) TunNotRunning() string {
+	return Catalog.Format(msgs.locale, "tunNotRunning", nil)
+}
+
+// TunStartQuestion says "Start {name} on {address}?"
+// in the language the app shows.
+func TunStartQuestion(name string, address string) string {
+	return In(i18n.Locale()).TunStartQuestion(name, address)
+}
+
+// TunStartQuestion says "Start {name} on {address}?"
+// in the language of msgs.
+func (msgs Messages) TunStartQuestion(name string, address string) string {
+	return Catalog.Format(msgs.locale, "tunStartQuestion", map[string]any{"name": name, "address": address})
+}
+
+// TunStopQuestion says "Stop {name} on {address} and close its open connections?"
+// in the language the app shows.
+func TunStopQuestion(name string, address string) string {
+	return In(i18n.Locale()).TunStopQuestion(name, address)
+}
+
+// TunStopQuestion says "Stop {name} on {address} and close its open connections?"
+// in the language of msgs.
+func (msgs Messages) TunStopQuestion(name string, address string) string {
+	return Catalog.Format(msgs.locale, "tunStopQuestion", map[string]any{"name": name, "address": address})
+}
+
+// TunCopyAddress says "Copy address"
+// in the language the app shows.
+func TunCopyAddress() string { return In(i18n.Locale()).TunCopyAddress() }
+
+// TunCopyAddress says "Copy address"
+// in the language of msgs.
+func (msgs Messages) TunCopyAddress() string {
+	return Catalog.Format(msgs.locale, "tunCopyAddress", nil)
+}
+
+// TunCopyCommand says "Copy command"
+// in the language the app shows.
+func TunCopyCommand() string { return In(i18n.Locale()).TunCopyCommand() }
+
+// TunCopyCommand says "Copy command"
+// in the language of msgs.
+func (msgs Messages) TunCopyCommand() string {
+	return Catalog.Format(msgs.locale, "tunCopyCommand", nil)
+}
+
+// TunNoCommand says "No command is available for this tunnel."
+// in the language the app shows.
+func TunNoCommand() string { return In(i18n.Locale()).TunNoCommand() }
+
+// TunNoCommand says "No command is available for this tunnel."
+// in the language of msgs.
+func (msgs Messages) TunNoCommand() string {
+	return Catalog.Format(msgs.locale, "tunNoCommand", nil)
+}
+
+// TunConnectionLog says "Connection log"
+// in the language the app shows.
+func TunConnectionLog() string { return In(i18n.Locale()).TunConnectionLog() }
+
+// TunConnectionLog says "Connection log"
+// in the language of msgs.
+func (msgs Messages) TunConnectionLog() string {
+	return Catalog.Format(msgs.locale, "tunConnectionLog", nil)
+}
+
+// TunNoLog says "No completed or rejected connections to show."
+// in the language the app shows.
+func TunNoLog() string { return In(i18n.Locale()).TunNoLog() }
+
+// TunNoLog says "No completed or rejected connections to show."
+// in the language of msgs.
+func (msgs Messages) TunNoLog() string {
+	return Catalog.Format(msgs.locale, "tunNoLog", nil)
+}
+
+// TunLogFilter says "Filter by client, target or result"
+// in the language the app shows.
+func TunLogFilter() string { return In(i18n.Locale()).TunLogFilter() }
+
+// TunLogFilter says "Filter by client, target or result"
+// in the language of msgs.
+func (msgs Messages) TunLogFilter() string {
+	return Catalog.Format(msgs.locale, "tunLogFilter", nil)
+}
+
+// TunLogTime says "Started"
+// in the language the app shows.
+func TunLogTime() string { return In(i18n.Locale()).TunLogTime() }
+
+// TunLogTime says "Started"
+// in the language of msgs.
+func (msgs Messages) TunLogTime() string {
+	return Catalog.Format(msgs.locale, "tunLogTime", nil)
+}
+
+// TunLogClient says "Client"
+// in the language the app shows.
+func TunLogClient() string { return In(i18n.Locale()).TunLogClient() }
+
+// TunLogClient says "Client"
+// in the language of msgs.
+func (msgs Messages) TunLogClient() string {
+	return Catalog.Format(msgs.locale, "tunLogClient", nil)
+}
+
+// TunLogDuration says "Duration"
+// in the language the app shows.
+func TunLogDuration() string { return In(i18n.Locale()).TunLogDuration() }
+
+// TunLogDuration says "Duration"
+// in the language of msgs.
+func (msgs Messages) TunLogDuration() string {
+	return Catalog.Format(msgs.locale, "tunLogDuration", nil)
+}
+
+// TunLogResult says "Result"
+// in the language the app shows.
+func TunLogResult() string { return In(i18n.Locale()).TunLogResult() }
+
+// TunLogResult says "Result"
+// in the language of msgs.
+func (msgs Messages) TunLogResult() string {
+	return Catalog.Format(msgs.locale, "tunLogResult", nil)
+}
+
+// TunLogOK says "Closed"
+// in the language the app shows.
+func TunLogOK() string { return In(i18n.Locale()).TunLogOK() }
+
+// TunLogOK says "Closed"
+// in the language of msgs.
+func (msgs Messages) TunLogOK() string {
+	return Catalog.Format(msgs.locale, "tunLogOK", nil)
+}
+
+// TunLogRejected says "Client not on the IP allowlist"
+// in the language the app shows.
+func TunLogRejected() string { return In(i18n.Locale()).TunLogRejected() }
+
+// TunLogRejected says "Client not on the IP allowlist"
+// in the language of msgs.
+func (msgs Messages) TunLogRejected() string {
+	return Catalog.Format(msgs.locale, "tunLogRejected", nil)
+}
+
+// TunLogAtCapacity says "Connection limit reached"
+// in the language the app shows.
+func TunLogAtCapacity() string { return In(i18n.Locale()).TunLogAtCapacity() }
+
+// TunLogAtCapacity says "Connection limit reached"
+// in the language of msgs.
+func (msgs Messages) TunLogAtCapacity() string {
+	return Catalog.Format(msgs.locale, "tunLogAtCapacity", nil)
+}
+
+// TunLogIdle says "Idle timeout"
+// in the language the app shows.
+func TunLogIdle() string { return In(i18n.Locale()).TunLogIdle() }
+
+// TunLogIdle says "Idle timeout"
+// in the language of msgs.
+func (msgs Messages) TunLogIdle() string {
+	return Catalog.Format(msgs.locale, "tunLogIdle", nil)
+}
+
+// TunLogAuth says "Proxy authentication failed"
+// in the language the app shows.
+func TunLogAuth() string { return In(i18n.Locale()).TunLogAuth() }
+
+// TunLogAuth says "Proxy authentication failed"
+// in the language of msgs.
+func (msgs Messages) TunLogAuth() string {
+	return Catalog.Format(msgs.locale, "tunLogAuth", nil)
+}
+
+// TunLogFailed says "Connection failed"
+// in the language the app shows.
+func TunLogFailed() string { return In(i18n.Locale()).TunLogFailed() }
+
+// TunLogFailed says "Connection failed"
+// in the language of msgs.
+func (msgs Messages) TunLogFailed() string {
+	return Catalog.Format(msgs.locale, "tunLogFailed", nil)
+}
+
+// TunTargetDenied says "Target connection denied"
+// in the language the app shows.
+func TunTargetDenied() string { return In(i18n.Locale()).TunTargetDenied() }
+
+// TunTargetDenied says "Target connection denied"
+// in the language of msgs.
+func (msgs Messages) TunTargetDenied() string {
+	return Catalog.Format(msgs.locale, "tunTargetDenied", nil)
+}
+
+// TunTargetRefused says "Target connection refused"
+// in the language the app shows.
+func TunTargetRefused() string { return In(i18n.Locale()).TunTargetRefused() }
+
+// TunTargetRefused says "Target connection refused"
+// in the language of msgs.
+func (msgs Messages) TunTargetRefused() string {
+	return Catalog.Format(msgs.locale, "tunTargetRefused", nil)
+}
+
+// TunTargetNetwork says "Target network unreachable"
+// in the language the app shows.
+func TunTargetNetwork() string { return In(i18n.Locale()).TunTargetNetwork() }
+
+// TunTargetNetwork says "Target network unreachable"
+// in the language of msgs.
+func (msgs Messages) TunTargetNetwork() string {
+	return Catalog.Format(msgs.locale, "tunTargetNetwork", nil)
+}
+
+// TunTargetTimeout says "Target connection timed out"
+// in the language the app shows.
+func TunTargetTimeout() string { return In(i18n.Locale()).TunTargetTimeout() }
+
+// TunTargetTimeout says "Target connection timed out"
+// in the language of msgs.
+func (msgs Messages) TunTargetTimeout() string {
+	return Catalog.Format(msgs.locale, "tunTargetTimeout", nil)
+}
+
+// TunInvalidTarget says "Enter a valid target host and port."
+// in the language the app shows.
+func TunInvalidTarget() string { return In(i18n.Locale()).TunInvalidTarget() }
+
+// TunInvalidTarget says "Enter a valid target host and port."
+// in the language of msgs.
+func (msgs Messages) TunInvalidTarget() string {
+	return Catalog.Format(msgs.locale, "tunInvalidTarget", nil)
+}
+
+// TunRejectedCount says "{count, plural, one {# rejected} other {# rejected}}"
+// in the language the app shows.
+func TunRejectedCount(count int) string { return In(i18n.Locale()).TunRejectedCount(count) }
+
+// TunRejectedCount says "{count, plural, one {# rejected} other {# rejected}}"
+// in the language of msgs.
+func (msgs Messages) TunRejectedCount(count int) string {
+	return Catalog.Format(msgs.locale, "tunRejectedCount", map[string]any{"count": count})
+}
+
+// TunBytesPerSecond says "{rate}/s"
+// in the language the app shows.
+func TunBytesPerSecond(rate string) string { return In(i18n.Locale()).TunBytesPerSecond(rate) }
+
+// TunBytesPerSecond says "{rate}/s"
+// in the language of msgs.
+func (msgs Messages) TunBytesPerSecond(rate string) string {
+	return Catalog.Format(msgs.locale, "tunBytesPerSecond", map[string]any{"rate": rate})
+}
+
 // TunnelSocks says "SOCKS5 proxy"
 // in the language the app shows.
 func TunnelSocks() string { return In(i18n.Locale()).TunnelSocks() }

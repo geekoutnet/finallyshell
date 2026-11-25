@@ -108,27 +108,40 @@ version 2.
 
 ### Tunnels
 
-The system proxy uses the tunnel’s existing `systemProxy` (boolean) and `pac` (list of rules) fields in `hosts.json`; the recipe wizard does not add an application setting. The local `sysproxy-backup.json` is not synced and is removed only after restoring successfully. Do not copy it to a different machine. Recovery does not store proxy passwords, and the wizard does not accept upstream credentials. Configure tunnel proxy passwords through the system credential store, not a URL or `hosts.json`. On macOS, formerly empty proxy addresses can retain inactive values after restore; the corresponding proxies are disabled.
+`hosts.json` stores each host's `tunnels`. Each entry has a stable `id`
+(assigned when saving old entries), optional `name` and `description`, and
+a `kind`: `local`, `remote`, `dynamic`, `http`, `remoteDynamic`, or `remoteHTTP`.
+Unknown properties are preserved.
 
-`tunnels` are the host's port forwards:
-
-- `kind` is `local` (`-L`), `remote` (`-R`) or `dynamic` (`-D`, which has
-  no `targetHost` or `targetPort`).
-- Without `listenHost`, the tunnel listens on `127.0.0.1` only.
-- With `disabled` set to `true`, the tunnel does not start with the
-  session.
-- `id` identifies a tunnel within its host. Older entries get an ID when
-  loaded and keep it when the host is saved.
+- `listenHost` defaults to `127.0.0.1`; `listenPort` of `0` means automatic.
+  Remote listeners require an IP address or `localhost`.
+- Fixed forwards use `targetHost` and `targetPort`; a local forward can instead
+  use `targetSocket`. Proxy clients specify their own targets. `mixed` enables
+  both protocols on a local SOCKS5 or HTTP listener.
+- `proxyUser` enables incoming authentication. `upstream` on a remote tunnel
+  is `socks5://host:port` or `http://host:port`, with optional `user@` and no
+  password. An empty `upstream` means direct.
+- `allowFrom` holds IP addresses or CIDRs; `maxConns`, `rateKBps` (KiB/s per
+  direction) and `idleSeconds` default to unlimited. `disabled: true` skips
+  automatic start with the session.
 - `background: true` makes a tunnel eligible for autostart on a dedicated
   SSH connection instead of with a terminal. `settings.json` can opt out
   on this device with `"tunnelManager": {"noAutostart": true}`; this setting
   is not synced. Background SSH uses the same `known_hosts`, existing
   host credential keys and `keepAliveSeconds` as interactive SSH. The
   manager stores no additional SSH credentials.
-- Unknown fields in a tunnel are kept as they are.
+- `systemProxy` and `pac` (a list of rules) make a running local proxy
+  tunnel this computer's system proxy. The previous system settings are kept
+  in the local `sysproxy-backup.json`, which is not synced and is removed
+  only after restoring successfully; do not copy it to a different machine.
+  On macOS, formerly empty proxy addresses can retain inactive values after
+  restore; the corresponding proxies are disabled.
 
-The listen address of a remote tunnel must be an IP address or
-`localhost`; see [Tunnels](features.md#tunnels-page).
+Tunnel credentials are not stored in `hosts.json` or synced. The system
+credential store uses `host/<host-id>/tunnel/<tunnel-id>/password` and
+`host/<host-id>/tunnel/<tunnel-id>/upstream/password`. A configured username
+without a corresponding stored password prevents the listener from starting.
+See [Tunnels](features.md#tunnels) for behavior and exposure warnings.
 
 ### Proxy
 

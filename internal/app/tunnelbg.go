@@ -22,6 +22,7 @@ type tunnelKey struct{ host, id string }
 type tunnelHandle interface {
 	Addr() net.Addr
 	Stats() sshx.TunnelStats
+	Conns() []sshx.TunnelConn
 	Done() <-chan struct{}
 	Err() error
 	Stop()
@@ -66,7 +67,7 @@ type tunnelManager struct {
 	now    func() time.Time
 	jitter func() float64
 	dial   func(context.Context, *config.Host, sshx.Options) (*ssh.Client, error)
-	start  func(*ssh.Client, config.Tunnel) (tunnelHandle, error)
+	start  func(*ssh.Client, config.Tunnel, sshx.TunnelOptions) (tunnelHandle, error)
 }
 
 var errTunnelManagerEngine = errors.New("this build cannot apply the tunnel options")
@@ -193,9 +194,7 @@ func (a *App) restartBackgroundTunnel(key tunnelKey) {
 }
 
 func tunnelManagerEngineSupports(spec config.Tunnel) bool {
-	return (spec.Kind == config.TunnelLocal || spec.Kind == config.TunnelRemote || spec.Kind == config.TunnelDynamic) &&
-		!spec.ServerRelay && spec.ProxyUser == "" && len(spec.AllowFrom) == 0 && spec.MaxConns == 0 && spec.RateKBps == 0 &&
-		spec.IdleSeconds == 0 && !spec.Mixed && !spec.SystemProxy && len(spec.PAC) == 0 && spec.TargetSocket == "" && spec.Upstream == ""
+	return spec.Kind.Known() && !spec.ServerRelay
 }
 
 func (a *App) tunnelRoute(host *config.Host) []*config.Host {
@@ -366,6 +365,19 @@ func (a *App) listenBackgroundTunnel(key tunnelKey, run *tunnelBackground, state
 	if start == nil {
 		start = startTunnelManagerForward
 	}
+	a.tunnelOptions(key.host, settings, a.redraw, func(opts sshx.TunnelOptions) {
+		if ctx.Err() != nil {
+			return
+		}
+		a.runBackgroundForward(ctx, key, run, client, settings, opts, gate, secrets, start)
+	})
+}
+
+// runBackgroundForward starts the background tunnel run of key on
+// client, once its options are read, one at a time per host (gate).
+func (a *App) runBackgroundForward(ctx context.Context, key tunnelKey, run *tunnelBackground, client *ssh.Client, settings config.Tunnel,
+	opts sshx.TunnelOptions, gate chan struct{}, secrets []string,
+	start func(*ssh.Client, config.Tunnel, sshx.TunnelOptions) (tunnelHandle, error)) {
 	go func() {
 		select {
 		case gate <- struct{}{}:
@@ -380,7 +392,7 @@ func (a *App) listenBackgroundTunnel(key tunnelKey, run *tunnelBackground, state
 		if settings.Kind.IsRemote() {
 			deadline = time.AfterFunc(15*time.Second, func() { _ = client.Close() })
 		}
-		handle, err := start(client, settings)
+		handle, err := start(client, settings, opts)
 		if deadline != nil {
 			deadline.Stop()
 		}
@@ -409,6 +421,9 @@ func (a *App) listenBackgroundTunnel(key tunnelKey, run *tunnelBackground, state
 				return
 			}
 			run.handle, run.starting, run.err, run.since, run.attempt = handle, false, nil, a.tmgr.time(), 0
+			if forward, ok := handle.(*sshx.Tunnel); ok {
+				a.systemProxyTunnelStarted(a.hosts.Host(key.host), settings, forward)
+			}
 		})
 		if handle != nil {
 			select {
@@ -437,8 +452,8 @@ func tunnelForwardError(err error, secrets []string) error {
 	return errors.New(bulkScrub(err.Error(), secrets))
 }
 
-func startTunnelManagerForward(client *ssh.Client, spec config.Tunnel) (tunnelHandle, error) {
-	forward, err := sshx.StartTunnel(client, spec, nil)
+func startTunnelManagerForward(client *ssh.Client, spec config.Tunnel, opts sshx.TunnelOptions) (tunnelHandle, error) {
+	forward, err := sshx.StartTunnelWithOptions(client, spec, opts)
 	if err != nil {
 		return nil, err
 	}

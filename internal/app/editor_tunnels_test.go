@@ -64,9 +64,10 @@ func TestEditorTunnelsPage(t *testing.T) {
 			if !a.editor.tunnels.dialog || !tt.HasText(locales.TunnelNew()) || !tt.HasText(locales.TunnelLoopbackNote()) {
 				t.Fatalf("no dialog; texts %q", tt.Texts())
 			}
+			typeInto(t, tt, locales.FieldListenPort(), "65536")
 			typeInto(t, tt, locales.FieldTargetHost(), "")
 			tt.Key(0, ui.KeyEnter) // the dialog's OK: the window behind has one too
-			for _, want := range []string{locales.ErrPortInvalid(), locales.ErrTargetHostRequired()} {
+			for _, want := range []string{locales.TunListenPortError(), locales.ErrTargetHostRequired()} {
 				if !tt.HasText(want) {
 					t.Errorf("missing %q; texts %q", want, tt.Texts())
 				}
@@ -92,6 +93,9 @@ func TestEditorTunnelsPage(t *testing.T) {
 				t.Errorf("no address or warning; texts %q", tt.Texts())
 			}
 			saveShot(t, tt, "editor-tunnel-public-"+lang+".png")
+			if err := tt.Click(locales.TunPublicConfirm()); err != nil {
+				t.Fatal(err)
+			}
 			// Enter in a field is the dialog's OK, not the editor's.
 			tt.Key(0, ui.KeyEnter)
 			te := &a.editor.tunnels
@@ -147,6 +151,15 @@ func TestEditorTunnelsPage(t *testing.T) {
 			if err := tt.Click(locales.TunnelRemove()); err != nil {
 				t.Fatal(err)
 			}
+			if len(te.list) != 5 || !te.removeOpen {
+				t.Fatal("removed without confirmation")
+			}
+			clickButton(t, tt, locales.Cancel())
+			if len(te.list) != 5 {
+				t.Fatal("cancel removed a tunnel")
+			}
+			clickButton(t, tt, locales.TunnelRemove())
+			clickButton(t, tt, locales.TunnelRemove())
 			if len(te.list) != 4 || te.list[0].Kind != config.TunnelDynamic {
 				t.Fatalf("after removing: %+v", te.list)
 			}
@@ -184,6 +197,7 @@ func TestEditorTunnelsCancelAndNone(t *testing.T) {
 	if err := tt.Click(locales.TunnelRemove()); err != nil {
 		t.Fatal(err)
 	}
+	clickButton(t, tt, locales.TunnelRemove())
 	if !tt.HasText(locales.TunnelsEmpty()) {
 		t.Errorf("texts %q", tt.Texts())
 	}
@@ -197,6 +211,7 @@ func TestEditorTunnelsCancelAndNone(t *testing.T) {
 	a.editor.tunnels.row = 0
 	tt.Frame()
 	tt.Click(locales.TunnelRemove())
+	clickButton(t, tt, locales.TunnelRemove())
 	tt.Click(locales.Ok())
 	if h.Tunnels != nil {
 		t.Errorf("tunnels %+v", h.Tunnels)
@@ -219,7 +234,7 @@ func TestTunnelFormChecks(t *testing.T) {
 		{"fine", tunnelForm{kind: config.TunnelLocal, listenPort: "9000", targetHost: "db", targetPort: "5432"}, nil},
 		{"IPv6 target", tunnelForm{kind: config.TunnelLocal, listenPort: "9000", targetHost: "::1", targetPort: "22"}, nil},
 		{"no port", tunnelForm{kind: config.TunnelLocal, listenPort: "0", targetHost: "db", targetPort: "x"},
-			map[tunnelField]string{fieldListenPort: locales.ErrPortInvalid(), fieldTargetPort: locales.ErrPortInvalid()}},
+			map[tunnelField]string{fieldTargetPort: locales.ErrPortInvalid()}},
 		{"bad host", tunnelForm{kind: config.TunnelRemote, listenPort: "9000", targetHost: "a b", targetPort: "1"},
 			map[tunnelField]string{fieldTargetHost: locales.ErrListenAddrInvalid()}},
 		{"dynamic needs no target", tunnelForm{kind: config.TunnelDynamic, listenPort: "9000"}, nil},
@@ -227,16 +242,23 @@ func TestTunnelFormChecks(t *testing.T) {
 			map[tunnelField]string{fieldListenHost: locales.ErrListenAddrInvalid()}},
 		{"same port", tunnelForm{kind: config.TunnelDynamic, listenPort: "15432"},
 			map[tunnelField]string{fieldListenPort: locales.ErrTunnelDuplicate()}},
-		{"same port on all addresses", tunnelForm{kind: config.TunnelDynamic, listenPort: "1080", public: true, listenHost: "::"},
+		{"same port on all addresses", tunnelForm{kind: config.TunnelDynamic, listenPort: "1080", public: true, listenHost: "::", acknowledged: true},
 			map[tunnelField]string{fieldListenPort: locales.ErrTunnelDuplicate()}},
-		{"same port on another address", tunnelForm{kind: config.TunnelDynamic, listenPort: "1080", public: true, listenHost: "192.168.1.5"}, nil},
+		{"same port on another address", tunnelForm{kind: config.TunnelDynamic, listenPort: "1080", public: true, listenHost: "192.168.1.5", acknowledged: true}, nil},
 		{"same port on the server", tunnelForm{kind: config.TunnelRemote, listenPort: "8080", targetHost: "x", targetPort: "1"},
 			map[tunnelField]string{fieldListenPort: locales.ErrTunnelDuplicate()}},
-		{"remote on a host name", tunnelForm{kind: config.TunnelRemote, listenPort: "9000", public: true, listenHost: "myserver.example", targetHost: "x", targetPort: "1"},
+		{"remote on a host name", tunnelForm{kind: config.TunnelRemote, listenPort: "9000", public: true, listenHost: "myserver.example", acknowledged: true, targetHost: "x", targetPort: "1"},
 			map[tunnelField]string{fieldListenHost: locales.ErrRemoteListenAddrIP()}},
-		{"remote on an IPv6 address", tunnelForm{kind: config.TunnelRemote, listenPort: "9000", public: true, listenHost: "::", targetHost: "x", targetPort: "1"}, nil},
+		{"remote on an IPv6 address", tunnelForm{kind: config.TunnelRemote, listenPort: "9000", public: true, listenHost: "::", acknowledged: true, targetHost: "x", targetPort: "1"}, nil},
 		{"remote on localhost", tunnelForm{kind: config.TunnelRemote, listenPort: "9000", public: true, listenHost: "localhost", targetHost: "x", targetPort: "1"}, nil},
-		{"local on a host name", tunnelForm{kind: config.TunnelLocal, listenPort: "9000", public: true, listenHost: "myhost.lan", targetHost: "x", targetPort: "1"}, nil},
+		{"local on a host name", tunnelForm{kind: config.TunnelLocal, listenPort: "9000", public: true, listenHost: "myhost.lan", acknowledged: true, targetHost: "x", targetPort: "1"}, nil},
+		{"local socket", tunnelForm{kind: config.TunnelLocal, socketMode: true, socket: "/var/run/docker.sock"}, nil},
+		{"relative socket", tunnelForm{kind: config.TunnelLocal, socketMode: true, socket: "docker.sock"}, map[tunnelField]string{fieldTunnelSocket: locales.TunSocketError()}},
+		{"http", tunnelForm{kind: config.TunnelHTTP, mixed: true, proxyUser: "user", proxyPassword: "fixture"}, nil},
+		{"reverse socks", tunnelForm{kind: config.TunnelRemoteDynamic, upstreamKind: config.ProxyHTTP, upstreamAddr: "127.0.0.1:8080"}, nil},
+		{"reverse http", tunnelForm{kind: config.TunnelRemoteHTTP, upstreamKind: config.ProxySOCKS5, upstreamAddr: "[::1]:1080"}, nil},
+		{"public acknowledgment", tunnelForm{kind: config.TunnelHTTP, public: true, listenHost: "0.0.0.0"}, map[tunnelField]string{fieldTunnelPublic: locales.TunPublicError()}},
+		{"malformed allowlist", tunnelForm{kind: config.TunnelHTTP, allow: "127.0.0.1/99"}, map[tunnelField]string{fieldTunnelAllow: locales.TunAllowError()}},
 	} {
 		te.form = tc.form
 		got := te.problems()

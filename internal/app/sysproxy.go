@@ -149,6 +149,12 @@ func (a *App) confirmRestoreSystemProxy() {
 }
 
 func (a *App) systemProxyControls(c *ui.Context, tunnel *config.Tunnel, draft ...*string) {
+	systemProxyControls(c, tunnel, draft...)
+}
+
+// systemProxyControls is the "use as system proxy" switch and its PAC
+// rules of a local proxy tunnel, as the tunnel dialog shows them.
+func systemProxyControls(c *ui.Context, tunnel *config.Tunnel, draft ...*string) {
 	if tunnel.Kind != config.TunnelDynamic && tunnel.Kind != config.TunnelHTTP {
 		return
 	}

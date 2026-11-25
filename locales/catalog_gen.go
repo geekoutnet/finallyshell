@@ -18472,6 +18472,146 @@ func (msgs Messages) BackToTerminal() string {
 	return Catalog.Format(msgs.locale, "backToTerminal", nil)
 }
 
+// DesktopTab says "Desktop"
+// in the language the app shows.
+func DesktopTab() string { return In(i18n.Locale()).DesktopTab() }
+
+// DesktopTab says "Desktop"
+// in the language of msgs.
+func (msgs Messages) DesktopTab() string {
+	return Catalog.Format(msgs.locale, "desktopTab", nil)
+}
+
+// OpenDesktop says "Open desktop"
+// in the language the app shows.
+func OpenDesktop() string { return In(i18n.Locale()).OpenDesktop() }
+
+// OpenDesktop says "Open desktop"
+// in the language of msgs.
+func (msgs Messages) OpenDesktop() string {
+	return Catalog.Format(msgs.locale, "openDesktop", nil)
+}
+
+// DesktopComingSoon says "Coming soon"
+// in the language the app shows.
+func DesktopComingSoon() string { return In(i18n.Locale()).DesktopComingSoon() }
+
+// DesktopComingSoon says "Coming soon"
+// in the language of msgs.
+func (msgs Messages) DesktopComingSoon() string {
+	return Catalog.Format(msgs.locale, "desktopComingSoon", nil)
+}
+
+// DesktopMinimize says "Minimize"
+// in the language the app shows.
+func DesktopMinimize() string { return In(i18n.Locale()).DesktopMinimize() }
+
+// DesktopMinimize says "Minimize"
+// in the language of msgs.
+func (msgs Messages) DesktopMinimize() string {
+	return Catalog.Format(msgs.locale, "desktopMinimize", nil)
+}
+
+// DesktopMaximize says "Maximize"
+// in the language the app shows.
+func DesktopMaximize() string { return In(i18n.Locale()).DesktopMaximize() }
+
+// DesktopMaximize says "Maximize"
+// in the language of msgs.
+func (msgs Messages) DesktopMaximize() string {
+	return Catalog.Format(msgs.locale, "desktopMaximize", nil)
+}
+
+// DesktopAppThisPC says "This PC"
+// in the language the app shows.
+func DesktopAppThisPC() string { return In(i18n.Locale()).DesktopAppThisPC() }
+
+// DesktopAppThisPC says "This PC"
+// in the language of msgs.
+func (msgs Messages) DesktopAppThisPC() string {
+	return Catalog.Format(msgs.locale, "desktopAppThisPC", nil)
+}
+
+// DesktopAppFiles says "Files"
+// in the language the app shows.
+func DesktopAppFiles() string { return In(i18n.Locale()).DesktopAppFiles() }
+
+// DesktopAppFiles says "Files"
+// in the language of msgs.
+func (msgs Messages) DesktopAppFiles() string {
+	return Catalog.Format(msgs.locale, "desktopAppFiles", nil)
+}
+
+// DesktopAppTrash says "Trash"
+// in the language the app shows.
+func DesktopAppTrash() string { return In(i18n.Locale()).DesktopAppTrash() }
+
+// DesktopAppTrash says "Trash"
+// in the language of msgs.
+func (msgs Messages) DesktopAppTrash() string {
+	return Catalog.Format(msgs.locale, "desktopAppTrash", nil)
+}
+
+// DesktopAppTaskManager says "Task Manager"
+// in the language the app shows.
+func DesktopAppTaskManager() string { return In(i18n.Locale()).DesktopAppTaskManager() }
+
+// DesktopAppTaskManager says "Task Manager"
+// in the language of msgs.
+func (msgs Messages) DesktopAppTaskManager() string {
+	return Catalog.Format(msgs.locale, "desktopAppTaskManager", nil)
+}
+
+// DesktopAppSettings says "Settings"
+// in the language the app shows.
+func DesktopAppSettings() string { return In(i18n.Locale()).DesktopAppSettings() }
+
+// DesktopAppSettings says "Settings"
+// in the language of msgs.
+func (msgs Messages) DesktopAppSettings() string {
+	return Catalog.Format(msgs.locale, "desktopAppSettings", nil)
+}
+
+// DesktopAppTerminal says "Terminal"
+// in the language the app shows.
+func DesktopAppTerminal() string { return In(i18n.Locale()).DesktopAppTerminal() }
+
+// DesktopAppTerminal says "Terminal"
+// in the language of msgs.
+func (msgs Messages) DesktopAppTerminal() string {
+	return Catalog.Format(msgs.locale, "desktopAppTerminal", nil)
+}
+
+// DesktopAppBrowser says "Browser"
+// in the language the app shows.
+func DesktopAppBrowser() string { return In(i18n.Locale()).DesktopAppBrowser() }
+
+// DesktopAppBrowser says "Browser"
+// in the language of msgs.
+func (msgs Messages) DesktopAppBrowser() string {
+	return Catalog.Format(msgs.locale, "desktopAppBrowser", nil)
+}
+
+// DesktopAppAppCenter says "App Center"
+// in the language the app shows.
+func DesktopAppAppCenter() string { return In(i18n.Locale()).DesktopAppAppCenter() }
+
+// DesktopAppAppCenter says "App Center"
+// in the language of msgs.
+func (msgs Messages) DesktopAppAppCenter() string {
+	return Catalog.Format(msgs.locale, "desktopAppAppCenter", nil)
+}
+
+// DesktopAppAI says "AI Assistant"
+// in the language the app shows.
+func DesktopAppAI() string { return In(i18n.Locale()).DesktopAppAI() }
+
+// DesktopAppAI says "AI Assistant"
+// in the language of msgs.
+func (msgs Messages) DesktopAppAI() string {
+	return Catalog.Format(msgs.locale, "desktopAppAI", nil)
+}
+
 // HidePanel says "Hide panel"
 // in the language the app shows.
 func HidePanel() string { return In(i18n.Locale()).HidePanel() }

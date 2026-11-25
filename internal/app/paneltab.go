@@ -57,7 +57,7 @@ func (a *App) shownBottomTab() *int {
 // panelRowOf is s's panel row, nil for none.
 func (a *App) panelRowOf(s *Session) *Session {
 	for _, p := range a.sessions {
-		if p.panelOf == s {
+		if p.panelOf == s && p.panelTab != tabDesktop {
 			return p
 		}
 	}
@@ -92,13 +92,20 @@ func (a *App) backToTerminal(p *Session) {
 
 // panelArea is the main area of the panel row p: the bottom panel alone,
 // on p's tab.
-func (a *App) panelArea(c *ui.Context, p *Session) { a.bottomPanel(c, &p.panelTab) }
+func (a *App) panelArea(c *ui.Context, p *Session) {
+	if p.isDesktopRow() {
+		a.desktopArea(c, p)
+		return
+	}
+	a.bottomPanel(c, &p.panelTab)
+}
 
 // panelCornerButton is the button at the right end of the bottom panel's
 // tabs: on a session's row it opens the panel row, on tab, and on a
 // panel row it goes back to the session's terminal. A new tab has none,
 // nor has a local terminal, whose pages but Commands have nothing to show.
 func (a *App) panelCornerButton(c *ui.Context, tab int) {
+	a.desktopCornerButton(c)
 	s := a.current()
 	switch {
 	case s.isPanelTab():
@@ -122,6 +129,9 @@ var (
 
 // panelTabName is the name of the panel row p: its tab's.
 func panelTabName(p *Session) string {
+	if p.isDesktopRow() {
+		return desktopRowName()
+	}
 	if p.panelTab < 0 || p.panelTab >= len(panelTabNames) {
 		return ""
 	}
@@ -159,7 +169,9 @@ func (a *App) panelRow(c *ui.Context, p *Session, active bool) (closed bool) {
 	})
 	row.Children(func() {
 		icon := "app-window"
-		if p.panelTab >= 0 && p.panelTab < len(panelTabIcons) {
+		if p.isDesktopRow() {
+			icon = desktopRowIcon
+		} else if p.panelTab >= 0 && p.panelTab < len(panelTabIcons) {
 			icon = panelTabIcons[p.panelTab]
 		}
 		ui.Icon(c, icons.Get(icon)).FontSize(14).Shrink(0)

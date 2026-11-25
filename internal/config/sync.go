@@ -108,6 +108,7 @@ func (s SyncSettings) Remote() string {
 var (
 	syncedSettings = []string{
 		"language", "appearance",
+		"ai", // the API key is in each device's credential store
 		"noAutoSelectTab", "minimizeToTray", "noConfirmClose", "keepAliveSeconds",
 		"copyOnSelect", "rightClick", "noLinkClick", "wheelLines",
 		"shortcuts", "optionAsAlt",
@@ -138,6 +139,7 @@ var (
 		"downloadDir", "askDownloadDir",
 		"terminalHighlight", "terminalRecording",
 		"alertRules", // the alerts this device shows, while it runs
+		"desktop",    // its wallpaper is a file in this device's config folder
 		"sync",
 		// Agreeing to download the location data, or to send the
 		// server's peers to an online service, is each device's own:

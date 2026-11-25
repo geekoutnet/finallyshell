@@ -420,6 +420,10 @@ func (a *App) mainArea(c *ui.Context) {
 		monitor = func() { a.rightMonitor(c) }
 	}
 	terminal := func() { a.terminalArea(c) }
+	if s := a.current(); s.isDesktopRow() {
+		a.desktopArea(c, s)
+		return
+	}
 	if s := a.current(); s.isPanelTab() {
 		a.withRightColumn(c, func() { a.panelArea(c, s) }, monitor, nil)
 		return
@@ -606,6 +610,10 @@ func (a *App) closeSession(s *Session) {
 			a.closeSession(p)
 			i = slices.Index(a.sessions, s)
 		}
+		if d := a.desktopRowOf(s); d != nil {
+			a.closeSession(d)
+			i = slices.Index(a.sessions, s)
+		}
 		a.transfers.cancelSession(s)
 		s.disconnect()
 	}
@@ -661,11 +669,14 @@ func (a *App) moveSessions(rows []int, to int) {
 		if p := a.panelRowOf(s); p != nil {
 			moved = append(moved, p)
 		}
+		if d := a.desktopRowOf(s); d != nil {
+			moved = append(moved, d)
+		}
 	}
 	if len(moved) == 0 {
 		return
 	}
-	if to < len(a.sessions) && a.sessions[to].isPanelTab() {
+	for to < len(a.sessions) && a.sessions[to].isPanelTab() {
 		to++
 	}
 	var rest []*Session

@@ -276,6 +276,12 @@ type Settings struct {
 	// GeoOnline looks up online (ip-api.com) the addresses ip2region
 	// leaves without a city or ISP, while locations are shown.
 	GeoOnline bool `json:"geoOnline,omitempty"`
+
+	// Desktop is the desktop mode's settings (desktop.go); nil for the
+	// defaults.
+	Desktop *DesktopSettings `json:"desktop,omitempty"`
+	// AI is the AI assistant's settings (desktop.go); nil while it is off.
+	AI *AISettings `json:"ai,omitempty"`
 }
 
 // LeftPanelConnections is Settings.LeftPanelPage showing the

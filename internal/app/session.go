@@ -77,6 +77,9 @@ type Session struct {
 	// other row.
 	panelOf  *Session
 	panelTab int
+
+	// desktop is a desktop row's state (desktop.go), nil on other rows.
+	desktop *desktopState
 }
 
 // errConnectionLost is a session whose shell ended.

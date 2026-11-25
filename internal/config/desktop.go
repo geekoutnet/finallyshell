@@ -1,0 +1,81 @@
+package config
+
+// DesktopSettings is the desktop mode's settings (internal/app/desktop*.go):
+// how the desktop looks and behaves, and each host's own layout. It is
+// this device's own (localSettings): the wallpaper is a file in this
+// device's config folder. Settings keeps a pointer to it, replaced and
+// never changed through, so that Settings stays comparable.
+type DesktopSettings struct {
+	// Wallpaper is the desktop's background: "" for the default built-in
+	// one, "builtin:<id>" for another built-in one, "color:#rrggbb" for a
+	// plain color, or the name of an image copied into the config folder
+	// (png, jpg, gif or webp).
+	Wallpaper string `json:"wallpaper,omitempty"`
+	// SingleClick opens desktop icons with one click instead of two.
+	SingleClick bool `json:"singleClick,omitempty"`
+	// StackWindows opens an app's new windows on top of each other
+	// instead of cascading them.
+	StackWindows bool `json:"stackWindows,omitempty"`
+	// CoverDock lets maximized windows cover the dock (full-screen mode)
+	// instead of leaving it visible.
+	CoverDock bool `json:"coverDock,omitempty"`
+	// IconSize is the desktop icons' size: "" for medium, "small" or
+	// "large".
+	IconSize string `json:"iconSize,omitempty"`
+	// Pinned are the IDs of the apps pinned to the dock, in order; nil
+	// for the default ones.
+	Pinned *[]string `json:"pinned,omitempty"`
+	// Hosts is each host's own desktop, by Host.ID.
+	Hosts map[string]DesktopHost `json:"hosts,omitempty"`
+}
+
+// DesktopHost is one host's desktop: where its icons are, its icon
+// folders, and the file manager's favorites, recent places and notes.
+type DesktopHost struct {
+	// Icons are the desktop's icons the user moved or added, in order; nil
+	// for the default layout.
+	Icons []DesktopIcon `json:"icons,omitempty"`
+	// Folders are the desktop's icon folders.
+	Folders []DesktopFolder `json:"folders,omitempty"`
+	// Favorites are the file manager's favorite folders (absolute paths).
+	Favorites []string `json:"favorites,omitempty"`
+	// Recent are the files and folders opened last, newest first.
+	Recent []string `json:"recent,omitempty"`
+	// Notes are the notes the user wrote on files, by absolute path.
+	Notes map[string]string `json:"notes,omitempty"`
+}
+
+// DesktopIcon is an icon on the desktop: an app, a folder of icons, or a
+// shortcut to a remote path, at a cell of the desktop's grid.
+type DesktopIcon struct {
+	// App is the app's ID, "folder:<id>" for an icon folder, or
+	// "path:<absolute path>" for a shortcut to a remote file or folder.
+	App string `json:"app"`
+	// Col and Row are the cell of the grid, from the top left; -1 places
+	// it in the first free cell.
+	Col int `json:"col"`
+	Row int `json:"row"`
+	// Folder is the ID of the icon folder it is in, "" on the desktop.
+	Folder string `json:"folder,omitempty"`
+}
+
+// DesktopFolder is an icon folder on the desktop.
+type DesktopFolder struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
+// AISettings is the AI assistant's settings (internal/app/desktop_ai*.go).
+// The API key is in the system's credential store, never here.
+type AISettings struct {
+	// Endpoint is the base URL of an OpenAI-compatible API, such as
+	// https://api.openai.com/v1; "" turns the assistant off.
+	Endpoint string `json:"endpoint,omitempty"`
+	// Model is the model's name.
+	Model string `json:"model,omitempty"`
+	// SystemPrompt is added before the assistant's own instructions.
+	SystemPrompt string `json:"systemPrompt,omitempty"`
+	// SendContext lets the assistant send the server's OS, the current
+	// folder and the last lines of the terminal with a question.
+	SendContext bool `json:"sendContext,omitempty"`
+}

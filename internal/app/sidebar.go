@@ -304,6 +304,7 @@ func (a *App) sessionRow(c *ui.Context, s *Session, active bool) (closed bool) {
 			a.connInfoMenuItems(c, m, &a.connTree, s.Host, func(fn func()) { fn() })
 		}
 		m.Separator()
+		a.desktopMenuItem(m, s)
 		a.paneMenu(m, s)
 		m.Separator()
 		a.renameMenu(m, s)

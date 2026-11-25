@@ -12,6 +12,7 @@ pull requests) are in [CONTRIBUTING.md](../../CONTRIBUTING.md) and
 - [Checks before a commit](#checks-before-a-commit)
 - [Screenshots](#screenshots)
 - [Releasing](#releasing)
+- [Building with Docker](#building-with-docker)
 - [Signing updates](#signing-updates)
 - [Code structure](#code-structure)
 - [Child windows](#child-windows)
@@ -276,6 +277,49 @@ A prerelease is never the latest release, which installed apps check, and
 the app doesn't take prereleases (`Updater.SetPrereleases`), so installed
 copies never update to a preview: previews are downloaded by hand. An app
 installed from a preview is offered the next release.
+
+## Building with Docker
+
+Use the [docker-build skill](../../.claude/skills/docker-build/) for all
+local packaging. A local Linux Docker engine (Docker Desktop on Windows or
+macOS) and Bash (Git Bash on Windows) suffice: no host Go, macOS SDK or Xcode.
+The five targets build concurrently: macOS arm64 and Intel DMGs, Linux amd64
+and arm64 Debian packages and tarballs with `install.sh`, and Windows amd64
+NSIS setup and portable ZIP.
+
+```bash
+pack=.claude/skills/docker-build/build.sh
+"$pack" image                                  # optional: prepare the image
+"$pack" build --version 2.0.18-local            # all five targets
+"$pack" verify dist/docker/2.0.18-local
+"$pack" build -j 2 mac --no-dmg                 # app bundles in .app.tar files
+"$pack" build win                              # or linux, or explicit OS/ARCH
+"$pack" shell                                  # inspect the build environment
+"$pack" clean                                  # remove this image and caches
+```
+
+Without `--version`, the next numeric `v2.0.*` version from local tags gets
+the suffix `-local`. Outputs, licenses and `SHA256SUMS` go in
+`dist/docker/<version>/`. A successful run replaces that directory, even
+for a subset; pass the same targets and `--no-dmg` to `verify` for a subset.
+The source (including uncommitted and unignored files) is streamed into a
+temporary container. The checkout stays unchanged; named volumes retain Go
+modules, the Go build cache and MyGo natives. Docker CPU and memory limits
+cap `-j`; a warm rebuild reuses the caches. Nothing is tagged or uploaded.
+
+Like dev builds, these packages have no signed updates, no Developer ID
+signature, and no Apple notarization. `rcodesign` ad-hoc signs the macOS
+bundle and Ghostty dylib, and the `.icns` comes from the same PNG as in CI.
+The HFS+ DMG uses zlib rather than CI's LZMA and omits the Finder
+`.DS_Store` layout; drag the app onto the `Applications` link as usual.
+The Windows installer uses NSIS with faster Deflate compression instead of
+LZMA, and the portable ZIP uses faster Deflate settings. The file layouts
+are unchanged, but the packages are larger.
+For a trusted local build, first try right-clicking the installed app and
+choosing **Open**; recent macOS versions may instead require **Privacy &
+Security → Open Anyway** or `xattr -dr com.apple.quarantine /Applications/Finallyshell.app`.
+Linux verifies the packages and signatures but cannot validate Finder,
+Gatekeeper or actual app launch.
 
 ## Signing updates
 

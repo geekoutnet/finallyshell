@@ -9,6 +9,7 @@
 - [提交前的检查](#提交前的检查)
 - [截图](#截图)
 - [发布](#发布)
+- [用 Docker 打包](#用-docker-打包)
 - [给更新签名](#给更新签名)
 - [代码结构](#代码结构)
 - [子窗口](#子窗口)
@@ -131,6 +132,25 @@ sh site/build.sh && python3 -m http.server -d _site
 5. 按版本号保留最新的 5 个预览版，删掉更早的和它们的 tag（`.github/scripts/prune-previews.sh`），也删掉被取消的运行留下的预览版草稿。它从不动正式发布和其他预发布；`.github/scripts/prune-previews-test.sh` 用一个假的 `gh` 测试它，`--dry-run` 只列出会删什么。
 
 预发布永远不是已安装的应用检查的最新发布，应用也不接收预发布（`Updater.SetPrereleases`），所以已安装的副本不会更新到预览版：预览版要手动下载。从预览版安装的应用会收到下一个正式发布的更新。
+
+## 用 Docker 打包
+
+所有本地打包统一使用 [docker-build 技能](../../.claude/skills/docker-build/)。只需本机 Linux Docker 引擎（Windows 或 macOS 可用 Docker Desktop）和 Bash（Windows 用 Git Bash），无需在宿主机安装 Go，也不用 Xcode 或 macOS SDK。默认并行打包五个平台：macOS arm64 和 Intel 的 DMG、Linux amd64 和 arm64 的 Debian 包及压缩包（附 `install.sh`），以及 Windows amd64 的 NSIS 安装包和便携 ZIP。
+
+```bash
+pack=.claude/skills/docker-build/build.sh
+"$pack" image                                  # 可选：预建镜像
+"$pack" build --version 2.0.18-local            # 打包五个平台
+"$pack" verify dist/docker/2.0.18-local
+"$pack" build -j 2 mac --no-dmg                 # 只输出 .app.tar
+"$pack" build win                              # 也可选 linux 或指定系统/架构
+"$pack" shell                                  # 查看构建环境
+"$pack" clean                                  # 删除当前镜像和缓存
+```
+
+不指定 `--version` 时，取本地最新数字标签 `v2.0.*` 的下一个版本并附加 `-local`。产物、许可证和 `SHA256SUMS` 写到 `dist/docker/<版本>/`。成功后会替换该版本目录，即使只打包了部分平台；验证时请传入相同的平台和 `--no-dmg` 选项。源码（含未提交和未忽略的文件）流式传入临时容器，不修改宿主机工作区。Docker 命名卷保存 Go 模块、Go 编译缓存和 MyGo 原生库；`-j` 受 Docker 的 CPU 和内存限制，重建可复用这些缓存。不会打标签或上传。
+
+和开发版一样，本地包没有已签名的更新、Developer ID 签名或 Apple 公证。`rcodesign` 给 macOS 应用和 Ghostty 动态库做临时签名；`.icns` 与 CI 一样由 PNG 生成。HFS+ DMG 使用 zlib 而不是 CI 的 LZMA，且不带 Finder 的 `.DS_Store` 窗口布局；照常把应用拖到 `Applications` 链接即可。Windows 安装包仍用 NSIS，但改用 Deflate，便携 ZIP 也用更快的压缩设置；文件布局不变，体积会略大。确认是可信的本地包后，首次可尝试右键选择“打开”；较新的 macOS 可能需要在“隐私与安全性”中选择“仍要打开”，也可运行 `xattr -dr com.apple.quarantine /Applications/Finallyshell.app`。Linux 能检查包和签名，但不能验证 Finder、Gatekeeper 或应用实际启动。
 
 ## 给更新签名
 

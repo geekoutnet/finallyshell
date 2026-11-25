@@ -60,14 +60,30 @@ type CaddyInstall struct {
 	Managed  bool
 	SitesDir string // /etc/caddy/sites by default
 
-	OS            string // ID from /etc/os-release
-	PackageLatest string // the newest version the package manager offers, "" when unknown
+	OS               string // ID from /etc/os-release
+	PackageLatest    string // the newest version the package manager offers, "" when unknown
+	OSVersion        string
+	EnvironmentFiles []string // a leading minus denotes an optional EnvironmentFile
+	ContainerConfig  string   // config path inside the container
+	ContainerImage   string
+	RestartPolicy    string
+	Mounts           []CaddyMount
+	Ports            string
+	Resume           bool // the unit starts from the autosaved JSON config
+}
+
+// CaddyMount maps a container filesystem destination to its host source.
+type CaddyMount struct {
+	Type, Source, Destination, Name string
+	RW                              bool
 }
 
 // CaddyFile is a config file and its content.
 type CaddyFile struct {
 	Path    string
 	Content string
+	Size    int64
+	Adapter string
 }
 
 // CaddyChange is a set of config edits applied as one: written, checked
@@ -80,7 +96,9 @@ type CaddyChange struct {
 	// started editing; a file changed on the server since is not
 	// overwritten (ErrCaddyChanged).
 	Expect map[string]string
-	Reload bool
+	// ExpectMissing lists paths which must still be absent when the lock is taken.
+	ExpectMissing []string
+	Reload        bool
 }
 
 // CaddyApplyResult tells what ApplyCaddyChange did.
@@ -102,19 +120,26 @@ var (
 	ErrCaddyInvalid = errors.New("caddy refused the configuration")
 )
 
-// DetectCaddy finds Caddy on the server however it was installed.
+// DetectCaddy probes the distribution, binaries, package database, services,
+// containers and listening sockets. No install is reported as a zero Method,
+// not an error. A runner failure is returned as an error.
 func DetectCaddy(ctx context.Context, run CaddyRunner) (CaddyInstall, error) {
-	return CaddyInstall{}, ErrCaddyNotImplemented
+	return detectCaddy(ctx, run)
 }
 
-// ReadCaddyFiles reads the main config and every file it imports.
+// ReadCaddyFiles reads the main config and recursively expands Caddyfile imports
+// through root read-only scripts. It returns an error on missing literal paths,
+// malformed records or exceeded size, count or depth limits.
 func ReadCaddyFiles(ctx context.Context, run CaddyRunner, inst CaddyInstall) ([]CaddyFile, error) {
-	return nil, ErrCaddyNotImplemented
+	return readCaddyFiles(ctx, run, inst)
 }
 
-// ApplyCaddyChange applies change as one transaction (see CaddyChange).
+// ApplyCaddyChange runs one root script to lock, verify expectations, back up,
+// write, validate and optionally reload. It returns ErrCaddyChanged for stale
+// edits, ErrCaddyInvalid on failed validation, and ErrCaddyRollback when recovery
+// fails. Backup and rollback status are returned even when the command fails.
 func ApplyCaddyChange(ctx context.Context, run CaddyRunner, inst CaddyInstall, change CaddyChange) (CaddyApplyResult, error) {
-	return CaddyApplyResult{}, ErrCaddyNotImplemented
+	return applyCaddyChange(ctx, run, inst, change)
 }
 
 // ValidateCaddyConfig checks the config with files in place of the ones

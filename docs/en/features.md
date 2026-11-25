@@ -2043,6 +2043,19 @@ The Caddy tab manages the web server of an SSH connection. It includes Overview,
 
 The Overview detects an existing installation automatically and shows its service or container, version and available update, config and data directories, custom modules, admin API reachability, listening addresses and port conflicts. When the data is available it also shows service resource usage, websites, expiring certificates and reverse proxy upstream failures. Start, stop, restart, graceful reload, validate and boot settings each show a confirmation before running. Stopping Caddy takes its websites offline; port conflicts link to the System tab's Websites section.
 
+### Caddy tab › Sites
+
+- Filter sites by address, type, target or file. The full table shows TLS, the configuration file and line, and indicators for basic authentication, IP rules, headers and access logging. In a narrow panel, hover over an address for these details.
+- Create or duplicate a site with a live Caddyfile preview. Templates cover static files, reverse proxies, Node.js and Go applications, PHP/WordPress, SPAs, www redirects, authenticated file browsing, API gateways, Docker ports, WebSocket and load balancing. PHP-FPM can look up sockets on the server; the Docker template uses published TCP ports from the connection's Docker overview.
+- The form covers TLS, client certificates, IP and authentication rules, compression, headers and CORS, request size, access logs, path routes and proxy health checks. Caddy hashes new basic-auth passwords on the server; plaintext never appears in the preview or saved configuration. Use the code editor for sites with settings or comments the form cannot preserve.
+- Use the row menu to disable, enable or delete a site, open an HTTP(S) address, or test response headers from this computer or the server. Validate checks the full candidate configuration without saving. Changes name the addresses and files, then back up, validate and hot-reload the configuration; a failure restores the previous files.
+
+### Caddy tab › Global options
+
+- Browse settings grouped into general, binding and ports, admin API, logging, TLS/ACME, on-demand TLS, servers, local CA and metrics. Compound settings accept Caddyfile syntax with examples, and server settings can be edited individually in the draft. Unknown and sensitive entries are not rewritten by the forms.
+- For trusted proxies, use Caddy's private ranges or download Cloudflare's official IPv4 and IPv6 ranges from this computer. Review the draft before saving and only trust proxies that actually forward your requests.
+- Add, edit or remove named snippets. Use the code editor to change an existing snippet's name and its imports together. Saving asks for confirmation, checks for intervening edits, validates the entire configuration and hot-reloads; a failure restores the previous files.
+
 ### Caddy tab › Config files
 
 Browse the main config and its imports, and open them together in the code editor. Formatting and backup restoration show a diff before applying. A file that changed after it was read is not overwritten. Adapt a Caddyfile to JSON or view the running configuration from the admin API; both previews are read-only. The service's environment file can also be opened if detected. Keep private values out of shared screenshots.

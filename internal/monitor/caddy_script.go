@@ -1,6 +1,7 @@
 package monitor
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"path"
@@ -11,6 +12,20 @@ import (
 const caddyDefaultConfig = "/etc/caddy/Caddyfile"
 const caddyContainerConfig = "/etc/caddy/Caddyfile"
 const caddyFileLimit = 4 << 20
+
+const caddyScriptInput = "exec 'sh' '-s'"
+
+const caddyValidationScratch = `scratch=$(mktemp -d '/tmp/finallyshell-caddy-check.XXXXXXXX') || exit '1'
+trap 'rm -rf -- "$scratch"' '0'
+trap 'exit 1' HUP INT TERM
+mkdir -p -- "$scratch/data" "$scratch/config" || exit '1'
+HOME="$scratch"; XDG_DATA_HOME="$scratch/data"; XDG_CONFIG_HOME="$scratch/config"
+export HOME XDG_DATA_HOME XDG_CONFIG_HOME
+`
+
+func caddyRunPayload(ctx context.Context, run CaddyRunner, script string, progress func(string)) (string, string, error) {
+	return run(ctx, caddyScriptInput, strings.NewReader(script), progress)
+}
 
 var (
 	// ErrCaddyUnsafe indicates a path, identifier, or layout the backend will not operate on.
@@ -24,7 +39,7 @@ var (
 var caddyIdentifier = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$`)
 
 func caddyPath(name string) bool {
-	return name != "/" && path.IsAbs(name) && path.Clean(name) == name && !strings.ContainsAny(name, "\x00\r\n")
+	return len(name) <= 4096 && name != "/" && path.IsAbs(name) && path.Clean(name) == name && !strings.ContainsAny(name, "\x00\r\n")
 }
 
 func caddyNormalize(inst CaddyInstall) (CaddyInstall, error) {
@@ -51,6 +66,9 @@ func caddyNormalize(inst CaddyInstall) (CaddyInstall, error) {
 			return inst, ErrCaddyUnsafe
 		}
 	}
+	if inst.WorkingDir != "" && inst.WorkingDir != "/" && !caddyPath(inst.WorkingDir) {
+		return inst, ErrCaddyUnsafe
+	}
 	return inst, nil
 }
 
@@ -66,6 +84,9 @@ func caddyCLI(inst CaddyInstall, args ...string) string {
 }
 
 func caddyContainerPath(inst CaddyInstall, name string) (string, bool) {
+	if inst.ContainerConfigUnmapped {
+		return name, caddyPath(name)
+	}
 	var source, target string
 	for _, mount := range inst.Mounts {
 		if caddyPath(mount.Source) && caddyPath(mount.Destination) && len(mount.Source) > len(source) &&
@@ -112,6 +133,14 @@ const caddyShellEnvironment = `load_env() {
 `
 
 func caddyEnvironment(inst CaddyInstall, command string) string {
+	return caddyEnvScript(inst, command, false)
+}
+
+func caddyValidationEnvironment(inst CaddyInstall, command string) string {
+	return caddyEnvScript(inst, command, true)
+}
+
+func caddyEnvScript(inst CaddyInstall, command string, sandbox bool) string {
 	if inst.Method == CaddyDocker {
 		return command
 	}
@@ -119,17 +148,28 @@ func caddyEnvironment(inst CaddyInstall, command string) string {
 	if len(files) == 0 && inst.Envfile != "" {
 		files = []string{inst.Envfile}
 	}
-	if len(files) == 0 {
+	if !sandbox && len(files) == 0 && inst.WorkingDir == "" && len(inst.CaddyEnvironment) == 0 {
 		return command
 	}
 	var script strings.Builder
 	script.WriteString("(\n" + caddyShellEnvironment)
+	if inst.WorkingDir != "" {
+		fmt.Fprintf(&script, "cd -- %s || exit '1'\n", privilegeQuote(inst.WorkingDir))
+	}
+	for _, key := range []string{"HOME", "XDG_DATA_HOME", "XDG_CONFIG_HOME", "CADDY_ADMIN"} {
+		if value, ok := inst.CaddyEnvironment[key]; ok && !strings.ContainsAny(value, "\x00\r\n") {
+			fmt.Fprintf(&script, "export %s\n", privilegeQuote(key+"="+value))
+		}
+	}
 	for _, name := range files {
 		if actual, optional := strings.CutPrefix(name, "-"); optional {
 			fmt.Fprintf(&script, "if [ -e %s ]; then load_env %s || exit '1'; fi\n", privilegeQuote(actual), privilegeQuote(actual))
 		} else {
 			fmt.Fprintf(&script, "load_env %s || exit '1'\n", privilegeQuote(name))
 		}
+	}
+	if sandbox {
+		script.WriteString(caddyValidationScratch)
 	}
 	script.WriteString(command + "\n)")
 	return script.String()

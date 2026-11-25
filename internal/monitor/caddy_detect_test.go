@@ -41,3 +41,23 @@ func TestCaddyDetect(t *testing.T) {
 		})
 	}
 }
+
+func TestCaddyDockerNoHostMount(t *testing.T) {
+	inst, _, ok := caddyParseDocker(`{"Name":"/caddy","State":{"Running":true},"Config":{"Image":"caddy:2"}}`)
+	if !ok || !inst.ContainerConfigUnmapped {
+		t.Fatalf("inst=%+v", inst)
+	}
+	ctx := context.Background()
+	run := func(_ context.Context, script string, stdin io.Reader, _ func(string)) (string, string, error) {
+		if script != "'docker' 'exec' '-i' 'caddy' 'sh' '-s'" || stdin == nil {
+			t.Fatalf("unexpected host read or mutation: %s", script)
+		}
+		return caddyTestFile(caddyDefaultConfig, "example.com {\n respond ok\n}\n"), "", nil
+	}
+	if files, err := ReadCaddyFiles(ctx, run, inst); err != nil || len(files) != 1 {
+		t.Fatalf("files=%v err=%v", files, err)
+	}
+	if _, err := ApplyCaddyChange(ctx, run, inst, CaddyChange{Writes: []CaddyFile{{Path: inst.Config, Content: "new"}}}); err != ErrCaddyUnsafe {
+		t.Fatal(err)
+	}
+}

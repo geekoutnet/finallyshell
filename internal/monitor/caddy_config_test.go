@@ -14,6 +14,21 @@ func caddyTestFile(name, data string) string {
 	return fmt.Sprintf("F\n%s\n%d\n%s\n", base64.StdEncoding.EncodeToString([]byte(name)), len(data), base64.StdEncoding.EncodeToString([]byte(data)))
 }
 
+func caddyTestScript(t *testing.T, cmd string, stdin io.Reader) string {
+	t.Helper()
+	if cmd != caddyScriptInput {
+		return cmd
+	}
+	if stdin == nil {
+		t.Fatal("script stdin missing")
+	}
+	data, err := io.ReadAll(stdin)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return string(data)
+}
+
 func TestCaddyReadRecursive(t *testing.T) {
 	inst := CaddyInstall{Binary: "/usr/bin/caddy", Config: "/etc/caddy/Caddyfile"}
 	next := []struct{ arg, response string }{
@@ -49,7 +64,8 @@ func TestCaddyApplyProtocol(t *testing.T) {
 		{"changed", "changed\n", ErrCaddyChanged, false},
 	} {
 		t.Run(test.name, func(t *testing.T) {
-			run := func(_ context.Context, script string, _ io.Reader, _ func(string)) (string, string, error) {
+			run := func(_ context.Context, cmd string, stdin io.Reader, _ func(string)) (string, string, error) {
+				script := caddyTestScript(t, cmd, stdin)
 				for _, needle := range []string{"sha256sum", "mktemp", "rolled-back", "prune_backups", "'systemctl' 'reload' 'custom-caddy.service'", "'validate' '--config' '/etc/caddy/Caddyfile'"} {
 					if !strings.Contains(script, needle) {
 						t.Errorf("script missing %q", needle)
@@ -86,5 +102,36 @@ func TestCaddyApplyRejectsBadPaths(t *testing.T) {
 		if err == nil {
 			t.Fatalf("accepted %q", name)
 		}
+	}
+}
+
+func TestCaddyBackupPreview(t *testing.T) {
+	ctx := context.Background()
+	inst := CaddyInstall{Config: caddyDefaultConfig, Active: "active"}
+	backup := "/etc/caddy/.backups/20260213120000"
+	created := "/etc/caddy/sites/new.caddy"
+	replies := []string{inst.Config + "\n" + created + "\n", caddyTestFile(backup+inst.Config, "original"), caddyTestFile(inst.Config, "modified"), "", caddyTestFile(created, "new site")}
+	run := func(_ context.Context, script string, _ io.Reader, _ func(string)) (string, string, error) {
+		if len(replies) == 0 {
+			t.Fatalf("unexpected script: %s", script)
+		}
+		response := replies[0]
+		replies = replies[1:]
+		return response, "", nil
+	}
+	change, err := PreviewCaddyBackup(ctx, run, inst, backup)
+	if err != nil || !change.Reload || len(change.Writes) != 1 || change.Writes[0].Content != "original" || len(change.Deletes) != 1 || change.Deletes[0] != created || change.Expect[inst.Config] != "modified" || change.Expect[created] != "new site" {
+		t.Fatalf("change=%+v err=%v", change, err)
+	}
+	if err := DeleteCaddyBackup(ctx, run, inst, "/somewhere/20260213120000"); !errors.Is(err, ErrCaddyUnsafe) {
+		t.Fatal(err)
+	}
+}
+
+func TestCaddyPreviewRebasesImports(t *testing.T) {
+	config := "import ../../../shared/*.caddy\nimport \"/srv/config/a b.caddy\"\nimport shared\n# import /ignore\n"
+	result, changed, err := caddyPreviewContent(config, "/etc/caddy/Caddyfile", "MARKER", map[string]bool{"shared": true})
+	if err != nil || !changed || result != "import \"MARKER/shared/*.caddy\"\nimport \"MARKER/srv/config/a b.caddy\"\nimport shared\n# import /ignore\n" {
+		t.Fatalf("result=%q changed=%t err=%v", result, changed, err)
 	}
 }

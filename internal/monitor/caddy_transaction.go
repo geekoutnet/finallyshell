@@ -12,7 +12,12 @@ import (
 )
 
 func caddyValidateCommand(inst CaddyInstall, config string) string {
-	return caddyEnvironment(inst, caddyCLI(inst, caddyConfigArgs(inst, "validate", config)...))
+	args := caddyConfigArgs(inst, "validate", config)
+	if inst.Method == CaddyDocker {
+		script := "set -eu\n" + caddyValidationScratch + SystemCommand(append([]string{"caddy"}, args...)...)
+		return SystemCommand("docker", "exec", inst.Container, "sh", "-c", script)
+	}
+	return caddyValidationEnvironment(inst, caddyCLI(inst, args...))
 }
 
 func caddyReloadCommand(inst CaddyInstall, config string) (string, error) {
@@ -32,6 +37,9 @@ func caddyReloadCommand(inst CaddyInstall, config string) (string, error) {
 const caddyTransactionShell = `set -eu
 umask '077'
 mark() { printf 'CADDY_TX %s\n' "$*"; }
+safe_caddy_dir() {
+  [ -d "$1" ] && [ ! -L "$1" ] && [ "$(cd -P -- "$1" && pwd -P)" = "$1" ]
+}
 check_path() {
   parent=${1%/*}; [ -n "$parent" ] || parent='/'
   [ ! -L "$1" ] && { [ ! -e "$1" ] || [ -f "$1" ]; } || return '1'
@@ -58,11 +66,11 @@ restore_one() {
 ensure_dir() {
   [ ! -L "$1" ] || return '1'
   [ ! -d "$1" ] || return '0'
-  ensure_dir "${1%/*}" && mkdir -m '0755' -- "$1" || return '1'
+  ensure_dir "${1%/*}" && (umask '022'; mkdir -- "$1") || return '1'
   printf '%s\n' "$1" >> "$lock/dirs"
 }
 stage() {
-  ensure_dir "${1%/*}" || return '1'
+  parent=${1%/*}; ensure_dir "${parent:-/}" || return '1'
   tmp=$(mktemp "${1%/*}/.finallyshell.XXXXXXXX") || return '1'
   base64 -d > "$tmp" || return '1'
   if [ -f "$1" ]; then
@@ -80,6 +88,13 @@ expect_file() {
   actual=$(sha256sum < "$1") || return '1'
   [ "${actual%% *}" = "$2" ]
 }
+check_import_set() {
+  for found do
+    [ -f "$found" ] || continue
+    case "$found" in */.*) continue ;; esac
+    [ -f "$lock/expected$found" ] || { mark 'changed'; exit '1'; }
+  done
+}
 prune_backups() {
   count=0
   ls -1r -- "$backups" | while IFS= read -r name; do
@@ -94,25 +109,24 @@ prune_backups() {
 
 func caddyChangePaths(inst CaddyInstall, change CaddyChange) ([]string, []string, error) {
 	touched, checked := map[string]bool{}, map[string]bool{}
-	base := path.Dir(inst.Config)
+	backupRoot := caddyBackupRoot(inst)
 	add := func(name string, touch bool) error {
-		if !caddyPath(name) || strings.HasPrefix(name, base+"/.backups/") || name == base+"/.backups" || strings.Contains(name, "/.finallyshell.") || (touch && touched[name]) {
+		if !caddyPath(name) || strings.HasPrefix(name, backupRoot+"/") || name == backupRoot || strings.Contains(name, "/.finallyshell.") || (touch && touched[name]) {
 			return fmt.Errorf("%w: %q", ErrCaddyUnsafe, name)
 		}
 		if touch {
 			touched[name] = true
 			if inst.Method == CaddyDocker && len(inst.Mounts) > 0 {
-				mapped, found := false, false
+				var selected CaddyMount
 				for _, mount := range inst.Mounts {
 					if name == mount.Source {
 						return fmt.Errorf("%w: cannot replace a container file mount: %q", ErrCaddyUnsafe, name)
 					}
-					if strings.HasPrefix(name, mount.Source+"/") {
-						mapped = true
-						found = found || mount.RW
+					if caddyPath(mount.Source) && caddyPath(mount.Destination) && strings.HasPrefix(name, mount.Source+"/") && len(mount.Source) > len(selected.Source) {
+						selected = mount
 					}
 				}
-				if !mapped || !found {
+				if !selected.RW {
 					return fmt.Errorf("%w: not on a writable container directory mount: %q", ErrCaddyUnsafe, name)
 				}
 			}
@@ -143,7 +157,7 @@ func caddyChangePaths(inst CaddyInstall, change CaddyChange) ([]string, []string
 			return nil, nil, err
 		}
 	}
-	for _, name := range change.ExpectMissing {
+	for _, name := range slices.Sorted(slices.Values(change.ExpectMissing)) {
 		if _, exists := change.Expect[name]; exists {
 			return nil, nil, ErrCaddyUnsafe
 		}
@@ -168,6 +182,9 @@ func caddyPayload(script *strings.Builder, command, content string) {
 }
 
 func caddyTransactionScript(inst CaddyInstall, change CaddyChange) (string, error) {
+	if inst.Resume || inst.ContainerConfigUnmapped {
+		return "", ErrCaddyUnsafe
+	}
 	touched, checked, err := caddyChangePaths(inst, change)
 	if err != nil {
 		return "", err
@@ -216,6 +233,7 @@ cleanup() {
 	script.WriteString(`    if [ -z "$failed" ]; then mark 'rolled-back'; else mark 'rollback-failed'; status='1'; fi
   fi
   rm -f -- "$lock/dirs" "$lock/validate"
+  if [ -d "$lock/expected" ]; then rm -rf -- "$lock/expected"; fi
   rmdir -- "$lock"
   exit "$status"
 }
@@ -229,12 +247,31 @@ trap 'exit 1' HUP INT TERM
 		digest := fmt.Sprintf("%x", sha256.Sum256([]byte(change.Expect[name])))
 		fmt.Fprintf(&script, "expect_file %s %s || { mark 'changed'; exit '1'; }\n", privilegeQuote(name), privilegeQuote(digest))
 	}
-	for _, name := range change.ExpectMissing {
+	for _, name := range slices.Sorted(slices.Values(change.ExpectMissing)) {
 		fmt.Fprintf(&script, "[ ! -e %s ] || { mark 'changed'; exit '1'; }\n", privilegeQuote(name))
+	}
+	for _, pattern := range change.importPatterns {
+		if !caddyPath(pattern) {
+			return "", ErrCaddyUnsafe
+		}
+	}
+	if change.requireEmptySites {
+		fmt.Fprintf(&script, "for site in %s/*.caddy; do if [ -e \"$site\" ] || [ -L \"$site\" ]; then mark 'changed'; exit '1'; fi; done\n", privilegeQuote(inst.SitesDir))
+	}
+	if len(change.importPatterns) != 0 {
+		for _, name := range slices.Sorted(maps.Keys(change.Expect)) {
+			fmt.Fprintf(&script, "mkdir -p -- \"$lock/expected\"%s\n: > \"$lock/expected\"%s\n", privilegeQuote(path.Dir(name)), privilegeQuote(name))
+		}
+		for _, pattern := range change.importPatterns {
+			if expansion, ok := caddyGlob(pattern); ok {
+				fmt.Fprintf(&script, "check_import_set %s\n", expansion)
+			}
+		}
 	}
 	if len(touched) != 0 {
 		script.WriteString(`[ ! -L "$backups" ]
 mkdir -p -- "$backups"
+safe_caddy_dir "$backups"
 stamp=$(date -u '+%Y%m%d%H%M%S')
 backup="$backups/$stamp"; serial=0
 while ! mkdir -- "$backup" 2>/dev/null; do
@@ -244,7 +281,7 @@ while ! mkdir -- "$backup" 2>/dev/null; do
 done
 `)
 		for _, name := range touched {
-			fmt.Fprintf(&script, "save_old %s\n", privilegeQuote(name))
+			fmt.Fprintf(&script, "save_old %s\nprintf '%%s\\n' %s >> \"$backup/.finallyshell-paths\"\n", privilegeQuote(name), privilegeQuote(name))
 		}
 		script.WriteString("mark \"backup $backup\"\ndirty='yes'\n")
 	}
@@ -283,7 +320,7 @@ func applyCaddyChange(ctx context.Context, run CaddyRunner, inst CaddyInstall, c
 	if err != nil {
 		return result, err
 	}
-	stdout, stderr, err := run(ctx, script, nil, nil)
+	stdout, stderr, err := caddyRunPayload(ctx, run, script, nil)
 	var state error
 	validated := false
 	for line := range strings.SplitSeq(stdout, "\n") {
@@ -317,6 +354,9 @@ func applyCaddyChange(ctx context.Context, run CaddyRunner, inst CaddyInstall, c
 		return result, caddyCommandError(state, caddyOutput(result.Validate, stderr))
 	}
 	if err != nil {
+		if result.Backup != "" && !result.RolledBack && !result.Reloaded {
+			return result, fmt.Errorf("%w: %w", ErrCaddyRollback, caddyCommandError(err, strings.TrimSpace(stderr)))
+		}
 		return result, caddyCommandError(err, strings.TrimSpace(stderr))
 	}
 	if !validated || (change.Reload && !result.Reloaded) {

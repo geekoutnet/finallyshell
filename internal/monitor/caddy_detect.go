@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"net"
 	"path"
 	"regexp"
 	"slices"
@@ -19,7 +20,7 @@ record() {
   printf '\n'
 }
 inspect_binary() {
-  [ -x "$1" ] || return '1'
+  [ -f "$1" ] && [ -x "$1" ] || return '1'
   version=$("$1" 'version' 2>/dev/null) || return '1'
   method='binary'; latest=''
   if dpkg-query -S -- "$1" >/dev/null 2>&1; then
@@ -29,7 +30,7 @@ inspect_binary() {
   elif pacman -Qo -- "$1" >/dev/null 2>&1; then
     method='pacman'; latest=$(pacman -Si 'caddy' 2>/dev/null)
   elif apk info -W "$1" >/dev/null 2>&1; then
-    method='apk'; latest=$(apk policy 'caddy' 2>/dev/null)
+    method='apk'; latest=$(apk policy 'caddy' 2>/dev/null | awk '/^  [^[:space:]][^[:space:]]*:$/ && new=="" {new=$1; sub(/:$/, "", new)} END {if (new!="") print "Version: " new}')
   fi
   record 'host' "$(printf '%s\n%s\n%s' "$1" "$method" "$version")"
   record 'latest' "$latest"
@@ -46,13 +47,13 @@ if command -v 'systemctl' >/dev/null 2>&1; then
   units=$({ printf '%s\n' 'caddy.service' 'caddy-api.service'; systemctl 'list-unit-files' '--type=service' '--no-legend' '--no-pager' 2>/dev/null | awk '{print $1}'; systemctl 'list-units' '--all' '--type=service' '--no-legend' '--no-pager' '--plain' 2>/dev/null | awk '{print $1}'; } | sort -u)
   set -f
   set -- $units
-  systemctl 'show' '-p' 'Id,FragmentPath,ExecStart,ActiveState,UnitFileState,User,EnvironmentFiles,Environment' '--' "$@" 2>/dev/null |
+  systemctl 'show' '-p' 'Id,FragmentPath,ExecStart,ActiveState,UnitFileState,User,WorkingDirectory,EnvironmentFiles,Environment' '--' "$@" 2>/dev/null |
     awk 'BEGIN {RS=""; FS="\n"} /ExecStart=[^\n]*path=[^;]*\/caddy[ ;]/ {
       for (i=1;i<=NF;i++) {
         if ($i !~ /^Environment=/) print $i
         else {
           n=split(substr($i,13),env," "); for(j=1;j<=n;j++)
-            if (env[j] ~ /^"?(CADDY_ADMIN|XDG_DATA_HOME|HOME)=/) print "CaddyEnv=" env[j]
+            if (env[j] ~ /^"?(CADDY_ADMIN|XDG_DATA_HOME|XDG_CONFIG_HOME|HOME)=/) print "CaddyEnv=" env[j]
         }
       }
       print ""
@@ -213,6 +214,8 @@ func caddyParseUnit(text string) (CaddyInstall, map[string]string, bool) {
 			inst.Enabled = value == "enabled" || value == "enabled-runtime"
 		case "User":
 			inst.User = value
+		case "WorkingDirectory":
+			inst.WorkingDir = value
 		case "EnvironmentFiles":
 			for _, parts := range caddyEnvPaths.FindAllStringSubmatch(value, -1) {
 				name := strings.Trim(parts[1], `"`)
@@ -230,13 +233,16 @@ func caddyParseUnit(text string) (CaddyInstall, map[string]string, bool) {
 		case "Environment", "CaddyEnv":
 			for _, word := range caddyUnitWords(value) {
 				name, val, found := strings.Cut(word, "=")
-				if found && (name == "HOME" || name == "XDG_DATA_HOME" || name == "CADDY_ADMIN") {
+				if found && (name == "HOME" || name == "XDG_DATA_HOME" || name == "XDG_CONFIG_HOME" || name == "CADDY_ADMIN") {
 					env[name] = val
 				}
 			}
 		}
 	}
 	inst.ServiceManager = "systemd"
+	if inst.Config != "" && !path.IsAbs(inst.Config) && path.IsAbs(inst.WorkingDir) {
+		inst.Config = path.Join(inst.WorkingDir, inst.Config)
+	}
 	return inst, env, ValidService(inst.Unit) && caddyPath(inst.Binary) && path.Base(inst.Binary) == "caddy"
 }
 
@@ -298,8 +304,10 @@ func caddyParseDocker(text string) (CaddyInstall, map[string]string, bool) {
 	inst.Enabled = inst.RestartPolicy == "always" || inst.RestartPolicy == "unless-stopped"
 	caddyStartArgs(&inst, info.Args)
 	inst.ContainerConfig = inst.Config
+	inst.ContainerConfigUnmapped = true
 	if mapped, ok := caddyHostPath(inst, inst.Config); ok {
 		inst.Config = mapped
+		inst.ContainerConfigUnmapped = false
 	}
 	env := map[string]string{}
 	for _, assignment := range info.Config.Env {
@@ -324,10 +332,8 @@ func caddyListening(text string) (listening, conflicts []string) {
 			switch process := match[1]; {
 			case process == "caddy":
 				listening = append(listening, address)
-			case port80or443 && process != "docker-proxy":
-				conflicts = append(conflicts, process)
 			case port80or443:
-				conflicts = append(conflicts, "docker-proxy")
+				conflicts = append(conflicts, process)
 			}
 		}
 	}
@@ -340,7 +346,7 @@ func caddyModules(text string) []string {
 	var modules []string
 	for line := range strings.SplitSeq(text, "\n") {
 		fields := strings.Fields(line)
-		if len(fields) != 0 && strings.Contains(fields[0], ".") && caddyIdentifier.MatchString(fields[0]) {
+		if len(fields) == 1 && caddyIdentifier.MatchString(fields[0]) {
 			modules = append(modules, fields[0])
 		}
 	}
@@ -353,7 +359,10 @@ func caddyUseHostRecords(inst *CaddyInstall, records []caddyRecord) {
 		switch record.tag {
 		case "host":
 			if parts := strings.SplitN(record.value, "\n", 3); len(parts) == 3 && caddyPath(parts[0]) {
-				inst.Binary, inst.Method, inst.Version = parts[0], parts[1], parts[2]
+				switch parts[1] {
+				case CaddyAPT, CaddyDNF, CaddyPacman, CaddyAPK, CaddyBinary:
+					inst.Binary, inst.Method, inst.Version = parts[0], parts[1], parts[2]
+				}
 			}
 		case "latest":
 			inst.PackageLatest = caddyPackageVersion(record.value)
@@ -427,7 +436,7 @@ func detectCaddy(ctx context.Context, run CaddyRunner) (CaddyInstall, error) {
 	}
 	if selected.Unit != "" {
 		if selected.Binary != native.Binary {
-			rows, err := caddyRunRecords(ctx, run, caddyDetectPrelude+"inspect_binary "+privilegeQuote(selected.Binary)+"\n")
+			rows, err := caddyRunRecords(ctx, run, caddyDetectPrelude+"inspect_binary "+privilegeQuote(selected.Binary)+" || :\n")
 			if err != nil {
 				return CaddyInstall{}, err
 			}
@@ -455,6 +464,23 @@ func detectCaddy(ctx context.Context, run CaddyRunner) (CaddyInstall, error) {
 		}
 	}
 	selected.Listening, selected.Conflicts = caddyListening(ports)
+	if selected.Method == CaddyDocker {
+		var mappings map[string][]struct{ HostIP, HostPort string }
+		if json.Unmarshal([]byte(selected.Ports), &mappings) == nil {
+			for port, bindings := range mappings {
+				if !strings.HasSuffix(port, "/tcp") {
+					continue
+				}
+				for _, binding := range bindings {
+					if selected.Active == "active" && binding.HostPort != "" {
+						selected.Listening = append(selected.Listening, net.JoinHostPort(binding.HostIP, binding.HostPort))
+					}
+				}
+			}
+			slices.Sort(selected.Listening)
+			selected.Listening = slices.Compact(selected.Listening)
+		}
+	}
 	selected.AdminAddr = "localhost:2019"
 	selected, err = caddyNormalize(selected)
 	if err != nil || selected.Method == CaddyNotInstalled {
@@ -464,6 +490,9 @@ func detectCaddy(ctx context.Context, run CaddyRunner) (CaddyInstall, error) {
 }
 
 func caddyDetectDetails(ctx context.Context, run CaddyRunner, inst CaddyInstall, env map[string]string) (CaddyInstall, error) {
+	if inst.Method != CaddyDocker && len(env) != 0 {
+		inst.CaddyEnvironment = env
+	}
 	var script strings.Builder
 	script.WriteString(caddyDetectPrelude + caddyShellEnvironment)
 	script.WriteString("unset CADDY_ADMIN XDG_DATA_HOME\n")
@@ -483,7 +512,12 @@ func caddyDetectDetails(ctx context.Context, run CaddyRunner, inst CaddyInstall,
 		}
 		script.WriteString("record 'admin' \"${CADDY_ADMIN-}\"\nrecord 'xdg' \"${XDG_DATA_HOME-}\"\n")
 	}
-	fmt.Fprintf(&script, "if [ -d %s ]; then record 'dir' 'yes'; fi\nif [ -f %s ]; then record 'config' \"$(head -c '4194305' -- %s)\"; fi\n", privilegeQuote(inst.SitesDir), privilegeQuote(inst.Config), privilegeQuote(inst.Config))
+	if inst.ContainerConfigUnmapped {
+		read := "head -c '4194305' -- " + privilegeQuote(inst.ContainerConfig)
+		fmt.Fprintf(&script, "if data=$(%s 2>/dev/null); then record 'config' \"$data\"; fi\n", SystemCommand("docker", "exec", inst.Container, "sh", "-c", read))
+	} else {
+		fmt.Fprintf(&script, "if [ -d %s ]; then record 'dir' 'yes'; fi\nif [ -f %s ]; then record 'config' \"$(head -c '4194305' -- %s)\"; fi\n", privilegeQuote(inst.SitesDir), privilegeQuote(inst.Config), privilegeQuote(inst.Config))
+	}
 	rows, err := caddyRunRecords(ctx, run, script.String())
 	if err != nil {
 		return inst, err
@@ -516,6 +550,17 @@ func caddyDetectDetails(ctx context.Context, run CaddyRunner, inst CaddyInstall,
 	if xdg == "" {
 		xdg = env["XDG_DATA_HOME"]
 	}
+	if inst.Method != CaddyDocker {
+		if inst.CaddyEnvironment == nil {
+			inst.CaddyEnvironment = map[string]string{}
+		}
+		if caddyPath(home) {
+			inst.CaddyEnvironment["HOME"] = home
+		}
+		if caddyPath(xdg) {
+			inst.CaddyEnvironment["XDG_DATA_HOME"] = xdg
+		}
+	}
 	if admin == "" {
 		admin = env["CADDY_ADMIN"]
 	}
@@ -526,7 +571,12 @@ func caddyDetectDetails(ctx context.Context, run CaddyRunner, inst CaddyInstall,
 		if !caddyPath(xdg) {
 			xdg = "/data"
 		}
-		inst.DataDir, _ = caddyHostPath(inst, path.Join(xdg, "caddy"))
+		containerData := path.Join(xdg, "caddy")
+		inst.DataDir, _ = caddyHostPath(inst, containerData)
+		if inst.DataDir == "" {
+			inst.DataDir = containerData
+			inst.ContainerDataUnmapped = true
+		}
 	} else if caddyPath(xdg) {
 		inst.DataDir = path.Join(xdg, "caddy")
 	} else {
@@ -535,7 +585,29 @@ func caddyDetectDetails(ctx context.Context, run CaddyRunner, inst CaddyInstall,
 		}
 		inst.DataDir = path.Join(home, ".local/share/caddy")
 	}
-	caddyDetectConfig(&inst, conf, hasDir)
+	if inst.Resume {
+		inst.Adapter = "json"
+		if inst.Method != CaddyDocker {
+			if !caddyPath(home) {
+				home = "/var/lib/caddy"
+			}
+			configHome := env["XDG_CONFIG_HOME"]
+			if !caddyPath(configHome) {
+				configHome = path.Join(home, ".config")
+			}
+			inst.Config = path.Join(configHome, "caddy/autosave.json")
+		} else {
+			inst.ContainerConfig = "/config/caddy/autosave.json"
+			inst.Config, _ = caddyHostPath(inst, inst.ContainerConfig)
+			inst.ContainerConfigUnmapped = inst.Config == ""
+			if inst.ContainerConfigUnmapped {
+				inst.Config = inst.ContainerConfig
+			}
+		}
+		inst.SitesDir = path.Join(path.Dir(inst.Config), "sites")
+	} else {
+		caddyDetectConfig(&inst, conf, hasDir)
+	}
 	return inst, nil
 }
 

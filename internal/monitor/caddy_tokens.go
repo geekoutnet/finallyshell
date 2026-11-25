@@ -45,7 +45,7 @@ func caddyTokens(text string) ([]caddyToken, error) {
 				index++
 			}
 			if index == len(text) {
-				return nil, ErrCaddyInvalid
+				return tokens, ErrCaddyInvalid
 			}
 			index++
 		} else {
@@ -56,7 +56,7 @@ func caddyTokens(text string) ([]caddyToken, error) {
 			if marker, ok := strings.CutPrefix(word.String(), "<<"); ok && marker != "" && !strings.HasPrefix(marker, "<") {
 				until := strings.IndexByte(text[index:], '\n')
 				if until < 0 || strings.TrimSpace(text[index:index+until]) != "" {
-					return nil, ErrCaddyInvalid
+					return tokens, ErrCaddyInvalid
 				}
 				index += until + 1
 				line++
@@ -67,7 +67,7 @@ func caddyTokens(text string) ([]caddyToken, error) {
 						break
 					}
 					if index == len(text) {
-						return nil, ErrCaddyInvalid
+						return tokens, ErrCaddyInvalid
 					}
 					index++
 					line++

@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"path"
+	"slices"
 	"strconv"
 	"strings"
 )
@@ -95,13 +96,17 @@ func caddyHostPath(inst CaddyInstall, name string) (string, bool) {
 	if target != "" {
 		return source + strings.TrimPrefix(name, target), true
 	}
-	if name == inst.ContainerConfig && caddyPath(inst.Config) {
+	if !inst.ContainerConfigUnmapped && name == inst.ContainerConfig && caddyPath(inst.Config) {
 		return inst.Config, true
 	}
 	return "", false
 }
 
 func readCaddyFiles(ctx context.Context, run CaddyRunner, inst CaddyInstall) ([]CaddyFile, error) {
+	return caddyReadTree(ctx, run, inst, nil)
+}
+
+func caddyReadTree(ctx context.Context, run CaddyRunner, inst CaddyInstall, overlay map[string]CaddyFile) ([]CaddyFile, error) {
 	inst, err := caddyNormalize(inst)
 	if err != nil {
 		return nil, err
@@ -118,21 +123,52 @@ func readCaddyFiles(ctx context.Context, run CaddyRunner, inst CaddyInstall) ([]
 			return fmt.Errorf("%w: import %q", ErrCaddyUnsafe, name)
 		}
 		queried[name] = true
-		script, glob := caddyReadScript(name, depth == 0)
-		stdout, stderr, err := run(ctx, script, nil, nil)
-		if err != nil {
-			return caddyCommandError(err, strings.TrimSpace(stderr))
+		if depth > 0 {
+			if _, err := path.Match(name, ""); err != nil {
+				return fmt.Errorf("%w: malformed import %q", ErrCaddyInvalid, name)
+			}
 		}
-		rows, err := caddyDecodeFiles(stdout)
-		if err != nil {
-			return err
+		script, glob := caddyReadScript(name, depth == 0)
+		var rows []CaddyFile
+		if file, ok := overlay[name]; ok && !glob {
+			rows = []CaddyFile{file}
+		} else {
+			var stdout, stderr string
+			if inst.ContainerConfigUnmapped {
+				stdout, stderr, err = run(ctx, SystemCommand("docker", "exec", "-i", inst.Container, "sh", "-s"), strings.NewReader(script), nil)
+			} else {
+				stdout, stderr, err = run(ctx, script, nil, nil)
+			}
+			if err != nil {
+				return caddyCommandError(err, strings.TrimSpace(stderr))
+			}
+			rows, err = caddyDecodeFiles(stdout)
+			if err != nil {
+				return err
+			}
+			if glob && len(overlay) != 0 {
+				byPath := map[string]CaddyFile{}
+				for _, file := range rows {
+					byPath[file.Path] = file
+				}
+				for key, file := range overlay {
+					if match, _ := path.Match(name, key); match {
+						byPath[key] = file
+					}
+				}
+				rows = rows[:0]
+				for _, file := range byPath {
+					rows = append(rows, file)
+				}
+				slices.SortFunc(rows, func(left, right CaddyFile) int { return strings.Compare(left.Path, right.Path) })
+			}
 		}
 		if len(rows) == 0 && !glob {
 			return fmt.Errorf("%w: missing configuration %q", ErrCaddyInvalid, name)
 		}
 		for _, file := range rows {
 			if glob {
-				if match, _ := path.Match(name, file.Path); !match {
+				if match, _ := path.Match(name, file.Path); !match || strings.HasPrefix(path.Base(file.Path), ".") {
 					continue
 				}
 			} else if file.Path != name {
@@ -153,7 +189,9 @@ func readCaddyFiles(ctx context.Context, run CaddyRunner, inst CaddyInstall) ([]
 			}
 			tokens, err := caddyTokens(file.Content)
 			if err != nil {
-				return fmt.Errorf("%w: %s", err, file.Path)
+				if overlay != nil {
+					return fmt.Errorf("%w: %s", err, file.Path)
+				}
 			}
 			caddySnippets(tokens, snippets)
 			for _, index := range caddyDirectives(tokens, "import") {
@@ -175,11 +213,14 @@ func readCaddyFiles(ctx context.Context, run CaddyRunner, inst CaddyInstall) ([]
 					}
 					item = path.Join(dir, item)
 				}
-				item, ok := caddyHostPath(inst, item)
+				mapped, ok := caddyHostPath(inst, item)
+				if inst.ContainerConfigUnmapped {
+					mapped, ok = item, true
+				}
 				if !ok {
 					return fmt.Errorf("%w: unmapped container import", ErrCaddyUnsafe)
 				}
-				if err := visit(item, depth+1); err != nil {
+				if err := visit(mapped, depth+1); err != nil {
 					return err
 				}
 			}

@@ -89,6 +89,26 @@ without checking that flag, so do not treat an unset flag as a read-only
 guarantee. For tunnel cases that assume a shared loopback network, leave
 `FINALLYSHELL_TEST_SSH` unset and use the in-process fixture.
 
+For the desktop Files, This PC, Trash and Terminal live tests, run the
+following from Bash against the running testbox. Run it once per account;
+the `tester` run exercises the sudo prompt. The archive and interoperability
+cases use `zip`, `unzip` and `trash-cli`; the remote download uses the Caddy
+fixture. Set `SHOT_DIR` to an existing local directory to save screenshots.
+Set `TESTBOX_ENV` first if the credentials are not in the default location.
+
+```bash
+for account in root tester; do
+    (
+        set -e
+        set +x
+        ssh_export=$(.claude/skills/testbox/testbox.sh ssh-env "$account")
+        eval "$ssh_export"
+        unset ssh_export
+        FINALLYSHELL_TEST_MUTATE=1 go test ./internal/app -run '^TestDesktopLive(Files|Trash|Terminal)' -count=1 -v -timeout 900s
+    ) || exit 1
+done
+```
+
 ## Adding components
 
 Install extras inside the disposable container, not on the host:

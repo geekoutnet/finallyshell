@@ -12,6 +12,7 @@ func (a *App) openBulkPalette(hosts []*config.Host) {
 	commands := []bulkPaletteAction{
 		{locales.BulkOpen(), func() { a.openBulkExec(hosts, "") }},
 		{locales.ManagerTitle(), a.openManager},
+		{locales.TmgrTitle(), a.OpenTunnelManager},
 		{locales.Options(), a.openOptions},
 		{locales.SysproxyRestore(), a.confirmRestoreSystemProxy},
 	}

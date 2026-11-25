@@ -192,11 +192,11 @@ func (a *App) openEditor(h *config.Host, from WindowKind) {
 		ed.password, ed.passphrase = "", ""
 		ed.totpText = ""
 	}
-	if from == WindowManager && a.windowOpen(WindowManager) {
+	if (from == WindowManager || from == windowTunnelManager) && a.windowOpen(from) {
 		// A sheet of the manager on macOS, showing its title inside;
 		// on Linux GTK blocks the main window too while it is open, as
 		// FinalShell's own dialogs do. Saving shows in the manager.
-		spec.Parent, spec.Modal = WindowManager, true
+		spec.Parent, spec.Modal = from, true
 	}
 	a.openWindow(spec, a.editorView)
 }
@@ -358,6 +358,7 @@ func (a *App) saveSSH(h *config.Host, ed *connEditor) {
 	}
 	a.saveProxy(h, &ed.proxy)
 	h.Tunnels = ed.tunnels.result()
+	h.EnsureTunnelIDs()
 	a.keepProxySecret(h, ed.remember, ed.readingProxySecret)
 }
 

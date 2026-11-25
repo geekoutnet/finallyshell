@@ -120,6 +120,7 @@ var (
 		"noCommandBar", "noCommandBarPaths", "noCommandBarHistory", "noCommandBarCommands", "noServerHistory",
 	}
 	localSettings = []string{
+		"tunnelManager",
 		"lockEnabled", "lockIdleMinutes", "lockOnMinimize",
 		"sidebarWidth", "monitorPercent", "terminalPercent", "treeWidth",
 		"procListPercent", "procFieldsPercent", "netListPercent",

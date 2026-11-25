@@ -208,6 +208,7 @@ type App struct {
 
 	// The connection manager's window.
 	manager managerState
+	tmgr    tunnelManager
 
 	// The left panel's page, and the tree of the Connections page
 	// (conntree.go).
@@ -337,6 +338,7 @@ func New(plat Platform) *App {
 		newRemote:     syncRemote,
 	}
 	a.hosts, _ = config.LoadHosts()
+	a.ensureTunnelManagerIDs()
 	a.settings = config.LoadSettings()
 	a.lock.locked = a.settings.LockEnabled
 	a.loadAppearance()
@@ -479,6 +481,7 @@ func (a *App) bottomTabs() []bottomTab {
 	if s := a.connSession(); s != nil && s.listening() > 0 {
 		tunnelsLabel = locales.TabTunnelsActive(s.listening())
 	}
+	tunnelsLabel = a.tunnelManagerTabLabel(tunnelsLabel)
 	return []bottomTab{
 		tabFiles:     {locales.TabFiles(), a.filePanel},
 		tabTransfers: {transfersLabel, a.transferPanel},
@@ -620,6 +623,7 @@ func (a *App) closeSession(s *Session) {
 // secondary windows, and saves the pane sizes the user changed and the
 // command editor's text.
 func (a *App) CloseAll() {
+	a.closeTunnelManager()
 	a.closeSystemProxy()
 	a.stopAlerts()
 	if a.relay != nil {

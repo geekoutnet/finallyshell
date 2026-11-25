@@ -808,6 +808,9 @@ func (a *App) managerItemMenu(c *ui.Context, m *managerState, menu *ui.Menu, it 
 	if menu.Item(locales.Edit()).Chosen() {
 		do(func() { a.editFrom(m, h) })
 	}
+	if h.IsSSH() && menu.Item(locales.TmgrHostMenu()).Chosen() {
+		do(func() { a.openTunnelManager(h.ID) })
+	}
 	if menu.Item(locales.Duplicate()).Chosen() {
 		do(func() { a.duplicateHost(m, h) })
 	}

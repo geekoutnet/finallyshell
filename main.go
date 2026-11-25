@@ -327,8 +327,16 @@ func main() {
 				e.PreventDefault()
 			}
 		})
+		resumeOff := mygo.Power.OnResume(a.BackgroundTunnelNetworkChanged)
+		networkOff := mygo.Network.OnChanged(func(status mygo.NetworkStatus) {
+			if status.Online {
+				a.BackgroundTunnelNetworkChanged()
+			}
+		})
 		// Its children close with it, before this runs.
 		plat.win.OnClosed(func() {
+			resumeOff()
+			networkOff()
 			if plat.tray != nil {
 				plat.tray.Destroy()
 				plat.tray = nil
@@ -349,6 +357,7 @@ func main() {
 			}
 		})
 		plat.watchUpdates()
+		a.StartBackgroundTunnels()
 	})
 	if err := mygo.App.Run(); err != nil {
 		log.Fatal(err)

@@ -109,7 +109,8 @@ type Settings struct {
 	// each connection: 0, as a file without it reads, for
 	// DefaultKeepAliveSeconds, and KeepAliveOff (any negative number)
 	// for none. Read it with KeepAliveInterval.
-	KeepAliveSeconds int `json:"keepAliveSeconds,omitempty"`
+	KeepAliveSeconds int                    `json:"keepAliveSeconds,omitempty"`
+	TunnelManager    *TunnelManagerSettings `json:"tunnelManager,omitempty"`
 	// SSHAgent is the address of the SSH agent hosts that log in with
 	// one use (AuthAgent): a Unix socket's path, ~ for the home folder,
 	// or on Windows a named pipe, \\.\pipe\<name>. "" for the default:

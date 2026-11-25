@@ -117,6 +117,14 @@ The system proxy uses the tunnel’s existing `systemProxy` (boolean) and `pac` 
 - Without `listenHost`, the tunnel listens on `127.0.0.1` only.
 - With `disabled` set to `true`, the tunnel does not start with the
   session.
+- `id` identifies a tunnel within its host. Older entries get an ID when
+  loaded and keep it when the host is saved.
+- `background: true` makes a tunnel eligible for autostart on a dedicated
+  SSH connection instead of with a terminal. `settings.json` can opt out
+  on this device with `"tunnelManager": {"noAutostart": true}`; this setting
+  is not synced. Background SSH uses the same `known_hosts`, existing
+  host credential keys and `keepAliveSeconds` as interactive SSH. The
+  manager stores no additional SSH credentials.
 - Unknown fields in a tunnel are kept as they are.
 
 The listen address of a remote tunnel must be an IP address or
@@ -190,6 +198,7 @@ default.
 | `minimizeToTray` | `true` hides the main window to the tray when it is closed. | Closing quits. |
 | `noConfirmClose` | `true` closes and quits without asking while sessions are open. | Ask first. |
 | `keepAliveSeconds` | Seconds between the SSH keepalives of each connection, 1 to 3600 (higher reads as 3600); `-1` (any negative number) turns them off, which the options show as 0. Applies to new connections. | 30 (also for `0`) |
+| `tunnelManager.noAutostart` | When `true`, skips background tunnel autostart on this device. Manual starts still work. Not synced. | `false` |
 | `sshAgent` | The SSH agent of the hosts with `"auth": "agent"`: a Unix socket's path (`~` for the home folder), such as `~/.bitwarden-ssh-agent.sock`, or on Windows a named pipe, `\\.\pipe\<name>`. This computer's own: not synced. Applies to new connections. | `SSH_AUTH_SOCK`; `\\.\pipe\openssh-ssh-agent` on Windows. |
 | `x11Display` | Override the local X display for X11 forwarding (for example `localhost:1`). This computer's own: not synced. | `$DISPLAY`, or `localhost:0` on Windows when unset. |
 | `downloadDir` | Folder downloads go into. | The system's Downloads folder. |

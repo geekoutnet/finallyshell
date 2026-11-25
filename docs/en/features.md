@@ -2119,6 +2119,37 @@ Manager stops its reads when minimized, closed, or no longer visible.
 The session's normal monitor is independent. GPU metrics and a separate
 startup page are not included.
 
+### Desktop mode › Settings
+
+Settings shows the Linux distribution, hostname, SSH user, kernel,
+virtualization, uptime, addresses, CPU, memory and mounted storage. The
+connection alias can be edited here. Addresses are hidden by default
+and omitted when you copy the overview while they are hidden. Public IP
+detection contacts `api.ipify.org` from the server only when requested.
+Personalization shows the desktop shell’s appearance and window options.
+
+The operation log belongs to the open desktop. Filter it by app or text,
+export the matching entries, or confirm to clear the entire local log.
+Server logins are separate: the desktop reads `last` and can request
+administrator privileges to read failed attempts with `lastb`.
+
+DNS shows effective resolvers and supports presets, custom IPv4/IPv6
+nameservers and search domains. It writes through systemd-resolved, the
+NetworkManager profile for the default route, or a regular
+`/etc/resolv.conf`. An unknown manager or managed symbolic link is never
+overwritten. The first backup is kept and can be restored. The dialog
+names the files or commands; NetworkManager reactivation can interrupt
+SSH. After a change, the desktop tests `example.com`. Global
+systemd-resolved settings do not change per-interface DNS.
+
+Time zone & time shows the live server clock, estimated difference from
+this computer, time zone, NTP status and hardware clock. It searches the
+server’s time zones and can change the zone, toggle NTP or request a
+manual synchronization when supported. Server changes require
+confirmation, use shared privilege escalation and appear in the desktop
+operation log. Security links to the App lock, SSH key manager and the
+System tab’s security tools.
+
 ## System tab
 
 The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.

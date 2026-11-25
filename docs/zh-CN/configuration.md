@@ -252,6 +252,15 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 `desktopMaximize`、`desktopSnapLeft`、`desktopSnapRight`、`desktopCycle`、`desktopShow`
 和 `desktopLauncher`。
 
+### 桌面设置：服务器 DNS 文件
+
+DNS 页不新增本地设置键。服务器上的普通 `/etc/resolv.conf` 会备份为
+`/etc/resolv.conf.finallyshell.bak`。对于 systemd-resolved，设置页写入
+`/etc/systemd/resolved.conf.d/finallyshell.conf`，并用同目录的 `.bak` 或
+`.bak.absent` 文件记录原始状态。对于 NetworkManager，
+`/etc/NetworkManager/finallyshell-dns-<profile-uuid>.bak` 保存被修改的六项
+DNS 属性。恢复后仍保留首次备份。这些文件不会复制到本机，也不会同步。
+
 ## db.json
 
 此文件可以不存在，按 SSH 主机 ID 保存数据库页的连接配置列表。每条配置包含

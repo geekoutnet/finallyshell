@@ -337,6 +337,17 @@ Desktop key bindings in `shortcuts`: `openDesktop`, `desktopClose`,
 `desktopMinimize`, `desktopMaximize`, `desktopSnapLeft`, `desktopSnapRight`,
 `desktopCycle`, `desktopShow`, and `desktopLauncher`.
 
+### Desktop Settings: server DNS files
+
+The DNS page does not add local settings keys. On the server, a regular
+`/etc/resolv.conf` is backed up to `/etc/resolv.conf.finallyshell.bak`.
+For systemd-resolved the page writes
+`/etc/systemd/resolved.conf.d/finallyshell.conf`; its original state is
+recorded in the adjacent `.bak` or `.bak.absent` file. For NetworkManager,
+`/etc/NetworkManager/finallyshell-dns-<profile-uuid>.bak` stores the six
+DNS properties the page changes. Restoring leaves the first backup in
+place. These files are not copied to this computer or synced.
+
 ## db.json
 
 This optional file maps SSH host IDs to arrays of Database tab connection

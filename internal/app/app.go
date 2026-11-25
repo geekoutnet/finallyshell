@@ -240,7 +240,8 @@ type App struct {
 	windows map[WindowKind]bool
 
 	// The editor of remote files (fileeditor.go).
-	fe fileEditor
+	fe          fileEditor
+	codeEditors map[WindowKind]*codeEditorWindow
 
 	// The options window's page.
 	optionsNav widgets.NavState

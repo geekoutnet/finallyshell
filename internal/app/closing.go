@@ -59,7 +59,7 @@ func (a *App) QuitRequested() bool {
 		if a.lock.busy || a.lock.confirming {
 			return false
 		}
-		if a.liveSessions() == 0 && a.unsavedFiles() == 0 && a.tunnelManagerCount() == 0 {
+		if a.liveSessions() == 0 && a.unsavedFiles()+a.unsavedCodeFiles() == 0 && a.tunnelManagerCount() == 0 {
 			a.quitApproved = true
 			return true
 		}
@@ -79,7 +79,7 @@ func (a *App) QuitRequested() bool {
 		}
 		return false
 	}
-	n, unsaved, tunnels := a.liveSessions(), a.unsavedFiles(), a.tunnelManagerCount()
+	n, unsaved, tunnels := a.liveSessions(), a.unsavedFiles()+a.unsavedCodeFiles(), a.tunnelManagerCount()
 	if n == 0 && unsaved == 0 && tunnels == 0 || a.settings.NoConfirmClose && unsaved == 0 {
 		a.quitApproved = true
 		return true

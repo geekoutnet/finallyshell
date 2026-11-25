@@ -236,6 +236,10 @@ func (a *App) desktopFilesReadLocation(w *desktopWindow, dir string, home, visit
 		if readMounts && run != nil {
 			out, stderr, mountErr := run(ctx, desktopFilesMountCommand, nil)
 			drives := desktopFilesParseMounts(out)
+			drives = slices.DeleteFunc(drives, func(drive desktopFilesDrive) bool {
+				info, err := sc.Stat(drive.mount)
+				return err == nil && !info.IsDir()
+			})
 			a.post(func() {
 				if f.readID == id && s.sftp == sc {
 					f.drives, f.mountsRead, f.driveErr = drives, mountErr == nil, desktopFilesCommandError(stderr, mountErr)
@@ -437,6 +441,13 @@ func (a *App) desktopFilesSearch(w *desktopWindow, query string) {
 			}
 		})
 	}()
+}
+
+func (f *desktopFilesState) cancelSearch() {
+	f.readID++
+	f.readCancel()
+	f.readCancel = nil
+	f.loading, f.searching = false, false
 }
 
 func desktopFilesSearchItems(text string) ([]desktopFilesItem, bool) {

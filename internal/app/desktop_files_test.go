@@ -248,6 +248,9 @@ func TestDesktopFilesSearchAndProperties(t *testing.T) {
 	}
 	a.desktopFilesSearch(window, "wait")
 	desktopFilesTestConfirm(t, tester, locales.Cancel())
+	if f.loading || f.searching {
+		t.Fatal("cancel left the search banner active")
+	}
 	platform.until(t, "cancel search", func() bool { return !f.loading })
 	if f.err != nil {
 		t.Fatal(f.err)
@@ -450,10 +453,14 @@ func TestDesktopFilesThisPC(t *testing.T) {
 		if script != desktopFilesMountCommand {
 			t.Errorf("mount command = %q", script)
 		}
-		return "/dev/sda1 ext4 1024 512 500 51% " + remote + "\n", "", nil
+		return "/dev/sda1 ext4 1024 512 500 51% " + remote + "\n" +
+			"/dev/sda1 ext4 1024 512 500 51% " + path.Join(remote, "README.md") + "\n", "", nil
 	}
 	a.desktopFilesRefresh(pc)
-	platform.until(t, "This PC drives", func() bool { return len(f.drives) == 1 })
+	platform.until(t, "This PC drives", func() bool { return f.mountsRead && !f.loading })
+	if len(f.drives) != 1 || f.drives[0].mount != remote {
+		t.Fatalf("drives should exclude file bind mounts: %+v", f.drives)
+	}
 	if _, ok := tester.Find(locales.DesktopPCQuick()); !ok {
 		t.Fatal("quick access was not rendered")
 	}

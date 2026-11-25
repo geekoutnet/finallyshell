@@ -2003,6 +2003,33 @@ file is saved through another connected session to the same host.
 Not supported: saving with sudo. A file without write permission fails to
 save with "permission denied".
 
+### Desktop mode › Task Manager
+
+Task Manager monitors the connected Linux server over SSH; it installs
+nothing on the server. **Performance** shows load, CPU, memory and swap,
+disk activity, and network traffic. Select a disk or partition to see
+throughput, IOPS, capacity and mount points, or a network interface to
+see traffic, addresses and link speed when reported. Charts retain up to
+60 samples. CPU details include time distribution and per-logical-CPU
+charts. Load is busy from 70% per logical CPU and overloaded from 100%.
+Dropping caches or compacting memory asks for confirmation and uses the
+shared root-access flow.
+
+**Processes** refreshes every two seconds after each read. Pause it,
+search, sort any column, or group processes by parent. Double-click a row
+for basic details, mappings, file descriptors, environment variables or
+TCP/UDP connections. Sensitive environment values are masked unless
+revealed explicitly; protected fields can be retried as root. Process
+actions distinguish graceful exit, force kill, stop, resume and priority
+changes. Each confirms the specific process and checks its start time
+before acting. Confirmed changes are recorded in the desktop operation log.
+
+**Users** shows login sessions reported by `who`; **Services** is a
+read-only list with service and startup status when available. Task
+Manager stops its reads when minimized, closed, or no longer visible.
+The session's normal monitor is independent. GPU metrics and a separate
+startup page are not included.
+
 ## System tab
 
 The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.

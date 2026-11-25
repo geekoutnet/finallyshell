@@ -38,6 +38,7 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 | v2.0.13 | The Docker tab: containers (create, edit by recreating, batch actions, usage charts, files in a container), images (pull, build, push, prune), Compose (deploy, take down, edit compose files, new projects), networks, volumes, system (disk use, cleanup, events, registries, daemon config); shared escalation: root, passwordless sudo, sudo password, su, and a message only when all fail |
 | v2.0.14 | Run on many hosts with results; the System tab: services, logs, scheduled jobs, disk usage, updates, security, firewall; SSH key manager, key deployment, turning off password login, agent and X11 forwarding; ZMODEM (rz/sz), terminal keyword highlighting, session recording; the Docker tab escalates when needed; hosts made in a row on Windows no longer share an ID and crash the UI |
 | v2.0.15 | The System tab's websites and certificates (Nginx sites, a refused config put back at once, certificate expiry, certbot); server-to-server transfers; alerts; app lock; SSH verification codes filled in; the Database tab (MySQL / MariaDB, PostgreSQL, Redis); Telnet and serial connections |
+| v2.0.16 | Professional tunnels: HTTP proxies, mixed SOCKS5/HTTP ports with authentication, reverse SOCKS5/HTTP proxies (the server uses this computer's network, optionally through its proxy), Unix sockets (remote Docker), access lists, connection and rate limits, connection logs; the tunnel manager (background connections, autostart, auto-reconnect); 21 recipes; system proxy with PAC; `ssh -L/-R/-D` import and export; public access helper (GatewayPorts, a server relay, firewall, outside test); LAN sharing; Remote Desktop through SSH |
 
 ## In progress
 
@@ -50,6 +51,10 @@ Nothing yet. Every feature the roadmap listed is built; add new ideas to Candida
 ## Candidates
 
 The first batch and the next one hold every candidate listed before. Add new ideas here.
+
+| Feature | Notes |
+|---|---|
+| Global TUN / VPN mode | Every program's traffic through the tunnel. `ssh -w` needs `PermitTunnel` on the server, root on both ends, and carries TCP over TCP; a global mode on Windows needs the wintun driver, administrator rights and a gVisor network stack. v2.0.16 covers browsers and most programs with the system proxy and PAC instead |
 
 ## Not planned
 

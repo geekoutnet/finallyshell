@@ -42,7 +42,19 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 
 ## In progress
 
-Nothing.
+**Desktop mode** (after GMSSH): every SSH session can open a "Desktop" row that manages the server like a Windows desktop. Branch `feature/desktop`, seven modules built in parallel:
+
+| Module | Content |
+|---|---|
+| Desktop shell | Wallpapers (built-in and custom images), icon grid and icon folders, windows (move, resize from eight directions, maximize, minimize, snap to halves, keep on top), dock (launcher, pinned and running apps, show desktop, clock, switching servers), context menus, shortcuts, personalization |
+| This PC and Files | Drives and quick access, an Explorer-like file manager (views, breadcrumb, favorites, recent, search, notes, properties and permissions, compress and extract, remote download, copy and paste between servers) |
+| Trash | Deleting moves to the trash (freedesktop specification): restore, delete permanently, empty, search |
+| Task Manager | Performance (load, CPU, memory, disk, network with history), processes and their details, releasing memory |
+| Settings | System info, personalization, operation log, DNS, time zone and time sync, security links |
+| Terminal, browser, app center | A shell of its own per window, a local browser through the server, the built-in tools (Docker, databases, sites, services...) as desktop apps |
+| AI assistant | The user's own OpenAI-compatible API: chat, command generation (Ctrl+I), log explanations; nothing is sent until it is configured, and commands run only after confirmation |
+
+GMSSH's app store (installing software on the server in one click) stays under "Not doing": the app center lists only the client's built-in tools.
 
 ## Next
 

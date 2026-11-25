@@ -393,7 +393,10 @@ func TestSystemLogsFilterAndBuffer(t *testing.T) {
 	for _, sample := range []struct {
 		line  string
 		level int
-	}{{"error: open failed", 3}, {"WARN: slow disk", 2}, {"archive succeeded", 1}, {"ordinary startup", 0}} {
+	}{{"error: open failed", 3}, {"WARN: slow disk", 2}, {"archive succeeded", 1}, {"ordinary startup", 0},
+		{`caddy[341]: {"level":"info","msg":"HTTP request failed","error":"refused"}`, 0},
+		{`caddy[341]: {"level":"error","msg":"handled"}`, 3},
+		{`time=now level=warn msg="disk failed"`, 2}} {
 		if got := systemLogLevel(sample.line, []string{"archive"}); got != sample.level {
 			t.Errorf("%q = %d", sample.line, got)
 		}

@@ -554,6 +554,11 @@ type SignalError struct {
 
 func (e *SignalError) Error() string { return e.Msg }
 
+func SignalNeedsRoot(err error) bool {
+	var refused *SignalError
+	return errors.As(err, &refused) && refused.Msg == "Operation not permitted"
+}
+
 // signalGone is what signalScript prints, with the exit status
 // signalGoneStatus, when the process is not the one meant: it ended, and
 // its PID may be another process's now.
@@ -593,10 +598,25 @@ gone() { echo "` + signalGone + `"; exit ` + strconv.Itoa(signalGoneStatus) + `;
 // ErrNoProcess, and no signal is sent. A kill that fails is a
 // *SignalError with the server's message.
 func SendSignal(ctx context.Context, client *ssh.Client, pid int, start uint64, sig string) error {
+	return sendSignal(ctx, func(ctx context.Context, script string) (string, string, error) {
+		return RunScript(ctx, client, script)
+	}, pid, start, sig)
+}
+
+func SendSignalAsRoot(ctx context.Context, privilege *Privilege, pid int, start uint64, sig string) error {
+	if start == 0 {
+		return ErrNoProcess
+	}
+	return sendSignal(ctx, func(ctx context.Context, script string) (string, string, error) {
+		return privilege.Run(ctx, script, PrivilegeOptions{})
+	}, pid, start, sig)
+}
+
+func sendSignal(ctx context.Context, run SystemRead, pid int, start uint64, sig string) error {
 	if !slices.Contains(Signals, sig) || pid <= 0 {
 		return fmt.Errorf("bad signal %q to %d", sig, pid)
 	}
-	out, stderr, err := RunScript(ctx, client, signalScript(pid, start, sig))
+	out, stderr, err := run(ctx, signalScript(pid, start, sig))
 	if ctx.Err() != nil {
 		return ctx.Err()
 	}

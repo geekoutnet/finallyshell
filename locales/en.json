@@ -1663,6 +1663,7 @@
   "secPortAdvice": "Check firewall and forwarding rules before changing SSH ports.",
   "secNoJails": "No active Fail2ban jails could be read.",
   "secNoFail2ban": "Fail2ban was not detected.",
+  "secFail2banStopped": "Fail2ban is installed but not running. Start fail2ban.service under Services to read its jails.",
   "secJail": "Jail",
   "secBan": "Ban IP",
   "secNoBans": "No banned IPs in this jail.",

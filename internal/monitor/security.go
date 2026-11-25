@@ -145,12 +145,18 @@ const Fail2banStatusScript = `if command -v 'fail2ban-client' >/dev/null 2>&1; t
   data=$(LC_ALL=C 'fail2ban-client' 'status' 2>&1) || {
     status=$?
     case "$data" in
-      *'Failed to access socket path:'*'Is fail2ban running?'*) exit 0;;
+      *'Failed to access socket path:'*'Is fail2ban running?'*) printf '%s\n' '---stopped---'; exit 0;;
       *) printf '%s\n' "$data" >&2; exit "$status";;
     esac
   }
   printf '%s\n' "$data"
 fi`
+
+// Fail2banStopped reports whether Fail2banStatusScript found Fail2ban
+// installed but its server not running.
+func Fail2banStopped(status string) bool {
+	return strings.Contains(status, "---stopped---")
+}
 
 var fail2banJail = regexp.MustCompile(`^[a-zA-Z0-9][a-zA-Z0-9_.-]{0,95}$`)
 

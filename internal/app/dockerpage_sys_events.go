@@ -37,7 +37,7 @@ func (a *App) keepDockerEvents(s *Session, page *dockerResourcesPage) {
 		return
 	}
 	a.keepPolling(&state.poll, s, 3*time.Second, func() pollRead {
-		stream := a.dockerExec(s, monitor.StreamDockerEvents, nil, false).command
+		stream := a.dockerExec(s, monitor.StreamDockerEvents, nil, false).events
 		if page.events != nil && !page.tool.Root {
 			stream = page.events
 		}

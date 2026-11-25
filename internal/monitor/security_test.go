@@ -45,7 +45,7 @@ func TestOpsFail2banStatusWithoutDaemon(t *testing.T) {
 		command := exec.Command(shell, "-s")
 		command.Stdin = strings.NewReader("fake_fail2ban() { printf '%s\\n' " + privilegeQuote(test.message) + " >&2; return 255; }\n" + strings.ReplaceAll(Fail2banStatusScript, "fail2ban-client", "fake_fail2ban"))
 		output, err := command.CombinedOutput()
-		if test.success && (err != nil || string(output) != "installed\n") || !test.success && (err == nil || !strings.Contains(string(output), test.message)) {
+		if test.success && (err != nil || string(output) != "installed\n---stopped---\n" || !Fail2banStopped(string(output))) || !test.success && (err == nil || !strings.Contains(string(output), test.message)) {
 			t.Errorf("%s: %q, %v", test.message, output, err)
 		}
 	}

@@ -9,7 +9,10 @@ import (
 	"strings"
 )
 
-const FirewallDetectScript = `for tool in 'ufw' 'firewall-cmd' 'nft' 'iptables'; do
+// FirewallDetectScript runs as the login user, whose PATH on Debian and
+// others leaves out the sbin folders the firewall tools live in.
+const FirewallDetectScript = `PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
+for tool in 'ufw' 'firewall-cmd' 'nft' 'iptables'; do
   if command -v "$tool" >/dev/null 2>&1; then printf '%s\n' "$tool"; fi
 done`
 
@@ -263,8 +266,12 @@ func UFWToggleScript(enable bool, actual int, source netip.Addr) (string, error)
 		prefix += `'grep' '-Eq' '^[[:space:]]*IPV6=yes([[:space:]]|$)' '/etc/default/ufw' || { printf '%s\n' 'UFW IPv6 support is disabled' >&2; exit 1; }` + "\n"
 	}
 	prefix += `for file in '/etc/ufw/before.rules' '/etc/ufw/before6.rules'; do
+  name=${file##*/}
+  if 'cmp' '-s' "$file" '/usr/share/ufw/iptables/'"$name" || 'cmp' '-s' "$file" '/usr/share/ufw/'"$name"; then
+    continue
+  fi
   if [ -r "$file" ] && 'grep' '-Eq' '^-A .* (-j|--jump) (DROP|REJECT)([[:space:]]|$)' "$file"; then
-    if 'grep' '-E' '^-A .* (-j|--jump) (DROP|REJECT)([[:space:]]|$)' "$file" | 'grep' '-Evq' -- '-m conntrack --ctstate INVALID'; then
+    if 'grep' '-E' '^-A .* (-j|--jump) (DROP|REJECT)([[:space:]]|$)' "$file" | 'grep' '-Evq' -- '^-A ufw6?-before-input -m conntrack --ctstate INVALID -j DROP[[:space:]]*$'; then
       printf '%s\n' 'Custom UFW pre-rules may block SSH; review them before enabling' >&2
       exit 1
     fi

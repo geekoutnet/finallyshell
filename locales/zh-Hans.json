@@ -1459,6 +1459,7 @@
   "secPortAdvice": "变更 SSH 端口前，请检查防火墙和端口转发规则。",
   "secNoJails": "没有读到运行中的 Fail2ban 防护项。",
   "secNoFail2ban": "未检测到 Fail2ban。",
+  "secFail2banStopped": "Fail2ban 已安装但未运行。在“服务”中启动 fail2ban.service 后才能读取防护项。",
   "secJail": "防护项",
   "secBan": "封禁 IP",
   "secNoBans": "此防护项没有封禁的 IP。",

@@ -14698,6 +14698,16 @@ func (msgs Messages) SecNoFail2ban() string {
 	return Catalog.Format(msgs.locale, "secNoFail2ban", nil)
 }
 
+// SecFail2banStopped says "Fail2ban is installed but not running. Start fail2ban.service under Services to read its jails."
+// in the language the app shows.
+func SecFail2banStopped() string { return In(i18n.Locale()).SecFail2banStopped() }
+
+// SecFail2banStopped says "Fail2ban is installed but not running. Start fail2ban.service under Services to read its jails."
+// in the language of msgs.
+func (msgs Messages) SecFail2banStopped() string {
+	return Catalog.Format(msgs.locale, "secFail2banStopped", nil)
+}
+
 // SecJail says "Jail"
 // in the language the app shows.
 func SecJail() string { return In(i18n.Locale()).SecJail() }

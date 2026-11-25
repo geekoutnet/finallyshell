@@ -8,6 +8,7 @@ import (
 	"path"
 	"strconv"
 	"strings"
+	"time"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -83,7 +84,12 @@ func StreamSystem(ctx context.Context, client *ssh.Client, script string, report
 		return "", "", err
 	}
 	defer session.Close()
-	stop := context.AfterFunc(ctx, func() { session.Close() })
+	stop := context.AfterFunc(ctx, func() {
+		deadline := time.AfterFunc(time.Second, func() { session.Close() })
+		defer deadline.Stop()
+		_ = session.Signal(ssh.SIGINT)
+		_ = session.Close()
+	})
 	defer stop()
 	session.Stdin = strings.NewReader(script)
 	var stderr bytes.Buffer

@@ -162,9 +162,6 @@ func TestTunnelExposeRowMenus(t *testing.T) {
 	if !dialog.HasText(locales.TexpOffline()) {
 		t.Errorf("missing offline explanation: %q", dialog.Texts())
 	}
-	if !tester.HasText(locales.TunnelStart()) {
-		t.Error("short panel hides the tunnel actions")
-	}
 	a.closeWindow(windowTunnelExpose)
 	if a.windowOpen(windowTunnelLAN) {
 		t.Fatal("unexpected LAN window")

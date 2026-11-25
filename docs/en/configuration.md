@@ -91,6 +91,15 @@ version 2.
 }
 ```
 
+### Remote Desktop through SSH
+
+On a host with `kind: "rdp"`, the optional `rdp.sshHostId` is the ID of a
+saved SSH host. Without it, the Remote Desktop client connects directly as
+before. `rdp.sshTarget` is the optional `host[:port]` as the SSH host sees
+it; an omitted port defaults to 3389. With no target override, the app uses
+the RDP host's `addr` and `port`. These fields contain no credentials. The
+normal SSH and RDP credentials remain in the system credential store.
+
 ### Telnet and serial fields
 
 - `kind` is absent for SSH, `telnet` for Telnet, or `serial` for a serial port.
@@ -118,6 +127,12 @@ version 2.
 
 The listen address of a remote tunnel must be an IP address or
 `localhost`; see [Tunnels](features.md#tunnels-page).
+
+`serverRelay` selects a server relay for a remote tunnel. The local-only
+`tunnel-firewall.json` records rules the public access assistant added:
+the SSH host and endpoint, tunnel ID, port, backend, and rule tag or zone.
+It contains no credentials and is not synced. Deleting this file does
+not remove the server's rules.
 
 ### Proxy
 

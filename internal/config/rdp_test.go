@@ -20,9 +20,27 @@ func fullRDP() *RDPConfig {
 		Keyboard: KeyboardRemote, Program: `C:\Tools\app.exe`, ProgramFolder: `C:\Tools`,
 		Network: NetworkLAN, NoBitmapCache: true, NoAutoReconnect: true,
 		Admin: true, ServerAuth: ServerAuthRefuse, NoNLA: true,
+		SSHHostID: "ssh-host", SSHTarget: "[fd00::1]:3390",
 		GatewayHost: "gw.example.com", GatewayUser: `CORP\gw`, GatewayUsage: GatewayFallback,
 		GatewayAuth: GatewayAuthPassword, GatewaySameLogin: true,
 		Custom: "redirectlocation:i:1\nvideoplaybackmode:i:0",
+	}
+}
+
+func TestRDPSSHTarget(t *testing.T) {
+	h := &Host{Kind: KindRDP, Addr: "desktop.internal", Port: 3391}
+	for _, test := range []struct {
+		input, want string
+	}{
+		{"", "desktop.internal:3391"}, {"win", "win:3389"}, {"win:3390", "win:3390"},
+		{"fd00::5", "[fd00::5]:3389"}, {"[fd00::5]:3390", "[fd00::5]:3390"},
+		{"https://win", ""}, {"win:0", ""}, {"win:65536", ""}, {"win\nexample.com", ""},
+	} {
+		h.RDP = &RDPConfig{SSHTarget: test.input}
+		got, err := RDPSSHTarget(h)
+		if got != test.want || (err == nil) != (test.want != "") {
+			t.Errorf("%q: %q, %v; want %q", test.input, got, err, test.want)
+		}
 	}
 }
 

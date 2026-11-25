@@ -110,6 +110,7 @@ func (a *App) tunnelsPage(c *ui.Context, ed *connEditor) {
 	}
 	te.table.Selected = &te.row
 	te.table.Label = func(i int) string { return tunnelKindLabel(list[i].Kind) + " " + list[i].ListenAddr() }
+	te.table.CellMenu = a.exposeEditorMenu(ed)
 	table := ui.Table(c, &te.table, tunnelColumns(), len(list), func(row, col int) {
 		t := &list[row]
 		muted := theme.TextMuted

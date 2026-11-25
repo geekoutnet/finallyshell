@@ -20826,6 +20826,1024 @@ func (msgs Messages) RdpAdminHint() string {
 	return Catalog.Format(msgs.locale, "rdpAdminHint", nil)
 }
 
+// TexpPublic says "Public access…"
+// in the language the app shows.
+func TexpPublic() string { return In(i18n.Locale()).TexpPublic() }
+
+// TexpPublic says "Public access…"
+// in the language of msgs.
+func (msgs Messages) TexpPublic() string {
+	return Catalog.Format(msgs.locale, "texpPublic", nil)
+}
+
+// TexpTitle says "Public access through SSH"
+// in the language the app shows.
+func TexpTitle() string { return In(i18n.Locale()).TexpTitle() }
+
+// TexpTitle says "Public access through SSH"
+// in the language of msgs.
+func (msgs Messages) TexpTitle() string {
+	return Catalog.Format(msgs.locale, "texpTitle", nil)
+}
+
+// TexpMakePublic says "Make it public…"
+// in the language the app shows.
+func TexpMakePublic() string { return In(i18n.Locale()).TexpMakePublic() }
+
+// TexpMakePublic says "Make it public…"
+// in the language of msgs.
+func (msgs Messages) TexpMakePublic() string {
+	return Catalog.Format(msgs.locale, "texpMakePublic", nil)
+}
+
+// TexpLAN says "Share with the LAN…"
+// in the language the app shows.
+func TexpLAN() string { return In(i18n.Locale()).TexpLAN() }
+
+// TexpLAN says "Share with the LAN…"
+// in the language of msgs.
+func (msgs Messages) TexpLAN() string {
+	return Catalog.Format(msgs.locale, "texpLAN", nil)
+}
+
+// TexpLANLoopback says "This tunnel listens on loopback only."
+// in the language the app shows.
+func TexpLANLoopback() string { return In(i18n.Locale()).TexpLANLoopback() }
+
+// TexpLANLoopback says "This tunnel listens on loopback only."
+// in the language of msgs.
+func (msgs Messages) TexpLANLoopback() string {
+	return Catalog.Format(msgs.locale, "texpLANLoopback", nil)
+}
+
+// TexpLANTitle says "Share with the LAN"
+// in the language the app shows.
+func TexpLANTitle() string { return In(i18n.Locale()).TexpLANTitle() }
+
+// TexpLANTitle says "Share with the LAN"
+// in the language of msgs.
+func (msgs Messages) TexpLANTitle() string {
+	return Catalog.Format(msgs.locale, "texpLANTitle", nil)
+}
+
+// TexpOffline says "Connect to this SSH host to run server checks or change server settings."
+// in the language the app shows.
+func TexpOffline() string { return In(i18n.Locale()).TexpOffline() }
+
+// TexpOffline says "Connect to this SSH host to run server checks or change server settings."
+// in the language of msgs.
+func (msgs Messages) TexpOffline() string {
+	return Catalog.Format(msgs.locale, "texpOffline", nil)
+}
+
+// TexpWaiting says "Checking…"
+// in the language the app shows.
+func TexpWaiting() string { return In(i18n.Locale()).TexpWaiting() }
+
+// TexpWaiting says "Checking…"
+// in the language of msgs.
+func (msgs Messages) TexpWaiting() string {
+	return Catalog.Format(msgs.locale, "texpWaiting", nil)
+}
+
+// TexpUnchecked says "Not checked"
+// in the language the app shows.
+func TexpUnchecked() string { return In(i18n.Locale()).TexpUnchecked() }
+
+// TexpUnchecked says "Not checked"
+// in the language of msgs.
+func (msgs Messages) TexpUnchecked() string {
+	return Catalog.Format(msgs.locale, "texpUnchecked", nil)
+}
+
+// TexpRefresh says "Run checks"
+// in the language the app shows.
+func TexpRefresh() string { return In(i18n.Locale()).TexpRefresh() }
+
+// TexpRefresh says "Run checks"
+// in the language of msgs.
+func (msgs Messages) TexpRefresh() string {
+	return Catalog.Format(msgs.locale, "texpRefresh", nil)
+}
+
+// TexpGateway says "1. SSH server · GatewayPorts"
+// in the language the app shows.
+func TexpGateway() string { return In(i18n.Locale()).TexpGateway() }
+
+// TexpGateway says "1. SSH server · GatewayPorts"
+// in the language of msgs.
+func (msgs Messages) TexpGateway() string {
+	return Catalog.Format(msgs.locale, "texpGateway", nil)
+}
+
+// TexpGatewayNo says "Off. SSH forwards can listen only on the server’s loopback address."
+// in the language the app shows.
+func TexpGatewayNo() string { return In(i18n.Locale()).TexpGatewayNo() }
+
+// TexpGatewayNo says "Off. SSH forwards can listen only on the server’s loopback address."
+// in the language of msgs.
+func (msgs Messages) TexpGatewayNo() string {
+	return Catalog.Format(msgs.locale, "texpGatewayNo", nil)
+}
+
+// TexpGatewayYes says "On for every interface. sshd can ignore even a loopback bind request."
+// in the language the app shows.
+func TexpGatewayYes() string { return In(i18n.Locale()).TexpGatewayYes() }
+
+// TexpGatewayYes says "On for every interface. sshd can ignore even a loopback bind request."
+// in the language of msgs.
+func (msgs Messages) TexpGatewayYes() string {
+	return Catalog.Format(msgs.locale, "texpGatewayYes", nil)
+}
+
+// TexpGatewayClient says "Client chooses the listening address."
+// in the language the app shows.
+func TexpGatewayClient() string { return In(i18n.Locale()).TexpGatewayClient() }
+
+// TexpGatewayClient says "Client chooses the listening address."
+// in the language of msgs.
+func (msgs Messages) TexpGatewayClient() string {
+	return Catalog.Format(msgs.locale, "texpGatewayClient", nil)
+}
+
+// TexpGatewayMatch says "Match or custom Include rules may change the effective settings. Review them manually."
+// in the language the app shows.
+func TexpGatewayMatch() string { return In(i18n.Locale()).TexpGatewayMatch() }
+
+// TexpGatewayMatch says "Match or custom Include rules may change the effective settings. Review them manually."
+// in the language of msgs.
+func (msgs Messages) TexpGatewayMatch() string {
+	return Catalog.Format(msgs.locale, "texpGatewayMatch", nil)
+}
+
+// TexpAllowGateway says "Allow (clientspecified)"
+// in the language the app shows.
+func TexpAllowGateway() string { return In(i18n.Locale()).TexpAllowGateway() }
+
+// TexpAllowGateway says "Allow (clientspecified)"
+// in the language of msgs.
+func (msgs Messages) TexpAllowGateway() string {
+	return Catalog.Format(msgs.locale, "texpAllowGateway", nil)
+}
+
+// TexpGatewayConfirm says "Set GatewayPorts clientspecified on {host}? This allows SSH users with forwarding permission to request non-loopback …"
+// in the language the app shows.
+func TexpGatewayConfirm(host string) string { return In(i18n.Locale()).TexpGatewayConfirm(host) }
+
+// TexpGatewayConfirm says "Set GatewayPorts clientspecified on {host}? This allows SSH users with forwarding permission to request non-loopback …"
+// in the language of msgs.
+func (msgs Messages) TexpGatewayConfirm(host string) string {
+	return Catalog.Format(msgs.locale, "texpGatewayConfirm", map[string]any{"host": host})
+}
+
+// TexpReconnect says "Reloaded sshd. Reconnect SSH, then restart the tunnel; restarting it on the old connection is not enough."
+// in the language the app shows.
+func TexpReconnect() string { return In(i18n.Locale()).TexpReconnect() }
+
+// TexpReconnect says "Reloaded sshd. Reconnect SSH, then restart the tunnel; restarting it on the old connection is not enough."
+// in the language of msgs.
+func (msgs Messages) TexpReconnect() string {
+	return Catalog.Format(msgs.locale, "texpReconnect", nil)
+}
+
+// TexpReconnectAction says "Reconnect SSH…"
+// in the language the app shows.
+func TexpReconnectAction() string { return In(i18n.Locale()).TexpReconnectAction() }
+
+// TexpReconnectAction says "Reconnect SSH…"
+// in the language of msgs.
+func (msgs Messages) TexpReconnectAction() string {
+	return Catalog.Format(msgs.locale, "texpReconnectAction", nil)
+}
+
+// TexpReconnectConfirm says "Reconnect to {host}? Open shells, transfers and tunnels on this SSH connection are interrupted."
+// in the language the app shows.
+func TexpReconnectConfirm(host string) string { return In(i18n.Locale()).TexpReconnectConfirm(host) }
+
+// TexpReconnectConfirm says "Reconnect to {host}? Open shells, transfers and tunnels on this SSH connection are interrupted."
+// in the language of msgs.
+func (msgs Messages) TexpReconnectConfirm(host string) string {
+	return Catalog.Format(msgs.locale, "texpReconnectConfirm", map[string]any{"host": host})
+}
+
+// TexpRelay says "2. Server relay"
+// in the language the app shows.
+func TexpRelay() string { return In(i18n.Locale()).TexpRelay() }
+
+// TexpRelay says "2. Server relay"
+// in the language of msgs.
+func (msgs Messages) TexpRelay() string {
+	return Catalog.Format(msgs.locale, "texpRelay", nil)
+}
+
+// TexpRelayAction says "Use a relay on the server"
+// in the language the app shows.
+func TexpRelayAction() string { return In(i18n.Locale()).TexpRelayAction() }
+
+// TexpRelayAction says "Use a relay on the server"
+// in the language of msgs.
+func (msgs Messages) TexpRelayAction() string {
+	return Catalog.Format(msgs.locale, "texpRelayAction", nil)
+}
+
+// TexpRelaySwitchOff says "Use direct SSH forwarding"
+// in the language the app shows.
+func TexpRelaySwitchOff() string { return In(i18n.Locale()).TexpRelaySwitchOff() }
+
+// TexpRelaySwitchOff says "Use direct SSH forwarding"
+// in the language of msgs.
+func (msgs Messages) TexpRelaySwitchOff() string {
+	return Catalog.Format(msgs.locale, "texpRelaySwitchOff", nil)
+}
+
+// TexpRelayRunning says "The server relay is listening. Stopping the tunnel also stops the relay."
+// in the language the app shows.
+func TexpRelayRunning() string { return In(i18n.Locale()).TexpRelayRunning() }
+
+// TexpRelayRunning says "The server relay is listening. Stopping the tunnel also stops the relay."
+// in the language of msgs.
+func (msgs Messages) TexpRelayRunning() string {
+	return Catalog.Format(msgs.locale, "texpRelayRunning", nil)
+}
+
+// TexpRelayConfigured says "Configured but stopped. Run checks, then start the relay here."
+// in the language the app shows.
+func TexpRelayConfigured() string { return In(i18n.Locale()).TexpRelayConfigured() }
+
+// TexpRelayConfigured says "Configured but stopped. Run checks, then start the relay here."
+// in the language of msgs.
+func (msgs Messages) TexpRelayConfigured() string {
+	return Catalog.Format(msgs.locale, "texpRelayConfigured", nil)
+}
+
+// TexpRelayTool says "Available: {tool}. Leaves sshd settings unchanged."
+// in the language the app shows.
+func TexpRelayTool(tool string) string { return In(i18n.Locale()).TexpRelayTool(tool) }
+
+// TexpRelayTool says "Available: {tool}. Leaves sshd settings unchanged."
+// in the language of msgs.
+func (msgs Messages) TexpRelayTool(tool string) string {
+	return Catalog.Format(msgs.locale, "texpRelayTool", map[string]any{"tool": tool})
+}
+
+// TexpRelayMissing says "Requires setsid and one of socat, ncat or Python 3.8+ on the server."
+// in the language the app shows.
+func TexpRelayMissing() string { return In(i18n.Locale()).TexpRelayMissing() }
+
+// TexpRelayMissing says "Requires setsid and one of socat, ncat or Python 3.8+ on the server."
+// in the language of msgs.
+func (msgs Messages) TexpRelayMissing() string {
+	return Catalog.Format(msgs.locale, "texpRelayMissing", nil)
+}
+
+// TexpRelayUnsupported says "Use a fixed port and an IP bind address with GatewayPorts off or clientspecified. Relays cannot enforce the tunnel…"
+// in the language the app shows.
+func TexpRelayUnsupported() string { return In(i18n.Locale()).TexpRelayUnsupported() }
+
+// TexpRelayUnsupported says "Use a fixed port and an IP bind address with GatewayPorts off or clientspecified. Relays cannot enforce the tunnel…"
+// in the language of msgs.
+func (msgs Messages) TexpRelayUnsupported() string {
+	return Catalog.Format(msgs.locale, "texpRelayUnsupported", nil)
+}
+
+// TexpRelayExited says "The server relay exited."
+// in the language the app shows.
+func TexpRelayExited() string { return In(i18n.Locale()).TexpRelayExited() }
+
+// TexpRelayExited says "The server relay exited."
+// in the language of msgs.
+func (msgs Messages) TexpRelayExited() string {
+	return Catalog.Format(msgs.locale, "texpRelayExited", nil)
+}
+
+// TexpTunnelChanged says "This tunnel or its SSH host changed. Close this window and reopen it from the current tunnel list."
+// in the language the app shows.
+func TexpTunnelChanged() string { return In(i18n.Locale()).TexpTunnelChanged() }
+
+// TexpTunnelChanged says "This tunnel or its SSH host changed. Close this window and reopen it from the current tunnel list."
+// in the language of msgs.
+func (msgs Messages) TexpTunnelChanged() string {
+	return Catalog.Format(msgs.locale, "texpTunnelChanged", nil)
+}
+
+// TexpRelayConfirm says "Use a relay on {host} to listen on {address}? Machines that can reach it can connect. An active tunnel restarts. Futu…"
+// in the language the app shows.
+func TexpRelayConfirm(host string, address string) string {
+	return In(i18n.Locale()).TexpRelayConfirm(host, address)
+}
+
+// TexpRelayConfirm says "Use a relay on {host} to listen on {address}? Machines that can reach it can connect. An active tunnel restarts. Futu…"
+// in the language of msgs.
+func (msgs Messages) TexpRelayConfirm(host string, address string) string {
+	return Catalog.Format(msgs.locale, "texpRelayConfirm", map[string]any{"host": host, "address": address})
+}
+
+// TexpDirectConfirm says "Switch {address} back to direct SSH forwarding on {host}? If the tunnel is running, it restarts."
+// in the language the app shows.
+func TexpDirectConfirm(address string, host string) string {
+	return In(i18n.Locale()).TexpDirectConfirm(address, host)
+}
+
+// TexpDirectConfirm says "Switch {address} back to direct SSH forwarding on {host}? If the tunnel is running, it restarts."
+// in the language of msgs.
+func (msgs Messages) TexpDirectConfirm(address string, host string) string {
+	return Catalog.Format(msgs.locale, "texpDirectConfirm", map[string]any{"address": address, "host": host})
+}
+
+// TexpPublicConfirm says "Listen on {address} on {host}? Anyone who can reach this address and port can try to connect. No firewall or cloud se…"
+// in the language the app shows.
+func TexpPublicConfirm(address string, host string) string {
+	return In(i18n.Locale()).TexpPublicConfirm(address, host)
+}
+
+// TexpPublicConfirm says "Listen on {address} on {host}? Anyone who can reach this address and port can try to connect. No firewall or cloud se…"
+// in the language of msgs.
+func (msgs Messages) TexpPublicConfirm(address string, host string) string {
+	return Catalog.Format(msgs.locale, "texpPublicConfirm", map[string]any{"address": address, "host": host})
+}
+
+// TexpPublicBind says "Server listen address"
+// in the language the app shows.
+func TexpPublicBind() string { return In(i18n.Locale()).TexpPublicBind() }
+
+// TexpPublicBind says "Server listen address"
+// in the language of msgs.
+func (msgs Messages) TexpPublicBind() string {
+	return Catalog.Format(msgs.locale, "texpPublicBind", nil)
+}
+
+// TexpPublicPort says "Server listen port"
+// in the language the app shows.
+func TexpPublicPort() string { return In(i18n.Locale()).TexpPublicPort() }
+
+// TexpPublicPort says "Server listen port"
+// in the language of msgs.
+func (msgs Messages) TexpPublicPort() string {
+	return Catalog.Format(msgs.locale, "texpPublicPort", nil)
+}
+
+// TexpPublicWarn says "Anyone who can reach {address} on the SSH server can try to connect unless you restrict access."
+// in the language the app shows.
+func TexpPublicWarn(address string) string { return In(i18n.Locale()).TexpPublicWarn(address) }
+
+// TexpPublicWarn says "Anyone who can reach {address} on the SSH server can try to connect unless you restrict access."
+// in the language of msgs.
+func (msgs Messages) TexpPublicWarn(address string) string {
+	return Catalog.Format(msgs.locale, "texpPublicWarn", map[string]any{"address": address})
+}
+
+// TexpProxyWarn says "Warning: without authentication, any reachable client can use this proxy and reach networks available to its exit host."
+// in the language the app shows.
+func TexpProxyWarn() string { return In(i18n.Locale()).TexpProxyWarn() }
+
+// TexpProxyWarn says "Warning: without authentication, any reachable client can use this proxy and reach networks available to its exit host."
+// in the language of msgs.
+func (msgs Messages) TexpProxyWarn() string {
+	return Catalog.Format(msgs.locale, "texpProxyWarn", nil)
+}
+
+// TexpPersisted says "Saved. Starts with these settings the next time you connect or start the tunnel."
+// in the language the app shows.
+func TexpPersisted() string { return In(i18n.Locale()).TexpPersisted() }
+
+// TexpPersisted says "Saved. Starts with these settings the next time you connect or start the tunnel."
+// in the language of msgs.
+func (msgs Messages) TexpPersisted() string {
+	return Catalog.Format(msgs.locale, "texpPersisted", nil)
+}
+
+// TexpFirewall says "3. Server firewall"
+// in the language the app shows.
+func TexpFirewall() string { return In(i18n.Locale()).TexpFirewall() }
+
+// TexpFirewall says "3. Server firewall"
+// in the language of msgs.
+func (msgs Messages) TexpFirewall() string {
+	return Catalog.Format(msgs.locale, "texpFirewall", nil)
+}
+
+// TexpFirewallOpen says "A TCP port rule already allows {port}."
+// in the language the app shows.
+func TexpFirewallOpen(port string) string { return In(i18n.Locale()).TexpFirewallOpen(port) }
+
+// TexpFirewallOpen says "A TCP port rule already allows {port}."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallOpen(port string) string {
+	return Catalog.Format(msgs.locale, "texpFirewallOpen", map[string]any{"port": port})
+}
+
+// TexpFirewallInactive says "UFW is inactive. No rule was added."
+// in the language the app shows.
+func TexpFirewallInactive() string { return In(i18n.Locale()).TexpFirewallInactive() }
+
+// TexpFirewallInactive says "UFW is inactive. No rule was added."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallInactive() string {
+	return Catalog.Format(msgs.locale, "texpFirewallInactive", nil)
+}
+
+// TexpFirewallClosed says "No matching allow rule for {port}/tcp was found. Custom rules may still apply."
+// in the language the app shows.
+func TexpFirewallClosed(port string) string { return In(i18n.Locale()).TexpFirewallClosed(port) }
+
+// TexpFirewallClosed says "No matching allow rule for {port}/tcp was found. Custom rules may still apply."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallClosed(port string) string {
+	return Catalog.Format(msgs.locale, "texpFirewallClosed", map[string]any{"port": port})
+}
+
+// TexpFirewallManual says "Could not determine a single firewall policy. Review the active interfaces, zones and rules on the server."
+// in the language the app shows.
+func TexpFirewallManual() string { return In(i18n.Locale()).TexpFirewallManual() }
+
+// TexpFirewallManual says "Could not determine a single firewall policy. Review the active interfaces, zones and rules on the server."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallManual() string {
+	return Catalog.Format(msgs.locale, "texpFirewallManual", nil)
+}
+
+// TexpAllowPort says "Allow {port}/tcp…"
+// in the language the app shows.
+func TexpAllowPort(port string) string { return In(i18n.Locale()).TexpAllowPort(port) }
+
+// TexpAllowPort says "Allow {port}/tcp…"
+// in the language of msgs.
+func (msgs Messages) TexpAllowPort(port string) string {
+	return Catalog.Format(msgs.locale, "texpAllowPort", map[string]any{"port": port})
+}
+
+// TexpRemoveRule says "Remove our rule…"
+// in the language the app shows.
+func TexpRemoveRule() string { return In(i18n.Locale()).TexpRemoveRule() }
+
+// TexpRemoveRule says "Remove our rule…"
+// in the language of msgs.
+func (msgs Messages) TexpRemoveRule() string {
+	return Catalog.Format(msgs.locale, "texpRemoveRule", nil)
+}
+
+// TexpAllowConfirm says "Allow inbound TCP {port} on {host} ({scope})? The rule can allow anyone who can reach this server to try connecting a…"
+// in the language the app shows.
+func TexpAllowConfirm(port string, host string, scope string) string {
+	return In(i18n.Locale()).TexpAllowConfirm(port, host, scope)
+}
+
+// TexpAllowConfirm says "Allow inbound TCP {port} on {host} ({scope})? The rule can allow anyone who can reach this server to try connecting a…"
+// in the language of msgs.
+func (msgs Messages) TexpAllowConfirm(port string, host string, scope string) string {
+	return Catalog.Format(msgs.locale, "texpAllowConfirm", map[string]any{"port": port, "host": host, "scope": scope})
+}
+
+// TexpRemoveConfirm says "Remove the managed TCP {port} rule on {host} ({scope})? Clients relying on that rule may lose access."
+// in the language the app shows.
+func TexpRemoveConfirm(port string, host string, scope string) string {
+	return In(i18n.Locale()).TexpRemoveConfirm(port, host, scope)
+}
+
+// TexpRemoveConfirm says "Remove the managed TCP {port} rule on {host} ({scope})? Clients relying on that rule may lose access."
+// in the language of msgs.
+func (msgs Messages) TexpRemoveConfirm(port string, host string, scope string) string {
+	return Catalog.Format(msgs.locale, "texpRemoveConfirm", map[string]any{"port": port, "host": host, "scope": scope})
+}
+
+// TexpFirewallOwned says "Finallyshell added a rule for this port. Remove it when you no longer need the tunnel."
+// in the language the app shows.
+func TexpFirewallOwned() string { return In(i18n.Locale()).TexpFirewallOwned() }
+
+// TexpFirewallOwned says "Finallyshell added a rule for this port. Remove it when you no longer need the tunnel."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallOwned() string {
+	return Catalog.Format(msgs.locale, "texpFirewallOwned", nil)
+}
+
+// TexpFirewallOrphan says "The tunnel for TCP {port} is no longer in the saved list. Consider removing this rule."
+// in the language the app shows.
+func TexpFirewallOrphan(port string) string { return In(i18n.Locale()).TexpFirewallOrphan(port) }
+
+// TexpFirewallOrphan says "The tunnel for TCP {port} is no longer in the saved list. Consider removing this rule."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallOrphan(port string) string {
+	return Catalog.Format(msgs.locale, "texpFirewallOrphan", map[string]any{"port": port})
+}
+
+// TexpFirewallChanged says "The firewall changed since the check. No rule was modified. Run checks again."
+// in the language the app shows.
+func TexpFirewallChanged() string { return In(i18n.Locale()).TexpFirewallChanged() }
+
+// TexpFirewallChanged says "The firewall changed since the check. No rule was modified. Run checks again."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallChanged() string {
+	return Catalog.Format(msgs.locale, "texpFirewallChanged", nil)
+}
+
+// TexpFirewallRemoved says "The managed firewall rule was removed."
+// in the language the app shows.
+func TexpFirewallRemoved() string { return In(i18n.Locale()).TexpFirewallRemoved() }
+
+// TexpFirewallRemoved says "The managed firewall rule was removed."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallRemoved() string {
+	return Catalog.Format(msgs.locale, "texpFirewallRemoved", nil)
+}
+
+// TexpFirewallSaved says "The rule was added. Finallyshell remembers it on this computer."
+// in the language the app shows.
+func TexpFirewallSaved() string { return In(i18n.Locale()).TexpFirewallSaved() }
+
+// TexpFirewallSaved says "The rule was added. Finallyshell remembers it on this computer."
+// in the language of msgs.
+func (msgs Messages) TexpFirewallSaved() string {
+	return Catalog.Format(msgs.locale, "texpFirewallSaved", nil)
+}
+
+// TexpFirewallRecordFailed says "Could not update the local firewall record. Check the server firewall before continuing: {reason}"
+// in the language the app shows.
+func TexpFirewallRecordFailed(reason string) string {
+	return In(i18n.Locale()).TexpFirewallRecordFailed(reason)
+}
+
+// TexpFirewallRecordFailed says "Could not update the local firewall record. Check the server firewall before continuing: {reason}"
+// in the language of msgs.
+func (msgs Messages) TexpFirewallRecordFailed(reason string) string {
+	return Catalog.Format(msgs.locale, "texpFirewallRecordFailed", map[string]any{"reason": reason})
+}
+
+// TexpFirewallRemovals says "Managed rules…"
+// in the language the app shows.
+func TexpFirewallRemovals() string { return In(i18n.Locale()).TexpFirewallRemovals() }
+
+// TexpFirewallRemovals says "Managed rules…"
+// in the language of msgs.
+func (msgs Messages) TexpFirewallRemovals() string {
+	return Catalog.Format(msgs.locale, "texpFirewallRemovals", nil)
+}
+
+// TexpFirewallUFW says "UFW, all interfaces"
+// in the language the app shows.
+func TexpFirewallUFW() string { return In(i18n.Locale()).TexpFirewallUFW() }
+
+// TexpFirewallUFW says "UFW, all interfaces"
+// in the language of msgs.
+func (msgs Messages) TexpFirewallUFW() string {
+	return Catalog.Format(msgs.locale, "texpFirewallUFW", nil)
+}
+
+// TexpCloud says "4. Cloud security groups"
+// in the language the app shows.
+func TexpCloud() string { return In(i18n.Locale()).TexpCloud() }
+
+// TexpCloud says "4. Cloud security groups"
+// in the language of msgs.
+func (msgs Messages) TexpCloud() string {
+	return Catalog.Format(msgs.locale, "texpCloud", nil)
+}
+
+// TexpCloudHint says "If the server is on Alibaba Cloud, Tencent Cloud, AWS or another provider, verify that the security group also allows…"
+// in the language the app shows.
+func TexpCloudHint() string { return In(i18n.Locale()).TexpCloudHint() }
+
+// TexpCloudHint says "If the server is on Alibaba Cloud, Tencent Cloud, AWS or another provider, verify that the security group also allows…"
+// in the language of msgs.
+func (msgs Messages) TexpCloudHint() string {
+	return Catalog.Format(msgs.locale, "texpCloudHint", nil)
+}
+
+// TexpOutside says "5. Test reachability from this computer"
+// in the language the app shows.
+func TexpOutside() string { return In(i18n.Locale()).TexpOutside() }
+
+// TexpOutside says "5. Test reachability from this computer"
+// in the language of msgs.
+func (msgs Messages) TexpOutside() string {
+	return Catalog.Format(msgs.locale, "texpOutside", nil)
+}
+
+// TexpOutsideHost says "Public IP or domain"
+// in the language the app shows.
+func TexpOutsideHost() string { return In(i18n.Locale()).TexpOutsideHost() }
+
+// TexpOutsideHost says "Public IP or domain"
+// in the language of msgs.
+func (msgs Messages) TexpOutsideHost() string {
+	return Catalog.Format(msgs.locale, "texpOutsideHost", nil)
+}
+
+// TexpCheckTCP says "Test TCP"
+// in the language the app shows.
+func TexpCheckTCP() string { return In(i18n.Locale()).TexpCheckTCP() }
+
+// TexpCheckTCP says "Test TCP"
+// in the language of msgs.
+func (msgs Messages) TexpCheckTCP() string {
+	return Catalog.Format(msgs.locale, "texpCheckTCP", nil)
+}
+
+// TexpCheckHTTP says "Test HTTP GET"
+// in the language the app shows.
+func TexpCheckHTTP() string { return In(i18n.Locale()).TexpCheckHTTP() }
+
+// TexpCheckHTTP says "Test HTTP GET"
+// in the language of msgs.
+func (msgs Messages) TexpCheckHTTP() string {
+	return Catalog.Format(msgs.locale, "texpCheckHTTP", nil)
+}
+
+// TexpOutsideTCP says "TCP connection succeeded from this computer. This does not verify the tunnel’s target."
+// in the language the app shows.
+func TexpOutsideTCP() string { return In(i18n.Locale()).TexpOutsideTCP() }
+
+// TexpOutsideTCP says "TCP connection succeeded from this computer. This does not verify the tunnel’s target."
+// in the language of msgs.
+func (msgs Messages) TexpOutsideTCP() string {
+	return Catalog.Format(msgs.locale, "texpOutsideTCP", nil)
+}
+
+// TexpOutsideHTTP says "GET / returned HTTP {status}. This is the response from the address, not proof the service is reachable everywhere."
+// in the language the app shows.
+func TexpOutsideHTTP(status string) string { return In(i18n.Locale()).TexpOutsideHTTP(status) }
+
+// TexpOutsideHTTP says "GET / returned HTTP {status}. This is the response from the address, not proof the service is reachable everywhere."
+// in the language of msgs.
+func (msgs Messages) TexpOutsideHTTP(status string) string {
+	return Catalog.Format(msgs.locale, "texpOutsideHTTP", map[string]any{"status": status})
+}
+
+// TexpOutsideBad says "Enter a host or IP address and a port from 1 to 65535. For an automatic port, start the tunnel first."
+// in the language the app shows.
+func TexpOutsideBad() string { return In(i18n.Locale()).TexpOutsideBad() }
+
+// TexpOutsideBad says "Enter a host or IP address and a port from 1 to 65535. For an automatic port, start the tunnel first."
+// in the language of msgs.
+func (msgs Messages) TexpOutsideBad() string {
+	return Catalog.Format(msgs.locale, "texpOutsideBad", nil)
+}
+
+// TexpOutsideLoopback says "Set a non-loopback bind before testing public access; an unrelated service could answer on that port."
+// in the language the app shows.
+func TexpOutsideLoopback() string { return In(i18n.Locale()).TexpOutsideLoopback() }
+
+// TexpOutsideLoopback says "Set a non-loopback bind before testing public access; an unrelated service could answer on that port."
+// in the language of msgs.
+func (msgs Messages) TexpOutsideLoopback() string {
+	return Catalog.Format(msgs.locale, "texpOutsideLoopback", nil)
+}
+
+// TexpOpenBrowser says "Open in browser"
+// in the language the app shows.
+func TexpOpenBrowser() string { return In(i18n.Locale()).TexpOpenBrowser() }
+
+// TexpOpenBrowser says "Open in browser"
+// in the language of msgs.
+func (msgs Messages) TexpOpenBrowser() string {
+	return Catalog.Format(msgs.locale, "texpOpenBrowser", nil)
+}
+
+// TexpLANHint says "Only share on a trusted network. Other machines that can reach this address and port can try to connect."
+// in the language the app shows.
+func TexpLANHint() string { return In(i18n.Locale()).TexpLANHint() }
+
+// TexpLANHint says "Only share on a trusted network. Other machines that can reach this address and port can try to connect."
+// in the language of msgs.
+func (msgs Messages) TexpLANHint() string {
+	return Catalog.Format(msgs.locale, "texpLANHint", nil)
+}
+
+// TexpLANAllowlist says "Set the tunnel’s source allowlist to the LAN subnet. Require authentication when sharing a proxy."
+// in the language the app shows.
+func TexpLANAllowlist() string { return In(i18n.Locale()).TexpLANAllowlist() }
+
+// TexpLANAllowlist says "Set the tunnel’s source allowlist to the LAN subnet. Require authentication when sharing a proxy."
+// in the language of msgs.
+func (msgs Messages) TexpLANAllowlist() string {
+	return Catalog.Format(msgs.locale, "texpLANAllowlist", nil)
+}
+
+// TexpLANNoAddresses says "No matching LAN address found on an active adapter."
+// in the language the app shows.
+func TexpLANNoAddresses() string { return In(i18n.Locale()).TexpLANNoAddresses() }
+
+// TexpLANNoAddresses says "No matching LAN address found on an active adapter."
+// in the language of msgs.
+func (msgs Messages) TexpLANNoAddresses() string {
+	return Catalog.Format(msgs.locale, "texpLANNoAddresses", nil)
+}
+
+// TexpLANAddresses says "Addresses for other devices"
+// in the language the app shows.
+func TexpLANAddresses() string { return In(i18n.Locale()).TexpLANAddresses() }
+
+// TexpLANAddresses says "Addresses for other devices"
+// in the language of msgs.
+func (msgs Messages) TexpLANAddresses() string {
+	return Catalog.Format(msgs.locale, "texpLANAddresses", nil)
+}
+
+// TexpLANBindUnknown says "The configured bind did not match a current LAN address. Start the tunnel to check the actual listener."
+// in the language the app shows.
+func TexpLANBindUnknown() string { return In(i18n.Locale()).TexpLANBindUnknown() }
+
+// TexpLANBindUnknown says "The configured bind did not match a current LAN address. Start the tunnel to check the actual listener."
+// in the language of msgs.
+func (msgs Messages) TexpLANBindUnknown() string {
+	return Catalog.Format(msgs.locale, "texpLANBindUnknown", nil)
+}
+
+// TexpLANPortPending says "Start the tunnel to see its assigned port."
+// in the language the app shows.
+func TexpLANPortPending() string { return In(i18n.Locale()).TexpLANPortPending() }
+
+// TexpLANPortPending says "Start the tunnel to see its assigned port."
+// in the language of msgs.
+func (msgs Messages) TexpLANPortPending() string {
+	return Catalog.Format(msgs.locale, "texpLANPortPending", nil)
+}
+
+// TexpLANFirewall says "Inbound firewall"
+// in the language the app shows.
+func TexpLANFirewall() string { return In(i18n.Locale()).TexpLANFirewall() }
+
+// TexpLANFirewall says "Inbound firewall"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewall() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewall", nil)
+}
+
+// TexpLANFirewallCheck says "Check firewall"
+// in the language the app shows.
+func TexpLANFirewallCheck() string { return In(i18n.Locale()).TexpLANFirewallCheck() }
+
+// TexpLANFirewallCheck says "Check firewall"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallCheck() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallCheck", nil)
+}
+
+// TexpLANFirewallMatch says "Found an enabled inbound allow rule for this program and port. A profile, scope or block rule can still prevent access."
+// in the language the app shows.
+func TexpLANFirewallMatch() string { return In(i18n.Locale()).TexpLANFirewallMatch() }
+
+// TexpLANFirewallMatch says "Found an enabled inbound allow rule for this program and port. A profile, scope or block rule can still prevent access."
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallMatch() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallMatch", nil)
+}
+
+// TexpLANFirewallBlock says "Found an enabled inbound block rule for this program and port. Review it in Windows Defender Firewall."
+// in the language the app shows.
+func TexpLANFirewallBlock() string { return In(i18n.Locale()).TexpLANFirewallBlock() }
+
+// TexpLANFirewallBlock says "Found an enabled inbound block rule for this program and port. Review it in Windows Defender Firewall."
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallBlock() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallBlock", nil)
+}
+
+// TexpLANFirewallUnknown says "No matching rule could be verified. Windows Defender Firewall may block inbound traffic; check the active network pro…"
+// in the language the app shows.
+func TexpLANFirewallUnknown() string { return In(i18n.Locale()).TexpLANFirewallUnknown() }
+
+// TexpLANFirewallUnknown says "No matching rule could be verified. Windows Defender Firewall may block inbound traffic; check the active network pro…"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallUnknown() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallUnknown", nil)
+}
+
+// TexpLANFirewallOther says "If the system firewall is on, allow inbound TCP traffic for this port (macOS: allow the app). Restrict access to your…"
+// in the language the app shows.
+func TexpLANFirewallOther() string { return In(i18n.Locale()).TexpLANFirewallOther() }
+
+// TexpLANFirewallOther says "If the system firewall is on, allow inbound TCP traffic for this port (macOS: allow the app). Restrict access to your…"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallOther() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallOther", nil)
+}
+
+// TexpLANFirewallAdd says "Allow in Windows Firewall…"
+// in the language the app shows.
+func TexpLANFirewallAdd() string { return In(i18n.Locale()).TexpLANFirewallAdd() }
+
+// TexpLANFirewallAdd says "Allow in Windows Firewall…"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallAdd() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallAdd", nil)
+}
+
+// TexpLANFirewallConfirm says "Add Windows Firewall rule “Finallyshell tunnel {port}” for inbound TCP {port}? It applies to every program and ne…"
+// in the language the app shows.
+func TexpLANFirewallConfirm(port string) string {
+	return In(i18n.Locale()).TexpLANFirewallConfirm(port)
+}
+
+// TexpLANFirewallConfirm says "Add Windows Firewall rule “Finallyshell tunnel {port}” for inbound TCP {port}? It applies to every program and ne…"
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallConfirm(port string) string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallConfirm", map[string]any{"port": port})
+}
+
+// TexpLANFirewallOpened says "Windows opened the administrator command. Check Windows Defender Firewall to verify the rule."
+// in the language the app shows.
+func TexpLANFirewallOpened() string { return In(i18n.Locale()).TexpLANFirewallOpened() }
+
+// TexpLANFirewallOpened says "Windows opened the administrator command. Check Windows Defender Firewall to verify the rule."
+// in the language of msgs.
+func (msgs Messages) TexpLANFirewallOpened() string {
+	return Catalog.Format(msgs.locale, "texpLANFirewallOpened", nil)
+}
+
+// TexpError says "Could not complete this step: {reason}"
+// in the language the app shows.
+func TexpError(reason string) string { return In(i18n.Locale()).TexpError(reason) }
+
+// TexpError says "Could not complete this step: {reason}"
+// in the language of msgs.
+func (msgs Messages) TexpError(reason string) string {
+	return Catalog.Format(msgs.locale, "texpError", map[string]any{"reason": reason})
+}
+
+// RdpsshSection says "Remote Desktop through SSH"
+// in the language the app shows.
+func RdpsshSection() string { return In(i18n.Locale()).RdpsshSection() }
+
+// RdpsshSection says "Remote Desktop through SSH"
+// in the language of msgs.
+func (msgs Messages) RdpsshSection() string {
+	return Catalog.Format(msgs.locale, "rdpsshSection", nil)
+}
+
+// RdpsshHost says "Connect through SSH host"
+// in the language the app shows.
+func RdpsshHost() string { return In(i18n.Locale()).RdpsshHost() }
+
+// RdpsshHost says "Connect through SSH host"
+// in the language of msgs.
+func (msgs Messages) RdpsshHost() string {
+	return Catalog.Format(msgs.locale, "rdpsshHost", nil)
+}
+
+// RdpsshHostHint says "Uses the SSH host’s normal sign-in and opens a loopback-only tunnel on this computer."
+// in the language the app shows.
+func RdpsshHostHint() string { return In(i18n.Locale()).RdpsshHostHint() }
+
+// RdpsshHostHint says "Uses the SSH host’s normal sign-in and opens a loopback-only tunnel on this computer."
+// in the language of msgs.
+func (msgs Messages) RdpsshHostHint() string {
+	return Catalog.Format(msgs.locale, "rdpsshHostHint", nil)
+}
+
+// RdpsshDirect says "None (direct connection)"
+// in the language the app shows.
+func RdpsshDirect() string { return In(i18n.Locale()).RdpsshDirect() }
+
+// RdpsshDirect says "None (direct connection)"
+// in the language of msgs.
+func (msgs Messages) RdpsshDirect() string {
+	return Catalog.Format(msgs.locale, "rdpsshDirect", nil)
+}
+
+// RdpsshTarget says "Target as seen from the SSH host"
+// in the language the app shows.
+func RdpsshTarget() string { return In(i18n.Locale()).RdpsshTarget() }
+
+// RdpsshTarget says "Target as seen from the SSH host"
+// in the language of msgs.
+func (msgs Messages) RdpsshTarget() string {
+	return Catalog.Format(msgs.locale, "rdpsshTarget", nil)
+}
+
+// RdpsshTargetHint says "Leave empty to use this connection’s address and port. A host without a port uses 3389; put brackets around IPv6 ad…"
+// in the language the app shows.
+func RdpsshTargetHint() string { return In(i18n.Locale()).RdpsshTargetHint() }
+
+// RdpsshTargetHint says "Leave empty to use this connection’s address and port. A host without a port uses 3389; put brackets around IPv6 ad…"
+// in the language of msgs.
+func (msgs Messages) RdpsshTargetHint() string {
+	return Catalog.Format(msgs.locale, "rdpsshTargetHint", nil)
+}
+
+// RdpsshMissing says "The selected SSH host is missing. Choose an SSH host from the connection tree."
+// in the language the app shows.
+func RdpsshMissing() string { return In(i18n.Locale()).RdpsshMissing() }
+
+// RdpsshMissing says "The selected SSH host is missing. Choose an SSH host from the connection tree."
+// in the language of msgs.
+func (msgs Messages) RdpsshMissing() string {
+	return Catalog.Format(msgs.locale, "rdpsshMissing", nil)
+}
+
+// RdpsshCancelled says "SSH sign-in was cancelled. No Remote Desktop tunnel was opened."
+// in the language the app shows.
+func RdpsshCancelled() string { return In(i18n.Locale()).RdpsshCancelled() }
+
+// RdpsshCancelled says "SSH sign-in was cancelled. No Remote Desktop tunnel was opened."
+// in the language of msgs.
+func (msgs Messages) RdpsshCancelled() string {
+	return Catalog.Format(msgs.locale, "rdpsshCancelled", nil)
+}
+
+// RdpsshNoGateway says "Turn off Remote Desktop Gateway to use SSH forwarding."
+// in the language the app shows.
+func RdpsshNoGateway() string { return In(i18n.Locale()).RdpsshNoGateway() }
+
+// RdpsshNoGateway says "Turn off Remote Desktop Gateway to use SSH forwarding."
+// in the language of msgs.
+func (msgs Messages) RdpsshNoGateway() string {
+	return Catalog.Format(msgs.locale, "rdpsshNoGateway", nil)
+}
+
+// RdpsshBadTarget says "Enter a valid host or IP address, optionally with a port from 1 to 65535."
+// in the language the app shows.
+func RdpsshBadTarget() string { return In(i18n.Locale()).RdpsshBadTarget() }
+
+// RdpsshBadTarget says "Enter a valid host or IP address, optionally with a port from 1 to 65535."
+// in the language of msgs.
+func (msgs Messages) RdpsshBadTarget() string {
+	return Catalog.Format(msgs.locale, "rdpsshBadTarget", nil)
+}
+
+// RdpsshConnecting says "Connecting to SSH host {host}…"
+// in the language the app shows.
+func RdpsshConnecting(host string) string { return In(i18n.Locale()).RdpsshConnecting(host) }
+
+// RdpsshConnecting says "Connecting to SSH host {host}…"
+// in the language of msgs.
+func (msgs Messages) RdpsshConnecting(host string) string {
+	return Catalog.Format(msgs.locale, "rdpsshConnecting", map[string]any{"host": host})
+}
+
+// RdpsshPreparing says "Checking {target} through SSH…"
+// in the language the app shows.
+func RdpsshPreparing(target string) string { return In(i18n.Locale()).RdpsshPreparing(target) }
+
+// RdpsshPreparing says "Checking {target} through SSH…"
+// in the language of msgs.
+func (msgs Messages) RdpsshPreparing(target string) string {
+	return Catalog.Format(msgs.locale, "rdpsshPreparing", map[string]any{"target": target})
+}
+
+// RdpsshDialFailed says "Could not connect to SSH host {host}: {reason}"
+// in the language the app shows.
+func RdpsshDialFailed(host string, reason string) string {
+	return In(i18n.Locale()).RdpsshDialFailed(host, reason)
+}
+
+// RdpsshDialFailed says "Could not connect to SSH host {host}: {reason}"
+// in the language of msgs.
+func (msgs Messages) RdpsshDialFailed(host string, reason string) string {
+	return Catalog.Format(msgs.locale, "rdpsshDialFailed", map[string]any{"host": host, "reason": reason})
+}
+
+// RdpsshTargetFailed says "The SSH host could not reach the Remote Desktop target {target}: {reason}"
+// in the language the app shows.
+func RdpsshTargetFailed(target string, reason string) string {
+	return In(i18n.Locale()).RdpsshTargetFailed(target, reason)
+}
+
+// RdpsshTargetFailed says "The SSH host could not reach the Remote Desktop target {target}: {reason}"
+// in the language of msgs.
+func (msgs Messages) RdpsshTargetFailed(target string, reason string) string {
+	return Catalog.Format(msgs.locale, "rdpsshTargetFailed", map[string]any{"target": target, "reason": reason})
+}
+
+// RdpsshTunnelFailed says "Could not start the Remote Desktop tunnel: {reason}"
+// in the language the app shows.
+func RdpsshTunnelFailed(reason string) string { return In(i18n.Locale()).RdpsshTunnelFailed(reason) }
+
+// RdpsshTunnelFailed says "Could not start the Remote Desktop tunnel: {reason}"
+// in the language of msgs.
+func (msgs Messages) RdpsshTunnelFailed(reason string) string {
+	return Catalog.Format(msgs.locale, "rdpsshTunnelFailed", map[string]any{"reason": reason})
+}
+
+// RdpsshOpening says "Opening Remote Desktop through SSH. The tunnel stops when the client exits."
+// in the language the app shows.
+func RdpsshOpening() string { return In(i18n.Locale()).RdpsshOpening() }
+
+// RdpsshOpening says "Opening Remote Desktop through SSH. The tunnel stops when the client exits."
+// in the language of msgs.
+func (msgs Messages) RdpsshOpening() string {
+	return Catalog.Format(msgs.locale, "rdpsshOpening", nil)
+}
+
+// RdpsshStopManually says "Opening Windows App through SSH. It asks for your password. When finished, stop the connection in the Tunnels tab."
+// in the language the app shows.
+func RdpsshStopManually() string { return In(i18n.Locale()).RdpsshStopManually() }
+
+// RdpsshStopManually says "Opening Windows App through SSH. It asks for your password. When finished, stop the connection in the Tunnels tab."
+// in the language of msgs.
+func (msgs Messages) RdpsshStopManually() string {
+	return Catalog.Format(msgs.locale, "rdpsshStopManually", nil)
+}
+
+// RdpsshSession says "Remote Desktop · {name}"
+// in the language the app shows.
+func RdpsshSession(name string) string { return In(i18n.Locale()).RdpsshSession(name) }
+
+// RdpsshSession says "Remote Desktop · {name}"
+// in the language of msgs.
+func (msgs Messages) RdpsshSession(name string) string {
+	return Catalog.Format(msgs.locale, "rdpsshSession", map[string]any{"name": name})
+}
+
 // KeysTitle says "SSH keys"
 // in the language the app shows.
 func KeysTitle() string { return In(i18n.Locale()).KeysTitle() }

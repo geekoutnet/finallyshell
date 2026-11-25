@@ -179,7 +179,7 @@ func (a *App) tunnelPanel(c *ui.Context) {
 		runs := ts.runs
 		ts.table.Key = func(i int) any { return runs[i] }
 		ts.table.Label = func(i int) string { return tunnelKindLabel(runs[i].spec.Kind) + " " + runs[i].spec.ListenAddr() }
-		ui.Table(c, &ts.table, tunnelStatusColumns(), len(runs), func(row, col int) {
+		a.exposePanelTable(c, s, runs, tunnelStatusColumns(), func(row, col int) {
 			a.tunnelCell(c, s, runs[row], col, connected)
 		}).Grow(1)
 	})

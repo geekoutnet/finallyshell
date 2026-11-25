@@ -1,8 +1,11 @@
 package config
 
 import (
+	"errors"
 	"maps"
+	"net"
 	"reflect"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -174,6 +177,8 @@ type RDPConfig struct {
 	NoAutoReconnect bool       `json:"noAutoReconnect,omitempty"`
 
 	// Connection.
+	SSHHostID string `json:"sshHostId,omitempty"`
+	SSHTarget string `json:"sshTarget,omitempty"`
 
 	// Admin connects to the console (administrative) session: mstsc
 	// /admin.
@@ -198,6 +203,28 @@ type RDPConfig struct {
 
 	extra extras
 }
+
+func RDPSSHTarget(h *Host) (string, error) {
+	value := strings.TrimSpace(RDPOf(h).SSHTarget)
+	name, port := strings.TrimSpace(h.Addr), h.PortOr22()
+	if value != "" {
+		name, port = value, DefaultRDPPort
+		if host, number, err := net.SplitHostPort(value); err == nil {
+			name = host
+			port, _ = strconv.Atoi(number)
+		} else if strings.HasPrefix(value, "[") && strings.HasSuffix(value, "]") {
+			name = value[1 : len(value)-1]
+		}
+	}
+	if port < 1 || port > 65535 || name == "" || net.ParseIP(name) == nil && strings.ContainsFunc(name, func(char rune) bool {
+		return !(char >= 'a' && char <= 'z' || char >= 'A' && char <= 'Z' || char >= '0' && char <= '9' || char == '-' || char == '_' || char == '.')
+	}) {
+		return "", errRDPSSHTarget
+	}
+	return net.JoinHostPort(name, strconv.Itoa(port)), nil
+}
+
+var errRDPSSHTarget = errors.New("invalid Remote Desktop target")
 
 // UsesGateway says whether the host connects through a Remote Desktop
 // Gateway.

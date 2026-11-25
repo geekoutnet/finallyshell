@@ -78,6 +78,13 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 }
 ```
 
+### 通过 SSH 使用远程桌面
+
+对 `kind: "rdp"` 的连接，可选字段 `rdp.sshHostId` 保存所选 SSH 主机的 ID。
+缺省时，远程桌面客户端仍像以前一样直连。可选字段 `rdp.sshTarget` 保存 SSH
+主机可访问的 `主机[:端口]`，不填端口则用 3389。不覆盖目标时，使用远程桌面
+连接的 `addr` 和 `port`。这些字段不包含凭据；SSH 和远程桌面凭据仍使用系统凭据库。
+
 ### Telnet 和串口字段
 
 - `kind` 缺省表示 SSH，`telnet` 表示 Telnet，`serial` 表示串口。
@@ -94,6 +101,10 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - 隧道里不认识的字段也原样保留。
 
 远程隧道的监听地址只能是 IP 地址或 `localhost`，见[隧道](features.md#tunnels-page)。
+
+`serverRelay` 为远程隧道启用服务器中继。本机的 `tunnel-firewall.json` 记录
+公网访问助手添加的规则，包括 SSH 主机及端点、隧道 ID、端口、后端及规则标记
+或区域。此文件不含凭据、不参与同步。删除该文件不会移除服务器上的规则。
 
 ### 代理
 

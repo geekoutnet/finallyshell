@@ -300,6 +300,9 @@ type Store struct {
 	Version int       `json:"version"`
 	Folders []*Folder `json:"folders"`
 	Hosts   []*Host   `json:"hosts"`
+	// Proxies are the proxy library (proxies.go). Builds without it keep
+	// the key as they keep any they do not know.
+	Proxies []*Proxy `json:"proxies,omitempty"`
 
 	extra extras
 }

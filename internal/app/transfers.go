@@ -139,8 +139,11 @@ type replaceQuestion struct {
 }
 
 // upload sends local files and folders into the remote directory dir of
-// s, asking first when names are taken.
-func (a *App) upload(s *Session, paths []string, dir string) { a.uploadAs(s, paths, dir, false) }
+// s, asking first when names are taken: as an archive with "Archive
+// transfer" on (see packable).
+func (a *App) upload(s *Session, paths []string, dir string) {
+	a.uploadAs(s, paths, dir, a.packing(s) && localPackable(paths))
+}
 
 // uploadAs uploads as upload does; with archive, all of paths in one
 // transfer, packed with tar.
@@ -178,9 +181,10 @@ func (a *App) uploadAs(s *Session, paths []string, dir string, archive bool) {
 
 // download fetches the names in s's current directory into the local
 // directory dir; for "", into the download folder of the settings, or
-// where the user chooses when they ask for each download.
+// where the user chooses when they ask for each download. With "Archive
+// transfer" on, as an archive (see packable).
 func (a *App) download(s *Session, names []string, dir string) {
-	a.downloadFrom(s, s.files.cwd, names, dir, false)
+	a.downloadFrom(s, s.files.cwd, names, dir, a.packing(s) && s.files.packable(names))
 }
 
 // downloadFrom downloads as download does, the names in the remote
@@ -239,7 +243,7 @@ func (a *App) pickAndUpload(s *Session, dir string, folder bool) {
 }
 
 func (a *App) pickAndDownload(s *Session, names []string) {
-	a.pickAndDownloadFrom(s, s.files.cwd, names, false)
+	a.pickAndDownloadFrom(s, s.files.cwd, names, a.packing(s) && s.files.packable(names))
 }
 
 func (a *App) pickAndDownloadFrom(s *Session, from string, names []string, archive bool) {

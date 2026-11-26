@@ -227,6 +227,7 @@ func (a *App) filePanel(c *ui.Context) {
 				}
 			}
 			a.followButton(c, s)
+			a.archiveModeButton(c)
 			ui.Box(c).Size(1, 16).Background(colors.line).Margin(0, 4)
 			// Their context menus also have the archive transfers.
 			uploadMenu := func(m *ui.Menu) { a.uploadMenuItems(m, s, f.cwd) }

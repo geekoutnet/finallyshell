@@ -19006,6 +19006,36 @@ func (msgs Messages) OptionAskDownloadDir() string {
 	return Catalog.Format(msgs.locale, "optionAskDownloadDir", nil)
 }
 
+// ArchiveTransfers says "Archive transfer: compress uploads and downloads with tar and gzip"
+// in the language the app shows.
+func ArchiveTransfers() string { return In(i18n.Locale()).ArchiveTransfers() }
+
+// ArchiveTransfers says "Archive transfer: compress uploads and downloads with tar and gzip"
+// in the language of msgs.
+func (msgs Messages) ArchiveTransfers() string {
+	return Catalog.Format(msgs.locale, "archiveTransfers", nil)
+}
+
+// OptionArchiveTransfers says "Compress uploads and downloads (archive transfer)"
+// in the language the app shows.
+func OptionArchiveTransfers() string { return In(i18n.Locale()).OptionArchiveTransfers() }
+
+// OptionArchiveTransfers says "Compress uploads and downloads (archive transfer)"
+// in the language of msgs.
+func (msgs Messages) OptionArchiveTransfers() string {
+	return Catalog.Format(msgs.locale, "optionArchiveTransfers", nil)
+}
+
+// OptionArchiveTransfersNote says "Dropped items, the upload and download buttons and Download send files and folders as one tar.gz stream, unpacked at …"
+// in the language the app shows.
+func OptionArchiveTransfersNote() string { return In(i18n.Locale()).OptionArchiveTransfersNote() }
+
+// OptionArchiveTransfersNote says "Dropped items, the upload and download buttons and Download send files and folders as one tar.gz stream, unpacked at …"
+// in the language of msgs.
+func (msgs Messages) OptionArchiveTransfersNote() string {
+	return Catalog.Format(msgs.locale, "optionArchiveTransfersNote", nil)
+}
+
 // OptionsFileManager says "File manager"
 // in the language the app shows.
 func OptionsFileManager() string { return In(i18n.Locale()).OptionsFileManager() }

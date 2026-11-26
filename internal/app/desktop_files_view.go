@@ -106,6 +106,7 @@ func (a *App) desktopFilesToolbar(c *ui.Context, w *desktopWindow, chosen []desk
 			a.desktopFilesFetch(w)
 		}
 		desktopFilesMenuButton(c, "upload", locales.DesktopFilesUpload(), wide, folder, func(menu *ui.Menu) { a.desktopFilesUploadMenu(w, menu, folder) })
+		a.archiveModeButton(c)
 		if desktopFilesCommandButton(c, "terminal", locales.DesktopFilesTerminal(), wide, folder).Clicked() {
 			a.desktopOpenTerminalAt(s, f.dir)
 		}

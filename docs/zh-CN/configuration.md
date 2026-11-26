@@ -165,6 +165,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `x11Display` | X11 转发使用的本地显示地址，例如 `localhost:1`。仅保存在本机，不同步。 | `$DISPLAY`；Windows 未设置时为 `localhost:0`。 |
 | `downloadDir` | 下载存到的文件夹。 | 系统的下载文件夹。 |
 | `askDownloadDir` | `true` 时每次下载都问保存位置。 | 用 `downloadDir`。 |
+| `archiveTransfers` | `true` 时普通上传和下载（包括单个文件）用 tar 和 gzip 压缩打包传输（“打包传输”），只在允许执行命令的连接上生效；单独一个符号链接仍走 SFTP。 | 走 SFTP。 |
 | `copyOnSelect` | `true` 时把鼠标选中的文字复制到剪贴板。 | 关。 |
 | `rightClick` | `paste`、`copy`、`copy-or-paste` 或 `ignore`。 | 右键菜单（不认识的值也是）。 |
 | `noLinkClick` | `true` 时 Ctrl+单击（Cmd+单击）不打开链接。 | 打开链接。 |

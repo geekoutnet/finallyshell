@@ -1782,6 +1782,21 @@ When `tar` is missing on the server, or fails, the transfer fails with
 what it printed, and "Retry over SFTP" sends the same items the usual
 way, one transfer each.
 
+To pack by default, turn on "Archive transfer" with the package button in
+the file panel's toolbar, next to "Follow the terminal's folder", or
+with "Upload and download folders as archives" on the Transfers page of
+the options; they are one setting, and the desktop's Files app has the same
+button. With it on, items dropped from the system's file manager, the
+upload and download buttons, Download and Download to… in the menus,
+pasting files, and uploads and downloads in the desktop's Files app send
+what they transfer as one archive transfer, a single file too, so that
+it travels compressed: text and logs shrink a lot, while files that are
+already compressed (zip, gz, images, video) hardly do. A symbolic link
+on its own still goes over SFTP, which sends the file it points to, and
+so does everything on a connection where SSH command execution is
+disabled. The desktop's downloads of items from several folders at
+once, as in search results, also go over SFTP.
+
 Downloads are unpacked safely: names that are absolute, have `..` or are
 outside the items asked for stop the transfer; nothing is written
 through a symbolic link (a link where a folder goes is replaced by the

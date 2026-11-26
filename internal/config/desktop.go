@@ -119,12 +119,16 @@ type AISettings struct {
 	// SendContext lets the assistant send the server's OS, the current
 	// folder and the last lines of the terminal with a question.
 	SendContext bool `json:"sendContext,omitempty"`
+	// ContextTokens is how much of a conversation the model gets, in
+	// tokens: 0 for the default (ai.DefaultContextTokens). Past it, the
+	// earlier part of the conversation is summarized.
+	ContextTokens int `json:"contextTokens,omitempty"`
 }
 
 // Equal reports whether s and o are the same settings.
 func (s AISettings) Equal(o AISettings) bool {
 	return s.Provider == o.Provider && s.Endpoint == o.Endpoint && s.Model == o.Model && slices.Equal(s.Models, o.Models) &&
-		s.SystemPrompt == o.SystemPrompt && s.SendContext == o.SendContext
+		s.SystemPrompt == o.SystemPrompt && s.SendContext == o.SendContext && s.ContextTokens == o.ContextTokens
 }
 
 // HasModel reports whether model is the default model or one of the

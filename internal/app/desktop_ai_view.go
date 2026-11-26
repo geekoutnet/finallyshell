@@ -329,6 +329,13 @@ func (a *App) desktopAIMessageView(c *ui.Context, window *desktopWindow, state *
 	case "command":
 		a.desktopAICommandView(c, state, message)
 		return
+	case "notice":
+		// The earlier part summarized: a quiet line where it ends.
+		ui.Row(c).FillWidth().Justify(ui.Center).Gap(6).AlignItems(ui.Center).Padding(2, 0).Children(func() {
+			ui.Icon(c, icons.Get("archive")).FontSize(12).TextColor(theme.TextMuted)
+			widgets.Muted(c, message.Text).FontSize(11).Tooltip(locales.AiContextCompactedNote())
+		})
+		return
 	case "user":
 		// The user's question, on the right, with copying it and editing it
 		// under it.

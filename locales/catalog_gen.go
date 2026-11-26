@@ -27110,6 +27110,58 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// AiContextTokens says "Context length"
+// in the language the app shows.
+func AiContextTokens() string { return In(i18n.Locale()).AiContextTokens() }
+
+// AiContextTokens says "Context length"
+// in the language of msgs.
+func (msgs Messages) AiContextTokens() string {
+	return Catalog.Format(msgs.locale, "aiContextTokens", nil)
+}
+
+// AiContextTokensNote says "How much of a conversation the model gets; past three quarters of it, the earlier part is summarized."
+// in the language the app shows.
+func AiContextTokensNote() string { return In(i18n.Locale()).AiContextTokensNote() }
+
+// AiContextTokensNote says "How much of a conversation the model gets; past three quarters of it, the earlier part is summarized."
+// in the language of msgs.
+func (msgs Messages) AiContextTokensNote() string {
+	return Catalog.Format(msgs.locale, "aiContextTokensNote", nil)
+}
+
+// AiContextCompacting says "Summarizing the earlier conversation…"
+// in the language the app shows.
+func AiContextCompacting() string { return In(i18n.Locale()).AiContextCompacting() }
+
+// AiContextCompacting says "Summarizing the earlier conversation…"
+// in the language of msgs.
+func (msgs Messages) AiContextCompacting() string {
+	return Catalog.Format(msgs.locale, "aiContextCompacting", nil)
+}
+
+// AiContextCompacted says "Earlier conversation summarized · about {before} → {after} tokens"
+// in the language the app shows.
+func AiContextCompacted(before string, after string) string {
+	return In(i18n.Locale()).AiContextCompacted(before, after)
+}
+
+// AiContextCompacted says "Earlier conversation summarized · about {before} → {after} tokens"
+// in the language of msgs.
+func (msgs Messages) AiContextCompacted(before string, after string) string {
+	return Catalog.Format(msgs.locale, "aiContextCompacted", map[string]any{"before": before, "after": after})
+}
+
+// AiContextCompactedNote says "The model now gets a summary of the messages above instead of the messages themselves"
+// in the language the app shows.
+func AiContextCompactedNote() string { return In(i18n.Locale()).AiContextCompactedNote() }
+
+// AiContextCompactedNote says "The model now gets a summary of the messages above instead of the messages themselves"
+// in the language of msgs.
+func (msgs Messages) AiContextCompactedNote() string {
+	return Catalog.Format(msgs.locale, "aiContextCompactedNote", nil)
+}
+
 // DesktopAICmdRunningFor says "Running · {elapsed} of {limit}"
 // in the language the app shows.
 func DesktopAICmdRunningFor(elapsed string, limit string) string {

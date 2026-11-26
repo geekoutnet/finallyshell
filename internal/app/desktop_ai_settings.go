@@ -212,6 +212,15 @@ func (a *App) aiOptionsPage(c *ui.Context) {
 			ui.TextArea(c, &state.draft.SystemPrompt).FillWidth().Height(70).Label(locales.AiSystemPrompt()).Placeholder(locales.AiSystemHint()).Disabled(busy)
 		})
 		ui.Checkbox(c, &state.draft.SendContext, locales.AiSendContext()).Disabled(busy)
+		aiField(c, locales.AiContextTokens(), func() {
+			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
+				choice := aiContextChoice(state.draft.ContextTokens)
+				if ui.Select(c, &choice, aiContextChoices).Disabled(busy).Label(locales.AiContextTokens()).Changed() {
+					state.draft.ContextTokens = aiContextTokensOf(choice)
+				}
+				widgets.Muted(c, locales.AiContextTokensNote()).FontSize(12).Shrink(1).MinWidth(0)
+			})
+		})
 		ui.Row(c).Gap(6).Wrap().Children(func() {
 			if ui.PrimaryButton(c, locales.AiSave()).Disabled(busy).Clicked() {
 				a.aiSaveOptions(state)

@@ -17,6 +17,7 @@ import (
 	"testing"
 	"time"
 
+	"finallyshell/internal/ai"
 	"finallyshell/internal/config"
 	"finallyshell/internal/sshtest"
 	"finallyshell/locales"
@@ -668,5 +669,89 @@ func TestDesktopAIAgentTimeoutRetries(t *testing.T) {
 	d := newAIDeadline(time.Now(), aiCommandTimeout)
 	if !d.extend(aiWaitLonger) || d.limit() != aiCommandTimeout+aiWaitLonger {
 		t.Fatalf("waited longer: %v", d.limit())
+	}
+}
+
+// TestDesktopAIContextCompaction summarizes the earlier part of a
+// conversation past three quarters of the budget, keeping the last three
+// questions, and sends the summary in its place; a summary that fails
+// leaves the question to go on.
+func TestDesktopAIContextCompaction(t *testing.T) {
+	var fail atomic.Bool
+	at := newAIAgentTest(t, func(body string) string {
+		if strings.Contains(body, "You summarize the earlier part") {
+			if fail.Load() {
+				return `500 {"error":{"message":"down"}}`
+			}
+			return aiTextEvent("SUMMARY: the user is cleaning /var/log")
+		}
+		return aiTextEvent("ok")
+	})
+	at.a.settings.AI.ContextTokens = 8000 // the smallest budget: 6000 tokens of history trigger it
+	long := strings.Repeat("磁盘", 600)     // about 1200 tokens
+	chat := &desktopAIChat{Host: aiHost(at.session), Title: "disk"}
+	for i := range 6 {
+		chat.Messages = append(chat.Messages,
+			&desktopAIMessage{Role: "user", Text: fmt.Sprintf("question %d %s", i, long)},
+			&desktopAIMessage{Role: "assistant", Text: fmt.Sprintf("answer %d %s", i, long)})
+	}
+	at.a.ai.chats = append(at.a.ai.chats, chat)
+	at.a.desktopAIOpenChat(at.window, chat)
+	at.state = at.window.state.(*desktopAIState)
+	fail.Store(true)
+	at.ask("question after a failed summary")
+	at.platform.until(t, "answer without a summary", func() bool { return at.state.cancel == nil })
+	if chat.Summary != "" || at.state.failed {
+		t.Fatalf("a failed summary: summary %q, status %q", chat.Summary, at.state.status)
+	}
+	fail.Store(false)
+	at.ask("question 7")
+	at.platform.until(t, "answer with a summary", func() bool { return at.state.cancel == nil })
+	if !strings.HasPrefix(chat.Summary, "SUMMARY:") {
+		t.Fatalf("summary %q", chat.Summary)
+	}
+	var notices, compacted int
+	for _, m := range chat.Messages {
+		if m.Role == "notice" {
+			notices++
+		}
+		if m.Compacted {
+			compacted++
+		}
+	}
+	if notices != 1 || compacted == 0 {
+		t.Fatalf("%d notices, %d messages compacted", notices, compacted)
+	}
+	// The question's request: the summary, the last questions, not the
+	// first ones.
+	at.mu.Lock()
+	last := at.bodies[len(at.bodies)-1]
+	at.mu.Unlock()
+	if !strings.Contains(last, "SUMMARY: the user is cleaning") || !strings.Contains(last, "question 7") || strings.Contains(last, "question 0 ") {
+		t.Fatalf("the request after the summary: %.300s", last)
+	}
+	at.platform.tt.Frame()
+	saveShot(t, at.platform.tt, "ai-context-compacted.png")
+}
+
+// TestAIHistoryBudget keeps the newest messages that fit the room, with
+// what a command printed.
+func TestAIHistoryBudget(t *testing.T) {
+	exit := 0
+	chat := &desktopAIChat{Messages: []*desktopAIMessage{
+		{Role: "user", Text: "old " + strings.Repeat("x", 4000)},
+		{Role: "assistant", Text: "old answer"},
+		{Role: "command", Text: "df -h", Status: aiCmdDone, Exit: &exit, output: "/dev/vda1 80%"},
+		{Role: "user", Text: "new question"},
+	}}
+	got := aiHistory(ai.Client{}, chat, 200)
+	if len(got) != 3 || !strings.Contains(got[1].Content, "/dev/vda1 80%") || got[2].Content != "new question" {
+		t.Fatalf("history %+v", got)
+	}
+	if all := aiHistory(ai.Client{}, chat, 100000); len(all) != 4 {
+		t.Fatalf("%d messages with room for all", len(all))
+	}
+	if aiContextTokensOf(aiContextChoice(0)) != 0 || aiContextTokensOf("128K") != 128000 || aiContextChoice(200000) != "200K" {
+		t.Fatal("the settings' choices")
 	}
 }

@@ -122,6 +122,8 @@ type aiRun struct {
 	cards []*desktopAIMessage
 	// question is the user's message the run answers.
 	question *desktopAIMessage
+	// budget is the context's, in tokens.
+	budget int
 }
 
 // current reports whether the run is still the window's, and the window
@@ -264,6 +266,10 @@ func (a *App) aiNext(run *aiRun) {
 	if run.steps >= aiMaxSteps {
 		a.aiFinish(run, locales.DesktopAITooManySteps(strconv.Itoa(aiMaxSteps)), false)
 		return
+	}
+	// Many rounds of long results: the oldest give way first.
+	if run.budget > 0 {
+		ai.ShrinkToolResults(run.messages, run.budget*85/100)
 	}
 	state.status, state.failed = locales.DesktopAIReceiving(), false
 	a.aiTurn(run)

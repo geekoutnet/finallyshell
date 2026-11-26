@@ -27110,6 +27110,36 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// SwitchToDesktopMode says "Switch to desktop mode"
+// in the language the app shows.
+func SwitchToDesktopMode() string { return In(i18n.Locale()).SwitchToDesktopMode() }
+
+// SwitchToDesktopMode says "Switch to desktop mode"
+// in the language of msgs.
+func (msgs Messages) SwitchToDesktopMode() string {
+	return Catalog.Format(msgs.locale, "switchToDesktopMode", nil)
+}
+
+// SwitchToTerminalMode says "Switch to terminal mode"
+// in the language the app shows.
+func SwitchToTerminalMode() string { return In(i18n.Locale()).SwitchToTerminalMode() }
+
+// SwitchToTerminalMode says "Switch to terminal mode"
+// in the language of msgs.
+func (msgs Messages) SwitchToTerminalMode() string {
+	return Catalog.Format(msgs.locale, "switchToTerminalMode", nil)
+}
+
+// ScToggleDesktopMode says "Switch between terminal and desktop"
+// in the language the app shows.
+func ScToggleDesktopMode() string { return In(i18n.Locale()).ScToggleDesktopMode() }
+
+// ScToggleDesktopMode says "Switch between terminal and desktop"
+// in the language of msgs.
+func (msgs Messages) ScToggleDesktopMode() string {
+	return Catalog.Format(msgs.locale, "scToggleDesktopMode", nil)
+}
+
 // DesktopAICopyMessage says "Copy message"
 // in the language the app shows.
 func DesktopAICopyMessage() string { return In(i18n.Locale()).DesktopAICopyMessage() }

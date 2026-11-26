@@ -59,3 +59,53 @@ func TestDesktopRow(t *testing.T) {
 		t.Errorf("rows left: %q", rowNames(a))
 	}
 }
+
+// TestDesktopModeSwitch switches a server between its terminal and its
+// desktop from its tab's menu, the desktop's own menu and the shortcut,
+// each naming the mode it goes to.
+func TestDesktopModeSwitch(t *testing.T) {
+	a, _, tt, s := desktopTestApp(t)
+	d := a.desktopRowOf(s)
+	a.sidebarHidden = true // the server's name is on its tab alone
+	tt.Frame()
+	menu := func(x, y float32, item string) {
+		t.Helper()
+		tt.RightClickAt(x, y)
+		tt.Frame()
+		if err := tt.ChooseMenuItem(item); err != nil {
+			t.Fatalf("%q in %q: %v", item, tt.Menu(), err)
+		}
+		tt.Frame()
+	}
+	tab, ok := tt.Find("web-1")
+	if !ok {
+		t.Fatalf("no tab: %q", tt.Texts())
+	}
+	tx, ty := tab.X+tab.W/2, tab.Y+tab.H/2
+	menu(tx, ty, locales.SwitchToTerminalMode())
+	if a.current() != s || a.inDesktopMode(s) {
+		t.Fatalf("the tab's menu went to %q", a.current().label())
+	}
+	menu(tx, ty, locales.SwitchToDesktopMode())
+	if a.current() != d || !a.inDesktopMode(s) {
+		t.Fatalf("the tab's menu went to %q", a.current().label())
+	}
+	// The desktop's menu, on its wallpaper.
+	menu(640, 560, locales.SwitchToTerminalMode())
+	if a.current() != s {
+		t.Fatalf("the desktop's menu went to %q", a.current().label())
+	}
+	saveShot(t, tt, "desktop-mode-terminal.png")
+	// The shortcut, both ways.
+	k := a.shortcut(scOpenDesktop)
+	tt.Key(k.Mods, k.Key)
+	tt.Frame()
+	if a.current() != d {
+		t.Fatalf("the shortcut went to %q, not the desktop", a.current().label())
+	}
+	tt.Key(k.Mods, k.Key)
+	tt.Frame()
+	if a.current() != s {
+		t.Fatalf("the shortcut went to %q, not the terminal", a.current().label())
+	}
+}

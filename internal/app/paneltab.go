@@ -178,7 +178,9 @@ func (a *App) panelRow(c *ui.Context, p *Session, active bool, guide sessionGuid
 	drawChildGuide(row, guide)
 	hovered := row.Hovered()
 	row.ContextMenu(func(m *ui.Menu) {
-		if m.Item(locales.BackToTerminal()).Chosen() {
+		if p.isDesktopRow() {
+			a.desktopModeItem(m, p)
+		} else if m.Item(locales.BackToTerminal()).Chosen() {
 			a.backToTerminal(p)
 		}
 		m.Separator()

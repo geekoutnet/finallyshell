@@ -379,9 +379,14 @@ func (a *App) sessionTabMenu(c *ui.Context, m *ui.Menu, s *Session, roots []*Ses
 }
 
 // sessionMenuItems are the items of a server's menu in the session list
-// and on its tab: connecting again, another session to the host,
-// disconnecting, its connection info and its desktop.
+// and on its tab: switching it between its terminal and its desktop,
+// connecting again, another session to the host, disconnecting and its
+// connection info.
 func (a *App) sessionMenuItems(c *ui.Context, m *ui.Menu, s *Session) {
+	if canOpenDesktop(s) {
+		a.desktopModeItem(m, s)
+		m.Separator()
+	}
 	if m.Item(locales.Reconnect()).Chosen() {
 		a.reconnect(s)
 	}
@@ -402,9 +407,5 @@ func (a *App) sessionMenuItems(c *ui.Context, m *ui.Menu, s *Session) {
 	if !s.isLocal() {
 		m.Separator()
 		a.connInfoMenuItems(c, m, &a.connTree, s.Host, func(fn func()) { fn() })
-	}
-	if canOpenDesktop(s) {
-		m.Separator()
-		a.desktopMenuItem(m, s)
 	}
 }

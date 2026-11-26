@@ -151,8 +151,9 @@ for its row and the rows under it (its panel row and its desktop). A click
 on a tab goes back to the row of that server the user was on last, so the
 terminal, the bottom panel, the desktop and the monitor switch with it;
 choosing a row in the list moves the tabs along. A tab's context menu has
-what the list's has for the server (Reconnect, Duplicate session,
-Disconnect, its connection info, Open desktop), Split right and Split
+what the list's has for the server (Switch to desktop mode or Switch to
+terminal mode, whichever it does not show, Reconnect, Duplicate session,
+Disconnect and its connection info), Split right and Split
 down, Rename, which renames it on the tab itself, and Close, then Close
 other tabs, Close tabs to the right, Close tabs to the left, Close
 disconnected tabs and Close all tabs. "+", tinted at the row's end, opens
@@ -2114,6 +2115,17 @@ saved host it reuses a connected session or starts a connection. The desktop
 has its own session row; it uses the existing SSH connection and installs
 nothing on the server. The app's full-screen shortcut works on this row too.
 
+A server shows its terminal or its desktop, as its terminal mode and its
+desktop mode, and the app knows which from the row the user is on or was
+on last. Its tab's menu and its row's in the session list say Switch to
+desktop mode or Switch to terminal mode, whichever it does not show; so
+does the desktop's own menu on its wallpaper, and the host button of the
+dock. The button by the bottom panel's tabs switches to the desktop, and
+the shortcut "Switch between terminal and desktop" (Cmd+Shift+B on macOS,
+Ctrl+Shift+D on Windows and Linux) switches both ways, from the terminal
+too. The terminal's own context menu (Copy, Paste, Select All, Clear) is
+built by MyGo's terminal and takes no items of the app's.
+
 ### Desktop windows
 
 - Drag a title bar to move a window; drag any edge or corner to resize it.
@@ -3242,7 +3254,7 @@ Terminal › Shortcuts page.
 | Split the pane down | Cmd+Shift+D | Alt+Shift+- |
 | Zoom the focused pane, or show all panes | Cmd+Shift+Enter | Ctrl+Shift+X |
 | Focus the pane on the left / right / above / below | Cmd+Option+arrows | Alt+arrows |
-| Open desktop | Cmd+Shift+B | Ctrl+Shift+D |
+| Switch between terminal and desktop | Cmd+Shift+B | Ctrl+Shift+D |
 | Desktop: close window | Cmd+Shift+F4 | Ctrl+Shift+F4 |
 | Desktop: minimize / maximize or restore | Cmd+Shift+↓ / ↑ | Ctrl+Shift+↓ / ↑ |
 | Desktop: snap left / right | Cmd+Shift+← / → | Ctrl+Shift+← / → |

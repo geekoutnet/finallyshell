@@ -500,6 +500,8 @@ func (a *App) desktopBackgroundMenu(c *ui.Context, m *ui.Menu, d *desktopState, 
 		}
 	})
 	m.Separator()
+	a.desktopModeItem(m, s)
+	m.Separator()
 	if m.Item(locales.DesktopShellOpenTerminal()).Chosen() {
 		a.desktopOpen(s, appTerminal, nil)
 	}

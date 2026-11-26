@@ -440,7 +440,7 @@ func TestDesktopShellHostMenuAndClock(t *testing.T) {
 	if !d.shell.hostPopup || !slices.Contains(tt.Texts(), s.statusText()) {
 		t.Fatal("host popup did not show status")
 	}
-	desktopShellClick(t, tt, locales.BackToTerminal())
+	desktopShellClick(t, tt, locales.SwitchToTerminalMode())
 	if a.current() != s {
 		t.Fatal("back to terminal did not select the connection")
 	}

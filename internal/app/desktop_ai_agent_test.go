@@ -87,7 +87,7 @@ func newAIAgentTest(t *testing.T, script func(body string) string) *aiAgentTest 
 	}))
 	t.Cleanup(server.Close)
 	runner := runAICommand
-	runAICommand = func(ctx context.Context, _ *ssh.Client, command string) (int, string, bool, error) {
+	runAICommand = func(ctx context.Context, _ *ssh.Client, command string, _ *aiDeadline) (int, string, bool, error) {
 		at.mu.Lock()
 		at.commands = append(at.commands, command)
 		at.mu.Unlock()
@@ -292,7 +292,7 @@ func TestDesktopAIAgentStop(t *testing.T) {
 func TestAIRunCommand(t *testing.T) {
 	server := sshtest.Start(t)
 	client := server.Dial(t)
-	if _, _, _, err := aiRunCommand(context.Background(), client, "true"); err == nil {
+	if _, _, _, err := aiRunCommand(context.Background(), client, "true", nil); err == nil {
 		t.Fatal("a refused exec did not fail")
 	}
 	server.HangExec()
@@ -300,17 +300,28 @@ func TestAIRunCommand(t *testing.T) {
 	aiCommandTimeout = 200 * time.Millisecond
 	t.Cleanup(func() { aiCommandTimeout = timeout })
 	start := time.Now()
-	_, _, timedOut, err := aiRunCommand(context.Background(), client, "sleep 100")
+	_, _, timedOut, err := aiRunCommand(context.Background(), client, "sleep 100", nil)
 	if err != nil || !timedOut || time.Since(start) > 5*time.Second {
 		t.Fatalf("timed out %v, err %v, after %v", timedOut, err, time.Since(start))
 	}
+	// Put off as it runs, it goes on past the first deadline.
+	start = time.Now()
+	deadline := newAIDeadline(start, 200*time.Millisecond)
+	time.AfterFunc(100*time.Millisecond, func() { deadline.extend(400 * time.Millisecond) })
+	_, _, timedOut, err = aiRunCommand(context.Background(), client, "sleep 100", deadline)
+	if err != nil || !timedOut || time.Since(start) < 550*time.Millisecond {
+		t.Fatalf("extended: timed out %v, err %v, after %v", timedOut, err, time.Since(start))
+	}
+	if limit := newAIDeadline(start, time.Minute); limit.extend(2*aiMaxRunTime) && limit.limit() != aiMaxRunTime {
+		t.Fatalf("extended past the longest run: %v", limit.limit())
+	}
 	ctx, cancel := context.WithCancel(context.Background())
 	time.AfterFunc(50*time.Millisecond, cancel)
-	_, _, timedOut, err = aiRunCommand(ctx, client, "sleep 100")
+	_, _, timedOut, err = aiRunCommand(ctx, client, "sleep 100", nil)
 	if !errors.Is(err, context.Canceled) || timedOut {
 		t.Fatalf("cancelled: timed out %v, err %v", timedOut, err)
 	}
-	if _, _, _, err := aiRunCommand(context.Background(), nil, "true"); err == nil {
+	if _, _, _, err := aiRunCommand(context.Background(), nil, "true", nil); err == nil {
 		t.Fatal("ran without a connection")
 	}
 }
@@ -599,5 +610,63 @@ func TestDesktopAIParallelChats(t *testing.T) {
 	tt.Frame()
 	if at.window.state != slow || !tt.HasText("slow answer") {
 		t.Fatalf("the slow conversation did not show its answer: %q", tt.Texts())
+	}
+}
+
+// TestDesktopAIAgentTimeoutRetries stops a slow scan at its limit, tells
+// the model how to get it done, and runs its retry with the longer limit
+// it asks for; a running command is put off by the user's Wait longer.
+func TestDesktopAIAgentTimeoutRetries(t *testing.T) {
+	var round atomic.Int32
+	at := newAIAgentTest(t, func(body string) string {
+		switch round.Add(1) {
+		case 1:
+			return aiToolCallEvent("call_1", "du -x -d 3 / | sort -nr | head")
+		case 2:
+			if !strings.Contains(body, "Stopped at its time limit of 120 seconds") || !strings.Contains(body, "timeout_seconds") {
+				return aiTextEvent("no guidance in " + body)
+			}
+			args, _ := json.Marshal(map[string]any{"command": "nice -n 19 du -x -d 2 / | sort -nr | head", "reason": "again", "timeout_seconds": 600})
+			chunk, _ := json.Marshal(map[string]any{"choices": []any{map[string]any{
+				"index": 0, "finish_reason": "tool_calls",
+				"delta": map[string]any{"tool_calls": []any{map[string]any{
+					"index": 0, "id": "call_2", "type": "function",
+					"function": map[string]any{"name": "run_command", "arguments": string(args)},
+				}}},
+			}}})
+			return "data: " + string(chunk) + "\n\ndata: [DONE]\n\n"
+		}
+		return aiTextEvent("the largest directory is /var")
+	})
+	var limits []time.Duration
+	var mu sync.Mutex
+	runAICommand = func(_ context.Context, _ *ssh.Client, command string, deadline *aiDeadline) (int, string, bool, error) {
+		mu.Lock()
+		limits = append(limits, deadline.limit())
+		first := len(limits) == 1
+		mu.Unlock()
+		if first {
+			return 0, "", true, nil // the scan's sort prints nothing before it ends
+		}
+		return 0, "12G /var\n", false, nil
+	}
+	at.ask("which directory is largest?")
+	at.platform.until(t, "answer after the retry", func() bool { return at.state.cancel == nil })
+	cards := at.cards()
+	if len(cards) != 2 || cards[0].Status != aiCmdTimedOut || cards[1].Status != aiCmdDone {
+		t.Fatalf("cards: %+v", cards)
+	}
+	mu.Lock()
+	defer mu.Unlock()
+	if len(limits) != 2 || limits[0] != aiCommandTimeout || limits[1] != 600*time.Second {
+		t.Fatalf("limits %v", limits)
+	}
+	if last := at.state.chat.Messages[len(at.state.chat.Messages)-1]; last.Text != "the largest directory is /var" {
+		t.Fatalf("answer %q", last.Text)
+	}
+	// Wait longer puts a running command off by five minutes.
+	d := newAIDeadline(time.Now(), aiCommandTimeout)
+	if !d.extend(aiWaitLonger) || d.limit() != aiCommandTimeout+aiWaitLonger {
+		t.Fatalf("waited longer: %v", d.limit())
 	}
 }

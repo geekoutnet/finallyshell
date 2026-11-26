@@ -151,6 +151,10 @@ type desktopAIMessage struct {
 	highRisk            bool
 	confirm             string
 	showOutput          bool
+	// timeout is how long the model let the command run, in seconds, 0
+	// for aiCommandTimeout; deadline, while it runs, when it stops.
+	timeout  int
+	deadline *aiDeadline
 }
 
 const (

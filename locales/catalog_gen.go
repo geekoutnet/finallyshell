@@ -27110,6 +27110,38 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// DesktopAICmdRunningFor says "Running · {elapsed} of {limit}"
+// in the language the app shows.
+func DesktopAICmdRunningFor(elapsed string, limit string) string {
+	return In(i18n.Locale()).DesktopAICmdRunningFor(elapsed, limit)
+}
+
+// DesktopAICmdRunningFor says "Running · {elapsed} of {limit}"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdRunningFor(elapsed string, limit string) string {
+	return Catalog.Format(msgs.locale, "desktopAICmdRunningFor", map[string]any{"elapsed": elapsed, "limit": limit})
+}
+
+// DesktopAICmdWaitLonger says "Wait 5 more min"
+// in the language the app shows.
+func DesktopAICmdWaitLonger() string { return In(i18n.Locale()).DesktopAICmdWaitLonger() }
+
+// DesktopAICmdWaitLonger says "Wait 5 more min"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdWaitLonger() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdWaitLonger", nil)
+}
+
+// DesktopAICmdWaitLongerNote says "Let the command run 5 more minutes before it is stopped, up to an hour in all"
+// in the language the app shows.
+func DesktopAICmdWaitLongerNote() string { return In(i18n.Locale()).DesktopAICmdWaitLongerNote() }
+
+// DesktopAICmdWaitLongerNote says "Let the command run 5 more minutes before it is stopped, up to an hour in all"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdWaitLongerNote() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdWaitLongerNote", nil)
+}
+
 // DesktopAIChatRunning says "Answering"
 // in the language the app shows.
 func DesktopAIChatRunning() string { return In(i18n.Locale()).DesktopAIChatRunning() }
@@ -28628,14 +28660,14 @@ func (msgs Messages) DesktopAICmdExit(status string, elapsed string) string {
 	return Catalog.Format(msgs.locale, "desktopAICmdExit", map[string]any{"status": status, "elapsed": elapsed})
 }
 
-// DesktopAICmdTimedOut says "Stopped after 60 s"
+// DesktopAICmdTimedOut says "Stopped at its time limit, after {time}"
 // in the language the app shows.
-func DesktopAICmdTimedOut() string { return In(i18n.Locale()).DesktopAICmdTimedOut() }
+func DesktopAICmdTimedOut(time_ string) string { return In(i18n.Locale()).DesktopAICmdTimedOut(time_) }
 
-// DesktopAICmdTimedOut says "Stopped after 60 s"
+// DesktopAICmdTimedOut says "Stopped at its time limit, after {time}"
 // in the language of msgs.
-func (msgs Messages) DesktopAICmdTimedOut() string {
-	return Catalog.Format(msgs.locale, "desktopAICmdTimedOut", nil)
+func (msgs Messages) DesktopAICmdTimedOut(time_ string) string {
+	return Catalog.Format(msgs.locale, "desktopAICmdTimedOut", map[string]any{"time": time_})
 }
 
 // DesktopAICmdRefused says "Refused"

@@ -10,6 +10,13 @@ import (
 func TestReadOnly(t *testing.T) {
 	readOnly := []string{
 		"uptime",
+		// Wrappers that change only the priority or the time of a
+		// read-only command.
+		"nice -n 19 ionice -c3 du -x -d 2 / | sort -nr | head -20",
+		"nice -19 find / -xdev -type f -size +100M",
+		"ionice -c 3 -t du -sh /var",
+		"timeout 25s docker system df",
+		"timeout -k 5 -s KILL 60 du -sh /home",
 		"df -h && free -h",
 		"uname -a; uptime",
 		"ps aux --sort=-%cpu | head -n 15",
@@ -48,6 +55,12 @@ func TestReadOnly(t *testing.T) {
 		}
 	}
 	changes := []string{
+		"nice -n 19 rm -rf /tmp/x",
+		"timeout 30 systemctl restart nginx",
+		"ionice -p 1234 -c3",
+		"ionice -c3 -p 1234 du -sh /",
+		"nice",
+		"timeout 10",
 		"",
 		"rm -rf /tmp/x",
 		"systemctl restart nginx",
@@ -152,11 +165,28 @@ func TestTrimOutput(t *testing.T) {
 	if !utf8.ValidString(got) || !strings.HasPrefix(got, "头") || !strings.HasSuffix(got, "END") || !strings.Contains(got, "bytes left out") || len(got) > 1100 {
 		t.Fatalf("TrimOutput = %d bytes, %q…", len(got), got[:min(len(got), 40)])
 	}
-	if got := CommandResult(1, "", false); got != "Exit code 1.\n(no output)" {
+	if got := CommandResult(1, "", false, 0); got != "Exit code 1.\n(no output)" {
 		t.Fatalf("CommandResult = %q", got)
 	}
-	if got := CommandResult(0, "x", true); !strings.HasPrefix(got, "Stopped after 60 seconds.") {
+	if got := CommandResult(0, "x", true, 300); !strings.HasPrefix(got, "Stopped at its time limit of 300 seconds") || !strings.Contains(got, "timeout_seconds") || !strings.HasSuffix(got, "x") {
 		t.Fatalf("CommandResult = %q", got)
+	}
+	// The time limit a call asks for: a number, a fraction or a string,
+	// within the limits; none when missing or not a number.
+	for args, want := range map[string]int{
+		`{"command":"du -x /"}`:                          0,
+		`{"command":"du -x /","timeout_seconds":300}`:    300,
+		`{"command":"du -x /","timeout_seconds":"600"}`:  600,
+		`{"command":"du -x /","timeout_seconds":45.5}`:   45,
+		`{"command":"du -x /","timeout_seconds":5}`:      MinCommandTimeout,
+		`{"command":"du -x /","timeout_seconds":99999}`:  MaxCommandTimeout,
+		`{"command":"du -x /","timeout_seconds":"soon"}`: 0,
+	} {
+		call := ToolCall{Function: FunctionCall{Name: RunCommandTool.Function.Name, Arguments: args}}
+		got, err := ParseCommandCall(call)
+		if err != nil || got.TimeoutSeconds != want || got.Command != "du -x /" {
+			t.Errorf("%s: %+v, %v", args, got, err)
+		}
 	}
 }
 

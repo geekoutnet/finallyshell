@@ -444,6 +444,9 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 		icon, color, status = "shield-alert", theme.Warning, locales.DesktopAICmdWaiting()
 	case aiCmdQueued, aiCmdRunning:
 		icon, color, status = "", desktopAIAccent(), locales.DesktopAICmdRunning()
+		if d := card.deadline; d != nil && card.Status == aiCmdRunning {
+			status = locales.DesktopAICmdRunningFor(aiDuration(time.Since(d.start)), aiDuration(d.limit()))
+		}
 	case aiCmdDone:
 		icon, color = "circle-check", theme.Success
 		exit := 0
@@ -455,7 +458,7 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 		}
 		status = locales.DesktopAICmdExit(strconv.Itoa(exit), aiElapsed(card.Millis))
 	case aiCmdTimedOut:
-		icon, color, status = "timer", theme.Warning, locales.DesktopAICmdTimedOut()
+		icon, color, status = "timer", theme.Warning, locales.DesktopAICmdTimedOut(aiDuration(time.Duration(card.Millis)*time.Millisecond))
 	case aiCmdRefused:
 		status = locales.DesktopAICmdRefused()
 	case aiCmdCancelled:
@@ -485,6 +488,12 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 					if widgets.IconButton(c, toggle, label).Clicked() {
 						card.showOutput = !card.showOutput
 					}
+				}
+			}
+			// A long scan the user wants to see the end of goes on.
+			if d := card.deadline; d != nil && card.Status == aiCmdRunning && d.limit() < aiMaxRunTime {
+				if ui.Button(c, locales.DesktopAICmdWaitLonger()).Shrink(0).Tooltip(locales.DesktopAICmdWaitLongerNote()).Clicked() {
+					d.extend(aiWaitLonger)
 				}
 			}
 			if widgets.IconButton(c, "copy", locales.Copy()).Clicked() {
@@ -529,6 +538,18 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 			})
 		}
 	})
+}
+
+// aiDuration is a command's time to the second: 45s, 2m05s, 1h00m.
+func aiDuration(d time.Duration) string {
+	s := int(d.Round(time.Second) / time.Second)
+	switch {
+	case s < 60:
+		return fmt.Sprintf("%ds", s)
+	case s < 3600:
+		return fmt.Sprintf("%dm%02ds", s/60, s%60)
+	}
+	return fmt.Sprintf("%dh%02dm", s/3600, s%3600/60)
 }
 
 // aiElapsed is how long a command ran.

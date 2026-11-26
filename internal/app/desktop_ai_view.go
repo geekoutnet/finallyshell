@@ -2,8 +2,10 @@ package app
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
+	"time"
 
 	"finallyshell/internal/ai"
 	"finallyshell/internal/config"
@@ -318,17 +320,29 @@ func (a *App) desktopAIMessageView(c *ui.Context, window *desktopWindow, state *
 		a.desktopAICommandView(c, state, message)
 		return
 	case "user":
-		// The user's question, on the right.
+		// The user's question, on the right, with copying it and editing it
+		// under it.
 		ui.Row(c).FillWidth().Justify(ui.End).Children(func() {
-			ui.Column(c).MaxWidthPercent(85).MinWidth(0).Gap(4).Padding(8, 12).Radius(10).Background(desktopAISoft()).Children(func() {
+			bubble := ui.Column(c).MaxWidthPercent(85).MinWidth(0).Gap(4).Padding(8, 12).Radius(10).Background(desktopAISoft())
+			if state.editing == message {
+				bubble.Border(1, desktopAIAccent())
+			}
+			bubble.Children(func() {
 				ui.Text(c, message.Text).MaxWidthPercent(100).Selectable()
 				if message.preview != "" {
 					ui.Text(c, locales.DesktopAIContextSent()).TextColor(desktopAIAccent()).FontSize(11).Tooltip(message.preview)
 				}
 			})
 		})
+		ui.Row(c).FillWidth().Justify(ui.End).Gap(2).Margin(-6, 0, 0, 0).Children(func() {
+			a.desktopAICopyButton(c, state, message)
+			if widgets.IconButton(c, "pencil", locales.DesktopAIEditQuestion()).Disabled(state.cancel != nil).Clicked() {
+				state.draft, state.editing, state.focusInput = message.Text, message, true
+			}
+		})
 		return
 	}
+	streaming := state.activeReply == message
 	ui.Column(c).FillWidth().MinWidth(0).Gap(6).Padding(10, 12).Radius(10).Border(1, theme.Border).Background(colors.card).Children(func() {
 		ui.Row(c).Gap(5).AlignItems(ui.Center).Children(func() {
 			ui.Icon(c, icons.Get("sparkles")).FontSize(12).TextColor(desktopAIAccent())
@@ -354,7 +368,61 @@ func (a *App) desktopAIMessageView(c *ui.Context, window *desktopWindow, state *
 			},
 		}
 		markdown.View(c, message.Text, options).FillWidth().MinWidth(0)
+		if streaming {
+			return
+		}
+		// Copying the reply, and, for the chat's last, asking its question
+		// again for another.
+		ui.Row(c).Gap(2).Margin(0, -4, -4, -4).Children(func() {
+			a.desktopAICopyButton(c, state, message)
+			if question := aiLastQuestion(state.chat, message); question != nil {
+				if widgets.IconButton(c, "refresh-cw", locales.DesktopAIRegenerate()).Disabled(state.cancel != nil).Clicked() {
+					a.desktopAIRedo(window, state, question)
+				}
+			}
+		})
 	})
+}
+
+// aiLastQuestion is the question reply answers when reply is chat's last
+// message from the model: nil for any other.
+func aiLastQuestion(chat *desktopAIChat, reply *desktopAIMessage) *desktopAIMessage {
+	if chat == nil {
+		return nil
+	}
+	var question, last *desktopAIMessage
+	for _, m := range chat.Messages {
+		switch m.Role {
+		case "user":
+			question, last = m, nil
+		case "assistant":
+			last = m
+		}
+	}
+	if last != reply {
+		return nil
+	}
+	return question
+}
+
+// desktopAICopyButton copies message's text, showing a check for a moment
+// once it has.
+func (a *App) desktopAICopyButton(c *ui.Context, state *desktopAIState, message *desktopAIMessage) {
+	icon, label := "copy", locales.DesktopAICopyMessage()
+	if state.copied == message {
+		icon, label = "check", locales.DesktopAICopied()
+	}
+	if widgets.IconButton(c, icon, label).Clicked() {
+		c.WriteClipboard(message.Text)
+		state.copied = message
+		time.AfterFunc(1500*time.Millisecond, func() {
+			a.post(func() {
+				if state.copied == message {
+					state.copied = nil
+				}
+			})
+		})
+	}
 }
 
 // desktopAICommandView is a command the model ran on the server: its
@@ -501,8 +569,28 @@ func (a *App) desktopAIComposer(c *ui.Context, window *desktopWindow, state *des
 	agent := aiServer(window.session) != nil && !noTools
 	ui.Column(c).Shrink(0).FillWidth().MinWidth(0).Gap(6).Padding(8, 12, 10, 12).Background(colors.card).
 		BorderWidth(1, 0, 0, 0).BorderColor(theme.Border).Children(func() {
+		if state.chat == nil || !slices.Contains(state.chat.Messages, state.retry) {
+			state.retry = nil
+		}
+		if state.chat == nil || !slices.Contains(state.chat.Messages, state.editing) {
+			state.editing = nil
+		}
 		if state.status != "" {
-			ui.Scroll(c).MaxHeight(46).FillWidth().Children(func() { aiStatus(c, state.status, state.failed) })
+			ui.Row(c).FillWidth().Gap(6).AlignItems(ui.Start).Children(func() {
+				ui.Scroll(c).MaxHeight(46).Grow(1).MinWidth(0).Children(func() { aiStatus(c, state.status, state.failed) })
+				if state.failed && state.retry != nil && !busy && ui.Button(c, locales.Retry()).Shrink(0).Clicked() {
+					a.desktopAIRedo(window, state, state.retry)
+				}
+			})
+		}
+		if state.editing != nil {
+			ui.Row(c).FillWidth().Gap(6).AlignItems(ui.Center).Children(func() {
+				ui.Icon(c, icons.Get("pencil")).FontSize(12).TextColor(desktopAIAccent())
+				widgets.Muted(c, locales.DesktopAIEditing()).FontSize(12).Grow(1).MinWidth(0).Shrink(1)
+				if widgets.IconButton(c, "x", locales.Cancel()).Clicked() {
+					state.editing, state.draft = nil, ""
+				}
+			})
 		}
 		switch {
 		case aiServer(window.session) == nil:
@@ -531,6 +619,10 @@ func (a *App) desktopAIComposer(c *ui.Context, window *desktopWindow, state *des
 			input.Height(state.inputH)
 		} else {
 			input.Lines(2, 8)
+		}
+		if state.focusInput {
+			state.focusInput = false
+			input.Focus()
 		}
 		if grip.DoubleClicked() {
 			state.inputH = 0

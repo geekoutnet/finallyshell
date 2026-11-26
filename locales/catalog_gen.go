@@ -27110,6 +27110,56 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// DesktopAICopyMessage says "Copy message"
+// in the language the app shows.
+func DesktopAICopyMessage() string { return In(i18n.Locale()).DesktopAICopyMessage() }
+
+// DesktopAICopyMessage says "Copy message"
+// in the language of msgs.
+func (msgs Messages) DesktopAICopyMessage() string {
+	return Catalog.Format(msgs.locale, "desktopAICopyMessage", nil)
+}
+
+// DesktopAIEditQuestion says "Edit and resend"
+// in the language the app shows.
+func DesktopAIEditQuestion() string { return In(i18n.Locale()).DesktopAIEditQuestion() }
+
+// DesktopAIEditQuestion says "Edit and resend"
+// in the language of msgs.
+func (msgs Messages) DesktopAIEditQuestion() string {
+	return Catalog.Format(msgs.locale, "desktopAIEditQuestion", nil)
+}
+
+// DesktopAIRegenerate says "Regenerate"
+// in the language the app shows.
+func DesktopAIRegenerate() string { return In(i18n.Locale()).DesktopAIRegenerate() }
+
+// DesktopAIRegenerate says "Regenerate"
+// in the language of msgs.
+func (msgs Messages) DesktopAIRegenerate() string {
+	return Catalog.Format(msgs.locale, "desktopAIRegenerate", nil)
+}
+
+// DesktopAICopied says "Copied"
+// in the language the app shows.
+func DesktopAICopied() string { return In(i18n.Locale()).DesktopAICopied() }
+
+// DesktopAICopied says "Copied"
+// in the language of msgs.
+func (msgs Messages) DesktopAICopied() string {
+	return Catalog.Format(msgs.locale, "desktopAICopied", nil)
+}
+
+// DesktopAIEditing says "Editing a question: sending replaces it and the conversation after it."
+// in the language the app shows.
+func DesktopAIEditing() string { return In(i18n.Locale()).DesktopAIEditing() }
+
+// DesktopAIEditing says "Editing a question: sending replaces it and the conversation after it."
+// in the language of msgs.
+func (msgs Messages) DesktopAIEditing() string {
+	return Catalog.Format(msgs.locale, "desktopAIEditing", nil)
+}
+
 // CloseOtherTabs says "Close other tabs"
 // in the language the app shows.
 func CloseOtherTabs() string { return In(i18n.Locale()).CloseOtherTabs() }

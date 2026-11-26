@@ -354,7 +354,7 @@ func (a *App) desktopDockHost(c *ui.Context, d *desktopState, s *Session, width 
 			ui.Text(c, s.statusText()).FontSize(12).TextColor(theme.TextMuted)
 		})
 		ui.Box(c).FillWidth().Height(1).Background(theme.Border)
-		if desktopPanelRow(c, "terminal", locales.BackToTerminal(), false).Clicked() {
+		if desktopPanelRow(c, "terminal", locales.SwitchToTerminalMode(), false).Clicked() {
 			sh.hostPopup = false
 			a.backToTerminal(a.desktopRowOf(s))
 		}

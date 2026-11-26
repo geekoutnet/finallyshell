@@ -390,15 +390,65 @@ const desktopRowIcon = "monitor"
 
 func desktopRowName() string { return locales.DesktopTab() }
 
-// desktopMenuItem is the "Open desktop" item of a session's menu.
-func (a *App) desktopMenuItem(m *ui.Menu, s *Session) {
-	if canOpenDesktop(s) && m.Item(locales.OpenDesktop()).Chosen() {
-		a.openDesktop(s)
+// A server shows its terminal or its desktop, its two modes: the desktop
+// when the row of its group the user is on, or was on last, is its desktop
+// row; the terminal otherwise, its own row or a panel row. Its tab, its
+// row in the list, the desktop's own menu, the button by the panel's tabs
+// and the shortcut switch between the two.
+
+// inDesktopMode reports whether the server root shows its desktop.
+func (a *App) inDesktopMode(root *Session) bool {
+	row := root.lastRow
+	if cur := a.current(); cur != nil && sessionRoot(cur) == root {
+		row = cur
+	}
+	return row != nil && row.isDesktopRow() && row.panelOf == root && slices.Contains(a.sessions, row)
+}
+
+// showTerminalMode shows the terminal of s's server: its own row.
+func (a *App) showTerminalMode(s *Session) {
+	if i := slices.Index(a.sessions, sessionRoot(s)); i >= 0 {
+		a.active = i
+	}
+}
+
+// toggleDesktopMode switches s's server to the mode it does not show,
+// opening its desktop the first time.
+func (a *App) toggleDesktopMode(s *Session) {
+	root := sessionRoot(s)
+	switch {
+	case !canOpenDesktop(root):
+	case a.inDesktopMode(root):
+		a.showTerminalMode(root)
+	default:
+		a.openDesktop(root)
+	}
+}
+
+// desktopModeItem is the item of s's menus that switches its server to the
+// mode it does not show, with the shortcut that does the same; none for a
+// session without a desktop.
+func (a *App) desktopModeItem(m *ui.Menu, s *Session) {
+	root := sessionRoot(s)
+	if !canOpenDesktop(root) {
+		return
+	}
+	label := locales.SwitchToDesktopMode()
+	if a.inDesktopMode(root) {
+		label = locales.SwitchToTerminalMode()
+	}
+	it := m.Item(label)
+	if k := a.shortcut(scOpenDesktop); !k.none() {
+		it.Shortcut(k.Mods, k.Key)
+	}
+	if it.Chosen() {
+		a.toggleDesktopMode(root)
 	}
 }
 
 // desktopCornerButton is the button beside the panel's corner button that
-// opens the session's desktop, under the terminal or in a panel row.
+// switches the session to its desktop, under the terminal or in a panel
+// row.
 func (a *App) desktopCornerButton(c *ui.Context) {
 	s := a.current()
 	if a.panelOnRight() && !s.isPanelTab() {
@@ -410,7 +460,8 @@ func (a *App) desktopCornerButton(c *ui.Context) {
 	if !canOpenDesktop(s) {
 		return
 	}
-	if widgets.IconButton(c, desktopRowIcon, locales.OpenDesktop()).Clicked() {
+	label := locales.SwitchToDesktopMode()
+	if widgets.IconButton(c, desktopRowIcon, label+shortcutHint(a.shortcutLabel(scOpenDesktop))).Label(label).Clicked() {
 		a.openDesktop(s)
 	}
 }

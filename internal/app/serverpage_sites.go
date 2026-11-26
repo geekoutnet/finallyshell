@@ -33,6 +33,8 @@ type serverSitesPage struct {
 	recovery            *monitor.NginxChange
 	read                systemRunner
 	localTLS            func(context.Context, string) (monitor.Certificate, error)
+	// tuning is the Nginx settings tab's form (serverpage_site_settings.go).
+	tuning nginxTuning
 }
 
 func (a *App) sitesRoot(s *Session) systemRunner {
@@ -199,10 +201,13 @@ func (a *App) serverSitesSection(c *ui.Context, s *Session) {
 	width := box.LayoutBounds().W
 	box.Children(func() {
 		a.sitesHeader(c, s)
-		if page.tabs == 0 {
+		switch page.tabs {
+		case 0:
 			a.siteList(c.Key("site-list"), s, width > 0 && width < 825)
-		} else {
+		case 1:
 			a.certList(c.Key("cert-list"), s, width > 0 && width < 760)
+		default:
+			a.nginxSettingsView(c.Key("nginx-settings"), s)
 		}
 		if page.denied && page.dialog == nil {
 			if ui.Button(c, locales.PrivNeedsRoot()).Margin(2, 8).AlignSelf(ui.Start).Clicked() {

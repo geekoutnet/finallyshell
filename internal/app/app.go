@@ -190,8 +190,9 @@ type App struct {
 	// tabsRoom is the width the session tabs had to share in the last
 	// frame; tabsShown the server whose tab was last scrolled into view
 	// (sessiontabs.go).
-	tabsRoom  float32
-	tabsShown *Session
+	tabsRoom   float32
+	tabsShown  *Session
+	tabsScroll ui.ScrollState
 	// closeAsk is the connected server the user is closing, while the
 	// app asks first (sessiontabs.go).
 	closeAsk *Session

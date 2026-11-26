@@ -124,11 +124,19 @@ func (a *App) sessionTabs(c *ui.Context) {
 			roots = append(roots, s)
 		}
 	}
+	// The tabs share the room, short of a DIP or two that rounding would
+	// otherwise take past its end; past their narrowest they scroll.
 	width := float32(sessionTabMax)
+	fits := true
 	if n := float32(len(roots)); n > 0 && a.tabsRoom > 0 {
-		width = min(max((a.tabsRoom-sessionTabGap*(n-1))/n, sessionTabMin), sessionTabMax)
+		share := (a.tabsRoom - 2 - sessionTabGap*(n-1)) / n
+		fits = share >= sessionTabMin
+		width = min(max(share, sessionTabMin), sessionTabMax)
 	}
-	overflow := a.tabsRoom > 0 && float32(len(roots))*(sessionTabMin+sessionTabGap) > a.tabsRoom+sessionTabGap
+	if fits {
+		a.tabsScroll.X = 0 // nothing to scroll to
+	}
+	overflow := !fits || a.tabsScroll.MaxX > 0.5
 	var closing *Session
 	ui.Row(c).FillWidth().Shrink(0).Height(sessionTabsH).AlignItems(ui.End).PaddingX(4).Gap(4).
 		Background(colors.sidebar).BorderWidth(0, 0, 1, 0).BorderColor(colors.frame).Children(func() {
@@ -141,7 +149,10 @@ func (a *App) sessionTabs(c *ui.Context) {
 				a.toggleSidebar()
 			}
 		})
-		strip := ui.ScrollHorizontal(c.Key("session-tabs")).Grow(1).MinWidth(0).Height(33)
+		// No scrollbar, which would cover the names: the wheel scrolls the
+		// row, and the menu of the tabs reaches those out of view.
+		strip := ui.ScrollHorizontal(c.Key("session-tabs")).Grow(1).MinWidth(0).Height(33).
+			TrackScroll(&a.tabsScroll).Scrollbars(false)
 		if w := strip.Bounds().W; w > 0 && w != a.tabsRoom {
 			a.tabsRoom = w
 			c.Invalidate()

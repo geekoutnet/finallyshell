@@ -184,3 +184,30 @@ func TestSessionTabsOverflow(t *testing.T) {
 	}
 	saveShot(t, tt, "session-tabs-many.png")
 }
+
+// TestSessionTabsJustFit: tabs that just fit share the row whole, with
+// nothing to scroll and no menu, the first in view while the last is
+// chosen.
+func TestSessionTabsJustFit(t *testing.T) {
+	a, p := testApp(t)
+	for i := range 6 {
+		demoSession(a, "server-"+strconv.Itoa(i), "10.0.0."+strconv.Itoa(10+i))
+	}
+	a.active, a.sidebarHidden = 5, true
+	tt := ui.NewTester(a.View, 840, 600)
+	p.tt = tt
+	for range 4 {
+		tt.Frame()
+	}
+	if share := (a.tabsRoom - 2 - sessionTabGap*5) / 6; share < sessionTabMin {
+		t.Fatalf("the test's window is too narrow: %v a tab", share)
+	}
+	first, _ := tt.Access("server-0")
+	last, _ := tt.Access("server-5")
+	if a.tabsScroll.X != 0 || a.tabsScroll.MaxX > 0.5 || tt.HasText(locales.AllTabs()) {
+		t.Fatalf("scrolled %v of %v, menu %v", a.tabsScroll.X, a.tabsScroll.MaxX, tt.HasText(locales.AllTabs()))
+	}
+	if first.Bounds.X < 0 || last.Bounds.X+last.Bounds.W > 840 {
+		t.Fatalf("first at %+v, last at %+v", first.Bounds, last.Bounds)
+	}
+}

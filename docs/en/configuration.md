@@ -19,7 +19,7 @@ behind each setting.
 - [Command history](#command-history)
 - [quickcommands.json](#quickcommandsjson)
 - [commandeditor.txt](#commandeditortxt)
-- [updater.json](#updaterjson)
+- [update-check.json](#update-checkjson)
 - [Updates in mygo.json](#updates-in-mygojson)
 - [Where passwords are stored](#where-passwords-are-stored)
 - [Where SSH keys are stored](#where-ssh-keys-are-stored)
@@ -505,21 +505,15 @@ temporary file renamed over it; missing, the editor starts empty. If it
 cannot be read, the editor says so and nothing is saved to it until the
 app starts again.
 
-## updater.json
+## update-check.json
 
-The choices of the update window (see [Updates](features.md#updates)) are
-kept by MyGo's updater plugin in `updater.json`, in the app's user data
-folder rather than the config directory above: `~/Library/Application
-Support/Finallyshell` on macOS (on its default file system, which ignores
-case, the same folder as the config directory), `%APPDATA%\Finallyshell` on Windows,
-and `$XDG_CONFIG_HOME/Finallyshell` or `~/.config/Finallyshell` on Linux.
-`FINALLYSHELL_DIR` does not move it.
+The state of the update checks (see [Updates](features.md#updates)) is
+kept in `update-check.json` in the config directory, on this device only:
+it does not sync.
 
 | Key | Meaning | Default (when missing) |
 |---|---|---|
-| `automaticChecks` | `false` turns the checks in the background off ("Check for updates automatically"). | On. |
-| `automaticDownloads` | `true` installs the updates the background checks find without asking; they run at the next launch. | Ask. |
-| `skippedVersion` | The version the user skipped; the background checks do not offer it. | None. |
+| `automatic` | `false` turns the checks in the background off ("Check for updates automatically"). | On. |
 | `lastCheck` | When the last check succeeded. | Never. |
 
 A damaged file is ignored, as if it were missing.
@@ -542,6 +536,10 @@ the key they must be signed with.
   repository (see [Signing updates](development.md#signing-updates)).
 - `github` is the repository whose latest release the app reads the
   update manifests from.
+
+This project's builds are not signed and do not use MyGo's signed
+updates, so this block does nothing in them; see
+[Updates](features.md#updates) for how they update.
 
 ## Where passwords are stored
 

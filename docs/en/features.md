@@ -3284,61 +3284,49 @@ choice is saved.
 
 ## Updates
 
-Finallyshell updates itself from the releases on GitHub, with MyGo's
-signed updates and its update window (the updater plugin, in native UI).
+Finallyshell updates itself from the releases of this project,
+`geekoutnet/finallyshell`, on GitHub. Its builds are not signed, so it
+does not use MyGo's signed updater: the app checks, downloads and installs
+updates itself (`updates.go`).
 
-- Checking: 10 seconds after launch, then once a day while the app runs,
-  it reads the update manifest of the latest release
-  (`update-<platform>.json`, one small file from
-  `github.com/TooonyChen/finallyshell/releases/latest/download/`, not the
-  GitHub API). "Check for updates automatically" in Options › General
-  turns this off; it is on by default.
-- When a newer version is out, a window offers **Install Update**,
-  **Remind Me Later** and **Skip This Version**, and a check box to
-  download and install updates without asking from then on. A skipped
-  version is not offered again by the background checks; the next one is.
-- Installing downloads the update with a progress bar: a small delta from
-  the version running when the release has one, else the whole app. It
-  checks the Ed25519 signature against the public key built into the app,
-  replaces the app, and offers to relaunch; otherwise the new version runs
-  at the next launch.
-- "Check for Updates…" checks at once and says when the app is up to date
-  or the check failed; it offers skipped versions too. It is in
-  Options › General, in the tray icon's menu, and on macOS in the app
-  menu (Finallyshell › Check for Updates…).
-- Options › General also shows the version running and, once a check
-  found one, "Version x.y.z is available".
-- The window speaks the language the app shows (the Language option), and
-  a window opened after the language changes takes the new one.
+- Checking: at launch, and once a day while the app runs (24 hours after
+  the last check that worked). It asks every download mirror of this
+  project at once (`updateMirrors` in `updates.go`) and takes the first
+  answer; only when none answers does it ask the GitHub API. "Check for
+  updates automatically" in Options › General turns the checks in the
+  background off; it is on by default.
+- When a newer version is out, a card at the bottom right of the main
+  window shows it: the new version, the one running, "What's new" (the
+  version's release page), and **Later** and **Update now**. Later hides
+  the card for that version for this run; it comes back at the next launch
+  or for a newer version.
+- Update now downloads the version's setup program from a mirror, checks it
+  against the release's `SHA256SUMS`, with the progress on the card, then
+  quits, runs the setup program silently and starts the app again. A
+  download or check that fails says so on the card, with **Try again**.
+- "Check for Updates…" in Options › General checks at once, and says when
+  the app is up to date or the check failed. The page also shows the
+  version running and the newer one found, and installs it.
 
-Where a copy can update itself:
+Where a copy installs updates itself:
 
-| System | Install | Updates itself |
+| System | Install | Installs updates |
 |---|---|---|
-| macOS | The app in `/Applications` or `~/Applications` | Yes |
-| Windows | The installer's per-user install in `%LOCALAPPDATA%\Programs`; the portable zip where its folder is writable | Yes |
-| Linux | The `.tar.gz` installed with `install.sh` in `~/.local` | Yes |
-| Linux | The `.deb` in `/opt` | No: the package manager updates it |
-| Any | A development build (`go run`, `mygo dev`) | No |
+| Windows | The setup program's install (with `Uninstall.exe` beside the app) | Yes |
+| Windows | The portable zip | No: the card offers **Download** |
+| macOS, Linux | Any | No: the card offers **Download** |
+| Any | A development build (`go run`, `mygo dev`) | Does not check |
 
-Where it cannot, Options › General says why and links to the
-[releases page](https://github.com/TooonyChen/finallyshell/releases)
-instead of offering to check, and "Check for Updates…" in the menus opens
-a window that says so.
+A copy that cannot install updates still checks and shows the card;
+Download opens the version's
+[release page](https://github.com/geekoutnet/finallyshell/releases) to
+install it by hand.
 
 Notes:
 
-- Versions up to 0.2.0 have no updater: install the first version that
-  has one by hand, once. The ones after it update themselves.
-- The macOS app is signed ad hoc, so each build's signature differs. After
-  an update, macOS may ask again whether Finallyshell may use the
-  passwords it saved in the keychain, as it does after installing a new
-  version by hand. This is not yet checked on a real Mac.
-- The update window shows the new version's release notes, in English and
-  Chinese, the same as its page on GitHub (`CHANGELOG.md`).
-- Prereleases, notarization on macOS, Authenticode on Windows and an apt
-  repository for the `.deb` are not supported.
-
-The choices (automatic checks, installing without asking, the skipped
-version, the time of the last check) are kept in `updater.json`; see
-[configuration.md](configuration.md#updaterjson).
+- The macOS app is signed ad hoc and not notarized: the release notes say
+  how to open it the first time. The Windows setup program has no
+  Authenticode signature, so SmartScreen may warn.
+- Whether the app checks in the background and when it last checked are
+  kept in `update-check.json` in the config directory; see
+  [configuration.md](configuration.md#update-checkjson).

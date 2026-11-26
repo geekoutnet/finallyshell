@@ -16,7 +16,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - [命令历史](#命令历史)
 - [quickcommands.json](#quickcommandsjson)
 - [commandeditor.txt](#commandeditortxt)
-- [updater.json](#updaterjson)
+- [update-check.json](#update-checkjson)
 - [mygo.json 里的 updates](#mygojson-里的-updates)
 - [密码存在哪里](#密码存在哪里)
 - [SSH 密钥存在哪里](#ssh-密钥存在哪里)
@@ -347,15 +347,13 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 
 命令页里[命令编辑器](features.md#命令编辑器)的文本，原样保存，UTF-8 编码，换行是 `\n`：所有会话共用，不参与同步。停止输入一秒后、以及退出应用时写入，先写临时文件再改名替换；文件不存在时编辑器为空。如果文件读不出来，编辑器里会提示，并且在程序重新启动前不会写入它。
 
-## updater.json
+## update-check.json
 
-更新窗口的选择（见[更新](features.md#更新)）由 MyGo 的 updater 插件保存在 `updater.json`，它在应用的用户数据文件夹，不在上面的配置目录：macOS 上是 `~/Library/Application Support/Finallyshell`（macOS 默认的文件系统不分大小写，所以和配置目录是同一个），Windows 上是 `%APPDATA%\Finallyshell`，Linux 上是 `$XDG_CONFIG_HOME/Finallyshell` 或 `~/.config/Finallyshell`。`FINALLYSHELL_DIR` 不影响它。
+更新检查的状态（见[更新](features.md#更新)）保存在配置目录的 `update-check.json`，只在这台电脑上，不同步。
 
 | 键 | 含义 | 默认（没有这个键时） |
 |---|---|---|
-| `automaticChecks` | `false` 时关掉后台检查（“自动检查更新”）。 | 开。 |
-| `automaticDownloads` | `true` 时后台检查到的更新不问直接安装，下次启动时运行。 | 先问。 |
-| `skippedVersion` | 用户跳过的版本，后台检查不再提示它。 | 没有。 |
+| `automatic` | `false` 时关掉后台检查（“自动检查更新”）。 | 开。 |
 | `lastCheck` | 上次检查成功的时间。 | 从没检查过。 |
 
 文件损坏时当作没有这个文件。
@@ -373,6 +371,8 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 
 - `publicKey` 是给更新签名的密钥的公钥。已安装的副本只接受用对应私钥签名的更新，私钥是仓库的 secret `MYGO_UPDATER_PRIVATE_KEY`，从不放进仓库（见[给更新签名](development.md#给更新签名)）。
 - `github` 是仓库，应用从它最新的发布读取更新清单。
+
+本项目的构建没有签名，不使用 MyGo 的签名更新，这一段在这些构建里不起作用；它们怎样更新见[更新](features.md#更新)。
 
 ## 密码存在哪里
 

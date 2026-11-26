@@ -119,12 +119,15 @@ type AISettings struct {
 	// SendContext lets the assistant send the server's OS, the current
 	// folder and the last lines of the terminal with a question.
 	SendContext bool `json:"sendContext,omitempty"`
+	// NoServerProfile keeps the server profile (what the server is and
+	// runs, read once per connection) from going with the questions.
+	NoServerProfile bool `json:"noServerProfile,omitempty"`
 }
 
 // Equal reports whether s and o are the same settings.
 func (s AISettings) Equal(o AISettings) bool {
 	return s.Provider == o.Provider && s.Endpoint == o.Endpoint && s.Model == o.Model && slices.Equal(s.Models, o.Models) &&
-		s.SystemPrompt == o.SystemPrompt && s.SendContext == o.SendContext
+		s.SystemPrompt == o.SystemPrompt && s.SendContext == o.SendContext && s.NoServerProfile == o.NoServerProfile
 }
 
 // HasModel reports whether model is the default model or one of the

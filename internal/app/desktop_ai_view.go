@@ -141,6 +141,7 @@ func (a *App) desktopAITopBar(c *ui.Context, window *desktopWindow, state *deskt
 		})
 		if a.ai.ready {
 			a.desktopAIModelPicker(c, state, settings, busy)
+			a.desktopAIProfileChip(c, window, state)
 		}
 		ui.Spacer(c)
 		if !wide && (a.ai.ready || len(a.desktopAIChats(window.session)) > 0) {

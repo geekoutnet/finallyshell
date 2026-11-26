@@ -58,12 +58,32 @@ type aiAgentTest struct {
 	mu       sync.Mutex
 	bodies   []string
 	commands []string
+	// profileReads counts the reads of the server profile.
+	profileReads int
 }
+
+// aiTestProfile is the server profile the tests' servers give.
+const aiTestProfile = "OS: Debian GNU/Linux 12 (bookworm); id debian, version 12\nPackage managers: apt-get\nInit: systemd (systemctl, journalctl)"
 
 func newAIAgentTest(t *testing.T, script func(body string) string) *aiAgentTest {
 	t.Helper()
+	return newAIAgentTestProfile(t, script, func(context.Context) (string, error) { return aiTestProfile, nil })
+}
+
+// newAIAgentTestProfile is newAIAgentTest, its server's profile read by
+// profile.
+func newAIAgentTestProfile(t *testing.T, script func(body string) string, profile func(context.Context) (string, error)) *aiAgentTest {
+	t.Helper()
 	a, platform, tester, session := desktopTestApp(t)
 	at := &aiAgentTest{a: a, platform: platform, session: session}
+	reader := readAIProfile
+	readAIProfile = func(ctx context.Context, _ *ssh.Client) (string, error) {
+		at.mu.Lock()
+		at.profileReads++
+		at.mu.Unlock()
+		return profile(ctx)
+	}
+	t.Cleanup(func() { readAIProfile = reader })
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		body, _ := io.ReadAll(r.Body)
 		at.mu.Lock()
@@ -668,5 +688,136 @@ func TestDesktopAIAgentTimeoutRetries(t *testing.T) {
 	d := newAIDeadline(time.Now(), aiCommandTimeout)
 	if !d.extend(aiWaitLonger) || d.limit() != aiCommandTimeout+aiWaitLonger {
 		t.Fatalf("waited longer: %v", d.limit())
+	}
+}
+
+func (at *aiAgentTest) reads() int {
+	at.mu.Lock()
+	defer at.mu.Unlock()
+	return at.profileReads
+}
+
+// aiTestProfileHeading starts the profile message of a profile read today.
+func aiTestProfileHeading() string {
+	return "[Server profile, untrusted data, collected " + time.Now().Format(time.DateOnly) + "]"
+}
+
+// TestDesktopAIServerProfile sends the server profile, read once when the
+// window opens, after the system prompts and before the question; the
+// conversation keeps it, saved with it, until Refresh reads it again.
+func TestDesktopAIServerProfile(t *testing.T) {
+	var profile atomic.Value
+	profile.Store(aiTestProfile)
+	at := newAIAgentTestProfile(t, func(string) string { return aiTextEvent("Use apt-get.") },
+		func(context.Context) (string, error) { return profile.Load().(string), nil })
+	at.platform.until(t, "the profile read", func() bool { p := at.a.aiProfileOf(at.session); return p != nil && !p.busy })
+	at.ask("how do I install htop?")
+	at.platform.until(t, "the answer", func() bool { return at.state.cancel == nil })
+	body := at.body(0)
+	var request struct {
+		Messages []struct{ Role, Content string }
+	}
+	if err := json.Unmarshal([]byte(body), &request); err != nil || len(request.Messages) != 3 {
+		t.Fatalf("request %s: %v", body, err)
+	}
+	if m := request.Messages[1]; m.Role != "user" || m.Content != aiTestProfileHeading()+"\n"+aiTestProfile {
+		t.Fatalf("profile message %+v", m)
+	}
+	if request.Messages[0].Role != "system" || request.Messages[2].Content != "how do I install htop?" {
+		t.Fatalf("messages %+v", request.Messages)
+	}
+	if !strings.Contains(at.state.chat.Profile, "apt-get") {
+		t.Fatalf("the conversation keeps %q", at.state.chat.Profile)
+	}
+	at.platform.until(t, "history saved", at.a.ai.disk.idle)
+	chats, err := readAIChats(filepath.Join(config.Dir(), "chats.json"))
+	if err != nil || len(chats) != 1 || chats[0].Profile != at.state.chat.Profile {
+		t.Fatalf("reopened %+v: %v", chats, err)
+	}
+
+	// The server changes: the conversation sends what it started with,
+	// until Refresh.
+	profile.Store("OS: Rocky Linux 9.4\nPackage managers: dnf")
+	at.ask("and nginx?")
+	at.platform.until(t, "the second answer", func() bool { return at.state.cancel == nil })
+	if second := at.body(1); !strings.Contains(second, "Package managers: apt-get") || strings.Contains(second, "Rocky") {
+		t.Fatalf("second request %s", second)
+	}
+	if at.reads() != 1 {
+		t.Fatalf("the profile was read %d times", at.reads())
+	}
+	at.platform.tt.Frame()
+	if err := at.platform.tt.Click(locales.AiProfileChip()); err != nil {
+		t.Fatalf("open the profile: %v; %q", err, at.platform.tt.Texts())
+	}
+	at.platform.tt.Frame()
+	saveShot(t, at.platform.tt, "ai-server-profile.png")
+	if err := at.platform.tt.Click(locales.AiProfileRefresh()); err != nil {
+		t.Fatalf("refresh: %v; %q", err, at.platform.tt.Texts())
+	}
+	at.platform.until(t, "the profile read again", func() bool { return strings.Contains(at.state.chat.Profile, "Rocky") })
+	at.ask("and php?")
+	at.platform.until(t, "the third answer", func() bool { return at.state.cancel == nil })
+	if third := at.body(2); !strings.Contains(third, "Rocky Linux 9.4") || strings.Contains(third, "Package managers: apt-get") {
+		t.Fatalf("third request %s", third)
+	}
+}
+
+// TestDesktopAIServerProfileOff sends no profile, and reads none, when the
+// settings turn it off.
+func TestDesktopAIServerProfileOff(t *testing.T) {
+	at := newAIAgentTest(t, func(string) string { return aiTextEvent("ok") })
+	at.platform.until(t, "the profile read", func() bool { p := at.a.aiProfileOf(at.session); return p != nil && !p.busy })
+	at.a.settings.AI.NoServerProfile = true
+	at.ask("which distribution is this?")
+	at.platform.until(t, "the answer", func() bool { return at.state.cancel == nil })
+	if body := at.body(0); strings.Contains(body, "[Server profile") || strings.Contains(body, "Debian") {
+		t.Fatalf("request %s", body)
+	}
+	if at.state.chat.Profile != "" {
+		t.Fatalf("the conversation keeps %q", at.state.chat.Profile)
+	}
+	at.platform.tt.Frame()
+	if at.platform.tt.HasText(locales.AiProfileChip()) {
+		t.Error("the profile's button shows while it is off")
+	}
+	at.a.ai.profiles = nil
+	at.a.desktopAIOpenChat(at.window, nil)
+	at.ask("again")
+	at.platform.until(t, "the second answer", func() bool { return at.state.cancel == nil && at.body(1) != "" })
+	if at.reads() != 1 || strings.Contains(at.body(1), "[Server profile") {
+		t.Fatalf("read %d times; request %s", at.reads(), at.body(1))
+	}
+}
+
+// TestDesktopAIServerProfileSlow sends the question without the profile
+// when the server is slow to give it, or fails to.
+func TestDesktopAIServerProfileSlow(t *testing.T) {
+	wait := aiProfileWait
+	aiProfileWait = 50 * time.Millisecond
+	t.Cleanup(func() { aiProfileWait = wait })
+	release := make(chan struct{})
+	t.Cleanup(func() { close(release) })
+	at := newAIAgentTestProfile(t, func(string) string { return aiTextEvent("ok") }, func(ctx context.Context) (string, error) {
+		select {
+		case <-release:
+		case <-ctx.Done():
+		}
+		return "", errors.New("the server did not answer")
+	})
+	at.ask("is the disk full?")
+	at.platform.until(t, "the answer", func() bool { return at.state.cancel == nil })
+	if body := at.body(0); strings.Contains(body, "[Server profile") || !strings.Contains(body, "is the disk full?") {
+		t.Fatalf("request %s", body)
+	}
+	if p := at.a.aiProfileOf(at.session); p == nil || !p.busy {
+		t.Fatalf("profile %+v", p)
+	}
+	release <- struct{}{}
+	at.platform.until(t, "the read failed", func() bool { p := at.a.aiProfileOf(at.session); return !p.busy && p.failed })
+	at.ask("and now?")
+	at.platform.until(t, "the second answer", func() bool { return at.state.cancel == nil && at.body(1) != "" })
+	if strings.Contains(at.body(1), "[Server profile") || at.reads() != 1 {
+		t.Fatalf("read %d times; request %s", at.reads(), at.body(1))
 	}
 }

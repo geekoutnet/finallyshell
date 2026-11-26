@@ -164,9 +164,18 @@ not remove the server's rules.
 
 `proxy` says how the host is reached:
 
-- `kind` is `socks5` or `http`, which have `addr` and `port`, and `user`
-  when the proxy needs authentication;
+- `kind` is `socks5`, `http`, `https` or `socks4`, which have `addr` and
+  `port`, and `user` when the proxy needs authentication (a SOCKS4 user
+  ID); with `proxyId`, it is a copy of the proxy of the library with that
+  ID, which editing the library's updates;
 - or `kind` is `jump`, and `jumpHost` is the ID of the jump host.
+
+`proxies`, beside `hosts`, is the proxy library: each has `id`, `name`,
+`kind`, `addr`, `port`, `user` and `note`. Its passwords are in the
+credential store as `proxy/<id>/password`, which sync with the other
+passwords. Builds without the library keep the key as it is, and connect
+through each host's copy; `https` and `socks4` need a build that has
+them.
 
 Without `proxy`, the host is connected directly. Proxy passwords are not
 written to the file either; like host passwords, they are kept in the

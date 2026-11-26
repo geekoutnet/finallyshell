@@ -151,9 +151,13 @@ for its row and the rows under it (its panel row and its desktop). A click
 on a tab goes back to the row of that server the user was on last, so the
 terminal, the bottom panel, the desktop and the monitor switch with it;
 choosing a row in the list moves the tabs along. A tab's context menu has
-Reconnect, Disconnect and Close, and "+" at the row's end opens a new tab.
-In the list, dashed lines join a server's panel row and desktop to it, and
-a thin line separates one server from the next.
+Reconnect, Disconnect and Close, and "+", tinted at the row's end, opens
+a new tab. The tabs share the row's width, down to 120 DIPs each; more
+scroll sideways with the wheel, without a scrollbar, and a menu at the
+row's end lists them all, scrolling the one chosen into view. Each session
+keeps the tab of the bottom panel it shows: switching servers does not
+change another's. In the list, dashed lines join a server's panel row and
+desktop to it, and a little room sets one server apart from the next.
 
 Closing a server that is connected or connecting, from its tab, the list's
 close button or context menu, or the shortcut, asks first: closing ends
@@ -1048,7 +1052,17 @@ setting, whose default is still `^?`: their behavior does not change.
 
 ### Proxy and jump hosts
 
-Type is one of None (connect directly), SOCKS5, HTTP or Jump host.
+Type is one of None (connect directly), Proxy library, SOCKS5, HTTP,
+HTTPS, SOCKS4 / 4a or Jump host.
+
+- Proxy library picks a proxy saved in the proxy manager. The host keeps a
+  full copy of it, so editing the proxy there changes every host that uses
+  it, and builds without the proxy library connect through the copy. Test
+  shows its last test; New proxy adds one and chooses it. A proxy typed
+  on this page goes into the library with Save to the proxy library.
+- HTTPS is an HTTP proxy reached over TLS, its certificate checked for its
+  name. SOCKS4 has a user ID and no password, sends a host name as SOCKS4a
+  for the proxy to resolve, and reaches IPv4 only.
 
 - SOCKS5 and HTTP (`CONNECT`) take the proxy's host and port (1080 and 8080
   by default), and a user and password when the proxy needs
@@ -1076,6 +1090,30 @@ Type is one of None (connect directly), SOCKS5, HTTP or Jump host.
   refused: no proxy on that port", "Jump host web-1: Authentication
   failed: ...", "Jump host web-1: Cannot connect to 10.0.0.5:22: ...".
 - Closing or disconnecting a session also closes its connections to the
+
+#### Proxy manager
+
+The proxy manager (Proxies in the connection manager's toolbar, or Manage
+proxies… on the Proxy page) keeps proxies by name: SOCKS5, HTTP, HTTPS
+and SOCKS4, with a user and a password. The table lists each with its
+address, how many hosts use it and its last test; New proxy, Edit,
+Duplicate and Delete change the library, and a search finds proxies by
+name, address, user or note. Editing a proxy changes the hosts that use
+it; deleting one leaves them their copies, and they connect as before. A
+host whose copy was changed on its own, as on a build without the
+library, keeps it as its own proxy.
+
+Test, on a row, in the form, or Test all, goes through the proxy to
+ip-api.com (in the app's language), then ip.sb, then Cloudflare's trace,
+and shows how long the proxy took to open the connection (green under
+300 ms, amber under 1 s, red beyond), the address the internet sees and
+where it is (country, region, city, network). A proxy that fails says
+why: refused, timed out, wrong password, or the proxy refusing the
+target.
+
+The library and its passwords sync with the hosts (see
+[Sync](#sync)). Builds without the library keep syncing, and change
+nothing of it.
   jump hosts.
 
 <a id="tunnels-page"></a>
@@ -2122,7 +2160,7 @@ personalization stays on this device.
 
 ### Desktop mode › This PC and Files
 
-**This PC** shows quick access to the remote home folder, common Linux folders and favorites, plus mount points with their filesystem and available space. Double-click a location to open it in **Files**. Each Files window has its own folder, navigation history, selection, sort order and view. Use the address bar to jump to an absolute path, type to filter the current folder, or press Enter in the search field to search subfolders (up to 300 results). The sidebar stores the last 20 locations and allows reordering favorites by drag. Notes are stored per host on this device and appear in the Details view and icon tooltips.
+**This PC** shows quick access to the remote home folder, common Linux folders and favorites, plus mount points with their filesystem and available space. Double-click a location to open it in **Files**. Each Files window has its own folder, navigation history, selection, sort order and view. Use the address bar to jump to an absolute path, type to filter the current folder, or press Enter in the search field to search subfolders (up to 300 results). The sidebar stores the last 20 locations and allows reordering favorites by drag. Notes are stored per host on this device and appear in the Details view and icon tooltips. When reading a folder, searching or opening a file takes more than a moment, a card with a spinner and Cancel says so over the list's bottom right; the list itself does not move, so a double click lands where it was aimed.
 
 Create and rename items inline, or use the command bar and context menus to open a terminal, transfer files, compress, extract, or edit properties. Opening text uses the remote file editor; other files can be downloaded and opened with the system app. Upload files or folders from the picker, by drag and drop, or by pasting a file list from the system clipboard. Remote download supports HTTP, HTTPS and FTP, and runs on the server. Operations that need SSH command execution are unavailable on connections where it is disabled.
 
@@ -2223,6 +2261,17 @@ System tab’s security tools.
 Configure your own OpenAI-compatible service in **Options › AI Assistant**. Pick a provider preset, enter the base URL and the default model, list any other model IDs under **Other models**, one per line (**Add a fetched model** adds those **Fetch models** found), and test the connection. Only loopback Ollama can be enabled without a key. Requests use the same system or environment proxy as the updater.
 
 Open **AI Assistant** on a server desktop. Its top bar shows the server it works on and the model it answers with: the model menu switches the current conversation to the default model or another listed one, and each reply shows the model that wrote it. The server's conversations are listed on the left (the first button of the top bar folds them away; a narrow window lists them under **History** instead). Enter sends the question and Shift+Enter starts a new line. The first question of a conversation sends the question and the assistant's instructions only; later ones also send the recent conversation, which **Include chat history** turns off. Opt in to a previewed attachment: the detected OS, working directory, up to 20 terminal lines and selected log lines, when available, folded to its first line above the question until you open it. The performance prompt can also attach current load, CPU, memory and top processes. Recognizable secrets are masked, but always check the preview before sending. Attachments and replies based on them are not written to chat history.
+
+**Common tasks**, under the question and on the welcome screen, lists 77
+prompts for what is done most often on a server, in sixteen categories:
+system checks, performance, disks, networks and ports, security, users,
+services, logs, Docker, web servers, databases, backups and cron jobs,
+software updates, certificates, the firewall, and commands and scripts.
+A search finds them across the categories; a click puts one in the
+question, to fill in what [ ] marks and send. The conversations on the
+left delete from the button on their row or their context menu, after
+asking; the bar above the question drags it taller or shorter, and a
+double click on it gives the default height back.
 
 On a server connected over SSH, the assistant runs commands itself to investigate: the model calls a tool that runs one command at a time on an SSH channel of its own, apart from the terminal, as the login user, with no terminal and no input, and stops it after 60 seconds. Each command shows as a card with its state, exit code and time; its output (the first and last 16 KB, secrets masked) opens below it. Read-only commands run at once: an allowlist of programs and options that change nothing, such as `df`, `ps`, `journalctl -n`, `systemctl status` or `docker ps`, with no redirection to a file, command substitution, variables or `sudo`, and not reading key or password files. Any other command waits on its card for **Allow** or **Refuse**; refusing tells the model to ask instead. Commands that look destructive also need `RUN` typed. **Run everything automatically** lets one conversation run the others without asking, but not the destructive ones; it is off in every new conversation. A question runs at most 12 rounds of commands. Commands that change the system go to the desktop's operation log. Command output, logs and attachments reach the model as untrusted data. Conversations keep the commands and their exit codes, not their output. Without SSH (local terminals, Telnet, serial), the assistant only suggests commands, as it does with a model or provider that refuses tools: the question is asked again without them, and the window says why.
 

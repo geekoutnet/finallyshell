@@ -191,11 +191,12 @@ internal/
   config/            主机和文件夹（hosts.json）、设置的读写，背景图片的副本，配置目录；proxy.go 是代理设置和跳板机链（找循环）；tunnels.go 是隧道设置；keys.go 是退格键和删除键发送什么；sync.go 是“同步”页的设置、哪些设置要同步、sync-state.json 和同步前 hosts.json 的副本；history.go 是命令输入框的历史文件，以及读取 bash 和 zsh 的历史文件；quickcommands.go 是“命令”页的 quickcommands.json；cmdeditor.go 是命令编辑器的 commandeditor.txt；localshell.go 把本地终端程序（localShell）分成参数
   cloudsync/         通过用户自己的存储同步：crypto.go 加密文件（Argon2id、AES-256-GCM），merge.go 做三方合并，sync.go 读取、合并、写回（冲突时重试）；gist.go、webdav.go、s3.go 是各个服务（s3.go 手写 SigV4 签名），remotehttp.go 是它们共用的 HTTP 代码
   importer/          读其他客户端的连接：importer.go 是来源列表（readers）、读出的连接和问题、文本解码（UTF-8、UTF-16、GB18030）、判重、按文件夹导入；finalshell.go 找 FinalShell 的目录、读 conn 里的连接和文件夹；xshell.go 找 Xshell 的 Sessions 文件夹、读 .xsh 会话文件和 .xts 导出文件；securecrt.go 找 SecureCRT 的配置目录、读它 Sessions 文件夹里的 .ini 文件；mobaxterm.go 找 MobaXterm.ini、读里面的书签段，以及 .mxtsessions 和 .moba 导出文件；sshconfig.go 读 OpenSSH 的 ~/.ssh/config（Host 块和通配模式、Include、ProxyJump）；table.go 读 CSV 文件或 .xlsx 第一个工作表里的服务器列表，.xlsx 由自己写的 xlsx.go 读（archive/zip 和 encoding/xml，有防 zip 炸弹的限制）；testdata 是编造的样例
-  sshx/              SSH 连接、认证、known_hosts、给终端用的 Conn；proxy.go 是经过 SOCKS5、HTTP CONNECT 和跳板机连接；forward.go 是端口转发（-L/-R/-D）和 SOCKS5 服务端
+  sshx/              SSH 连接、认证、known_hosts、给终端用的 Conn；proxy.go 是经过 SOCKS5、SOCKS4/4a、HTTP 和 HTTPS CONNECT 和跳板机连接；forward.go 是端口转发（-L/-R/-D）和 SOCKS5 服务端
   termenc/           终端的连接在服务器的编码（GBK、Big5……）和终端读的 UTF-8 之间转换
   sshtest/           测试用的进程内 SSH 服务器：密码登录、记下读到内容的空 shell、端口转发、MaxSessions 限制，StartSFTP 还提供 SFTP（本机文件系统）
   monitor/           服务器状态采集和解析；openwrt*.go 是 OpenWrt 的识别和系统页各模块的脚本（ubus、uci、procd、opkg 或 apk、logread）及解析、校验，testdata/openwrt/ 有各版本的样本；net.go 是每个网卡的网速和历史，以及选中网卡的合计；netstat.go 是网络页的 socket（ss，或 /proc/net 和 /proc/<pid>/fd）、速度和行；trace.go 是通过 exec 通道的路由追踪（NextTrace 的 RAW 输出、traceroute、tracepath）；shelldir.go 从 /proc 读连接上的一个 shell（连接上有几个时，读哪个由 ShellPick 指定）：它的目录和前台程序；agents.go 判断程序是哪个编程智能体
   geo/               IP 归属地：通过官方 Go 绑定读取 ip2region 数据（xdb.go），从 GitHub 或 jsDelivr 按校验和下载数据（download.go），ip-api.com 和 ip.sb 的在线查询（online.go）及其缓存（cache.go）；geotest/ 为测试生成小的 .xdb 文件
+  proxycheck/        测试代理：经代理建立连接的耗时，以及从 ip-api.com、ip.sb 或 Cloudflare 查到的出口 IP 和归属地
   remotefs/          SFTP 列目录、上传、下载（带进度和取消），重命名、新建、删除（ops.go）；textfile.go 是编辑器的读取（认出二进制文件）和安全保存；archive.go 是打包传输：打包和安全解包 tar.gz 数据流，在 exec 通道上运行 tar
   icons/             内嵌的 SVG 图标（Lucide，ISC 协议）；agents/ 是编程智能体的图标（LobeHub Icons，MIT 协议）
   fileicons/         VS Code 文件图标主题：读 VSIX 和扩展目录、按名字找图标、字体转换、安装和查找已装的主题；bundled/ 是内置的 Material 和 Seti，languages_gen.go 是 VS Code 的语言表，internal/gen 生成它们

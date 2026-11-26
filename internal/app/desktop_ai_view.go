@@ -97,6 +97,7 @@ func (a *App) desktopAIView(c *ui.Context, window *desktopWindow) {
 	if state.confirm != nil {
 		a.desktopAIConfirmView(c, window, state)
 	}
+	a.desktopAIPromptsView(c, state)
 	if chat := state.deleting; chat != nil {
 		open := true
 		ui.Modal(c, &open, func() {
@@ -296,6 +297,17 @@ func (a *App) desktopAIWelcome(c *ui.Context, window *desktopWindow, state *desk
 					a.desktopAIPreview(window.session, state)
 				}
 			}
+		}
+		// Every common task, by category.
+		more := ui.Button(c.Key("more"), "").Label(locales.DesktopAIPromptsMore())
+		more.Children(func() {
+			ui.Row(c).Gap(5).AlignItems(ui.Center).Children(func() {
+				ui.Icon(c, icons.Get("wand-sparkles")).FontSize(13).TextColor(desktopAIAccent())
+				ui.Text(c, locales.DesktopAIPromptsMore()).TextColor(desktopAIAccent())
+			})
+		})
+		if more.Clicked() {
+			state.prompts, state.promptQuery = true, ""
 		}
 	})
 }
@@ -550,6 +562,7 @@ func (a *App) desktopAIComposer(c *ui.Context, window *desktopWindow, state *des
 				ui.Checkbox(c, &state.autoRun, locales.DesktopAIAutoRun()).Tooltip(locales.DesktopAIAutoRunNote())
 			}
 			ui.Spacer(c)
+			desktopAIPromptsButton(c, state, busy)
 			if busy {
 				if ui.Button(c, locales.DesktopAIStop()).Clicked() {
 					a.desktopAIStop(state)

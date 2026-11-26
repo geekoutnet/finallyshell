@@ -27110,6 +27110,66 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// DesktopAIPrompts says "Common tasks"
+// in the language the app shows.
+func DesktopAIPrompts() string { return In(i18n.Locale()).DesktopAIPrompts() }
+
+// DesktopAIPrompts says "Common tasks"
+// in the language of msgs.
+func (msgs Messages) DesktopAIPrompts() string {
+	return Catalog.Format(msgs.locale, "desktopAIPrompts", nil)
+}
+
+// DesktopAIPromptsMore says "More common tasks…"
+// in the language the app shows.
+func DesktopAIPromptsMore() string { return In(i18n.Locale()).DesktopAIPromptsMore() }
+
+// DesktopAIPromptsMore says "More common tasks…"
+// in the language of msgs.
+func (msgs Messages) DesktopAIPromptsMore() string {
+	return Catalog.Format(msgs.locale, "desktopAIPromptsMore", nil)
+}
+
+// DesktopAIPromptsAll says "All"
+// in the language the app shows.
+func DesktopAIPromptsAll() string { return In(i18n.Locale()).DesktopAIPromptsAll() }
+
+// DesktopAIPromptsAll says "All"
+// in the language of msgs.
+func (msgs Messages) DesktopAIPromptsAll() string {
+	return Catalog.Format(msgs.locale, "desktopAIPromptsAll", nil)
+}
+
+// DesktopAIPromptsSearch says "Search tasks"
+// in the language the app shows.
+func DesktopAIPromptsSearch() string { return In(i18n.Locale()).DesktopAIPromptsSearch() }
+
+// DesktopAIPromptsSearch says "Search tasks"
+// in the language of msgs.
+func (msgs Messages) DesktopAIPromptsSearch() string {
+	return Catalog.Format(msgs.locale, "desktopAIPromptsSearch", nil)
+}
+
+// DesktopAIPromptsEmpty says "No task matches."
+// in the language the app shows.
+func DesktopAIPromptsEmpty() string { return In(i18n.Locale()).DesktopAIPromptsEmpty() }
+
+// DesktopAIPromptsEmpty says "No task matches."
+// in the language of msgs.
+func (msgs Messages) DesktopAIPromptsEmpty() string {
+	return Catalog.Format(msgs.locale, "desktopAIPromptsEmpty", nil)
+}
+
+// DesktopAIPromptsNote says "A click puts the task in the question: replace what [ ] marks, then send."
+// in the language the app shows.
+func DesktopAIPromptsNote() string { return In(i18n.Locale()).DesktopAIPromptsNote() }
+
+// DesktopAIPromptsNote says "A click puts the task in the question: replace what [ ] marks, then send."
+// in the language of msgs.
+func (msgs Messages) DesktopAIPromptsNote() string {
+	return Catalog.Format(msgs.locale, "desktopAIPromptsNote", nil)
+}
+
 // ProxyFromLibrary says "Proxy library"
 // in the language the app shows.
 func ProxyFromLibrary() string { return In(i18n.Locale()).ProxyFromLibrary() }

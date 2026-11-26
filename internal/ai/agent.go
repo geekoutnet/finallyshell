@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -12,7 +13,7 @@ import (
 // the server through the run_command tool.
 const AgentPrompt = `You are an operations assistant working directly on the user's Linux server over SSH. Answer in the user's language.
 
-You can run shell commands on the server with the run_command tool, and you should use it: investigate with real commands instead of asking the user to run them, then explain what you found. Each call runs one non-interactive POSIX shell command, as the SSH login user, with no terminal and no input, and returns its exit code and output (stdout and stderr together, cut to the start and end when long). A command stops after 60 seconds, so never start one that waits forever (use journalctl -n, tail -n, top -b -n 1, ping -c 4; never -f, watch or editors). sudo works only without a password (sudo -n).
+You can run shell commands on the server with the run_command tool, and you should use it: investigate with real commands instead of asking the user to run them, then explain what you found. Each call runs one non-interactive POSIX shell command, as the SSH login user, with no terminal and no input, and returns its exit code and output (stdout and stderr together, cut to the start and end when long). A command stops at its time limit, 120 seconds unless you set timeout_seconds (at most 900): give a command that may take long, as scanning a large disk, the time it needs. Never start one that waits forever (use journalctl -n, tail -n, top -b -n 1, ping -c 4; never -f, watch or editors). Keep heavy scans light: narrow them first (one directory, du -x --max-depth=1, find -xdev with -size or -mtime), and run them at low priority with nice -n 19 ionice -c3. When a command is stopped at its limit, do not give up or guess: narrow it, split it, or run it again with a larger timeout_seconds. sudo works only without a password (sudo -n).
 
 Read-only commands run at once. Commands that change the system wait for the user's approval, which they may refuse: then do not try it another way, ask them. Before such a command, say in one sentence what it will change. Prefer the smallest change, back up a file before editing it, and never run destructive commands (deleting data, formatting, rebooting, stopping SSH or the firewall) unless the user asked for exactly that.
 
@@ -24,7 +25,8 @@ var RunCommandTool = Tool{Type: "function", Function: ToolFunction{
 	Description: "Run one non-interactive shell command on the server and return its exit code and output. Read-only commands run at once; others wait for the user's approval.",
 	Parameters: json.RawMessage(`{"type":"object","properties":{` +
 		`"command":{"type":"string","description":"The POSIX shell command, on one line."},` +
-		`"reason":{"type":"string","description":"Why, in a few words, in the user's language."}},` +
+		`"reason":{"type":"string","description":"Why, in a few words, in the user's language."},` +
+		`"timeout_seconds":{"type":"integer","minimum":10,"maximum":900,"description":"How long the command may run before it is stopped: 120 when left out; more for long scans."}},` +
 		`"required":["command"]}`),
 }}
 
@@ -32,6 +34,27 @@ var RunCommandTool = Tool{Type: "function", Function: ToolFunction{
 type CommandCall struct {
 	Command string `json:"command"`
 	Reason  string `json:"reason"`
+	// TimeoutSeconds is how long the command may run, between
+	// MinCommandTimeout and MaxCommandTimeout; 0 for the app's default.
+	TimeoutSeconds int `json:"-"`
+}
+
+// The time limits a command may ask for, in seconds.
+const (
+	MinCommandTimeout = 10
+	MaxCommandTimeout = 900
+)
+
+// commandTimeout reads timeout_seconds, which models send as a number, a
+// fraction or a string: 0 when missing or not a number, else within the
+// limits.
+func commandTimeout(raw json.RawMessage) int {
+	text := strings.Trim(strings.TrimSpace(string(raw)), `"`)
+	seconds, err := strconv.ParseFloat(text, 64)
+	if err != nil || seconds <= 0 {
+		return 0
+	}
+	return min(max(int(seconds), MinCommandTimeout), MaxCommandTimeout)
 }
 
 // ParseCommandCall reads a run_command call, refusing other tools and
@@ -44,6 +67,12 @@ func ParseCommandCall(call ToolCall) (CommandCall, error) {
 	if err := json.Unmarshal([]byte(call.Function.Arguments), &args); err != nil {
 		return args, errors.New("the arguments are not valid JSON")
 	}
+	var limit struct {
+		Timeout json.RawMessage `json:"timeout_seconds"`
+	}
+	if json.Unmarshal([]byte(call.Function.Arguments), &limit) == nil {
+		args.TimeoutSeconds = commandTimeout(limit.Timeout)
+	}
 	args.Command = strings.TrimSpace(args.Command)
 	args.Reason = Limit(strings.Join(strings.Fields(args.Reason), " "), 200)
 	if !CommandLine(args.Command) {
@@ -52,12 +81,16 @@ func ParseCommandCall(call ToolCall) (CommandCall, error) {
 	return args, nil
 }
 
-// CommandResult is what the agent reports of a command to the model.
-func CommandResult(exit int, output string, timedOut bool) string {
+// CommandResult is what the agent reports of a command to the model: for
+// one stopped at its limit of seconds, with how to get it done.
+func CommandResult(exit int, output string, timedOut bool, seconds int) string {
 	var b strings.Builder
 	switch {
 	case timedOut:
-		b.WriteString("Stopped after 60 seconds.\n")
+		fmt.Fprintf(&b, "Stopped at its time limit of %d seconds, before it finished; below is what it printed until then. "+
+			"To get it done: narrow it (one directory, du -x --max-depth=1, find -xdev with -size or -mtime), split it into smaller commands, "+
+			"run it at low priority with nice -n 19 ionice -c3, or run it again with a larger timeout_seconds (at most %d). "+
+			"A pipeline through sort or tail prints nothing until its input ends.\n", seconds, MaxCommandTimeout)
 	default:
 		fmt.Fprintf(&b, "Exit code %d.\n", exit)
 	}
@@ -116,6 +149,50 @@ var (
 
 // readOnlyPrograms run without changing anything, whatever their
 // arguments; the programs ReadOnly checks the arguments of are below.
+// wrappedCommand is the command that nice, ionice or timeout runs, which
+// they change only in how it runs: its priority, its time. A wrapper with
+// no command, or ionice acting on other processes (-p, -P, -u), is not
+// one.
+func wrappedCommand(words []string) ([]string, bool) {
+	i := 1
+	option := func() bool { return i < len(words) && strings.HasPrefix(words[i], "-") }
+	switch words[0] {
+	case "nice":
+		for option() {
+			if words[i] == "-n" || words[i] == "--adjustment" {
+				i++
+			}
+			i++
+		}
+	case "ionice":
+		for option() {
+			switch arg := words[i]; {
+			case arg == "-c" || arg == "-n" || arg == "--class" || arg == "--classdata":
+				i++
+			case arg == "-t" || arg == "--ignore", strings.HasPrefix(arg, "-c"), strings.HasPrefix(arg, "-n"),
+				strings.HasPrefix(arg, "--class="), strings.HasPrefix(arg, "--classdata="):
+			default:
+				return nil, false
+			}
+			i++
+		}
+	case "timeout":
+		for option() {
+			if words[i] == "-s" || words[i] == "-k" || words[i] == "--signal" || words[i] == "--kill-after" {
+				i++
+			}
+			i++
+		}
+		i++ // the duration
+	default:
+		return nil, false
+	}
+	if i >= len(words) {
+		return nil, false
+	}
+	return words[i:], true
+}
+
 var readOnlyPrograms = map[string]bool{
 	"cat": true, "head": true, "tail": true, "less": false, "grep": true, "egrep": true, "fgrep": true, "zgrep": true,
 	"zcat": true, "wc": true, "cut": true, "tr": true, "uniq": true, "column": true, "nl": true, "rev": true,
@@ -166,6 +243,9 @@ func ReadOnly(command string) bool {
 func readOnlyCommand(words []string) bool {
 	if len(words) == 0 {
 		return false
+	}
+	if inner, ok := wrappedCommand(words); ok {
+		return readOnlyCommand(inner)
 	}
 	program, args := words[0], words[1:]
 	if strings.ContainsAny(program, "=/'\"$") || !readOnlyPrograms[program] {

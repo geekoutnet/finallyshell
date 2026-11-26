@@ -44,9 +44,12 @@ type desktopAIRuntime struct {
 	chats                  []*desktopAIChat
 	storeError             bool
 
-	command  *aiCommandState
-	targets  map[*Session]aiTerminalTarget
-	requests map[*desktopWindow]*desktopAIState
+	command *aiCommandState
+	targets map[*Session]aiTerminalTarget
+	// requests are the conversations answering, with their windows;
+	// convs the conversations open in each window (desktop_ai_convs.go).
+	requests map[*desktopAIState]*desktopWindow
+	convs    map[*desktopWindow][]*desktopAIState
 }
 
 type desktopAIState struct {
@@ -148,6 +151,10 @@ type desktopAIMessage struct {
 	highRisk            bool
 	confirm             string
 	showOutput          bool
+	// timeout is how long the model let the command run, in seconds, 0
+	// for aiCommandTimeout; deadline, while it runs, when it stops.
+	timeout  int
+	deadline *aiDeadline
 }
 
 const (
@@ -177,9 +184,10 @@ func (a *App) desktopAIOpened(window *desktopWindow, arg any) {
 }
 
 func (a *App) desktopAIClosing(window *desktopWindow) bool {
-	if state, ok := window.state.(*desktopAIState); ok {
+	for _, state := range a.aiConvs(window) {
 		a.desktopAIStop(state)
 	}
+	delete(a.ai.convs, window)
 	return true
 }
 
@@ -212,15 +220,17 @@ func aiHost(session *Session) string {
 }
 
 // desktopAIDelete removes chat from the conversations kept on this
-// computer, starting a new one in state where it was shown. A
-// conversation answering a question is not deleted.
-func (a *App) desktopAIDelete(session *Session, state *desktopAIState, chat *desktopAIChat) {
-	if chat == nil || state.cancel != nil && state.chat == chat {
+// computer, starting a new one where window had it open. A conversation
+// answering a question is not deleted; the others are, while it answers.
+func (a *App) desktopAIDelete(window *desktopWindow, chat *desktopAIChat) {
+	if chat == nil || a.aiChatBusy(chat) {
 		return
 	}
 	a.ai.chats = slices.DeleteFunc(a.ai.chats, func(candidate *desktopAIChat) bool { return candidate == chat })
-	if state.chat == chat {
-		a.desktopAISelect(session, state, nil)
+	for _, state := range a.aiConvs(window) {
+		if state.chat == chat {
+			a.desktopAISelect(window.session, state, nil)
+		}
 	}
 	a.aiSaveChats()
 }
@@ -283,13 +293,13 @@ func (a *App) desktopAIStop(state *desktopAIState) {
 }
 
 func (a *App) aiStopUnseenChats() {
-	for window, state := range a.ai.requests {
+	for state, window := range a.ai.requests {
 		desktop := a.desktopOf(window.session)
 		if state.cancel != nil && (a.Locked() || !a.aiSettings().Equal(state.requestFor) || desktop == nil || !slices.Contains(desktop.windows, window)) {
 			a.desktopAIStop(state)
 		}
 		if state.cancel == nil {
-			delete(a.ai.requests, window)
+			delete(a.ai.requests, state)
 		}
 	}
 }
@@ -333,9 +343,9 @@ func (a *App) desktopAIAsk(window *desktopWindow, state *desktopAIState, text, a
 	state.cancel, state.failed, state.status = cancel, false, locales.AiBusy()
 	state.requestFor = settings
 	if a.ai.requests == nil {
-		a.ai.requests = make(map[*desktopWindow]*desktopAIState)
+		a.ai.requests = make(map[*desktopAIState]*desktopWindow)
 	}
-	a.ai.requests[window] = state
+	a.ai.requests[state] = window
 	current := func() bool {
 		desktop := a.desktopOf(window.session)
 		return state.generation == generation && desktop != nil && slices.Contains(desktop.windows, window)

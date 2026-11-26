@@ -111,7 +111,7 @@ func (a *App) desktopAIView(c *ui.Context, window *desktopWindow) {
 						open = false
 					}
 					if ui.PrimaryButton(c, locales.Delete()).Clicked() {
-						a.desktopAIDelete(window.session, state, chat)
+						a.desktopAIDelete(window, chat)
 						open = false
 					}
 				})
@@ -144,25 +144,25 @@ func (a *App) desktopAITopBar(c *ui.Context, window *desktopWindow, state *deskt
 		}
 		ui.Spacer(c)
 		if !wide && (a.ai.ready || len(a.desktopAIChats(window.session)) > 0) {
-			ui.Button(c, locales.DesktopAIHistory()).Disabled(busy).PopoverMenuButton(func(menu *ui.Menu) {
+			ui.Button(c, locales.DesktopAIHistory()).PopoverMenuButton(func(menu *ui.Menu) {
 				chats := a.desktopAIChats(window.session)
 				if len(chats) == 0 {
 					menu.Item(locales.DesktopAIEmptyHistory()).Disabled(true)
 				}
 				for _, chat := range chats {
 					if menu.Item(chat.Title).Checked(state.chat == chat).Chosen() {
-						a.desktopAISelect(window.session, state, chat)
+						a.desktopAIOpenChat(window, chat)
 					}
 				}
 			})
 		}
 		if a.ai.ready {
 			if wide {
-				if ui.Button(c, locales.DesktopAINew()).Disabled(busy).Clicked() {
-					a.desktopAISelect(window.session, state, nil)
+				if ui.Button(c, locales.DesktopAINew()).Clicked() {
+					a.desktopAIOpenChat(window, nil)
 				}
-			} else if widgets.IconButton(c, "plus", locales.DesktopAINew()).Disabled(busy).Clicked() {
-				a.desktopAISelect(window.session, state, nil)
+			} else if widgets.IconButton(c, "plus", locales.DesktopAINew()).Clicked() {
+				a.desktopAIOpenChat(window, nil)
 			}
 		}
 		if widgets.IconButton(c, "settings", locales.DesktopAISettings()).Clicked() {
@@ -205,12 +205,11 @@ func (a *App) desktopAIModelPicker(c *ui.Context, state *desktopAIState, setting
 // desktopAISidebar lists the server's conversations, the chosen one
 // highlighted.
 func (a *App) desktopAISidebar(c *ui.Context, window *desktopWindow, state *desktopAIState) {
-	busy := state.cancel != nil
 	ui.Column(c).Width(196).Shrink(0).Background(colors.sidebar).BorderWidth(0, 1, 0, 0).BorderColor(theme.Border).Children(func() {
 		ui.Row(c).Padding(8, 8, 4, 12).Gap(4).AlignItems(ui.Center).FillWidth().Children(func() {
 			widgets.Muted(c, locales.DesktopAIConversations()).FontSize(12).Bold().Grow(1).MinWidth(0)
-			if a.ai.ready && widgets.IconButton(c, "plus", locales.DesktopAINew()).Disabled(busy).Clicked() {
-				a.desktopAISelect(window.session, state, nil)
+			if a.ai.ready && widgets.IconButton(c, "plus", locales.DesktopAINew()).Clicked() {
+				a.desktopAIOpenChat(window, nil)
 			}
 		})
 		ui.Scroll(c).Grow(1).MinHeight(0).FillWidth().Children(func() {
@@ -222,7 +221,11 @@ func (a *App) desktopAISidebar(c *ui.Context, window *desktopWindow, state *desk
 				for index, chat := range chats {
 					selected := state.chat == chat
 					row := ui.Row(c.Key(index)).Gap(6).Padding(4, 4, 4, 8).Radius(6).FillWidth().AlignItems(ui.Center).MinHeight(28).
-						Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(chat.Title).Tooltip(chat.Title).Disabled(busy && !selected)
+						Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(chat.Title).Tooltip(chat.Title)
+					// A conversation answering behind the one shown, or waiting
+					// for the user to allow a command.
+					conv := a.aiConvOf(window, chat)
+					running, waiting := conv != nil && aiBusy(conv), conv != nil && conv.confirm != nil
 					hovered := row.Hovered()
 					switch {
 					case selected:
@@ -230,17 +233,24 @@ func (a *App) desktopAISidebar(c *ui.Context, window *desktopWindow, state *desk
 					case hovered:
 						row.Background(theme.Text.Alpha(0.06))
 					}
-					deletable := !(busy && selected)
+					deletable := !a.aiChatBusy(chat)
 					row.ContextMenu(func(m *ui.Menu) {
 						if m.Item(locales.DesktopAIDeleteChat()).Danger().Disabled(!deletable).Chosen() {
 							state.deleting = chat
 						}
 					})
-					if row.Clicked() && !selected && !busy {
-						a.desktopAISelect(window.session, state, chat)
+					if row.Clicked() && !selected {
+						a.desktopAIOpenChat(window, chat)
 					}
 					row.Children(func() {
-						ui.Icon(c, icons.Get("message-square")).FontSize(12).TextColor(theme.TextMuted).Shrink(0)
+						switch {
+						case waiting:
+							ui.Icon(c, icons.Get("circle-alert")).FontSize(12).TextColor(theme.Warning).Shrink(0).Tooltip(locales.DesktopAIChatWaiting())
+						case running:
+							ui.Spinner(c).Size(12, 12).Shrink(0).Label(locales.DesktopAIChatRunning())
+						default:
+							ui.Icon(c, icons.Get("message-square")).FontSize(12).TextColor(theme.TextMuted).Shrink(0)
+						}
 						ui.Text(c, chat.Title).FontSize(12).SingleLine().MinWidth(0).Grow(1).Shrink(1)
 						// Always there, to keep the titles from moving, and shown
 						// over the row the pointer is on.
@@ -434,6 +444,9 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 		icon, color, status = "shield-alert", theme.Warning, locales.DesktopAICmdWaiting()
 	case aiCmdQueued, aiCmdRunning:
 		icon, color, status = "", desktopAIAccent(), locales.DesktopAICmdRunning()
+		if d := card.deadline; d != nil && card.Status == aiCmdRunning {
+			status = locales.DesktopAICmdRunningFor(aiDuration(time.Since(d.start)), aiDuration(d.limit()))
+		}
 	case aiCmdDone:
 		icon, color = "circle-check", theme.Success
 		exit := 0
@@ -445,7 +458,7 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 		}
 		status = locales.DesktopAICmdExit(strconv.Itoa(exit), aiElapsed(card.Millis))
 	case aiCmdTimedOut:
-		icon, color, status = "timer", theme.Warning, locales.DesktopAICmdTimedOut()
+		icon, color, status = "timer", theme.Warning, locales.DesktopAICmdTimedOut(aiDuration(time.Duration(card.Millis)*time.Millisecond))
 	case aiCmdRefused:
 		status = locales.DesktopAICmdRefused()
 	case aiCmdCancelled:
@@ -475,6 +488,12 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 					if widgets.IconButton(c, toggle, label).Clicked() {
 						card.showOutput = !card.showOutput
 					}
+				}
+			}
+			// A long scan the user wants to see the end of goes on.
+			if d := card.deadline; d != nil && card.Status == aiCmdRunning && d.limit() < aiMaxRunTime {
+				if ui.Button(c, locales.DesktopAICmdWaitLonger()).Shrink(0).Tooltip(locales.DesktopAICmdWaitLongerNote()).Clicked() {
+					d.extend(aiWaitLonger)
 				}
 			}
 			if widgets.IconButton(c, "copy", locales.Copy()).Clicked() {
@@ -519,6 +538,18 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 			})
 		}
 	})
+}
+
+// aiDuration is a command's time to the second: 45s, 2m05s, 1h00m.
+func aiDuration(d time.Duration) string {
+	s := int(d.Round(time.Second) / time.Second)
+	switch {
+	case s < 60:
+		return fmt.Sprintf("%ds", s)
+	case s < 3600:
+		return fmt.Sprintf("%dm%02ds", s/60, s%60)
+	}
+	return fmt.Sprintf("%dh%02dm", s/3600, s%3600/60)
 }
 
 // aiElapsed is how long a command ran.

@@ -1,6 +1,7 @@
 package app
 
 import (
+	"cmp"
 	"context"
 	"errors"
 	"fmt"
@@ -31,8 +32,54 @@ const (
 	aiMaxSteps = 12
 )
 
-// aiCommandTimeout is how long a command may run; tests shorten it.
-var aiCommandTimeout = 60 * time.Second
+// aiCommandTimeout is how long a command may run when the model does not
+// say (its timeout_seconds); tests shorten it.
+var aiCommandTimeout = 120 * time.Second
+
+// aiWaitLonger is how much longer the user's "Wait 5 more minutes" lets a
+// running command go on, and aiMaxRunTime the longest any command runs.
+const (
+	aiWaitLonger = 5 * time.Minute
+	aiMaxRunTime = time.Hour
+)
+
+// aiDeadline is when a running command is stopped, which the user may put
+// off as it runs.
+type aiDeadline struct {
+	mu    sync.Mutex
+	start time.Time
+	at    time.Time
+}
+
+func newAIDeadline(start time.Time, limit time.Duration) *aiDeadline {
+	return &aiDeadline{start: start, at: start.Add(limit)}
+}
+
+// when is the deadline now.
+func (d *aiDeadline) when() time.Time {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	return d.at
+}
+
+// limit is how long the command may run in all.
+func (d *aiDeadline) limit() time.Duration { return d.when().Sub(d.start) }
+
+// extend puts the deadline off by more, up to aiMaxRunTime in all, and
+// reports whether it could.
+func (d *aiDeadline) extend(more time.Duration) bool {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	end := d.at.Add(more)
+	if longest := d.start.Add(aiMaxRunTime); end.After(longest) {
+		end = longest
+	}
+	if !end.After(d.at) {
+		return false
+	}
+	d.at = end
+	return true
+}
 
 // runAICommand runs the agent's commands; tests replace it.
 var runAICommand = aiRunCommand
@@ -167,7 +214,7 @@ func (a *App) aiCommands(run *aiRun, calls []ai.ToolCall) {
 	for _, call := range calls {
 		card := &desktopAIMessage{Role: "command", callID: call.ID}
 		args, err := ai.ParseCommandCall(call)
-		card.Text, card.Reason = args.Command, args.Reason
+		card.Text, card.Reason, card.timeout = args.Command, args.Reason, args.TimeoutSeconds
 		switch {
 		case err != nil:
 			card.Status, card.err = aiCmdFailed, err.Error()
@@ -226,9 +273,9 @@ func (a *App) aiNext(run *aiRun) {
 func (card *desktopAIMessage) toolResult() string {
 	switch card.Status {
 	case aiCmdDone:
-		return ai.CommandResult(*card.Exit, card.output, false)
+		return ai.CommandResult(*card.Exit, card.output, false, 0)
 	case aiCmdTimedOut:
-		return ai.CommandResult(-1, card.output, true)
+		return ai.CommandResult(-1, card.output, true, cmp.Or(card.timeout, int(aiCommandTimeout/time.Second)))
 	case aiCmdRefused:
 		return "The user refused to run this command. Do not run it another way; ask them what they want instead."
 	default:
@@ -257,19 +304,41 @@ func (a *App) aiExec(run *aiRun, card *desktopAIMessage) {
 		a.desktopLog(run.window.session, appAI, locales.DesktopAIAgentRan(ai.Limit(card.Text, 200)), nil)
 	}
 	start, command, server, ctx := time.Now(), card.Text, run.server, run.ctx
+	limit := aiCommandTimeout
+	if card.timeout > 0 {
+		limit = time.Duration(card.timeout) * time.Second
+	}
+	deadline := newAIDeadline(start, limit)
+	card.deadline = deadline
+	// The card counts the seconds as the command runs.
+	finished := make(chan struct{})
 	go func() {
-		exit, output, timedOut, err := runAICommand(ctx, server, command)
+		tick := time.NewTicker(time.Second)
+		defer tick.Stop()
+		for {
+			select {
+			case <-finished:
+				return
+			case <-tick.C:
+				a.post(func() {})
+			}
+		}
+	}()
+	go func() {
+		defer close(finished)
+		exit, output, timedOut, err := runAICommand(ctx, server, command, deadline)
 		a.post(func() {
 			if !a.aiRunCurrent(run) || card.Status != aiCmdRunning {
 				return
 			}
 			card.Millis = time.Since(start).Milliseconds()
-			card.output = run.client.SafeText(output)
+			card.output, card.deadline = run.client.SafeText(output), nil
 			switch {
 			case err != nil:
 				card.Status, card.err = aiCmdFailed, err.Error()
 			case timedOut:
-				card.Status = aiCmdTimedOut
+				// Its limit in the end, the user's extensions included.
+				card.Status, card.timeout = aiCmdTimedOut, int(deadline.limit()/time.Second)
 			default:
 				card.Status, card.Exit = aiCmdDone, &exit
 			}
@@ -295,9 +364,13 @@ func (a *App) aiFinish(run *aiRun, status string, failed bool) {
 }
 
 // aiRunCommand runs command on server, with no terminal and no input,
-// stopping it after aiCommandTimeout or when ctx ends. It returns its exit
-// code and its output, stdout and stderr together, cut to aiOutputLimit.
-func aiRunCommand(ctx context.Context, server *ssh.Client, command string) (exit int, output string, timedOut bool, err error) {
+// stopping it at deadline, which may move as it runs (aiCommandTimeout
+// from now when nil), or when ctx ends. It returns its exit code and its
+// output, stdout and stderr together, cut to aiOutputLimit.
+func aiRunCommand(ctx context.Context, server *ssh.Client, command string, deadline *aiDeadline) (exit int, output string, timedOut bool, err error) {
+	if deadline == nil {
+		deadline = newAIDeadline(time.Now(), aiCommandTimeout)
+	}
 	if server == nil {
 		return 0, "", false, errors.New("not connected")
 	}
@@ -308,22 +381,35 @@ func aiRunCommand(ctx context.Context, server *ssh.Client, command string) (exit
 	defer session.Close()
 	var out aiOutput
 	session.Stdout, session.Stderr = &out, &out
-	limit, cancel := context.WithTimeout(ctx, aiCommandTimeout)
-	defer cancel()
 	done := make(chan error, 1)
 	go func() { done <- session.Run(command) }()
-	select {
-	case err = <-done:
-	case <-limit.Done():
+	stop := func() {
 		// The server stops the command if it honors signals; closing the
 		// channel ends the wait either way.
 		_ = session.Signal(ssh.SIGKILL)
 		session.Close()
 		<-done
-		if ctx.Err() != nil {
+	}
+	// The deadline is looked at again as it passes, as the user may have
+	// put it off meanwhile.
+	timer := time.NewTimer(time.Until(deadline.when()))
+	defer timer.Stop()
+wait:
+	for {
+		select {
+		case err = <-done:
+			break wait
+		case <-ctx.Done():
+			stop()
 			return 0, out.String(), false, ctx.Err()
+		case <-timer.C:
+			if left := time.Until(deadline.when()); left > 0 {
+				timer.Reset(left)
+				continue
+			}
+			stop()
+			return 0, out.String(), true, nil
 		}
-		return 0, out.String(), true, nil
 	}
 	var exitErr *ssh.ExitError
 	switch {

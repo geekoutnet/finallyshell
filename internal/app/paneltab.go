@@ -45,6 +45,24 @@ func (a *App) connSession() *Session {
 	return s
 }
 
+// syncBottomTab gives each session's row its own tab of the bottom panel:
+// as another session shows, the one bottomTab was keeps it, and the new
+// one's comes back, or, the first time it shows, it keeps the tab the
+// user was on. A panel row has its own (panelTab).
+func (a *App) syncBottomTab() {
+	s := a.current()
+	if s == nil || s.isPanelTab() || s == a.bottomOwner {
+		return
+	}
+	if owner := a.bottomOwner; owner != nil {
+		owner.bottomTab, owner.bottomTabSet = a.bottomTab, true
+	}
+	if s.bottomTabSet {
+		a.bottomTab = s.bottomTab
+	}
+	a.bottomOwner = s
+}
+
 // shownBottomTab is the tab of the bottom panel the selected row shows:
 // a panel row's own, else the one of the sessions' rows.
 func (a *App) shownBottomTab() *int {

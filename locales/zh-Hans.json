@@ -2689,6 +2689,7 @@
   "desktopAIRunConfirm": "运行命令",
   "desktopAITargetChanged": "目标终端已切换或断开，未发送任何内容。",
   "desktopAIRunLogged": "经确认后向终端发送了 AI 建议的命令",
+  "allTabs": "全部标签",
   "updateCardTitle": "发现新版本 {version}",
   "updateCardCurrent": "当前版本 {version}",
   "updateCardRestart": "更新后自动重启",

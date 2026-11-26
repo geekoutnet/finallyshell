@@ -3,14 +3,12 @@ package app
 import "github.com/egoist/mygo/ui"
 
 // The session list's tree: dashed lines join a server's child rows (its
-// panel row and its desktop) to it, and a thin line separates one server
+// panel row and its desktop) to it, and a little room separates one server
 // from the next, so that the rows of each server read as one group.
 
 // sessionGuide is where a row of the session list is in its server's
 // group.
 type sessionGuide struct {
-	// first is the list's first row, with no line above it.
-	first bool
 	// children holds for a server with child rows below it.
 	children bool
 	// lastChild holds for the last child row of its server.
@@ -27,7 +25,7 @@ func (a *App) sessionGuideOf(i int) sessionGuide {
 	if s.isPanelTab() {
 		return sessionGuide{lastChild: next == nil || next.panelOf != s.panelOf}
 	}
-	return sessionGuide{first: i == 0, children: next != nil && next.panelOf == s}
+	return sessionGuide{children: next != nil && next.panelOf == s}
 }
 
 // treeX is where the tree's vertical line runs, under a server's status
@@ -50,13 +48,10 @@ func dashH(p *ui.Painter, x0, x1, y float32, color ui.Color) {
 	}
 }
 
-// drawServerGuide draws, on a server's row, the line that separates it
-// from the server above, and the start of the line down to its children.
+// drawServerGuide draws, on a server's row, the start of the line down to
+// its children.
 func drawServerGuide(row ui.Element, g sessionGuide) {
 	row.Draw(func(p *ui.Painter, r ui.Rect) {
-		if !g.first {
-			p.Fill(ui.Rect{X: r.X + 6, Y: r.Y - 2, W: r.W - 12, H: 1}, colors.line, 0)
-		}
 		if g.children {
 			dashV(p, r.X+treeX, r.Y+r.H/2+7, r.Y+r.H, treeColor())
 		}

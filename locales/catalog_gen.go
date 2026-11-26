@@ -27110,6 +27110,16 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// AllTabs says "All tabs"
+// in the language the app shows.
+func AllTabs() string { return In(i18n.Locale()).AllTabs() }
+
+// AllTabs says "All tabs"
+// in the language of msgs.
+func (msgs Messages) AllTabs() string {
+	return Catalog.Format(msgs.locale, "allTabs", nil)
+}
+
 // UpdateCardTitle says "Version {version} is available"
 // in the language the app shows.
 func UpdateCardTitle(version string) string { return In(i18n.Locale()).UpdateCardTitle(version) }

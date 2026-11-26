@@ -57,7 +57,7 @@ func TestMonitorOnRight(t *testing.T) {
 		t.Fatalf("side %q, saved %q", a.monitorSide, config.LoadSettings().MonitorSide)
 	}
 	left := winW - a.rightWidth
-	if r := find(t, tt, webIP); r.X < left || r.Y > 40 {
+	if r := find(t, tt, webIP); r.X < left || r.Y > 40+sessionTabsH {
 		t.Errorf("monitor at %+v; the column starts at %v", r, left)
 	}
 	// Full height: the disks, its last part, show near the top half.
@@ -138,7 +138,7 @@ func TestMonitorAndPanelOnRight(t *testing.T) {
 	cols0, rows0 := web.term().Size()
 	left := winW - a.rightWidth
 	ip, files := find(t, tt, webIP), find(t, tt, locales.TabFiles())
-	if ip.X < left || ip.Y > 40 {
+	if ip.X < left || ip.Y > 40+sessionTabsH {
 		t.Errorf("monitor at %+v", ip)
 	}
 	// The panel starts at rightMonitorPct of the height.
@@ -208,7 +208,7 @@ func TestMonitorAndPanelOnRight(t *testing.T) {
 	if r := find(t, tt, locales.ShowPanel()); r.X < left || r.Y < 780 {
 		t.Errorf("Show panel at %+v", r)
 	}
-	if r := find(t, tt, webIP); r.X < left || r.Y > 40 {
+	if r := find(t, tt, webIP); r.X < left || r.Y > 40+sessionTabsH {
 		t.Errorf("monitor at %+v", r)
 	}
 	if cols, rows := web.term().Size(); cols != cols0 || rows != rows0 {
@@ -234,7 +234,7 @@ func TestMonitorAndPanelOnRight(t *testing.T) {
 	// A panel row's panel has the monitor beside it, on its session.
 	a.openPanelTab(web, tabProcesses)
 	tt.Frame()
-	if r := find(t, tt, locales.BackToTerminal()); r.X > left || r.Y > 40 {
+	if r := find(t, tt, locales.BackToTerminal()); r.X > left || r.Y > 40+sessionTabsH {
 		t.Errorf("the panel row's tab row at %+v", r)
 	}
 	if r := find(t, tt, webIP); r.X < left {

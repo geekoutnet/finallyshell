@@ -20,6 +20,9 @@ import (
 // connected. With the left column folded away (sidebarHidden), the tabs
 // are the way between servers.
 
+// sessionTabsH is the height of the row of session tabs.
+const sessionTabsH = 34
+
 // sessionRoot is the server row s belongs to: s, or a panel row's session.
 func sessionRoot(s *Session) *Session {
 	if s.isPanelTab() {
@@ -104,7 +107,7 @@ func (a *App) sessionTabs(c *ui.Context) {
 		sessionRoot(cur).lastRow = cur
 	}
 	var closing *Session
-	ui.Row(c).FillWidth().Shrink(0).Height(34).AlignItems(ui.End).PaddingX(4).Gap(2).
+	ui.Row(c).FillWidth().Shrink(0).Height(sessionTabsH).AlignItems(ui.End).PaddingX(4).Gap(2).
 		Background(colors.sidebar).BorderWidth(0, 0, 1, 0).BorderColor(colors.frame).Children(func() {
 		icon, label := "chevrons-left", locales.HideSidebar()
 		if a.sidebarHidden {
@@ -196,7 +199,7 @@ func (a *App) sessionTab(c *ui.Context, s *Session, active bool) (closed bool) {
 		} else {
 			name.TextColor(theme.TextMuted)
 		}
-		close := widgets.IconButton(c, "x", locales.Close()).Size(18, 18)
+		close := widgets.IconButton(c, "x", locales.CloseSession()).Size(18, 18)
 		if !hovered && !active {
 			close.Invisible()
 		}

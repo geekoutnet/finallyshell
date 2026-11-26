@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	"finallyshell/locales"
+
 	"github.com/egoist/mygo/plugins/terminal"
 	"github.com/egoist/mygo/ui"
 )
@@ -253,6 +255,11 @@ func TestTerminalKeysReachShell(t *testing.T) {
 	tt.Key(closeTab.Mods, closeTab.Key) // the new tab
 	tt.Key(switchTab.Mods, ui.Key1)
 	tt.Key(closeTab.Mods, closeTab.Key)
+	// A connected session asks first.
+	tt.Frame()
+	if err := tt.Click(locales.CloseSessionConfirm()); err != nil {
+		t.Fatalf("closing a connected session did not ask: %v", err)
+	}
 	if len(a.sessions) != 1 || a.sessions[0] != other {
 		t.Errorf("close tab left %d sessions", len(a.sessions))
 	}

@@ -513,7 +513,7 @@ func TestDialHTTPProxy(t *testing.T) {
 		}
 	}()
 	host, port := splitAddr(t, ln.Addr().String())
-	_, err = dialHTTP(&config.ProxyConfig{Kind: config.ProxyHTTP, Addr: host, Port: port}, "", srv.addr, 200*time.Millisecond)
+	_, err = dialHTTP(&config.ProxyConfig{Kind: config.ProxyHTTP, Addr: host, Port: port}, "", srv.addr, 200*time.Millisecond, false)
 	var hop *HopError
 	if !errors.As(err, &hop) || Classify(hop.Err) != "timeout" {
 		t.Errorf("silent proxy: %v", err)

@@ -419,8 +419,8 @@ func (a *App) sessionMenuItems(c *ui.Context, m *ui.Menu, s *Session) {
 // tabModeMark marks a server's tab with what it shows, in the room of the
 // status dot it takes the place of, a few DIPs wider: an icon for the
 // terminal, the desktop or the panel row the tab is on (row), with the
-// connection's status as a dot on its lower corner, ringed in the tab's
-// color.
+// connection's status as a dot on its upper corner, as an app's badge,
+// where it covers none of the icon, ringed in the tab's color.
 func tabModeMark(c *ui.Context, s, row *Session, active bool) {
 	icon := tabModeIcon(s, row)
 	color := theme.Text.Alpha(0.62)
@@ -436,7 +436,7 @@ func tabModeMark(c *ui.Context, s, row *Session, active bool) {
 		ui.Icon(c, icons.Get(icon)).FontSize(12).TextColor(color)
 	}).DrawOver(func(p *ui.Painter, r ui.Rect) {
 		const d, w = 7, 1.5
-		x, y := r.X+r.W-d+1, r.Y+r.H-d+1
+		x, y := r.X+r.W-d+1, r.Y-1
 		p.Fill(ui.Rect{X: x - w, Y: y - w, W: d + 2*w, H: d + 2*w}, ring, d/2+w)
 		p.Fill(ui.Rect{X: x, Y: y, W: d, H: d}, status, d/2)
 	})

@@ -27110,6 +27110,350 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// UpdateCardTitle says "Version {version} is available"
+// in the language the app shows.
+func UpdateCardTitle(version string) string { return In(i18n.Locale()).UpdateCardTitle(version) }
+
+// UpdateCardTitle says "Version {version} is available"
+// in the language of msgs.
+func (msgs Messages) UpdateCardTitle(version string) string {
+	return Catalog.Format(msgs.locale, "updateCardTitle", map[string]any{"version": version})
+}
+
+// UpdateCardCurrent says "You have {version}"
+// in the language the app shows.
+func UpdateCardCurrent(version string) string { return In(i18n.Locale()).UpdateCardCurrent(version) }
+
+// UpdateCardCurrent says "You have {version}"
+// in the language of msgs.
+func (msgs Messages) UpdateCardCurrent(version string) string {
+	return Catalog.Format(msgs.locale, "updateCardCurrent", map[string]any{"version": version})
+}
+
+// UpdateCardRestart says "the app restarts to update"
+// in the language the app shows.
+func UpdateCardRestart() string { return In(i18n.Locale()).UpdateCardRestart() }
+
+// UpdateCardRestart says "the app restarts to update"
+// in the language of msgs.
+func (msgs Messages) UpdateCardRestart() string {
+	return Catalog.Format(msgs.locale, "updateCardRestart", nil)
+}
+
+// UpdateCardNotes says "What's new"
+// in the language the app shows.
+func UpdateCardNotes() string { return In(i18n.Locale()).UpdateCardNotes() }
+
+// UpdateCardNotes says "What's new"
+// in the language of msgs.
+func (msgs Messages) UpdateCardNotes() string {
+	return Catalog.Format(msgs.locale, "updateCardNotes", nil)
+}
+
+// UpdateCardLater says "Later"
+// in the language the app shows.
+func UpdateCardLater() string { return In(i18n.Locale()).UpdateCardLater() }
+
+// UpdateCardLater says "Later"
+// in the language of msgs.
+func (msgs Messages) UpdateCardLater() string {
+	return Catalog.Format(msgs.locale, "updateCardLater", nil)
+}
+
+// UpdateCardInstall says "Update now"
+// in the language the app shows.
+func UpdateCardInstall() string { return In(i18n.Locale()).UpdateCardInstall() }
+
+// UpdateCardInstall says "Update now"
+// in the language of msgs.
+func (msgs Messages) UpdateCardInstall() string {
+	return Catalog.Format(msgs.locale, "updateCardInstall", nil)
+}
+
+// UpdateCardRetry says "Try again"
+// in the language the app shows.
+func UpdateCardRetry() string { return In(i18n.Locale()).UpdateCardRetry() }
+
+// UpdateCardRetry says "Try again"
+// in the language of msgs.
+func (msgs Messages) UpdateCardRetry() string {
+	return Catalog.Format(msgs.locale, "updateCardRetry", nil)
+}
+
+// UpdateCardDownload says "Download"
+// in the language the app shows.
+func UpdateCardDownload() string { return In(i18n.Locale()).UpdateCardDownload() }
+
+// UpdateCardDownload says "Download"
+// in the language of msgs.
+func (msgs Messages) UpdateCardDownload() string {
+	return Catalog.Format(msgs.locale, "updateCardDownload", nil)
+}
+
+// DesktopInfoTitle says "Server details"
+// in the language the app shows.
+func DesktopInfoTitle() string { return In(i18n.Locale()).DesktopInfoTitle() }
+
+// DesktopInfoTitle says "Server details"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoTitle() string {
+	return Catalog.Format(msgs.locale, "desktopInfoTitle", nil)
+}
+
+// DesktopInfoHide says "Fold the server details"
+// in the language the app shows.
+func DesktopInfoHide() string { return In(i18n.Locale()).DesktopInfoHide() }
+
+// DesktopInfoHide says "Fold the server details"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoHide() string {
+	return Catalog.Format(msgs.locale, "desktopInfoHide", nil)
+}
+
+// DesktopInfoShow says "Show the server details"
+// in the language the app shows.
+func DesktopInfoShow() string { return In(i18n.Locale()).DesktopInfoShow() }
+
+// DesktopInfoShow says "Show the server details"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoShow() string {
+	return Catalog.Format(msgs.locale, "desktopInfoShow", nil)
+}
+
+// DesktopInfoReading says "Reading the server details…"
+// in the language the app shows.
+func DesktopInfoReading() string { return In(i18n.Locale()).DesktopInfoReading() }
+
+// DesktopInfoReading says "Reading the server details…"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoReading() string {
+	return Catalog.Format(msgs.locale, "desktopInfoReading", nil)
+}
+
+// DesktopInfoUnavailable says "The server details are not available."
+// in the language the app shows.
+func DesktopInfoUnavailable() string { return In(i18n.Locale()).DesktopInfoUnavailable() }
+
+// DesktopInfoUnavailable says "The server details are not available."
+// in the language of msgs.
+func (msgs Messages) DesktopInfoUnavailable() string {
+	return Catalog.Format(msgs.locale, "desktopInfoUnavailable", nil)
+}
+
+// DesktopInfoKernel says "Kernel"
+// in the language the app shows.
+func DesktopInfoKernel() string { return In(i18n.Locale()).DesktopInfoKernel() }
+
+// DesktopInfoKernel says "Kernel"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoKernel() string {
+	return Catalog.Format(msgs.locale, "desktopInfoKernel", nil)
+}
+
+// DesktopInfoCPU says "CPU"
+// in the language the app shows.
+func DesktopInfoCPU() string { return In(i18n.Locale()).DesktopInfoCPU() }
+
+// DesktopInfoCPU says "CPU"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoCPU() string {
+	return Catalog.Format(msgs.locale, "desktopInfoCPU", nil)
+}
+
+// DesktopInfoCores says "{cores} cores, {threads} threads"
+// in the language the app shows.
+func DesktopInfoCores(cores string, threads string) string {
+	return In(i18n.Locale()).DesktopInfoCores(cores, threads)
+}
+
+// DesktopInfoCores says "{cores} cores, {threads} threads"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoCores(cores string, threads string) string {
+	return Catalog.Format(msgs.locale, "desktopInfoCores", map[string]any{"cores": cores, "threads": threads})
+}
+
+// DesktopInfoThreads says "{threads} threads"
+// in the language the app shows.
+func DesktopInfoThreads(threads string) string { return In(i18n.Locale()).DesktopInfoThreads(threads) }
+
+// DesktopInfoThreads says "{threads} threads"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoThreads(threads string) string {
+	return Catalog.Format(msgs.locale, "desktopInfoThreads", map[string]any{"threads": threads})
+}
+
+// DesktopInfoMemory says "Memory"
+// in the language the app shows.
+func DesktopInfoMemory() string { return In(i18n.Locale()).DesktopInfoMemory() }
+
+// DesktopInfoMemory says "Memory"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoMemory() string {
+	return Catalog.Format(msgs.locale, "desktopInfoMemory", nil)
+}
+
+// DesktopInfoSwap says "Swap"
+// in the language the app shows.
+func DesktopInfoSwap() string { return In(i18n.Locale()).DesktopInfoSwap() }
+
+// DesktopInfoSwap says "Swap"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoSwap() string {
+	return Catalog.Format(msgs.locale, "desktopInfoSwap", nil)
+}
+
+// DesktopInfoDisks says "Disks"
+// in the language the app shows.
+func DesktopInfoDisks() string { return In(i18n.Locale()).DesktopInfoDisks() }
+
+// DesktopInfoDisks says "Disks"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoDisks() string {
+	return Catalog.Format(msgs.locale, "desktopInfoDisks", nil)
+}
+
+// DesktopInfoAddresses says "Addresses"
+// in the language the app shows.
+func DesktopInfoAddresses() string { return In(i18n.Locale()).DesktopInfoAddresses() }
+
+// DesktopInfoAddresses says "Addresses"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoAddresses() string {
+	return Catalog.Format(msgs.locale, "desktopInfoAddresses", nil)
+}
+
+// DesktopInfoUptime says "Uptime"
+// in the language the app shows.
+func DesktopInfoUptime() string { return In(i18n.Locale()).DesktopInfoUptime() }
+
+// DesktopInfoUptime says "Uptime"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoUptime() string {
+	return Catalog.Format(msgs.locale, "desktopInfoUptime", nil)
+}
+
+// DesktopInfoLoad says "Load"
+// in the language the app shows.
+func DesktopInfoLoad() string { return In(i18n.Locale()).DesktopInfoLoad() }
+
+// DesktopInfoLoad says "Load"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoLoad() string {
+	return Catalog.Format(msgs.locale, "desktopInfoLoad", nil)
+}
+
+// DesktopInfoRoot says "Disk /"
+// in the language the app shows.
+func DesktopInfoRoot() string { return In(i18n.Locale()).DesktopInfoRoot() }
+
+// DesktopInfoRoot says "Disk /"
+// in the language of msgs.
+func (msgs Messages) DesktopInfoRoot() string {
+	return Catalog.Format(msgs.locale, "desktopInfoRoot", nil)
+}
+
+// CloseSessionConfirm says "Close and disconnect"
+// in the language the app shows.
+func CloseSessionConfirm() string { return In(i18n.Locale()).CloseSessionConfirm() }
+
+// CloseSessionConfirm says "Close and disconnect"
+// in the language of msgs.
+func (msgs Messages) CloseSessionConfirm() string {
+	return Catalog.Format(msgs.locale, "closeSessionConfirm", nil)
+}
+
+// CloseSessionTitle says "Close “{name}”?"
+// in the language the app shows.
+func CloseSessionTitle(name string) string { return In(i18n.Locale()).CloseSessionTitle(name) }
+
+// CloseSessionTitle says "Close “{name}”?"
+// in the language of msgs.
+func (msgs Messages) CloseSessionTitle(name string) string {
+	return Catalog.Format(msgs.locale, "closeSessionTitle", map[string]any{"name": name})
+}
+
+// CloseSessionBody says "This ends the connection to the server and closes its desktop and panel; running transfers are cancelled."
+// in the language the app shows.
+func CloseSessionBody() string { return In(i18n.Locale()).CloseSessionBody() }
+
+// CloseSessionBody says "This ends the connection to the server and closes its desktop and panel; running transfers are cancelled."
+// in the language of msgs.
+func (msgs Messages) CloseSessionBody() string {
+	return Catalog.Format(msgs.locale, "closeSessionBody", nil)
+}
+
+// HideSidebar says "Hide the left column"
+// in the language the app shows.
+func HideSidebar() string { return In(i18n.Locale()).HideSidebar() }
+
+// HideSidebar says "Hide the left column"
+// in the language of msgs.
+func (msgs Messages) HideSidebar() string {
+	return Catalog.Format(msgs.locale, "hideSidebar", nil)
+}
+
+// ShowSidebar says "Show the left column"
+// in the language the app shows.
+func ShowSidebar() string { return In(i18n.Locale()).ShowSidebar() }
+
+// ShowSidebar says "Show the left column"
+// in the language of msgs.
+func (msgs Messages) ShowSidebar() string {
+	return Catalog.Format(msgs.locale, "showSidebar", nil)
+}
+
+// ScToggleSidebar says "Show or hide the left column"
+// in the language the app shows.
+func ScToggleSidebar() string { return In(i18n.Locale()).ScToggleSidebar() }
+
+// ScToggleSidebar says "Show or hide the left column"
+// in the language of msgs.
+func (msgs Messages) ScToggleSidebar() string {
+	return Catalog.Format(msgs.locale, "scToggleSidebar", nil)
+}
+
+// DesktopAIDeleteChat says "Delete conversation"
+// in the language the app shows.
+func DesktopAIDeleteChat() string { return In(i18n.Locale()).DesktopAIDeleteChat() }
+
+// DesktopAIDeleteChat says "Delete conversation"
+// in the language of msgs.
+func (msgs Messages) DesktopAIDeleteChat() string {
+	return Catalog.Format(msgs.locale, "desktopAIDeleteChat", nil)
+}
+
+// DesktopAIDeleteChatTitle says "Delete this conversation?"
+// in the language the app shows.
+func DesktopAIDeleteChatTitle() string { return In(i18n.Locale()).DesktopAIDeleteChatTitle() }
+
+// DesktopAIDeleteChatTitle says "Delete this conversation?"
+// in the language of msgs.
+func (msgs Messages) DesktopAIDeleteChatTitle() string {
+	return Catalog.Format(msgs.locale, "desktopAIDeleteChatTitle", nil)
+}
+
+// DesktopAIDeleteChatBody says "“{title}” is removed from this computer for good."
+// in the language the app shows.
+func DesktopAIDeleteChatBody(title string) string {
+	return In(i18n.Locale()).DesktopAIDeleteChatBody(title)
+}
+
+// DesktopAIDeleteChatBody says "“{title}” is removed from this computer for good."
+// in the language of msgs.
+func (msgs Messages) DesktopAIDeleteChatBody(title string) string {
+	return Catalog.Format(msgs.locale, "desktopAIDeleteChatBody", map[string]any{"title": title})
+}
+
+// DesktopAIResizeInput says "Drag to resize; double-click to reset"
+// in the language the app shows.
+func DesktopAIResizeInput() string { return In(i18n.Locale()).DesktopAIResizeInput() }
+
+// DesktopAIResizeInput says "Drag to resize; double-click to reset"
+// in the language of msgs.
+func (msgs Messages) DesktopAIResizeInput() string {
+	return Catalog.Format(msgs.locale, "desktopAIResizeInput", nil)
+}
+
 // DesktopAINoTools says "This model does not take tools, so the assistant answers with advice only and cannot run commands."
 // in the language the app shows.
 func DesktopAINoTools() string { return In(i18n.Locale()).DesktopAINoTools() }

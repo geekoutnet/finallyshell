@@ -473,6 +473,13 @@ func TestNewTabRows(t *testing.T) {
 	a.active = 0
 	tt.Key(closeTab.Mods, closeTab.Key)
 	tt.Frame()
+	// A connected session asks first.
+	if a.closeAsk != nil {
+		if err := tt.Click(locales.CloseSessionConfirm()); err != nil {
+			t.Fatal(err)
+		}
+		tt.Frame()
+	}
 	if len(a.sessions) != 0 {
 		t.Fatalf("%d rows left", len(a.sessions))
 	}

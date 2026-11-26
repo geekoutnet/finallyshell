@@ -43,6 +43,13 @@ func aiStatus(c *ui.Context, text string, failed bool) {
 // conversations beside the chat.
 const desktopAISidebarMin = 620
 
+// aiInputMinH and aiInputMaxH bound the height the user drags the
+// question's field to.
+const (
+	aiInputMinH = 40
+	aiInputMaxH = 420
+)
+
 func (a *App) desktopAIView(c *ui.Context, window *desktopWindow) {
 	if window.state == nil {
 		a.desktopAIOpened(window, nil)
@@ -89,6 +96,27 @@ func (a *App) desktopAIView(c *ui.Context, window *desktopWindow) {
 	})
 	if state.confirm != nil {
 		a.desktopAIConfirmView(c, window, state)
+	}
+	if chat := state.deleting; chat != nil {
+		open := true
+		ui.Modal(c, &open, func() {
+			ui.Column(c).Width(400).MaxWidthPercent(90).Gap(10).Children(func() {
+				ui.Text(c, locales.DesktopAIDeleteChatTitle()).FontSize(16).Bold()
+				widgets.Muted(c, locales.DesktopAIDeleteChatBody(chat.Title)).MaxWidthPercent(100)
+				ui.Row(c).Gap(7).Justify(ui.End).Children(func() {
+					if ui.Button(c, locales.Cancel()).Clicked() {
+						open = false
+					}
+					if ui.PrimaryButton(c, locales.Delete()).Clicked() {
+						a.desktopAIDelete(window.session, state, chat)
+						open = false
+					}
+				})
+			})
+		})
+		if !open {
+			state.deleting = nil
+		}
 	}
 }
 
@@ -190,20 +218,36 @@ func (a *App) desktopAISidebar(c *ui.Context, window *desktopWindow, state *desk
 				}
 				for index, chat := range chats {
 					selected := state.chat == chat
-					row := ui.Row(c.Key(index)).Gap(6).Padding(6, 8).Radius(6).FillWidth().AlignItems(ui.Center).
+					row := ui.Row(c.Key(index)).Gap(6).Padding(4, 4, 4, 8).Radius(6).FillWidth().AlignItems(ui.Center).MinHeight(28).
 						Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(chat.Title).Tooltip(chat.Title).Disabled(busy && !selected)
+					hovered := row.Hovered()
 					switch {
 					case selected:
 						row.Background(theme.Accent.Alpha(0.16))
-					case row.Hovered():
+					case hovered:
 						row.Background(theme.Text.Alpha(0.06))
 					}
+					deletable := !(busy && selected)
+					row.ContextMenu(func(m *ui.Menu) {
+						if m.Item(locales.DesktopAIDeleteChat()).Danger().Disabled(!deletable).Chosen() {
+							state.deleting = chat
+						}
+					})
 					if row.Clicked() && !selected && !busy {
 						a.desktopAISelect(window.session, state, chat)
 					}
 					row.Children(func() {
 						ui.Icon(c, icons.Get("message-square")).FontSize(12).TextColor(theme.TextMuted).Shrink(0)
-						ui.Text(c, chat.Title).FontSize(12).SingleLine().MinWidth(0).Shrink(1)
+						ui.Text(c, chat.Title).FontSize(12).SingleLine().MinWidth(0).Grow(1).Shrink(1)
+						// Always there, to keep the titles from moving, and shown
+						// over the row the pointer is on.
+						del := widgets.IconButton(c.Key("delete"), "trash-2", locales.DesktopAIDeleteChat()).Disabled(!deletable)
+						if !hovered && !selected {
+							del.Opacity(0)
+						}
+						if del.Clicked() && deletable {
+							state.deleting = chat
+						}
 					})
 				}
 			})
@@ -457,7 +501,11 @@ func (a *App) desktopAIComposer(c *ui.Context, window *desktopWindow, state *des
 		if state.attach && !busy {
 			desktopAIContextChip(c, state)
 		}
-		ui.TextArea(c, &state.draft).Lines(2, 8).FillWidth().MinWidth(0).Label(locales.DesktopAIQuestion()).
+		// The bar above the question: dragging it makes the field taller or
+		// shorter, a double click lets it grow with its text again.
+		grip := ui.Box(c.Key("input-grip")).FillWidth().Height(8).Margin(-4, 0, -2, 0).Cursor(ui.CursorResizeNS).
+			Role(ui.RoleSplitter).Label(locales.DesktopAIResizeInput()).Tooltip(locales.DesktopAIResizeInput())
+		input := ui.TextArea(c, &state.draft).FillWidth().MinWidth(0).Label(locales.DesktopAIQuestion()).
 			Placeholder(locales.DesktopAIComposerHint()).Disabled(busy).OnTextKey(func(k ui.TextKey) bool {
 			if k.Key != ui.KeyEnter || k.Mods != 0 {
 				return false // Shift+Enter breaks the line
@@ -466,6 +514,27 @@ func (a *App) desktopAIComposer(c *ui.Context, window *desktopWindow, state *des
 				state.submit = true
 			}
 			return true
+		})
+		if state.inputH > 0 {
+			input.Height(state.inputH)
+		} else {
+			input.Lines(2, 8)
+		}
+		if grip.DoubleClicked() {
+			state.inputH = 0
+		} else if _, dy, held := grip.Dragged(); held && dy != 0 {
+			h := state.inputH
+			if h <= 0 {
+				h = input.Bounds().H
+			}
+			state.inputH = desktopClamp(h-dy, aiInputMinH, aiInputMaxH)
+		}
+		grip.Draw(func(p *ui.Painter, r ui.Rect) {
+			color := theme.Border
+			if grip.Hovered() || grip.Pressed() {
+				color = theme.Accent
+			}
+			p.Fill(ui.Rect{X: r.X + r.W/2 - 16, Y: r.Y + r.H/2 - 1, W: 32, H: 2}, color, 1)
 		})
 		ui.Row(c).Gap(5).Wrap().AlignItems(ui.Center).Children(func() {
 			if ui.Checkbox(c, &state.attach, locales.DesktopAIAttach()).Disabled(busy).Changed() {

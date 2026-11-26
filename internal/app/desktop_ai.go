@@ -79,6 +79,12 @@ type desktopAIState struct {
 	sidebar, showContext bool
 	// submit sends the draft in the next frame, as Enter asks.
 	submit bool
+	// deleting is the conversation the user asked to delete, while the
+	// window asks first.
+	deleting *desktopAIChat
+	// inputH is the height the user dragged the question's field to, 0
+	// for one that grows with its text.
+	inputH float32
 }
 
 type desktopAISelection struct {
@@ -190,6 +196,20 @@ func aiHost(session *Session) string {
 		return session.Host.ID
 	}
 	return ""
+}
+
+// desktopAIDelete removes chat from the conversations kept on this
+// computer, starting a new one in state where it was shown. A
+// conversation answering a question is not deleted.
+func (a *App) desktopAIDelete(session *Session, state *desktopAIState, chat *desktopAIChat) {
+	if chat == nil || state.cancel != nil && state.chat == chat {
+		return
+	}
+	a.ai.chats = slices.DeleteFunc(a.ai.chats, func(candidate *desktopAIChat) bool { return candidate == chat })
+	if state.chat == chat {
+		a.desktopAISelect(session, state, nil)
+	}
+	a.aiSaveChats()
 }
 
 func (a *App) desktopAIChats(session *Session) []*desktopAIChat {

@@ -46,6 +46,8 @@ func (a *App) dialogs(c *ui.Context) {
 	a.rdpErrorView(c)
 	// A container's details, from the Overview tab (docker_dialog.go).
 	a.containerDialogView(c)
+	// Closing a connected server (sessiontabs.go).
+	a.closeAskView(c)
 }
 
 func (a *App) passwordView(c *ui.Context) {

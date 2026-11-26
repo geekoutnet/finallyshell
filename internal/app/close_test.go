@@ -121,6 +121,14 @@ func TestCloseSessionKeepsOneSelected(t *testing.T) {
 				gone := a.sessions[k.close]
 				closeWith[how](t, a, tt, k.close)
 				tt.Frame()
+				// A connected server asks first, however it is closed.
+				if a.closeAsk != gone {
+					t.Fatalf("closing connected %s did not ask", gone.label())
+				}
+				if err := tt.Click(locales.CloseSessionConfirm()); err != nil {
+					t.Fatal(err)
+				}
+				tt.Frame()
 				if len(a.sessions) != 2 || slices.Contains(a.sessions, gone) {
 					t.Fatalf("%s not closed: %d sessions", gone.label(), len(a.sessions))
 				}

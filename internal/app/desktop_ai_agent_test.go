@@ -376,3 +376,75 @@ func TestDesktopAIAgentWithoutTools(t *testing.T) {
 		t.Fatal("the window does not say why the assistant cannot run commands")
 	}
 }
+
+// TestDesktopAIDeleteAndResize deletes a conversation from the sidebar,
+// after asking, and drags the question's field taller and back.
+func TestDesktopAIDeleteAndResize(t *testing.T) {
+	at := newAIAgentTest(t, func(string) string { return aiTextEvent("ok") })
+	at.ask("first question")
+	at.platform.until(t, "first answer", func() bool { return at.state.cancel == nil })
+	at.a.desktopAISelect(at.session, at.state, nil)
+	at.ask("second question")
+	at.platform.until(t, "second answer", func() bool { return at.state.cancel == nil })
+	second := at.state.chat
+	tt := at.platform.tt
+	tt.Frame()
+	if len(at.a.ai.chats) != 2 {
+		t.Fatalf("%d chats", len(at.a.ai.chats))
+	}
+	// The open conversation's delete button, then the question.
+	if err := tt.Click(locales.DesktopAIDeleteChat()); err != nil {
+		t.Fatalf("delete: %v; %q", err, tt.Texts())
+	}
+	tt.Frame()
+	if at.state.deleting == nil || !tt.HasText(locales.DesktopAIDeleteChatTitle()) {
+		t.Fatal("deleting did not ask first")
+	}
+	deleting := at.state.deleting
+	if err := tt.Click(locales.Delete()); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if slices.Contains(at.a.ai.chats, deleting) || len(at.a.ai.chats) != 1 {
+		t.Fatalf("chats after deleting: %d", len(at.a.ai.chats))
+	}
+	if deleting == second && at.state.chat != nil {
+		t.Fatal("the deleted conversation is still shown")
+	}
+	at.platform.until(t, "history saved", at.a.ai.disk.idle)
+	saved, err := readAIChats(filepath.Join(config.Dir(), "chats.json"))
+	if err != nil || len(saved) != 1 {
+		t.Fatalf("saved %d chats: %v", len(saved), err)
+	}
+	// A conversation answering is not deleted.
+	at.state.cancel = func() {}
+	at.state.chat = at.a.ai.chats[0]
+	at.a.desktopAIDelete(at.session, at.state, at.state.chat)
+	if len(at.a.ai.chats) != 1 {
+		t.Fatal("deleted a conversation while it answers")
+	}
+	at.state.cancel = nil
+	// Dragging the bar above the field up makes it taller.
+	grip, ok := tt.Find(locales.DesktopAIResizeInput())
+	if !ok {
+		t.Fatalf("no resize bar: %q", tt.Texts())
+	}
+	x, y := grip.X+grip.W/2, grip.Y+grip.H/2
+	tt.Press(x, y)
+	tt.Move(x, y-60)
+	tt.Release(x, y-60)
+	tt.Frame()
+	if at.state.inputH < 90 {
+		t.Fatalf("input height %v after dragging up 60", at.state.inputH)
+	}
+	tt.Move(x, y-60)
+	tt.Frame()
+	grip, _ = tt.Find(locales.DesktopAIResizeInput())
+	x, y = grip.X+grip.W/2, grip.Y+grip.H/2
+	tt.ClickAt(x, y)
+	tt.ClickAt(x, y)
+	tt.Frame()
+	if at.state.inputH != 0 {
+		t.Fatalf("a double click left the height at %v", at.state.inputH)
+	}
+}

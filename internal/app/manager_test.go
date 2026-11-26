@@ -180,24 +180,42 @@ func TestManagerWindow(t *testing.T) {
 
 // With nothing to list, the manager opens the editor for a new host, modal
 // to it; with a new host saved in a folder chosen, it goes in the folder.
-// The manager opens with every folder closed, each time it opens.
-func TestManagerOpensCollapsed(t *testing.T) {
+// The manager opens with every folder closed the first time, then with
+// the folders open as the user left them, after a restart too.
+func TestManagerRemembersOpenFolders(t *testing.T) {
 	a, p := testApp(t)
 	managerHosts(a)
 	a.openManager()
 	tt := p.show(t, WindowManager)
 	tt.Frame()
-	want := []string{"Production", "Lab", "vps"}
-	if got := shown(a); !slices.Equal(got, want) {
+	collapsed := []string{"Production", "Lab", "vps"}
+	if got := shown(a); !slices.Equal(got, collapsed) {
 		t.Fatalf("first open: %q", got)
 	}
 	expandManager(a)
 	tt.Frame()
+	expanded := shown(a)
+	if slices.Equal(expanded, collapsed) {
+		t.Fatal("expanding showed nothing more")
+	}
 	a.closeWindow(WindowManager)
 	a.openManager()
 	p.show(t, WindowManager).Frame()
-	if got := shown(a); !slices.Equal(got, want) {
-		t.Errorf("reopened: %q", got)
+	if got := shown(a); !slices.Equal(got, expanded) {
+		t.Errorf("reopened: %q, want %q", got, expanded)
+	}
+	// The open folders are in settings.json, which the next start reads.
+	saved := config.LoadSettings().ManagerTreeExpanded
+	if saved == nil || len(*saved) != len(a.hosts.Folders) {
+		t.Fatalf("saved %v", saved)
+	}
+	// Closed again, they are saved closed.
+	for _, f := range a.hosts.Folders {
+		a.manager.tree.Open.Remove(managerItem{folder: f.ID})
+	}
+	p.show(t, WindowManager).Frame()
+	if saved := config.LoadSettings().ManagerTreeExpanded; saved == nil || len(*saved) != 0 {
+		t.Fatalf("saved after closing them %v", saved)
 	}
 }
 

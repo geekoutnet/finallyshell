@@ -59,8 +59,11 @@ func dividers(a *App, tt *ui.Tester) []divider {
 		},
 		{
 			name: "terminal", size: &a.terminalPct, vertical: true, percent: true, limits: terminalLimits,
-			at:   func() (float32, float32) { return mainX() + mainW()/2, a.terminalPct/100*(h-1) + 0.5 },
-			room: func() float32 { return h - 1 },
+			// Under the session tabs, which take the top of the main area.
+			at: func() (float32, float32) {
+				return mainX() + mainW()/2, sessionTabsH + a.terminalPct/100*(h-sessionTabsH-1) + 0.5
+			},
+			room: func() float32 { return h - sessionTabsH - 1 },
 		},
 		{
 			name: "tree", size: &a.treeWidth, limits: treeLimits,

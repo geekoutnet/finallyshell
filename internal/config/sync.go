@@ -126,7 +126,7 @@ var (
 		"sidebarWidth", "monitorPercent", "terminalPercent", "treeWidth",
 		"procListPercent", "procFieldsPercent", "netListPercent",
 		"monitorHidden", // what this device's monitor shows, as the pane sizes
-		"bottomPanelHidden", "bottomPanelSide", "rightPanelWidth",
+		"bottomPanelHidden", "sidebarHidden", "bottomPanelSide", "rightPanelWidth",
 		"monitorSide", "rightMonitorPercent",
 		// The command editor's layout and options, with its text in a
 		// file of this device's own.
@@ -149,7 +149,7 @@ var (
 		"geoLocations", "geoLocationsV6", "geoOnline",
 		// The left panel's page and the folders open in its tree are
 		// where this device's window was left, as the pane sizes.
-		"leftPanelPage", "connectionTreeExpanded",
+		"leftPanelPage", "connectionTreeExpanded", "managerTreeExpanded",
 	}
 )
 

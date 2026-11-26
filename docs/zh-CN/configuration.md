@@ -16,7 +16,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 - [命令历史](#命令历史)
 - [quickcommands.json](#quickcommandsjson)
 - [commandeditor.txt](#commandeditortxt)
-- [updater.json](#updaterjson)
+- [update-check.json](#update-checkjson)
 - [mygo.json 里的 updates](#mygojson-里的-updates)
 - [密码存在哪里](#密码存在哪里)
 - [SSH 密钥存在哪里](#ssh-密钥存在哪里)
@@ -204,6 +204,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `procListPercent`、`procFieldsPercent` | “进程”页里进程列表（在详情上方）所占的比例，和详情里字段（在环境变量旁边）所占的比例，单位是百分比。 | 程序的默认值。 |
 | `netListPercent` | “网络”页里表格（在连接和路由追踪标签上方）所占的比例，单位是百分比。 | 程序的默认值。 |
 | `bottomPanelHidden` | `true` 把终端下方的底部面板收起，只留一行标签；面板在右边时隐藏右边那一栏。 | 展开。 |
+| `sidebarHidden` | `true` 收起整个左侧栏（服务器监控和会话列表）。 | 显示。 |
 | `bottomPanelSide` | `right` 把底部面板放到终端右边的一栏。 | `""`，在终端下方。 |
 | `rightPanelWidth` | 终端右边那一栏的宽度，单位 DIP，最后一次拖动的结果。 | 程序的默认值（460）。 |
 | `monitorSide` | `right` 把服务器监控放到终端右边那一栏的上部，会话列表占满左边一栏。 | `""`，在左上。 |
@@ -215,6 +216,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `commandEditorClear` | `true` 打开命令编辑器的“发送后清空”。 | 关闭。 |
 | `leftPanelPage` | `connections` 在左下面板显示“连接”页。 | 会话标签。 |
 | `connectionTreeExpanded` | “连接”页里展开的文件夹的 ID，如 `["f1730000000000000000"]`；`[]` 表示全部收起。按 ID 记，文件夹改名或移动后仍保持展开。 | 全部展开。 |
+| `managerTreeExpanded` | 连接管理器上次离开时展开的文件夹的 ID，格式同 `connectionTreeExpanded`。 | 全部折叠。 |
 | `sync` | “同步”页的设置（见[同步](#同步)）。 | 不同步。 |
 
 每个选项的详细说明在 [features.md](features.md)：见[常规](features.md#常规)、[传输](features.md#传输)、[终端](features.md#terminal-defaults)、[终端 › 鼠标](features.md#终端--鼠标)、[终端 › 快捷键](features.md#终端--快捷键)、[终端 › 命令输入框](features.md#终端--命令输入框)、[网络监控](features.md#网络监控)、[外观](features.md#外观字体配色背景图片)、[文件图标主题](features.md#文件图标主题)、[连接管理器](features.md#连接管理器)、[“连接”页](features.md#连接页)、[命令编辑器](features.md#命令编辑器)和[布局和分隔条](features.md#布局和分隔条)。
@@ -245,7 +247,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 
 `desktop` 留在本机。`wallpaper` 为空时用默认壁纸，`builtin:<id>` 表示内置壁纸，
 `color:#rrggbb` 表示纯色，也可以是复制到配置目录中的 `desktop-wallpaper-*` 图片的
-文件名。`singleClick`、`stackWindows`、`coverDock`、`iconSize`（`small`、空值对应中等，
+文件名。`singleClick`、`stackWindows`、`coverDock`、`hideServerInfo`（收起桌面右侧的服务器信息）、`iconSize`（`small`、空值对应中等，
 或 `large`）和 `pinned` 控制桌面行为。省略 `pinned` 使用默认应用，空数组不保留可选固定项。
 
 `desktop.hosts` 按主机 ID 存储。`iconsConfigured` 标记图标列表已自定义，包括有意清空的
@@ -299,7 +301,7 @@ Caddy 页不添加主机或应用设置。它使用远程服务器上检测到�
 | `historyAllDays`、`historyDailyDays`、`historyWeeklyWeeks`、`historyMax` | WebDAV 和 S3 的版本保留时间与目标上限。 | 7 天、30 天、26 周、200 份。 |
 | `localBackupCount`、`localBackupDays` | 本机备份的数量和保存天数上限。 | 50 份、90 天。 |
 
-`settings.json` 的每个键要么同步，要么留在各自的电脑上，两个列表是 `internal/config/sync.go` 里的 `syncedSettings` 和 `localSettings`。留在本机的有：`sidebarWidth`、`monitorPercent`、`terminalPercent`、`treeWidth`、`procListPercent`、`procFieldsPercent`、`netListPercent`、`monitorHidden`、`bottomPanelHidden`、`bottomPanelSide`、`rightPanelWidth`、`monitorSide`、`rightMonitorPercent`、`commandEditorShown`、`commandEditorWidth`、`commandEditorPercent`、`commandEditorNoEnter`、`commandEditorClear`、`termBackground`、`localShell`、`sshAgent`、`x11Display`、`downloadDir`、`askDownloadDir`、`sync`、`geoLocations`、`geoLocationsV6`、`geoOnline`、`leftPanelPage` 和 `connectionTreeExpanded`（左侧面板显示哪一页、展开了哪些文件夹，是这台电脑上窗口留下的样子，和窗格大小一样），以及从 VSIX 安装或在编辑器扩展里找到的 `fileIconTheme`。
+`settings.json` 的每个键要么同步，要么留在各自的电脑上，两个列表是 `internal/config/sync.go` 里的 `syncedSettings` 和 `localSettings`。留在本机的有：`sidebarWidth`、`monitorPercent`、`terminalPercent`、`treeWidth`、`procListPercent`、`procFieldsPercent`、`netListPercent`、`monitorHidden`、`bottomPanelHidden`、`sidebarHidden`、`bottomPanelSide`、`rightPanelWidth`、`monitorSide`、`rightMonitorPercent`、`commandEditorShown`、`commandEditorWidth`、`commandEditorPercent`、`commandEditorNoEnter`、`commandEditorClear`、`termBackground`、`localShell`、`sshAgent`、`x11Display`、`downloadDir`、`askDownloadDir`、`sync`、`geoLocations`、`geoLocationsV6`、`geoOnline`、`leftPanelPage`、`connectionTreeExpanded` 和 `managerTreeExpanded`（左侧面板显示哪一页、展开了哪些文件夹，是这台电脑上窗口留下的样子，和窗格大小一样），以及从 VSIX 安装或在编辑器扩展里找到的 `fileIconTheme`。
 
 同步和备份数据与 `hosts.json` 放在一起：
 
@@ -345,15 +347,13 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 
 命令页里[命令编辑器](features.md#命令编辑器)的文本，原样保存，UTF-8 编码，换行是 `\n`：所有会话共用，不参与同步。停止输入一秒后、以及退出应用时写入，先写临时文件再改名替换；文件不存在时编辑器为空。如果文件读不出来，编辑器里会提示，并且在程序重新启动前不会写入它。
 
-## updater.json
+## update-check.json
 
-更新窗口的选择（见[更新](features.md#更新)）由 MyGo 的 updater 插件保存在 `updater.json`，它在应用的用户数据文件夹，不在上面的配置目录：macOS 上是 `~/Library/Application Support/Finallyshell`（macOS 默认的文件系统不分大小写，所以和配置目录是同一个），Windows 上是 `%APPDATA%\Finallyshell`，Linux 上是 `$XDG_CONFIG_HOME/Finallyshell` 或 `~/.config/Finallyshell`。`FINALLYSHELL_DIR` 不影响它。
+更新检查的状态（见[更新](features.md#更新)）保存在配置目录的 `update-check.json`，只在这台电脑上，不同步。
 
 | 键 | 含义 | 默认（没有这个键时） |
 |---|---|---|
-| `automaticChecks` | `false` 时关掉后台检查（“自动检查更新”）。 | 开。 |
-| `automaticDownloads` | `true` 时后台检查到的更新不问直接安装，下次启动时运行。 | 先问。 |
-| `skippedVersion` | 用户跳过的版本，后台检查不再提示它。 | 没有。 |
+| `automatic` | `false` 时关掉后台检查（“自动检查更新”）。 | 开。 |
 | `lastCheck` | 上次检查成功的时间。 | 从没检查过。 |
 
 文件损坏时当作没有这个文件。
@@ -371,6 +371,8 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 
 - `publicKey` 是给更新签名的密钥的公钥。已安装的副本只接受用对应私钥签名的更新，私钥是仓库的 secret `MYGO_UPDATER_PRIVATE_KEY`，从不放进仓库（见[给更新签名](development.md#给更新签名)）。
 - `github` 是仓库，应用从它最新的发布读取更新清单。
+
+本项目的构建没有签名，不使用 MyGo 的签名更新，这一段在这些构建里不起作用；它们怎样更新见[更新](features.md#更新)。
 
 ## 密码存在哪里
 

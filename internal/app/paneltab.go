@@ -155,8 +155,9 @@ func listLabel(s *Session) string {
 // panelRow is the row of the panel row p in the session list: indented
 // under its session's, one line with its tab's icon and name. It reports
 // whether the user closed it.
-func (a *App) panelRow(c *ui.Context, p *Session, active bool) (closed bool) {
+func (a *App) panelRow(c *ui.Context, p *Session, active bool, guide sessionGuide) (closed bool) {
 	row := ui.Row(c).Gap(8).Padding(5, 4, 5, 8+panelIndent).Radius(5).AlignItems(ui.Center).Tooltip(panelLabel(p))
+	drawChildGuide(row, guide)
 	hovered := row.Hovered()
 	row.ContextMenu(func(m *ui.Menu) {
 		if m.Item(locales.BackToTerminal()).Chosen() {

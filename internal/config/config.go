@@ -60,6 +60,9 @@ type Settings struct {
 	// BottomPanelHidden collapses the bottom panel under the terminal to
 	// its row of tabs, as the user left it.
 	BottomPanelHidden bool `json:"bottomPanelHidden,omitempty"`
+	// SidebarHidden folds the left column, the server monitor over the
+	// session list, away, as the user left it.
+	SidebarHidden bool `json:"sidebarHidden,omitempty"`
 	// BottomPanelSide is where the bottom panel is: "" under the
 	// terminal, PanelRight in a column on the terminal's right.
 	BottomPanelSide string `json:"bottomPanelSide,omitempty"`
@@ -229,6 +232,11 @@ type Settings struct {
 	// an empty list none. A pointer keeps Settings comparable; it is
 	// replaced, never changed through.
 	ConnectionTreeExpanded *[]string `json:"connectionTreeExpanded,omitempty"`
+	// ManagerTreeExpanded are the IDs of the folders open in the
+	// connection manager's tree as the user left them, which it opens
+	// with again: nil, before the user opened or closed any, opens none.
+	// A pointer, as ConnectionTreeExpanded.
+	ManagerTreeExpanded *[]string `json:"managerTreeExpanded,omitempty"`
 
 	// FileIconTheme is the file panel's icon theme, as package fileicons
 	// names it: "" for Material Icon Theme, "minimal" for the app's own

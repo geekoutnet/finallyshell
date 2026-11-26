@@ -426,7 +426,7 @@ func TestDesktopAIDeleteAndResize(t *testing.T) {
 	// A conversation answering is not deleted.
 	at.state.cancel = func() {}
 	at.state.chat = at.a.ai.chats[0]
-	at.a.desktopAIDelete(at.session, at.state, at.state.chat)
+	at.a.desktopAIDelete(at.window, at.state.chat)
 	if len(at.a.ai.chats) != 1 {
 		t.Fatal("deleted a conversation while it answers")
 	}
@@ -535,5 +535,69 @@ func TestDesktopAIMessageActions(t *testing.T) {
 	idle("retried answer")
 	if got := texts(); !slices.Equal(got, []string{"user:memory usage?", "assistant:edited answer", "user:load?", "assistant:retried answer"}) {
 		t.Fatalf("after retrying: %q", got)
+	}
+}
+
+// TestDesktopAIParallelChats answers in a new conversation while another
+// still answers behind it, deletes an old one meanwhile, and finds the
+// first answered where it was.
+func TestDesktopAIParallelChats(t *testing.T) {
+	release := make(chan struct{})
+	at := newAIAgentTest(t, func(body string) string {
+		if strings.Contains(body, "slow question") {
+			<-release
+			return aiTextEvent("slow answer")
+		}
+		return aiTextEvent("quick answer")
+	})
+	defer func() {
+		select {
+		case <-release:
+		default:
+			close(release)
+		}
+	}()
+	tt := at.platform.tt
+	at.ask("old question")
+	at.platform.until(t, "old answer", func() bool { return at.state.cancel == nil })
+	old := at.state.chat
+	at.a.desktopAIOpenChat(at.window, nil)
+	at.ask("slow question")
+	slow := at.state
+	at.platform.until(t, "slow chat started", func() bool { return slow.chat != nil })
+	tt.Frame()
+	// New chat while it answers: the slow one goes on behind.
+	if err := tt.Click(locales.DesktopAINew()); err != nil {
+		t.Fatalf("new chat while answering: %v", err)
+	}
+	tt.Frame()
+	quick := at.window.state.(*desktopAIState)
+	if quick == slow || slow.cancel == nil {
+		t.Fatal("a new conversation stopped the one answering")
+	}
+	at.state = quick
+	at.ask("quick question")
+	at.platform.until(t, "quick answer", func() bool { return quick.cancel == nil })
+	tt.Frame()
+	if !tt.HasText("quick answer") || len(at.a.aiConvs(at.window)) != 2 {
+		t.Fatalf("conversations %d; %q", len(at.a.aiConvs(at.window)), tt.Texts())
+	}
+	saveShot(t, tt, "ai-parallel-chats.png")
+	// The history is not locked: an old conversation deletes, the one
+	// answering does not.
+	at.a.desktopAIDelete(at.window, slow.chat)
+	if !slices.Contains(at.a.ai.chats, slow.chat) {
+		t.Fatal("deleted the conversation answering")
+	}
+	at.a.desktopAIDelete(at.window, old)
+	if slices.Contains(at.a.ai.chats, old) {
+		t.Fatal("the old conversation did not delete while another answered")
+	}
+	close(release)
+	at.platform.until(t, "slow answer", func() bool { return slow.cancel == nil })
+	at.a.desktopAIOpenChat(at.window, slow.chat)
+	tt.Frame()
+	if at.window.state != slow || !tt.HasText("slow answer") {
+		t.Fatalf("the slow conversation did not show its answer: %q", tt.Texts())
 	}
 }

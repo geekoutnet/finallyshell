@@ -27110,6 +27110,26 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// DesktopAIChatRunning says "Answering"
+// in the language the app shows.
+func DesktopAIChatRunning() string { return In(i18n.Locale()).DesktopAIChatRunning() }
+
+// DesktopAIChatRunning says "Answering"
+// in the language of msgs.
+func (msgs Messages) DesktopAIChatRunning() string {
+	return Catalog.Format(msgs.locale, "desktopAIChatRunning", nil)
+}
+
+// DesktopAIChatWaiting says "Waiting for you to allow a command"
+// in the language the app shows.
+func DesktopAIChatWaiting() string { return In(i18n.Locale()).DesktopAIChatWaiting() }
+
+// DesktopAIChatWaiting says "Waiting for you to allow a command"
+// in the language of msgs.
+func (msgs Messages) DesktopAIChatWaiting() string {
+	return Catalog.Format(msgs.locale, "desktopAIChatWaiting", nil)
+}
+
 // TabMode says "Showing: {mode}"
 // in the language the app shows.
 func TabMode(mode string) string { return In(i18n.Locale()).TabMode(mode) }

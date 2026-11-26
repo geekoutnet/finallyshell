@@ -2689,6 +2689,8 @@
   "desktopAIRunConfirm": "运行命令",
   "desktopAITargetChanged": "目标终端已切换或断开，未发送任何内容。",
   "desktopAIRunLogged": "经确认后向终端发送了 AI 建议的命令",
+  "desktopAIChatRunning": "执行中",
+  "desktopAIChatWaiting": "等待你确认命令",
   "tabMode": "当前模式：{mode}",
   "tabModeTerminal": "终端",
   "siteSettingsTab": "Nginx 设置",

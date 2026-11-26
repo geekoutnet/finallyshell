@@ -231,6 +231,7 @@ func (a *App) connect(s *Session, secret string) {
 				a.notify(paneError(refused))
 			}
 			s.status, s.err = statusConnected, nil
+			a.openWrtDetect(s) // OpenWrt has a System tab and a desktop app of its own
 			a.noteConnected(s.Host)
 			a.startTunnels(s, a.sessionTunnelSpecs(h.ID, h.Tunnels))
 			a.scheduleTunnelManagerTick()

@@ -1,0 +1,413 @@
+---FINALLYSHELL:pm---
+apk
+---FINALLYSHELL:installed---
+Name: apk-mbedtls
+Version: 3.0.5-r2
+
+Name: attendedsysupgrade-common
+Version: 9
+
+Name: base-files
+Version: 1696~b21cfa8f8c
+
+Name: busybox
+Version: 1.37.0-r6
+
+Name: ca-bundle
+Version: 20250419-r2
+
+Name: cgi-io
+Version: 2025.12.11~658b14bd-r1
+
+Name: dnsmasq
+Version: 2.91-r2
+
+Name: dropbear
+Version: 2025.89-r1
+
+Name: e2fsprogs
+Version: 1.47.3-r1
+
+Name: firewall4
+Version: 2025.03.17~b6e51575-r2
+
+Name: fstools
+Version: 2026.02.15~8d377aa6-r1
+
+Name: fwtool
+Version: 2025.10.03~04cd252e-r1
+
+Name: getrandom
+Version: 2025.10.30~6f78fa49-r1
+
+Name: grub2
+Version: 2.12-r1
+
+Name: grub2-bios-setup
+Version: 2.12-r1
+
+Name: grub2-efi
+Version: 2.12-r1
+
+Name: jansson4
+Version: 2.14.1-r1
+
+Name: jshn
+Version: 2026.03.13~81563384-r2
+
+Name: jsonfilter
+Version: 2026.03.16~b9034210-r1
+
+Name: kernel
+Version: 6.12.74~dad96e0b324e75e311f44d061391d208-r1
+
+Name: kmod-button-hotplug
+Version: 6.12.74-r3
+
+Name: kmod-crypto-crc32c
+Version: 6.12.74-r1
+
+Name: kmod-crypto-hash
+Version: 6.12.74-r1
+
+Name: kmod-fs-vfat
+Version: 6.12.74-r1
+
+Name: kmod-input-core
+Version: 6.12.74-r1
+
+Name: kmod-lib-crc-ccitt
+Version: 6.12.74-r1
+
+Name: kmod-lib-crc32c
+Version: 6.12.74-r1
+
+Name: kmod-nf-conntrack
+Version: 6.12.74-r1
+
+Name: kmod-nf-conntrack6
+Version: 6.12.74-r1
+
+Name: kmod-nf-flow
+Version: 6.12.74-r1
+
+Name: kmod-nf-log
+Version: 6.12.74-r1
+
+Name: kmod-nf-log6
+Version: 6.12.74-r1
+
+Name: kmod-nf-nat
+Version: 6.12.74-r1
+
+Name: kmod-nf-reject
+Version: 6.12.74-r1
+
+Name: kmod-nf-reject6
+Version: 6.12.74-r1
+
+Name: kmod-nfnetlink
+Version: 6.12.74-r1
+
+Name: kmod-nft-core
+Version: 6.12.74-r1
+
+Name: kmod-nft-fib
+Version: 6.12.74-r1
+
+Name: kmod-nft-nat
+Version: 6.12.74-r1
+
+Name: kmod-nft-offload
+Version: 6.12.74-r1
+
+Name: kmod-nls-base
+Version: 6.12.74-r1
+
+Name: kmod-nls-cp437
+Version: 6.12.74-r1
+
+Name: kmod-nls-iso8859-1
+Version: 6.12.74-r1
+
+Name: kmod-nls-utf8
+Version: 6.12.74-r1
+
+Name: kmod-ppp
+Version: 6.12.74-r1
+
+Name: kmod-pppoe
+Version: 6.12.74-r1
+
+Name: kmod-pppox
+Version: 6.12.74-r1
+
+Name: kmod-slhc
+Version: 6.12.74-r1
+
+Name: libblkid1
+Version: 2.41.3-r1
+
+Name: libblobmsg-json20260213
+Version: 2026.03.13~81563384-r2
+
+Name: libc
+Version: 1.2.5-r5
+
+Name: libcomerr0
+Version: 1.47.3-r1
+
+Name: libe2p2
+Version: 1.47.3-r1
+
+Name: libext2fs2
+Version: 1.47.3-r1
+
+Name: libf2fs6
+Version: 1.16.0-r4
+
+Name: libgcc1
+Version: 14.3.0-r5
+
+Name: libiwinfo-data
+Version: 2026.01.14~f5dd57a8-r1
+
+Name: libiwinfo20230701
+Version: 2026.01.14~f5dd57a8-r1
+
+Name: libjson-c5
+Version: 0.18-r1
+
+Name: libjson-script20260213
+Version: 2026.03.13~81563384-r2
+
+Name: liblucihttp-ucode
+Version: 2023.03.15~9b5b683f-r1
+
+Name: liblucihttp0
+Version: 2023.03.15~9b5b683f-r1
+
+Name: libmbedtls21
+Version: 3.6.5-r1
+
+Name: libmnl0
+Version: 1.0.5-r1
+
+Name: libnftnl11
+Version: 1.3.1-r1
+
+Name: libnl-tiny1
+Version: 2025.12.02~40493a65-r1
+
+Name: libpthread
+Version: 1.2.5-r5
+
+Name: librt
+Version: 1.2.5-r5
+
+Name: libsmartcols1
+Version: 2.41.3-r1
+
+Name: libss2
+Version: 1.47.3-r1
+
+Name: libubox20260213
+Version: 2026.03.13~81563384-r2
+
+Name: libubus20251202
+Version: 2025.12.02~3cc98db1-r1
+
+Name: libuci20250120
+Version: 2025.12.02~66127cd7-r1
+
+Name: libuclient20201210
+Version: 2026.02.20~7a0aa2e4-r1
+
+Name: libucode20230711
+Version: 2026.01.16~85922056-r1
+
+Name: libudebug
+Version: 2026.01.16~875e1a7a
+
+Name: libustream-mbedtls20201210
+Version: 2026.03.01~99f1c0db-r1
+
+Name: libuuid1
+Version: 2.41.3-r1
+
+Name: logd
+Version: 2025.10.30~6f78fa49-r1
+
+Name: luci
+Version: 26.075.80566~6efa8ae
+
+Name: luci-app-attendedsysupgrade
+Version: 26.075.80566~6efa8ae
+
+Name: luci-app-firewall
+Version: 26.075.80566~6efa8ae
+
+Name: luci-app-package-manager
+Version: 26.075.80566~6efa8ae
+
+Name: luci-base
+Version: 26.075.80566~6efa8ae
+
+Name: luci-lib-uqr
+Version: 26.075.80566~6efa8ae
+
+Name: luci-light
+Version: 26.075.80566~6efa8ae
+
+Name: luci-mod-admin-full
+Version: 26.075.80566~6efa8ae
+
+Name: luci-mod-network
+Version: 26.075.80566~6efa8ae
+
+Name: luci-mod-status
+Version: 26.075.80566~6efa8ae
+
+Name: luci-mod-system
+Version: 26.075.80566~6efa8ae
+
+Name: luci-proto-ipv6
+Version: 26.075.80566~6efa8ae
+
+Name: luci-proto-ppp
+Version: 26.075.80566~6efa8ae
+
+Name: luci-ssl
+Version: 26.075.80566~6efa8ae
+
+Name: luci-theme-bootstrap
+Version: 26.075.80566~6efa8ae
+
+Name: mkf2fs
+Version: 1.16.0-r4
+
+Name: mtd
+Version: 27
+
+Name: netifd
+Version: 2026.02.26~cbb83a18-r1
+
+Name: nftables-json
+Version: 1.1.6-r1
+
+Name: odhcp6c
+Version: 2026.01.25~ee2949e3-r1
+
+Name: odhcpd-ipv6only
+Version: 2026.03.16~edf2e523-r1
+
+Name: openwrt-keyring
+Version: 2025.12.10~f0670054-r1
+
+Name: owut
+Version: 2026.01.13~2526d84b-r1
+
+Name: partx-utils
+Version: 2.41.3-r1
+
+Name: ppp
+Version: 2.5.2-r3
+
+Name: ppp-mod-pppoe
+Version: 2.5.2-r3
+
+Name: procd
+Version: 2026.03.13~58eb263d-r1
+
+Name: procd-seccomp
+Version: 2026.03.13~58eb263d-r1
+
+Name: procd-ujail
+Version: 2026.03.13~58eb263d-r1
+
+Name: px5g-mbedtls
+Version: 11
+
+Name: rpcd
+Version: 2025.12.03~ffb9961c-r1
+
+Name: rpcd-mod-file
+Version: 2025.12.03~ffb9961c-r1
+
+Name: rpcd-mod-iwinfo
+Version: 2025.12.03~ffb9961c-r1
+
+Name: rpcd-mod-luci
+Version: 20240305-r1
+
+Name: rpcd-mod-rpcsys
+Version: 2025.12.03~ffb9961c-r1
+
+Name: rpcd-mod-rrdns
+Version: 20170710
+
+Name: rpcd-mod-ucode
+Version: 2025.12.03~ffb9961c-r1
+
+Name: ubox
+Version: 2025.10.30~6f78fa49-r1
+
+Name: ubus
+Version: 2025.12.02~3cc98db1-r1
+
+Name: ubusd
+Version: 2025.12.02~3cc98db1-r1
+
+Name: uci
+Version: 2025.12.02~66127cd7-r1
+
+Name: uclient-fetch
+Version: 2026.02.20~7a0aa2e4-r1
+
+Name: ucode
+Version: 2026.01.16~85922056-r1
+
+Name: ucode-mod-fs
+Version: 2026.01.16~85922056-r1
+
+Name: ucode-mod-html
+Version: 1
+
+Name: ucode-mod-log
+Version: 2026.01.16~85922056-r1
+
+Name: ucode-mod-math
+Version: 2026.01.16~85922056-r1
+
+Name: ucode-mod-ubus
+Version: 2026.01.16~85922056-r1
+
+Name: ucode-mod-uci
+Version: 2026.01.16~85922056-r1
+
+Name: ucode-mod-uclient
+Version: 2026.02.20~7a0aa2e4-r1
+
+Name: ucode-mod-uloop
+Version: 2026.01.16~85922056-r1
+
+Name: uhttpd
+Version: 2025.10.03~ebb92e6b-r1
+
+Name: uhttpd-mod-ubus
+Version: 2025.10.03~ebb92e6b-r1
+
+Name: urandom-seed
+Version: 3
+
+Name: urngd
+Version: 2025.10.03~f17e33d9-r1
+
+Name: usign
+Version: 2025.10.03~c4c72b1b-r1
+
+Name: zlib
+Version: 1.3.1-r1
+---FINALLYSHELL:upgradable---
+---FINALLYSHELL:lists---
+---FINALLYSHELL:end---

@@ -1,0 +1,56 @@
+---FINALLYSHELL:release---
+DISTRIB_ID='OpenWrt'
+DISTRIB_RELEASE='21.02.7'
+DISTRIB_REVISION='r16847-f8282da11e'
+DISTRIB_TARGET='x86/64'
+DISTRIB_ARCH='x86_64'
+DISTRIB_DESCRIPTION='OpenWrt 21.02.7 r16847-f8282da11e'
+DISTRIB_TAINTS=''
+---FINALLYSHELL:board---
+{
+	"kernel": "6.6.73",
+	"hostname": "OpenWrt",
+	"system": "Generic x86_64 CPU",
+	"release": {
+		"distribution": "OpenWrt",
+		"version": "21.02.7",
+		"revision": "r16847-f8282da11e",
+		"target": "x86/64",
+		"description": "OpenWrt 21.02.7 r16847-f8282da11e"
+	}
+}
+---FINALLYSHELL:info---
+{
+	"localtime": 1795655579,
+	"uptime": 3369,
+	"load": [
+		192,
+		1216,
+		0
+	],
+	"memory": {
+		"total": 24861388800,
+		"free": 23396089856,
+		"shared": 4870144,
+		"buffered": 1019904,
+		"available": 23627350016,
+		"cached": 375701504
+	},
+	"swap": {
+		"total": 6442450944,
+		"free": 6442450944
+	}
+}
+---FINALLYSHELL:model---
+---FINALLYSHELL:host---
+OpenWrt
+6.6.73
+---FINALLYSHELL:tools---
+opkg
+fw3
+---FINALLYSHELL:sftp---
+---FINALLYSHELL:df---
+Filesystem           1K-blocks      Used Available Use% Mounted on
+overlay              1055762868  35562056 966497340   4% /
+tmpfs                 12139348        48  12139300   0% /tmp
+---FINALLYSHELL:end---

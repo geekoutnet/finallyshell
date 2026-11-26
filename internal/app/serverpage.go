@@ -39,6 +39,7 @@ type serverPage struct {
 	security serverSecurityPage // serverpage_security.go
 	firewall serverFirewallPage // serverpage_firewall.go
 	sites    serverSitesPage    // serverpage_sites.go
+	openwrt  openWrtPage        // openwrt.go: the sections on OpenWrt
 }
 
 // serverSectionNames are the labels of the sections' row, by section.
@@ -86,8 +87,17 @@ func (a *App) serverPanel(c *ui.Context) {
 }
 
 // serverPageOf is the System tab of s, a connected server: the row of
-// sections over the one chosen.
+// sections over the one chosen, OpenWrt's on OpenWrt.
 func (a *App) serverPageOf(c *ui.Context, s *Session) {
+	a.openWrtDetect(s)
+	switch ow := &s.server.openwrt; {
+	case ow.probing && !ow.checked:
+		ui.Spinner(c).Label(locales.SvcReading()).Padding(12)
+		return
+	case s.isOpenWrt():
+		a.openWrtPageOf(c, s)
+		return
+	}
 	page := &s.server
 	ui.Row(c).FillWidth().Padding(6, 10).Gap(10).AlignItems(ui.Center).BorderWidth(0, 0, 1, 0).BorderColor(colors.line).Children(func() {
 		ui.Icon(c, icons.Get("server")).FontSize(14).TextColor(theme.Accent).Shrink(0)
@@ -127,6 +137,10 @@ func (a *App) serverPageOf(c *ui.Context, s *Session) {
 
 // refreshServerSection reads again what the section shown reads.
 func (a *App) refreshServerSection(s *Session) {
+	if s.isOpenWrt() {
+		a.refreshOpenWrtSection(s)
+		return
+	}
 	switch s.server.section {
 	case serverSecLogs:
 		a.refreshServerLogs(s)

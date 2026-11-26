@@ -43,6 +43,7 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 | v2.0.18 | The Caddy tab's Sites section no longer crashes, and detection works on real servers; the Docker test machine (testbox) and the live testing guide |
 | v2.0.19 | Desktop mode (after GMSSH): every SSH session can open a "Desktop" with wallpapers, icons and icon folders, windows (move, resize from eight directions, maximize, minimize, snap, keep on top), a dock and launcher, context menus, shortcuts and personalization; This PC and an Explorer-like file manager (views, favorites, recent, search, notes, properties and permissions, compress and extract, remote download, copy and paste between servers); a trash (freedesktop specification); a task manager (performance, processes and their details, releasing memory); settings (system info, operation log, DNS, time zone and time sync); terminal windows with a shell each; a local browser through the server; an app center and 17 built-in tools as apps; an AI assistant (the user's own OpenAI-compatible API, Ctrl+Shift+I for commands, confirmation before running) |
 | v2.0.20 | The connection manager opens with every folder collapsed; every app center app is on the desktop by default |
+| v2.0.21 | OpenWrt support and its own features: OpenWrt and derivatives (21.02–25.12, ImmortalWrt) are detected, and the System tab shows Status (backup, reboot), Interfaces, DHCP leases and static leases, Port forwards, procd services, Packages (opkg / apk) and Logs, with an OpenWrt desktop app; the Files tab installs the SFTP server in one click; process lists no longer empty where BusyBox ps has no -o, the disk scan works without realpath, and running a cron job works without su; an OpenWrt test machine for several releases |
 
 ## In progress
 
@@ -59,6 +60,7 @@ The first batch and the next one hold every candidate listed before. Add new ide
 | Feature | Notes |
 |---|---|
 | Global TUN / VPN mode | Every program's traffic through the tunnel. `ssh -w` needs `PermitTunnel` on the server, root on both ends, and carries TCP over TCP; a global mode on Windows needs the wintun driver, administrator rights and a gVisor network stack. v2.0.16 covers browsers and most programs with the system proxy and PAC instead |
+| OpenWrt, further | Wireless (Wi-Fi: iwinfo, SSIDs, channels, connected stations), general firewall rules and zone editing, editing interfaces, browsing files over the shell without SFTP. v2.0.21 does the parts of a router used most |
 
 ## Not planned
 

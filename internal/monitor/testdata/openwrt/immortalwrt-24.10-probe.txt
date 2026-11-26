@@ -1,0 +1,70 @@
+---FINALLYSHELL:release---
+DISTRIB_ID='ImmortalWrt'
+DISTRIB_RELEASE='24.10.7'
+DISTRIB_REVISION='r34055-54f94ca5b1e3'
+DISTRIB_TARGET='x86/64'
+DISTRIB_ARCH='x86_64'
+DISTRIB_DESCRIPTION='ImmortalWrt 24.10.7 r34055-54f94ca5b1e3'
+DISTRIB_TAINTS=''
+---FINALLYSHELL:board---
+{
+	"kernel": "6.6.73",
+	"hostname": "ImmortalWrt",
+	"system": "Generic x86_64 CPU",
+	"release": {
+		"distribution": "ImmortalWrt",
+		"version": "24.10.7",
+		"revision": "r34055-54f94ca5b1e3",
+		"target": "x86/64",
+		"description": "ImmortalWrt 24.10.7 r34055-54f94ca5b1e3",
+		"builddate": "1795328492"
+	}
+}
+---FINALLYSHELL:info---
+{
+	"localtime": 1795684380,
+	"uptime": 3371,
+	"load": [
+		192,
+		1216,
+		0
+	],
+	"memory": {
+		"total": 24861388800,
+		"free": 23383392256,
+		"shared": 4870144,
+		"buffered": 2076672,
+		"available": 23615770624,
+		"cached": 375721984
+	},
+	"root": {
+		"total": 1055762868,
+		"free": 1020200788,
+		"used": 35562080,
+		"avail": 966497316
+	},
+	"tmp": {
+		"total": 12139348,
+		"free": 12139304,
+		"used": 44,
+		"avail": 12139304
+	},
+	"swap": {
+		"total": 6442450944,
+		"free": 6442450944
+	}
+}
+---FINALLYSHELL:model---
+---FINALLYSHELL:host---
+ImmortalWrt
+6.6.73
+---FINALLYSHELL:tools---
+opkg
+fw4
+fw3
+---FINALLYSHELL:sftp---
+---FINALLYSHELL:df---
+Filesystem           1K-blocks      Used Available Use% Mounted on
+overlay              1055762868  35562080 966497316   4% /
+tmpfs                 12139348        44  12139304   0% /tmp
+---FINALLYSHELL:end---

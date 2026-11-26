@@ -41807,3 +41807,913 @@ func DockerLogNoMatches() string { return In(i18n.Locale()).DockerLogNoMatches()
 func (msgs Messages) DockerLogNoMatches() string {
 	return Catalog.Format(msgs.locale, "dockerLogNoMatches", nil)
 }
+
+// OwTitle says "OpenWrt"
+// in the language the app shows.
+func OwTitle() string { return In(i18n.Locale()).OwTitle() }
+
+// OwTitle says "OpenWrt"
+// in the language of msgs.
+func (msgs Messages) OwTitle() string {
+	return Catalog.Format(msgs.locale, "owTitle", nil)
+}
+
+// OwStatus says "Status"
+// in the language the app shows.
+func OwStatus() string { return In(i18n.Locale()).OwStatus() }
+
+// OwStatus says "Status"
+// in the language of msgs.
+func (msgs Messages) OwStatus() string {
+	return Catalog.Format(msgs.locale, "owStatus", nil)
+}
+
+// OwInterfaces says "Interfaces"
+// in the language the app shows.
+func OwInterfaces() string { return In(i18n.Locale()).OwInterfaces() }
+
+// OwInterfaces says "Interfaces"
+// in the language of msgs.
+func (msgs Messages) OwInterfaces() string {
+	return Catalog.Format(msgs.locale, "owInterfaces", nil)
+}
+
+// OwDHCP says "DHCP"
+// in the language the app shows.
+func OwDHCP() string { return In(i18n.Locale()).OwDHCP() }
+
+// OwDHCP says "DHCP"
+// in the language of msgs.
+func (msgs Messages) OwDHCP() string {
+	return Catalog.Format(msgs.locale, "owDHCP", nil)
+}
+
+// OwForwards says "Port forwards"
+// in the language the app shows.
+func OwForwards() string { return In(i18n.Locale()).OwForwards() }
+
+// OwForwards says "Port forwards"
+// in the language of msgs.
+func (msgs Messages) OwForwards() string {
+	return Catalog.Format(msgs.locale, "owForwards", nil)
+}
+
+// OwPackages says "Packages"
+// in the language the app shows.
+func OwPackages() string { return In(i18n.Locale()).OwPackages() }
+
+// OwPackages says "Packages"
+// in the language of msgs.
+func (msgs Messages) OwPackages() string {
+	return Catalog.Format(msgs.locale, "owPackages", nil)
+}
+
+// OwInvalid says "Check the values: one is missing or not valid."
+// in the language the app shows.
+func OwInvalid() string { return In(i18n.Locale()).OwInvalid() }
+
+// OwInvalid says "Check the values: one is missing or not valid."
+// in the language of msgs.
+func (msgs Messages) OwInvalid() string {
+	return Catalog.Format(msgs.locale, "owInvalid", nil)
+}
+
+// OwBackup says "Back up configuration"
+// in the language the app shows.
+func OwBackup() string { return In(i18n.Locale()).OwBackup() }
+
+// OwBackup says "Back up configuration"
+// in the language of msgs.
+func (msgs Messages) OwBackup() string {
+	return Catalog.Format(msgs.locale, "owBackup", nil)
+}
+
+// OwBackupNote says "Saves the configuration (sysupgrade -b, as LuCI's backup) to this computer."
+// in the language the app shows.
+func OwBackupNote() string { return In(i18n.Locale()).OwBackupNote() }
+
+// OwBackupNote says "Saves the configuration (sysupgrade -b, as LuCI's backup) to this computer."
+// in the language of msgs.
+func (msgs Messages) OwBackupNote() string {
+	return Catalog.Format(msgs.locale, "owBackupNote", nil)
+}
+
+// OwBackupSaved says "Backup saved to {path}"
+// in the language the app shows.
+func OwBackupSaved(path string) string { return In(i18n.Locale()).OwBackupSaved(path) }
+
+// OwBackupSaved says "Backup saved to {path}"
+// in the language of msgs.
+func (msgs Messages) OwBackupSaved(path string) string {
+	return Catalog.Format(msgs.locale, "owBackupSaved", map[string]any{"path": path})
+}
+
+// OwBackupEmpty says "The system made no backup."
+// in the language the app shows.
+func OwBackupEmpty() string { return In(i18n.Locale()).OwBackupEmpty() }
+
+// OwBackupEmpty says "The system made no backup."
+// in the language of msgs.
+func (msgs Messages) OwBackupEmpty() string {
+	return Catalog.Format(msgs.locale, "owBackupEmpty", nil)
+}
+
+// OwReboot says "Reboot"
+// in the language the app shows.
+func OwReboot() string { return In(i18n.Locale()).OwReboot() }
+
+// OwReboot says "Reboot"
+// in the language of msgs.
+func (msgs Messages) OwReboot() string {
+	return Catalog.Format(msgs.locale, "owReboot", nil)
+}
+
+// OwRebootNote says "Reboots the router: every connection through it drops until it is back, a minute or more."
+// in the language the app shows.
+func OwRebootNote() string { return In(i18n.Locale()).OwRebootNote() }
+
+// OwRebootNote says "Reboots the router: every connection through it drops until it is back, a minute or more."
+// in the language of msgs.
+func (msgs Messages) OwRebootNote() string {
+	return Catalog.Format(msgs.locale, "owRebootNote", nil)
+}
+
+// OwUsedOf says "{used} used of {total}"
+// in the language the app shows.
+func OwUsedOf(used string, total string) string { return In(i18n.Locale()).OwUsedOf(used, total) }
+
+// OwUsedOf says "{used} used of {total}"
+// in the language of msgs.
+func (msgs Messages) OwUsedOf(used string, total string) string {
+	return Catalog.Format(msgs.locale, "owUsedOf", map[string]any{"used": used, "total": total})
+}
+
+// OwRelease says "Release"
+// in the language the app shows.
+func OwRelease() string { return In(i18n.Locale()).OwRelease() }
+
+// OwRelease says "Release"
+// in the language of msgs.
+func (msgs Messages) OwRelease() string {
+	return Catalog.Format(msgs.locale, "owRelease", nil)
+}
+
+// OwLoad says "Load"
+// in the language the app shows.
+func OwLoad() string { return In(i18n.Locale()).OwLoad() }
+
+// OwLoad says "Load"
+// in the language of msgs.
+func (msgs Messages) OwLoad() string {
+	return Catalog.Format(msgs.locale, "owLoad", nil)
+}
+
+// OwMemory says "Memory"
+// in the language the app shows.
+func OwMemory() string { return In(i18n.Locale()).OwMemory() }
+
+// OwMemory says "Memory"
+// in the language of msgs.
+func (msgs Messages) OwMemory() string {
+	return Catalog.Format(msgs.locale, "owMemory", nil)
+}
+
+// OwRootFS says "Root (overlay)"
+// in the language the app shows.
+func OwRootFS() string { return In(i18n.Locale()).OwRootFS() }
+
+// OwRootFS says "Root (overlay)"
+// in the language of msgs.
+func (msgs Messages) OwRootFS() string {
+	return Catalog.Format(msgs.locale, "owRootFS", nil)
+}
+
+// OwTmpFS says "Temporary (/tmp)"
+// in the language the app shows.
+func OwTmpFS() string { return In(i18n.Locale()).OwTmpFS() }
+
+// OwTmpFS says "Temporary (/tmp)"
+// in the language of msgs.
+func (msgs Messages) OwTmpFS() string {
+	return Catalog.Format(msgs.locale, "owTmpFS", nil)
+}
+
+// OwPackageManager says "Package manager"
+// in the language the app shows.
+func OwPackageManager() string { return In(i18n.Locale()).OwPackageManager() }
+
+// OwPackageManager says "Package manager"
+// in the language of msgs.
+func (msgs Messages) OwPackageManager() string {
+	return Catalog.Format(msgs.locale, "owPackageManager", nil)
+}
+
+// OwSFTPMissing says "Not installed"
+// in the language the app shows.
+func OwSFTPMissing() string { return In(i18n.Locale()).OwSFTPMissing() }
+
+// OwSFTPMissing says "Not installed"
+// in the language of msgs.
+func (msgs Messages) OwSFTPMissing() string {
+	return Catalog.Format(msgs.locale, "owSFTPMissing", nil)
+}
+
+// OwSFTPNote says "OpenWrt has no SFTP server until openssh-sftp-server is installed: the file manager needs it."
+// in the language the app shows.
+func OwSFTPNote() string { return In(i18n.Locale()).OwSFTPNote() }
+
+// OwSFTPNote says "OpenWrt has no SFTP server until openssh-sftp-server is installed: the file manager needs it."
+// in the language of msgs.
+func (msgs Messages) OwSFTPNote() string {
+	return Catalog.Format(msgs.locale, "owSFTPNote", nil)
+}
+
+// OwInstallSFTP says "Install SFTP server"
+// in the language the app shows.
+func OwInstallSFTP() string { return In(i18n.Locale()).OwInstallSFTP() }
+
+// OwInstallSFTP says "Install SFTP server"
+// in the language of msgs.
+func (msgs Messages) OwInstallSFTP() string {
+	return Catalog.Format(msgs.locale, "owInstallSFTP", nil)
+}
+
+// OwInstallSFTPNote says "Downloads the package lists and installs openssh-sftp-server (about 100 KB), then connects the file manager again."
+// in the language the app shows.
+func OwInstallSFTPNote() string { return In(i18n.Locale()).OwInstallSFTPNote() }
+
+// OwInstallSFTPNote says "Downloads the package lists and installs openssh-sftp-server (about 100 KB), then connects the file manager again."
+// in the language of msgs.
+func (msgs Messages) OwInstallSFTPNote() string {
+	return Catalog.Format(msgs.locale, "owInstallSFTPNote", nil)
+}
+
+// OwNoUbus says "ubus did not answer: the interfaces cannot be read."
+// in the language the app shows.
+func OwNoUbus() string { return In(i18n.Locale()).OwNoUbus() }
+
+// OwNoUbus says "ubus did not answer: the interfaces cannot be read."
+// in the language of msgs.
+func (msgs Messages) OwNoUbus() string {
+	return Catalog.Format(msgs.locale, "owNoUbus", nil)
+}
+
+// OwIfaceRestart says "Restart interface"
+// in the language the app shows.
+func OwIfaceRestart() string { return In(i18n.Locale()).OwIfaceRestart() }
+
+// OwIfaceRestart says "Restart interface"
+// in the language of msgs.
+func (msgs Messages) OwIfaceRestart() string {
+	return Catalog.Format(msgs.locale, "owIfaceRestart", nil)
+}
+
+// OwIfaceRestartNote says "Brings the interface down and up again (ifup): its connections drop for a moment."
+// in the language the app shows.
+func OwIfaceRestartNote() string { return In(i18n.Locale()).OwIfaceRestartNote() }
+
+// OwIfaceRestartNote says "Brings the interface down and up again (ifup): its connections drop for a moment."
+// in the language of msgs.
+func (msgs Messages) OwIfaceRestartNote() string {
+	return Catalog.Format(msgs.locale, "owIfaceRestartNote", nil)
+}
+
+// OwIfaceStop says "Stop interface"
+// in the language the app shows.
+func OwIfaceStop() string { return In(i18n.Locale()).OwIfaceStop() }
+
+// OwIfaceStop says "Stop interface"
+// in the language of msgs.
+func (msgs Messages) OwIfaceStop() string {
+	return Catalog.Format(msgs.locale, "owIfaceStop", nil)
+}
+
+// OwIfaceStopNote says "Brings the interface down (ifdown) until it is started again or the router reboots."
+// in the language the app shows.
+func OwIfaceStopNote() string { return In(i18n.Locale()).OwIfaceStopNote() }
+
+// OwIfaceStopNote says "Brings the interface down (ifdown) until it is started again or the router reboots."
+// in the language of msgs.
+func (msgs Messages) OwIfaceStopNote() string {
+	return Catalog.Format(msgs.locale, "owIfaceStopNote", nil)
+}
+
+// OwCutsConnection says "Warning: this connection goes through it and may drop."
+// in the language the app shows.
+func OwCutsConnection() string { return In(i18n.Locale()).OwCutsConnection() }
+
+// OwCutsConnection says "Warning: this connection goes through it and may drop."
+// in the language of msgs.
+func (msgs Messages) OwCutsConnection() string {
+	return Catalog.Format(msgs.locale, "owCutsConnection", nil)
+}
+
+// OwIface says "Interface"
+// in the language the app shows.
+func OwIface() string { return In(i18n.Locale()).OwIface() }
+
+// OwIface says "Interface"
+// in the language of msgs.
+func (msgs Messages) OwIface() string {
+	return Catalog.Format(msgs.locale, "owIface", nil)
+}
+
+// OwProto says "Protocol"
+// in the language the app shows.
+func OwProto() string { return In(i18n.Locale()).OwProto() }
+
+// OwProto says "Protocol"
+// in the language of msgs.
+func (msgs Messages) OwProto() string {
+	return Catalog.Format(msgs.locale, "owProto", nil)
+}
+
+// OwDevice says "Device"
+// in the language the app shows.
+func OwDevice() string { return In(i18n.Locale()).OwDevice() }
+
+// OwDevice says "Device"
+// in the language of msgs.
+func (msgs Messages) OwDevice() string {
+	return Catalog.Format(msgs.locale, "owDevice", nil)
+}
+
+// OwGateway says "Gateway"
+// in the language the app shows.
+func OwGateway() string { return In(i18n.Locale()).OwGateway() }
+
+// OwGateway says "Gateway"
+// in the language of msgs.
+func (msgs Messages) OwGateway() string {
+	return Catalog.Format(msgs.locale, "owGateway", nil)
+}
+
+// OwRX says "Received"
+// in the language the app shows.
+func OwRX() string { return In(i18n.Locale()).OwRX() }
+
+// OwRX says "Received"
+// in the language of msgs.
+func (msgs Messages) OwRX() string {
+	return Catalog.Format(msgs.locale, "owRX", nil)
+}
+
+// OwTX says "Sent"
+// in the language the app shows.
+func OwTX() string { return In(i18n.Locale()).OwTX() }
+
+// OwTX says "Sent"
+// in the language of msgs.
+func (msgs Messages) OwTX() string {
+	return Catalog.Format(msgs.locale, "owTX", nil)
+}
+
+// OwUp says "Up"
+// in the language the app shows.
+func OwUp() string { return In(i18n.Locale()).OwUp() }
+
+// OwUp says "Up"
+// in the language of msgs.
+func (msgs Messages) OwUp() string {
+	return Catalog.Format(msgs.locale, "owUp", nil)
+}
+
+// OwDown says "Down"
+// in the language the app shows.
+func OwDown() string { return In(i18n.Locale()).OwDown() }
+
+// OwDown says "Down"
+// in the language of msgs.
+func (msgs Messages) OwDown() string {
+	return Catalog.Format(msgs.locale, "owDown", nil)
+}
+
+// OwPending says "Connecting"
+// in the language the app shows.
+func OwPending() string { return In(i18n.Locale()).OwPending() }
+
+// OwPending says "Connecting"
+// in the language of msgs.
+func (msgs Messages) OwPending() string {
+	return Catalog.Format(msgs.locale, "owPending", nil)
+}
+
+// OwNothing says "Nothing to show."
+// in the language the app shows.
+func OwNothing() string { return In(i18n.Locale()).OwNothing() }
+
+// OwNothing says "Nothing to show."
+// in the language of msgs.
+func (msgs Messages) OwNothing() string {
+	return Catalog.Format(msgs.locale, "owNothing", nil)
+}
+
+// OwLeases says "{count, plural, one {Leases (#)} other {Leases (#)}}"
+// in the language the app shows.
+func OwLeases(count int) string { return In(i18n.Locale()).OwLeases(count) }
+
+// OwLeases says "{count, plural, one {Leases (#)} other {Leases (#)}}"
+// in the language of msgs.
+func (msgs Messages) OwLeases(count int) string {
+	return Catalog.Format(msgs.locale, "owLeases", map[string]any{"count": count})
+}
+
+// OwStaticLeases says "{count, plural, one {Static leases (#)} other {Static leases (#)}}"
+// in the language the app shows.
+func OwStaticLeases(count int) string { return In(i18n.Locale()).OwStaticLeases(count) }
+
+// OwStaticLeases says "{count, plural, one {Static leases (#)} other {Static leases (#)}}"
+// in the language of msgs.
+func (msgs Messages) OwStaticLeases(count int) string {
+	return Catalog.Format(msgs.locale, "owStaticLeases", map[string]any{"count": count})
+}
+
+// OwFilter says "Filter"
+// in the language the app shows.
+func OwFilter() string { return In(i18n.Locale()).OwFilter() }
+
+// OwFilter says "Filter"
+// in the language of msgs.
+func (msgs Messages) OwFilter() string {
+	return Catalog.Format(msgs.locale, "owFilter", nil)
+}
+
+// OwMakeStatic says "Make static"
+// in the language the app shows.
+func OwMakeStatic() string { return In(i18n.Locale()).OwMakeStatic() }
+
+// OwMakeStatic says "Make static"
+// in the language of msgs.
+func (msgs Messages) OwMakeStatic() string {
+	return Catalog.Format(msgs.locale, "owMakeStatic", nil)
+}
+
+// OwAddStatic says "Add static lease"
+// in the language the app shows.
+func OwAddStatic() string { return In(i18n.Locale()).OwAddStatic() }
+
+// OwAddStatic says "Add static lease"
+// in the language of msgs.
+func (msgs Messages) OwAddStatic() string {
+	return Catalog.Format(msgs.locale, "owAddStatic", nil)
+}
+
+// OwAddStaticNote says "The device with this MAC address always gets this IPv4 address. dnsmasq reads it at once; the device gets it at its n…"
+// in the language the app shows.
+func OwAddStaticNote() string { return In(i18n.Locale()).OwAddStaticNote() }
+
+// OwAddStaticNote says "The device with this MAC address always gets this IPv4 address. dnsmasq reads it at once; the device gets it at its n…"
+// in the language of msgs.
+func (msgs Messages) OwAddStaticNote() string {
+	return Catalog.Format(msgs.locale, "owAddStaticNote", nil)
+}
+
+// OwDeleteStatic says "Delete static lease"
+// in the language the app shows.
+func OwDeleteStatic() string { return In(i18n.Locale()).OwDeleteStatic() }
+
+// OwDeleteStatic says "Delete static lease"
+// in the language of msgs.
+func (msgs Messages) OwDeleteStatic() string {
+	return Catalog.Format(msgs.locale, "owDeleteStatic", nil)
+}
+
+// OwDeleteStaticNote says "The device gets an address from the pool at its next renewal."
+// in the language the app shows.
+func OwDeleteStaticNote() string { return In(i18n.Locale()).OwDeleteStaticNote() }
+
+// OwDeleteStaticNote says "The device gets an address from the pool at its next renewal."
+// in the language of msgs.
+func (msgs Messages) OwDeleteStaticNote() string {
+	return Catalog.Format(msgs.locale, "owDeleteStaticNote", nil)
+}
+
+// OwExpires says "Expires in"
+// in the language the app shows.
+func OwExpires() string { return In(i18n.Locale()).OwExpires() }
+
+// OwExpires says "Expires in"
+// in the language of msgs.
+func (msgs Messages) OwExpires() string {
+	return Catalog.Format(msgs.locale, "owExpires", nil)
+}
+
+// OwNever says "Never"
+// in the language the app shows.
+func OwNever() string { return In(i18n.Locale()).OwNever() }
+
+// OwNever says "Never"
+// in the language of msgs.
+func (msgs Messages) OwNever() string {
+	return Catalog.Format(msgs.locale, "owNever", nil)
+}
+
+// OwStatic says "Static"
+// in the language the app shows.
+func OwStatic() string { return In(i18n.Locale()).OwStatic() }
+
+// OwStatic says "Static"
+// in the language of msgs.
+func (msgs Messages) OwStatic() string {
+	return Catalog.Format(msgs.locale, "owStatic", nil)
+}
+
+// OwEnable says "Enable"
+// in the language the app shows.
+func OwEnable() string { return In(i18n.Locale()).OwEnable() }
+
+// OwEnable says "Enable"
+// in the language of msgs.
+func (msgs Messages) OwEnable() string {
+	return Catalog.Format(msgs.locale, "owEnable", nil)
+}
+
+// OwDisable says "Disable"
+// in the language the app shows.
+func OwDisable() string { return In(i18n.Locale()).OwDisable() }
+
+// OwDisable says "Disable"
+// in the language of msgs.
+func (msgs Messages) OwDisable() string {
+	return Catalog.Format(msgs.locale, "owDisable", nil)
+}
+
+// OwEnabled says "Enabled"
+// in the language the app shows.
+func OwEnabled() string { return In(i18n.Locale()).OwEnabled() }
+
+// OwEnabled says "Enabled"
+// in the language of msgs.
+func (msgs Messages) OwEnabled() string {
+	return Catalog.Format(msgs.locale, "owEnabled", nil)
+}
+
+// OwDisabled says "Disabled"
+// in the language the app shows.
+func OwDisabled() string { return In(i18n.Locale()).OwDisabled() }
+
+// OwDisabled says "Disabled"
+// in the language of msgs.
+func (msgs Messages) OwDisabled() string {
+	return Catalog.Format(msgs.locale, "owDisabled", nil)
+}
+
+// OwForwardNote says "The firewall reloads its rules: existing connections stay."
+// in the language the app shows.
+func OwForwardNote() string { return In(i18n.Locale()).OwForwardNote() }
+
+// OwForwardNote says "The firewall reloads its rules: existing connections stay."
+// in the language of msgs.
+func (msgs Messages) OwForwardNote() string {
+	return Catalog.Format(msgs.locale, "owForwardNote", nil)
+}
+
+// OwDeleteForward says "Delete port forward"
+// in the language the app shows.
+func OwDeleteForward() string { return In(i18n.Locale()).OwDeleteForward() }
+
+// OwDeleteForward says "Delete port forward"
+// in the language of msgs.
+func (msgs Messages) OwDeleteForward() string {
+	return Catalog.Format(msgs.locale, "owDeleteForward", nil)
+}
+
+// OwAddForward says "Add port forward"
+// in the language the app shows.
+func OwAddForward() string { return In(i18n.Locale()).OwAddForward() }
+
+// OwAddForward says "Add port forward"
+// in the language of msgs.
+func (msgs Messages) OwAddForward() string {
+	return Catalog.Format(msgs.locale, "owAddForward", nil)
+}
+
+// OwExternalPort says "External port"
+// in the language the app shows.
+func OwExternalPort() string { return In(i18n.Locale()).OwExternalPort() }
+
+// OwExternalPort says "External port"
+// in the language of msgs.
+func (msgs Messages) OwExternalPort() string {
+	return Catalog.Format(msgs.locale, "owExternalPort", nil)
+}
+
+// OwInternalIP says "Internal IP"
+// in the language the app shows.
+func OwInternalIP() string { return In(i18n.Locale()).OwInternalIP() }
+
+// OwInternalIP says "Internal IP"
+// in the language of msgs.
+func (msgs Messages) OwInternalIP() string {
+	return Catalog.Format(msgs.locale, "owInternalIP", nil)
+}
+
+// OwInternalPort says "Internal port"
+// in the language the app shows.
+func OwInternalPort() string { return In(i18n.Locale()).OwInternalPort() }
+
+// OwInternalPort says "Internal port"
+// in the language of msgs.
+func (msgs Messages) OwInternalPort() string {
+	return Catalog.Format(msgs.locale, "owInternalPort", nil)
+}
+
+// OwSamePort says "Same as external"
+// in the language the app shows.
+func OwSamePort() string { return In(i18n.Locale()).OwSamePort() }
+
+// OwSamePort says "Same as external"
+// in the language of msgs.
+func (msgs Messages) OwSamePort() string {
+	return Catalog.Format(msgs.locale, "owSamePort", nil)
+}
+
+// OwZones says "Zones"
+// in the language the app shows.
+func OwZones() string { return In(i18n.Locale()).OwZones() }
+
+// OwZones says "Zones"
+// in the language of msgs.
+func (msgs Messages) OwZones() string {
+	return Catalog.Format(msgs.locale, "owZones", nil)
+}
+
+// OwFromZone says "From zone"
+// in the language the app shows.
+func OwFromZone() string { return In(i18n.Locale()).OwFromZone() }
+
+// OwFromZone says "From zone"
+// in the language of msgs.
+func (msgs Messages) OwFromZone() string {
+	return Catalog.Format(msgs.locale, "owFromZone", nil)
+}
+
+// OwToZone says "To zone"
+// in the language the app shows.
+func OwToZone() string { return In(i18n.Locale()).OwToZone() }
+
+// OwToZone says "To zone"
+// in the language of msgs.
+func (msgs Messages) OwToZone() string {
+	return Catalog.Format(msgs.locale, "owToZone", nil)
+}
+
+// OwStopped says "Stopped"
+// in the language the app shows.
+func OwStopped() string { return In(i18n.Locale()).OwStopped() }
+
+// OwStopped says "Stopped"
+// in the language of msgs.
+func (msgs Messages) OwStopped() string {
+	return Catalog.Format(msgs.locale, "owStopped", nil)
+}
+
+// OwOneShot says "One-shot"
+// in the language the app shows.
+func OwOneShot() string { return In(i18n.Locale()).OwOneShot() }
+
+// OwOneShot says "One-shot"
+// in the language of msgs.
+func (msgs Messages) OwOneShot() string {
+	return Catalog.Format(msgs.locale, "owOneShot", nil)
+}
+
+// OwServiceNote says "Runs the service's init script in /etc/init.d."
+// in the language the app shows.
+func OwServiceNote() string { return In(i18n.Locale()).OwServiceNote() }
+
+// OwServiceNote says "Runs the service's init script in /etc/init.d."
+// in the language of msgs.
+func (msgs Messages) OwServiceNote() string {
+	return Catalog.Format(msgs.locale, "owServiceNote", nil)
+}
+
+// OwNoPackageManager says "No package manager (opkg or apk) found."
+// in the language the app shows.
+func OwNoPackageManager() string { return In(i18n.Locale()).OwNoPackageManager() }
+
+// OwNoPackageManager says "No package manager (opkg or apk) found."
+// in the language of msgs.
+func (msgs Messages) OwNoPackageManager() string {
+	return Catalog.Format(msgs.locale, "owNoPackageManager", nil)
+}
+
+// OwFilterPackages says "Filter installed packages"
+// in the language the app shows.
+func OwFilterPackages() string { return In(i18n.Locale()).OwFilterPackages() }
+
+// OwFilterPackages says "Filter installed packages"
+// in the language of msgs.
+func (msgs Messages) OwFilterPackages() string {
+	return Catalog.Format(msgs.locale, "owFilterPackages", nil)
+}
+
+// OwOnlyUpgrades says "{count, plural, one {Only upgrades (#)} other {Only upgrades (#)}}"
+// in the language the app shows.
+func OwOnlyUpgrades(count int) string { return In(i18n.Locale()).OwOnlyUpgrades(count) }
+
+// OwOnlyUpgrades says "{count, plural, one {Only upgrades (#)} other {Only upgrades (#)}}"
+// in the language of msgs.
+func (msgs Messages) OwOnlyUpgrades(count int) string {
+	return Catalog.Format(msgs.locale, "owOnlyUpgrades", map[string]any{"count": count})
+}
+
+// OwUpdateLists says "Update lists"
+// in the language the app shows.
+func OwUpdateLists() string { return In(i18n.Locale()).OwUpdateLists() }
+
+// OwUpdateLists says "Update lists"
+// in the language of msgs.
+func (msgs Messages) OwUpdateLists() string {
+	return Catalog.Format(msgs.locale, "owUpdateLists", nil)
+}
+
+// OwUpdateListsNote says "Downloads the package lists from the configured feeds."
+// in the language the app shows.
+func OwUpdateListsNote() string { return In(i18n.Locale()).OwUpdateListsNote() }
+
+// OwUpdateListsNote says "Downloads the package lists from the configured feeds."
+// in the language of msgs.
+func (msgs Messages) OwUpdateListsNote() string {
+	return Catalog.Format(msgs.locale, "owUpdateListsNote", nil)
+}
+
+// OwInstall says "Install…"
+// in the language the app shows.
+func OwInstall() string { return In(i18n.Locale()).OwInstall() }
+
+// OwInstall says "Install…"
+// in the language of msgs.
+func (msgs Messages) OwInstall() string {
+	return Catalog.Format(msgs.locale, "owInstall", nil)
+}
+
+// OwUpgrade says "Upgrade"
+// in the language the app shows.
+func OwUpgrade() string { return In(i18n.Locale()).OwUpgrade() }
+
+// OwUpgrade says "Upgrade"
+// in the language of msgs.
+func (msgs Messages) OwUpgrade() string {
+	return Catalog.Format(msgs.locale, "owUpgrade", nil)
+}
+
+// OwUpgradeNote says "OpenWrt advises against upgrading core packages one by one: a mismatch can leave the system unbootable. Prefer a firm…"
+// in the language the app shows.
+func OwUpgradeNote() string { return In(i18n.Locale()).OwUpgradeNote() }
+
+// OwUpgradeNote says "OpenWrt advises against upgrading core packages one by one: a mismatch can leave the system unbootable. Prefer a firm…"
+// in the language of msgs.
+func (msgs Messages) OwUpgradeNote() string {
+	return Catalog.Format(msgs.locale, "owUpgradeNote", nil)
+}
+
+// OwRemove says "Remove"
+// in the language the app shows.
+func OwRemove() string { return In(i18n.Locale()).OwRemove() }
+
+// OwRemove says "Remove"
+// in the language of msgs.
+func (msgs Messages) OwRemove() string {
+	return Catalog.Format(msgs.locale, "owRemove", nil)
+}
+
+// OwRemoveNote says "Removes the packages; their configuration stays in /etc/config."
+// in the language the app shows.
+func OwRemoveNote() string { return In(i18n.Locale()).OwRemoveNote() }
+
+// OwRemoveNote says "Removes the packages; their configuration stays in /etc/config."
+// in the language of msgs.
+func (msgs Messages) OwRemoveNote() string {
+	return Catalog.Format(msgs.locale, "owRemoveNote", nil)
+}
+
+// OwNoLists says "The package lists are not downloaded (OpenWrt keeps them in memory): Update lists before installing or checking upgra…"
+// in the language the app shows.
+func OwNoLists() string { return In(i18n.Locale()).OwNoLists() }
+
+// OwNoLists says "The package lists are not downloaded (OpenWrt keeps them in memory): Update lists before installing or checking upgra…"
+// in the language of msgs.
+func (msgs Messages) OwNoLists() string {
+	return Catalog.Format(msgs.locale, "owNoLists", nil)
+}
+
+// OwVersion says "Version"
+// in the language the app shows.
+func OwVersion() string { return In(i18n.Locale()).OwVersion() }
+
+// OwVersion says "Version"
+// in the language of msgs.
+func (msgs Messages) OwVersion() string {
+	return Catalog.Format(msgs.locale, "owVersion", nil)
+}
+
+// OwUpgradeTo says "Upgrade to"
+// in the language the app shows.
+func OwUpgradeTo() string { return In(i18n.Locale()).OwUpgradeTo() }
+
+// OwUpgradeTo says "Upgrade to"
+// in the language of msgs.
+func (msgs Messages) OwUpgradeTo() string {
+	return Catalog.Format(msgs.locale, "owUpgradeTo", nil)
+}
+
+// OwPackagesCount says "{count, plural, one {# package} other {# packages}}"
+// in the language the app shows.
+func OwPackagesCount(count int) string { return In(i18n.Locale()).OwPackagesCount(count) }
+
+// OwPackagesCount says "{count, plural, one {# package} other {# packages}}"
+// in the language of msgs.
+func (msgs Messages) OwPackagesCount(count int) string {
+	return Catalog.Format(msgs.locale, "owPackagesCount", map[string]any{"count": count})
+}
+
+// OwSearchPackages says "Search packages"
+// in the language the app shows.
+func OwSearchPackages() string { return In(i18n.Locale()).OwSearchPackages() }
+
+// OwSearchPackages says "Search packages"
+// in the language of msgs.
+func (msgs Messages) OwSearchPackages() string {
+	return Catalog.Format(msgs.locale, "owSearchPackages", nil)
+}
+
+// OwSearch says "Search"
+// in the language the app shows.
+func OwSearch() string { return In(i18n.Locale()).OwSearch() }
+
+// OwSearch says "Search"
+// in the language of msgs.
+func (msgs Messages) OwSearch() string {
+	return Catalog.Format(msgs.locale, "owSearch", nil)
+}
+
+// OwNotFound says "No package found. Update the lists first if they are not downloaded."
+// in the language the app shows.
+func OwNotFound() string { return In(i18n.Locale()).OwNotFound() }
+
+// OwNotFound says "No package found. Update the lists first if they are not downloaded."
+// in the language of msgs.
+func (msgs Messages) OwNotFound() string {
+	return Catalog.Format(msgs.locale, "owNotFound", nil)
+}
+
+// OwPackageName says "Package names, separated by spaces"
+// in the language the app shows.
+func OwPackageName() string { return In(i18n.Locale()).OwPackageName() }
+
+// OwPackageName says "Package names, separated by spaces"
+// in the language of msgs.
+func (msgs Messages) OwPackageName() string {
+	return Catalog.Format(msgs.locale, "owPackageName", nil)
+}
+
+// OwLogSource says "Log"
+// in the language the app shows.
+func OwLogSource() string { return In(i18n.Locale()).OwLogSource() }
+
+// OwLogSource says "Log"
+// in the language of msgs.
+func (msgs Messages) OwLogSource() string {
+	return Catalog.Format(msgs.locale, "owLogSource", nil)
+}
+
+// OwSystemLog says "System log (logread)"
+// in the language the app shows.
+func OwSystemLog() string { return In(i18n.Locale()).OwSystemLog() }
+
+// OwSystemLog says "System log (logread)"
+// in the language of msgs.
+func (msgs Messages) OwSystemLog() string {
+	return Catalog.Format(msgs.locale, "owSystemLog", nil)
+}
+
+// OwKernelLog says "Kernel log (dmesg)"
+// in the language the app shows.
+func OwKernelLog() string { return In(i18n.Locale()).OwKernelLog() }
+
+// OwKernelLog says "Kernel log (dmesg)"
+// in the language of msgs.
+func (msgs Messages) OwKernelLog() string {
+	return Catalog.Format(msgs.locale, "owKernelLog", nil)
+}
+
+// OwLogLines says "Lines"
+// in the language the app shows.
+func OwLogLines() string { return In(i18n.Locale()).OwLogLines() }
+
+// OwLogLines says "Lines"
+// in the language of msgs.
+func (msgs Messages) OwLogLines() string {
+	return Catalog.Format(msgs.locale, "owLogLines", nil)
+}
+
+// OwName says "Name"
+// in the language the app shows.
+func OwName() string { return In(i18n.Locale()).OwName() }
+
+// OwName says "Name"
+// in the language of msgs.
+func (msgs Messages) OwName() string {
+	return Catalog.Format(msgs.locale, "owName", nil)
+}

@@ -1,0 +1,71 @@
+---FINALLYSHELL:release---
+DISTRIB_ID='OpenWrt'
+DISTRIB_RELEASE='25.12.1'
+DISTRIB_REVISION='r32768-b21cfa8f8c'
+DISTRIB_TARGET='x86/64'
+DISTRIB_ARCH='x86_64'
+DISTRIB_DESCRIPTION='OpenWrt 25.12.1 r32768-b21cfa8f8c'
+DISTRIB_TAINTS=''
+---FINALLYSHELL:board---
+{
+	"kernel": "6.6.73",
+	"hostname": "OpenWrt",
+	"system": "Generic x86_64 CPU",
+	"release": {
+		"distribution": "OpenWrt",
+		"version": "25.12.1",
+		"firmware_url": "https://downloads.openwrt.org/",
+		"revision": "r32768-b21cfa8f8c",
+		"target": "x86/64",
+		"description": "OpenWrt 25.12.1 r32768-b21cfa8f8c",
+		"builddate": "1773711117"
+	}
+}
+---FINALLYSHELL:info---
+{
+	"localtime": 1795655580,
+	"uptime": 3370,
+	"load": [
+		192,
+		1216,
+		0
+	],
+	"memory": {
+		"total": 24861388800,
+		"free": 23383228416,
+		"shared": 4870144,
+		"buffered": 1019904,
+		"available": 23614537728,
+		"cached": 375701504
+	},
+	"root": {
+		"total": 1055762868,
+		"free": 1020200812,
+		"used": 35562056,
+		"avail": 966497340
+	},
+	"tmp": {
+		"total": 12139348,
+		"free": 12139296,
+		"used": 52,
+		"avail": 12139296
+	},
+	"swap": {
+		"total": 6442450944,
+		"free": 6442450944
+	}
+}
+---FINALLYSHELL:model---
+---FINALLYSHELL:host---
+OpenWrt
+6.6.73
+---FINALLYSHELL:tools---
+apk
+fw4
+fw3
+---FINALLYSHELL:sftp---
+---FINALLYSHELL:df---
+Filesystem           1K-blocks      Used Available Use% Mounted on
+overlay              1055762868  35562056 966497340   4% /
+tmpfs                 12139348        52  12139296   0% /tmp
+---FINALLYSHELL:end---

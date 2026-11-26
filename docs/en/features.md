@@ -2180,7 +2180,7 @@ Copy a shell snippet or insert a single line without pressing Enter. **Run** sho
 
 ## System tab
 
-The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off.
+The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off. On OpenWrt it shows the sections of [System tab › OpenWrt](#system-tab--openwrt) instead.
 
 ### System tab › Services, logs and scheduled jobs
 
@@ -2201,6 +2201,22 @@ The System tab of the bottom panel manages the connected server itself: a row at
 - **Configuration:** Create a static site or a reverse proxy to a port on `127.0.0.1`, optionally using existing TLS certificate and private-key paths. A new site goes in `sites-available` with a matching link or in `conf.d`. Changes require confirmation. An edit saves a sibling `.bak-YYYYMMDDHHMMSS` backup, refuses stale files, and reloads a running Nginx only after `nginx -t` succeeds. When the test fails, the previous file is put back at once and the editor shows your edits again, so the next start of Nginx never meets a broken file; if putting it back fails too, **Restore backup** does it by hand. Link and creation changes are rolled back on a failed test. Custom layouts, unsafe file ownership or permissions, and include patterns that would pick up a backup can prevent changes.
 - **Certificates:** View public certificates used by Nginx and Let's Encrypt `fullchain.pem` files, including the subject, SANs, issuer, public-key type and validity dates. Expiry turns yellow under 30 days and red under 7 days, including expired certificates. **Check domain** compares the certificate presented on port 443 from the SSH server with the certificate and trust result from this computer; the server-side probe does not verify trust.
 - **ACME:** Inspect Certbot lineages and common renewal timers or cron entries. `acme.sh` is detected only. Certbot renewal and its staging dry run both ask first because existing hooks may run. Issuing a certificate requires the Certbot Nginx plugin and asks before publishing names to an ACME CA and letting the plugin change Nginx. Supported Nginx configurations are backed up before running these tools. A canceled stream does not guarantee that the remote operation has been undone; refresh and inspect its state before retrying.
+
+### System tab › OpenWrt
+
+On OpenWrt and its derivatives (ImmortalWrt, iStoreOS and others with `/etc/openwrt_release`), from 21.02 to 25.12, the System tab shows the sections a router needs instead: Status, Interfaces, DHCP, Port forwards, Services, Packages, Logs, then Scheduled jobs and Disk as on other servers. The desktop has an **OpenWrt** app with the same sections. Changes run as root and ask first; they go through `uci` and reload only the service concerned, as LuCI does.
+
+- **Status:** the release, model, kernel, uptime, load, memory, the root (overlay) and `/tmp` space, the package manager (opkg, or apk from 25.12), the firewall (fw4 with nftables, or fw3 with iptables) and whether there is an SFTP server. **Back up configuration** saves a `sysupgrade -b` archive, as LuCI's backup, to the download folder. **Reboot** restarts the router.
+- **Interfaces:** netifd's interfaces with their state, protocol, device, addresses, gateway, uptime and traffic. **Restart interface** (`ifup`) and **Stop interface** (`ifdown`) warn when the connection goes through the interface.
+- **DHCP:** dnsmasq's leases with their remaining time, and the static leases. **Make static** gives the selected device its address for good; static leases can be added and deleted.
+- **Port forwards:** the firewall's redirects. Add one (name, TCP and/or UDP, external port or range, internal IP and port, zones, `wan` to `lan` by default), enable or disable it, or delete it; the firewall reloads its rules without dropping connections.
+- **Services:** the scripts of `/etc/init.d`, whether procd runs them and whether they start at boot. Start, stop, restart, reload, enable or disable one; stopping or restarting `network`, `dropbear`, `sshd` or `firewall` warns that the connection may drop.
+- **Packages:** the installed packages and the upgrades in the downloaded lists. **Update lists** downloads them (OpenWrt keeps them in memory, so a reboot drops them). **Install…** searches the lists by name; **Upgrade** and **Remove** act on the selected packages. Upgrading core packages one by one is warned against, as OpenWrt does.
+- **Logs:** the last 200, 500 or 2000 lines of the system log (`logread`) or the kernel log (`dmesg`), filtered as you type.
+
+OpenWrt has no SFTP server until `openssh-sftp-server` is installed. The Files tab of such a router says so under its error, with **Install SFTP server**, which downloads the lists, installs the package and connects the file manager again.
+
+The Processes tab, the Task Manager and the monitor's process list read `/proc` where BusyBox's `ps` has no `-o`, as on OpenWrt; the disk scan uses `readlink -f` where there is no `realpath`.
 
 ## Caddy tab
 

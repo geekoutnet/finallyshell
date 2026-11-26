@@ -63,14 +63,43 @@ func Loopback(endpoint *url.URL) bool {
 	return strings.EqualFold(host, "localhost") || net.ParseIP(host).IsLoopback()
 }
 
+// Message is a message of a chat: an assistant's may call tools, and a
+// "tool" message answers the call ToolCallID names.
 type Message struct {
-	Role    string `json:"role"`
-	Content string `json:"content"`
+	Role       string     `json:"role"`
+	Content    string     `json:"content"`
+	ToolCalls  []ToolCall `json:"tool_calls,omitempty"`
+	ToolCallID string     `json:"tool_call_id,omitempty"`
+}
+
+// ToolCall is the model asking to call a function, its arguments JSON.
+type ToolCall struct {
+	ID       string       `json:"id"`
+	Type     string       `json:"type"`
+	Function FunctionCall `json:"function"`
+}
+
+type FunctionCall struct {
+	Name      string `json:"name"`
+	Arguments string `json:"arguments"`
+}
+
+// Tool is a function the model may call, its parameters a JSON schema.
+type Tool struct {
+	Type     string       `json:"type"`
+	Function ToolFunction `json:"function"`
+}
+
+type ToolFunction struct {
+	Name        string          `json:"name"`
+	Description string          `json:"description"`
+	Parameters  json.RawMessage `json:"parameters"`
 }
 
 type completion struct {
 	Model    string    `json:"model"`
 	Messages []Message `json:"messages"`
+	Tools    []Tool    `json:"tools,omitempty"`
 	Stream   bool      `json:"stream"`
 }
 
@@ -179,24 +208,32 @@ func (client Client) Models(ctx context.Context) ([]string, error) {
 }
 
 func (client Client) Stream(ctx context.Context, messages []Message, delta func(string)) error {
-	body, err := json.Marshal(completion{client.Model, messages, true})
+	_, err := client.StreamTools(ctx, messages, nil, delta)
+	return err
+}
+
+// StreamTools streams the model's reply to messages, its text to delta,
+// offering it tools; it returns the calls the model made of them.
+func (client Client) StreamTools(ctx context.Context, messages []Message, tools []Tool, delta func(string)) ([]ToolCall, error) {
+	body, err := json.Marshal(completion{client.Model, messages, tools, true})
 	if err != nil {
-		return err
+		return nil, err
 	}
 	request, err := client.request(ctx, http.MethodPost, "chat/completions", bytes.NewReader(body))
 	if err != nil {
-		return err
+		return nil, err
 	}
 	response, err := client.do(request)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer response.Body.Close()
-	if err := readStream(io.LimitReader(response.Body, 16<<20), delta); err != nil {
+	var calls []ToolCall
+	if err := readStream(io.LimitReader(response.Body, 16<<20), delta, &calls); err != nil {
 		if ctx.Err() != nil {
-			return ctx.Err()
+			return nil, ctx.Err()
 		}
-		return errors.New(Limit(client.SafeText(err.Error()), 1000))
+		return nil, errors.New(Limit(client.SafeText(err.Error()), 1000))
 	}
-	return nil
+	return calls, nil
 }

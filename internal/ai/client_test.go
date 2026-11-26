@@ -22,7 +22,7 @@ func TestDesktopAISSE(t *testing.T) {
 		{"data: {\"choices\":[{\"delta\":{\"content\":\"partial\"}}]}\n\n", "partial", "unexpected EOF"},
 	} {
 		var output strings.Builder
-		err := readStream(iotest.OneByteReader(strings.NewReader(sample.input)), func(text string) { output.WriteString(text) })
+		err := readStream(iotest.OneByteReader(strings.NewReader(sample.input)), func(text string) { output.WriteString(text) }, nil)
 		if output.String() != sample.text || sample.failure == "" && err != nil || sample.failure != "" && (err == nil || !strings.Contains(err.Error(), sample.failure)) {
 			t.Errorf("got %q, %v; want %q, %q", output.String(), err, sample.text, sample.failure)
 		}

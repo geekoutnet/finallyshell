@@ -160,6 +160,9 @@ type desktopAIMessage struct {
 	// for aiCommandTimeout; deadline, while it runs, when it stops.
 	timeout  int
 	deadline *aiDeadline
+	// denyRule and cut are why a blocked command was not run.
+	denyRule string
+	cut      ai.ConnectionCut
 }
 
 const (

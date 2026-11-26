@@ -123,12 +123,16 @@ type AISettings struct {
 	// tokens: 0 for the default (ai.DefaultContextTokens). Past it, the
 	// earlier part of the conversation is summarized.
 	ContextTokens int `json:"contextTokens,omitempty"`
+	// DenyCommands are regular expressions: a command the model calls that
+	// matches one is never run, whatever else would let it.
+	DenyCommands []string `json:"denyCommands,omitempty"`
 }
 
 // Equal reports whether s and o are the same settings.
 func (s AISettings) Equal(o AISettings) bool {
 	return s.Provider == o.Provider && s.Endpoint == o.Endpoint && s.Model == o.Model && slices.Equal(s.Models, o.Models) &&
-		s.SystemPrompt == o.SystemPrompt && s.SendContext == o.SendContext && s.ContextTokens == o.ContextTokens
+		s.SystemPrompt == o.SystemPrompt && s.SendContext == o.SendContext && s.ContextTokens == o.ContextTokens &&
+		slices.Equal(s.DenyCommands, o.DenyCommands)
 }
 
 // HasModel reports whether model is the default model or one of the

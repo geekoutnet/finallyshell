@@ -472,6 +472,14 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 		status = locales.DesktopAICmdCancelled()
 	case aiCmdFailed:
 		icon, color, status = "triangle-alert", theme.Danger, locales.DesktopAICmdFailed(card.err)
+	case aiCmdBlocked:
+		icon, color, status = "shield-alert", theme.Danger, locales.AiGuardBlocked()
+		switch {
+		case card.denyRule != "":
+			status = locales.AiGuardDenied(card.denyRule)
+		case card.cut != ai.CutNone:
+			status = locales.AiGuardCutsConnection()
+		}
 	}
 	border := theme.Border
 	if card.Status == aiCmdWaiting {

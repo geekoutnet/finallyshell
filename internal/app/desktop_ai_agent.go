@@ -29,7 +29,7 @@ const (
 	// window get: its start and its end.
 	aiOutputLimit = 16 << 10
 	// aiMaxSteps is how many rounds of commands one question may run.
-	aiMaxSteps = 12
+	aiMaxSteps = 30
 )
 
 // aiCommandTimeout is how long a command may run when the model does not
@@ -96,6 +96,7 @@ const (
 	aiCmdRefused                          // by the user
 	aiCmdCancelled                        // with the request
 	aiCmdFailed                           // could not run
+	aiCmdBlocked                          // never run: it would cut the connection, or the user's rules forbid it
 )
 
 // finished reports whether the command ran or will not.
@@ -213,6 +214,7 @@ func (a *App) aiTurn(run *aiRun) {
 // not high-risk queued to run, the rest waiting for the user.
 func (a *App) aiCommands(run *aiRun, calls []ai.ToolCall) {
 	run.cards = run.cards[:0]
+	deny, _ := aiDenyRules(a.aiSettings().DenyCommands)
 	for _, call := range calls {
 		card := &desktopAIMessage{Role: "command", callID: call.ID}
 		args, err := ai.ParseCommandCall(call)
@@ -225,6 +227,12 @@ func (a *App) aiCommands(run *aiRun, calls []ai.ToolCall) {
 			}
 		case run.client.Key != "" && strings.Contains(args.Command, run.client.Key):
 			card.Status, card.err, card.Text = aiCmdFailed, locales.AiKeyFieldOnly(), run.client.SafeText(args.Command)
+		// Before anything that would let it run: the user's rules, then
+		// what would cut the assistant's own connection.
+		case aiDenied(deny, args.Command) != "":
+			card.Status, card.denyRule = aiCmdBlocked, aiDenied(deny, args.Command)
+		case ai.CutsConnection(args.Command) != ai.CutNone:
+			card.Status, card.cut = aiCmdBlocked, ai.CutsConnection(args.Command)
 		case ai.ReadOnly(args.Command):
 			card.Status, card.Auto = aiCmdQueued, true
 		case run.state.autoRun && !ai.HighRisk(args.Command):
@@ -284,6 +292,11 @@ func (card *desktopAIMessage) toolResult() string {
 		return ai.CommandResult(-1, card.output, true, cmp.Or(card.timeout, int(aiCommandTimeout/time.Second)))
 	case aiCmdRefused:
 		return "The user refused to run this command. Do not run it another way; ask them what they want instead."
+	case aiCmdBlocked:
+		if card.denyRule != "" {
+			return "Not run: the user's rules forbid commands matching " + card.denyRule + ". Do not run it another way; tell the user."
+		}
+		return "Not run: " + card.cut.String() + ", which would cut the SSH connection you work over. Do not run it another way; if it is really needed, tell the user to run it themselves in the terminal, and how."
 	default:
 		return "The command could not run: " + card.err
 	}

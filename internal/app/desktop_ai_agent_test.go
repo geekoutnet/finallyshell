@@ -755,3 +755,48 @@ func TestAIHistoryBudget(t *testing.T) {
 		t.Fatal("the settings' choices")
 	}
 }
+
+// TestDesktopAIAgentGuard never runs a command that would cut the SSH
+// connection, even with everything run automatically, nor one the user's
+// rules forbid, read-only or not; the model learns why.
+func TestDesktopAIAgentGuard(t *testing.T) {
+	var round atomic.Int32
+	at := newAIAgentTest(t, func(body string) string {
+		switch round.Add(1) {
+		case 1:
+			return aiToolCallEvent("call_1", "systemctl restart sshd")
+		case 2:
+			if !strings.Contains(body, "cut the SSH connection") {
+				return aiTextEvent("no reason given")
+			}
+			return aiToolCallEvent("call_2", "cat /etc/hosts")
+		case 3:
+			if !strings.Contains(body, "the user's rules forbid") {
+				return aiTextEvent("no rule given")
+			}
+		}
+		return aiTextEvent("done")
+	})
+	at.a.settings.AI.DenyCommands = []string{`^cat\s+/etc/`, `([unclosed`}
+	at.state.autoRun = true
+	at.ask("restart ssh and read hosts")
+	at.platform.until(t, "answer", func() bool { return at.state.cancel == nil })
+	cards := at.cards()
+	if len(cards) != 2 || cards[0].Status != aiCmdBlocked || cards[0].cut != ai.CutSSH || cards[1].Status != aiCmdBlocked || cards[1].denyRule != `^cat\s+/etc/` {
+		t.Fatalf("cards %+v / %+v", cards[0], cards[len(cards)-1])
+	}
+	if ran := at.ran(); len(ran) != 0 {
+		t.Fatalf("ran %q", ran)
+	}
+	if last := at.state.chat.Messages[len(at.state.chat.Messages)-1]; last.Text != "done" {
+		t.Fatalf("answer %q", last.Text)
+	}
+	rules, bad := aiDenyRules(aiDenyLines("  ^rm\\s \n\n([x\n"))
+	if len(rules) != 1 || len(bad) != 1 || aiDenied(rules, "rm -rf /tmp/x") == "" || aiDenied(rules, "ls") != "" {
+		t.Fatalf("rules %v, bad %v", rules, bad)
+	}
+	a := config.AISettings{DenyCommands: []string{"x"}}
+	if a.Equal(config.AISettings{}) || !a.Equal(config.AISettings{DenyCommands: []string{"x"}}) {
+		t.Fatal("Equal ignores the rules")
+	}
+}

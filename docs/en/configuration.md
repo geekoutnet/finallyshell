@@ -272,6 +272,7 @@ default.
 | `procListPercent`, `procFieldsPercent` | In the Processes tab, the process list's share above the details, and the details' fields' share beside the environment variables, in percent. | The app's defaults. |
 | `netListPercent` | In the Network tab, the table's share above the connections and trace tabs, in percent. | The app's defaults. |
 | `bottomPanelHidden` | `true` collapses the bottom panel under the terminal to its row of tabs, or, on the right, hides its column. | Open. |
+| `sidebarHidden` | `true` folds the left column (the monitor and the session list) away. | Shown. |
 | `bottomPanelSide` | `right` puts the bottom panel in a column on the terminal's right. | `""`, under the terminal. |
 | `rightPanelWidth` | Width of the column on the terminal's right, in DIPs, as last dragged. | The app's default (460). |
 | `monitorSide` | `right` puts the server monitor at the top of the column on the terminal's right; the session list then fills the left column. | `""`, at the top left. |
@@ -283,6 +284,7 @@ default.
 | `commandEditorClear` | `true` turns on the command editor's "Clear after sending". | Off. |
 | `leftPanelPage` | `connections` shows the Connections page in the bottom-left panel. | The session tabs. |
 | `connectionTreeExpanded` | IDs of the folders open on the Connections page, such as `["f1730000000000000000"]`; `[]` for none. By ID, so a renamed or moved folder stays open. | Every folder open. |
+| `managerTreeExpanded` | IDs of the folders open in the connection manager as it was last left, as `connectionTreeExpanded`. | Every folder collapsed. |
 | `sync` | The Sync page's settings (see [Sync](#sync)). | Sync is off. |
 
 Details of each option are in [features.md](features.md): see
@@ -327,7 +329,8 @@ The Websites section adds no host or application settings. It reads Nginx config
 `desktop` is local to this device. `wallpaper` is empty for the default,
 `builtin:<id>` for a built-in, `color:#rrggbb` for a solid color, or the
 basename of a `desktop-wallpaper-*` image copied into the config directory.
-`singleClick`, `stackWindows`, `coverDock`, `iconSize` (`small`, empty for
+`singleClick`, `stackWindows`, `coverDock`, `hideServerInfo` (folds the
+server details on the right of the desktop), `iconSize` (`small`, empty for
 medium, or `large`), and `pinned` control desktop behavior. Omitted `pinned`
 uses the default apps; an empty array keeps no optional pins.
 
@@ -393,13 +396,13 @@ Each settings key is either synced or kept on each computer; the lists are
 `syncedSettings` and `localSettings` in `internal/config/sync.go`. Kept
 local: `sidebarWidth`, `monitorPercent`, `terminalPercent`, `treeWidth`,
 `procListPercent`, `procFieldsPercent`, `netListPercent`,
-`monitorHidden`, `bottomPanelHidden`, `bottomPanelSide`, `rightPanelWidth`,
+`monitorHidden`, `bottomPanelHidden`, `sidebarHidden`, `bottomPanelSide`, `rightPanelWidth`,
 `monitorSide`, `rightMonitorPercent`, `commandEditorShown`,
 `commandEditorWidth`, `commandEditorPercent`, `commandEditorNoEnter`,
 `commandEditorClear`, `codeEditorFontSize`, `termBackground`, `localShell`, `sshAgent`, `x11Display`, `downloadDir`,
 `askDownloadDir`, `sync`,
-`geoLocations`, `geoLocationsV6`, `geoOnline`, `leftPanelPage` and
-`connectionTreeExpanded` (the left panel's page and the folders open are
+`geoLocations`, `geoLocationsV6`, `geoOnline`, `leftPanelPage`,
+`connectionTreeExpanded` and `managerTreeExpanded` (the left panel's page and the folders open are
 where this computer's window was left, as the pane sizes are), and a
 `fileIconTheme` installed from a VSIX or found in an editor's extensions.
 

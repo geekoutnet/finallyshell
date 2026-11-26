@@ -145,6 +145,27 @@ connecting, red for failed. The list scrolls, and sessions can be
 reordered by dragging. The context menu of a session has Reconnect,
 Duplicate session, Disconnect, Rename and Close.
 
+Over the main area, a row of tabs shows the same sessions, one tab per
+server, in the list's order, as a browser's tabs: a server's tab stands
+for its row and the rows under it (its panel row and its desktop). A click
+on a tab goes back to the row of that server the user was on last, so the
+terminal, the bottom panel, the desktop and the monitor switch with it;
+choosing a row in the list moves the tabs along. A tab's context menu has
+Reconnect, Disconnect and Close, and "+" at the row's end opens a new tab.
+In the list, dashed lines join a server's panel row and desktop to it, and
+a thin line separates one server from the next.
+
+Closing a server that is connected or connecting, from its tab, the list's
+close button or context menu, or the shortcut, asks first: closing ends
+the connection, its desktop and panel, and its transfers. A disconnected
+server, a panel row and a new tab close at once.
+
+The first button of the tab row folds the whole left column (the monitor
+and the session list) away, and the main area takes the window's width;
+the button, now pointing right, and the shortcut "Show or hide the left
+column" (Cmd+B on macOS, Ctrl+Shift+B on Windows and Linux) show it again.
+The choice is kept in `settings.json`.
+
 A session tab can have a name of its own for this run, to tell apart
 several tabs open to the same server. "Rename" in its context menu, or F2
 while the session list has the keyboard focus, turns the tab's name into
@@ -465,8 +486,9 @@ Toolbar:
 - A type filter: "All types", "SSH" or "Remote Desktop".
 - A search box.
 
-The manager opens with every folder collapsed each time; use Expand all
-or the arrows to open them.
+The manager opens with the folders open as you left them last time, after
+a restart too (`managerTreeExpanded`), and with every folder collapsed the
+first time; use Expand all, Collapse all or the arrows to change them.
 
 Below the tree is "Close window after connecting", checked by default. It
 is stored as `keepManagerOpen` in `settings.json`; without that key the
@@ -3153,6 +3175,7 @@ Terminal › Shortcuts page.
 | Focus command bar (and back to the terminal) | Cmd+Shift+L | Ctrl+Shift+L |
 | Switch sessions / connections (the bottom-left panel's pages) | Cmd+Shift+E | Ctrl+Shift+E |
 | Show or hide the bottom panel | Cmd+J | Ctrl+Shift+J |
+| Show or hide the left column | Cmd+B | Ctrl+Shift+B |
 | Split the pane right | Cmd+D | Alt+Shift+= |
 | Split the pane down | Cmd+Shift+D | Alt+Shift+- |
 | Zoom the focused pane, or show all panes | Cmd+Shift+Enter | Ctrl+Shift+X |

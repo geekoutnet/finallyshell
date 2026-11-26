@@ -99,7 +99,9 @@ func CronRunCommand(user string) (string, error) {
 	if !ValidCronUser(user) {
 		return "", errors.New("invalid user name")
 	}
-	return SystemCommand("su", "-s", "/bin/sh", "-c", "exec sh -s", "--", user), nil
+	// The user it already runs as needs no su, which OpenWrt does not have.
+	return "if [ \"$('id' '-un')\" = " + privilegeQuote(user) + " ]; then exec 'sh' '-s'; fi\nexec " +
+		SystemCommand("su", "-s", "/bin/sh", "-c", "exec sh -s", "--", user), nil
 }
 
 func CronManualInput(command string) (string, error) {

@@ -70,7 +70,8 @@ func DiskScanScript(target string, largest bool) (string, error) {
 		return "", ErrOpsInvalid
 	}
 	arg := privilegeQuote(target)
-	prefix := "export LC_ALL=C\n[ -d " + arg + " ] && [ \"$('realpath' " + arg + ")\" = " + arg + " ] || exit 1\n"
+	// BusyBox without realpath, as OpenWrt's, has readlink -f.
+	prefix := "export LC_ALL=C\n[ -d " + arg + " ] && [ \"$('realpath' " + arg + " 2>/dev/null || 'readlink' '-f' " + arg + ")\" = " + arg + " ] || exit 1\n"
 	if largest {
 		return opsTimed(85, prefix+`[ "$( 'find' '/dev/null' '-printf' 'yes' 2>/dev/null )" = 'yes' ] && 'sort' '-z' </dev/null >/dev/null 2>&1
 if [ "$?" -eq 0 ]; then
@@ -167,7 +168,7 @@ func DiskMutationAllowed(target string) bool {
 }
 
 const diskSafeTarget = `safe_target() {
-  [ -e "$1" ] && [ "$('realpath' "$1")" = "$1" ] || return 1
+  [ -e "$1" ] && [ "$('realpath' "$1" 2>/dev/null || 'readlink' '-f' "$1")" = "$1" ] || return 1
   [ ! -L "$1" ] || return 1
   if [ "$('id' '-u')" = '0' ]; then
     parent=${1%/*}

@@ -47,13 +47,15 @@ const procMark = "---FINALLYSHELL:"
 // and their errors are dropped. The script's own processes (the shell,
 // ps, cat and ls) are those whose parent is $$, left out of the list.
 // Each column has its own -o: procps-ng 3.3.10 (CentOS 7) reads
-// "-o pid=,ppid=,…" as one pid column headed ",ppid=,…".
+// "-o pid=,ppid=,…" as one pid column headed ",ppid=,…". OpenWrt's
+// BusyBox ps has no -o at all: its plain ps ww is the last, in a section
+// of its own (parsePSW).
 const procsScript = `export LC_ALL=C
 m() { echo "` + procMark + `$1---"; }
 m self; echo $$
 m uname; uname -s
 m cpu; grep '^cpu' /proc/stat 2>/dev/null
-m ps; ps -e -o pid= -o ppid= -o user:32= -o rss= -o pcpu= -o args= 2>/dev/null || ps -o pid=,ppid=,user=,rss=,args= 2>/dev/null
+m ps; ps -e -o pid= -o ppid= -o user:32= -o rss= -o pcpu= -o args= 2>/dev/null || ps -o pid=,ppid=,user=,rss=,args= 2>/dev/null || { m psw; ps ww 2>/dev/null; }
 m stat; cat /proc/[0-9]*/stat 2>/dev/null
 m exe; ls -l /proc/[0-9]*/exe 2>/dev/null
 m end
@@ -180,6 +182,11 @@ func (l *ProcessLister) parse(out string) ([]Process, error) {
 	}
 	self, _ := strconv.Atoi(strings.TrimSpace(sec["self"]))
 	procs := parsePS(sec["ps"])
+	// ps ww has neither the parent nor the memory: /proc/<pid>/stat has.
+	fromStat := len(procs) == 0
+	if fromStat {
+		procs = parsePSW(sec["psw"])
+	}
 	stats := parseProcStats(sec["stat"])
 	exes := parseExeLinks(sec["exe"])
 	total, ncpu := parseCPUTotal(sec["cpu"])
@@ -191,10 +198,17 @@ func (l *ProcessLister) parse(out string) ([]Process, error) {
 	ticks := make(map[pidStart]uint64, len(stats))
 	kept := procs[:0]
 	for _, p := range procs {
+		st, ok := stats[p.PID]
+		if fromStat && !ok {
+			continue // ended before /proc was read, as the script's own ps
+		}
+		if fromStat {
+			p.PPID, p.RSS = st.ppid, st.rss*procPageSize
+		}
 		if self != 0 && (p.PID == self || p.PPID == self) {
 			continue
 		}
-		if st, ok := stats[p.PID]; ok {
+		if ok {
 			p.Name, p.State, p.Start = st.name, st.state, st.start
 			key := pidStart{p.PID, st.start}
 			ticks[key] = st.ticks
@@ -272,6 +286,32 @@ func parsePS(s string) []Process {
 	return procs
 }
 
+// parsePSW reads BusyBox's ps ww, as OpenWrt has it: PID, USER, VSZ,
+// STAT and COMMAND, under a header. A kernel thread has no VSZ, so its
+// third field is the state.
+func parsePSW(s string) []Process {
+	var procs []Process
+	for line := range strings.SplitSeq(s, "\n") {
+		f, rest := fieldsN(line, 4)
+		if len(f) < 3 {
+			continue
+		}
+		pid, err := strconv.Atoi(f[0])
+		if err != nil || pid <= 0 {
+			continue
+		}
+		p := Process{PID: pid, User: f[1]}
+		switch {
+		case len(f) == 4 && f[2][0] >= '0' && f[2][0] <= '9':
+			p.Args = rest
+		case len(f) == 4:
+			p.Args = strings.TrimSpace(f[3] + " " + rest)
+		}
+		procs = append(procs, p)
+	}
+	return procs
+}
+
 // fieldsN splits the first n fields off s, by spaces, and returns them
 // with the rest of the line, its own spaces kept, but for those around.
 func fieldsN(s string, n int) (fields []string, rest string) {
@@ -337,7 +377,12 @@ type procStat struct {
 	ppid  int
 	ticks uint64 // utime + stime
 	start uint64
+	rss   uint64 // resident pages
 }
+
+// procPageSize is the size of the pages /proc/<pid>/stat counts rss in,
+// as on the systems Linux runs on but a few.
+const procPageSize = 4096
 
 // parseProcStat reads one /proc/<pid>/stat line. The name is between the
 // first ( and the last ), as it may hold spaces and parentheses itself.
@@ -366,6 +411,9 @@ func parseProcStat(line string) (pid int, st procStat, ok bool) {
 	stime, _ := strconv.ParseUint(f[12], 10, 64)
 	st.ticks = utime + stime
 	st.start, _ = strconv.ParseUint(f[19], 10, 64)
+	if len(f) > 21 { // rss(24)
+		st.rss, _ = strconv.ParseUint(f[21], 10, 64)
+	}
 	return pid, st, true
 }
 

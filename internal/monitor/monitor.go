@@ -58,7 +58,9 @@ type Disk struct {
 const sep = "---FINALLYSHELL---"
 
 // statsScript reads everything in one round trip. It needs only /proc,
-// df and ps, as on any Linux server.
+// df and ps, as on any Linux server; where ps has no -o, as OpenWrt's
+// BusyBox, the largest processes come from /proc/<pid>/stat: its rss
+// (in 4 KiB pages), without a CPU percent.
 const statsScript = `export LC_ALL=C
 cat /proc/uptime; echo ` + sep + `
 cat /proc/loadavg; echo ` + sep + `
@@ -66,7 +68,8 @@ head -1 /proc/stat; echo ` + sep + `
 ` + memoryScript + `echo ` + sep + `
 cat /proc/net/dev; echo ` + sep + `
 df -kP -x tmpfs -x devtmpfs -x overlay -x squashfs 2>/dev/null || df -kP; echo ` + sep + `
-ps -eo rss=,pcpu=,comm= --sort=-rss 2>/dev/null | head -5
+ps -eo rss=,pcpu=,comm= --sort=-rss 2>/dev/null | head -5 | grep . ||
+cat /proc/[0-9]*/stat 2>/dev/null | awk '{ n = match($0, /\) [A-Za-z] /); if (!n) next; o = index($0, "("); split(substr($0, n + 2), f, " "); if (f[22] > 0) print f[22] * 4, 0, substr($0, o + 1, n - o - 1) }' | sort -rn | head -5
 `
 
 // scriptTimeout is how long a read of the stats waits for the server:

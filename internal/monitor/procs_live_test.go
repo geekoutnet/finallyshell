@@ -45,7 +45,8 @@ func dialTestServer(t *testing.T) *ssh.Client {
 func startSleep(t *testing.T, ctx context.Context, client *ssh.Client, env string) (int, string) {
 	t.Helper()
 	args := "sleep " + strconv.Itoa(100000+rand.IntN(800000))
-	out, _, err := RunScript(ctx, client, env+" nohup "+args+" >/dev/null 2>&1 &\necho $!\n")
+	// nohup where there is one: OpenWrt has none.
+	out, _, err := RunScript(ctx, client, "n=; command -v nohup >/dev/null 2>&1 && n=nohup\n"+env+" $n "+args+" >/dev/null 2>&1 &\necho $!\n")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -99,7 +100,8 @@ func TestProcessesLive(t *testing.T) {
 		}
 	}
 	sleep := procs[i]
-	if sleep.Name != "sleep" || sleep.User == "" || sleep.RSS == 0 || !strings.HasSuffix(sleep.Path, "/sleep") || sleep.Start == 0 {
+	// BusyBox's sleep is busybox itself.
+	if sleep.Name != "sleep" || sleep.User == "" || sleep.RSS == 0 || !strings.HasSuffix(sleep.Path, "/sleep") && !strings.HasSuffix(sleep.Path, "/busybox") || sleep.Start == 0 {
 		t.Errorf("sleep %+v", sleep)
 	}
 	if slices.ContainsFunc(procs, func(p Process) bool { return p.Name == "ls" && strings.Contains(p.Args, "/proc/") }) {

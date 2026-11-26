@@ -3,6 +3,7 @@ package monitor
 import (
 	"context"
 	"errors"
+	"fmt"
 	"math"
 	"reflect"
 	"strings"
@@ -56,6 +57,47 @@ func TestParseProcsBusyBox(t *testing.T) {
 		{PID: 1501, PPID: 1, User: "root", RSS: 310 << 20, Name: "dockerd", Args: "/usr/bin/dockerd --host=unix:///var/run/docker.sock", Path: "/usr/bin/dockerd", State: 'S', Start: 400},
 		{PID: 1777, PPID: 1, User: "nobody", RSS: 1288490188, Name: "node", Args: "node /srv/app/server.js"},
 		{PID: 2001, PPID: 1, User: "root", RSS: 2304 * 1024, Name: "sshd", Args: "/usr/sbin/sshd -D"},
+	}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got\n%+v\nwant\n%+v", got, want)
+	}
+}
+
+// OpenWrt's BusyBox ps has no -o: the list comes from its ps ww, with the
+// parents and the memory from /proc/<pid>/stat, a kernel thread without
+// a VSZ, and the script's own processes left out.
+func TestParseProcsOpenWrt(t *testing.T) {
+	stat := func(pid, name string, ppid, rss int) string {
+		return fmt.Sprintf("%s (%s) S %d %s 0 0 -1 4194560 0 0 0 0 3 4 0 0 20 0 1 0 50 1589248 %d 18446744073709551615 1 1 0 0 0 0 0 4096 1260 0 0 0 17 0 0 0 0 0 0 0 0 0 0 0 0 0 0", pid, name, ppid, pid, rss)
+	}
+	out := strings.Join([]string{
+		procMark + "self---", "900",
+		procMark + "uname---", "Linux",
+		procMark + "cpu---", "cpu  100 0 100 1000 0 0 0 0 0 0",
+		procMark + "ps---",
+		procMark + "psw---",
+		"  PID USER       VSZ STAT COMMAND",
+		"    1 root      1552 S    /sbin/procd",
+		"    2 root           SW   [kthreadd]",
+		"  647 dnsmasq   1364 S    /usr/sbin/dnsmasq -C /var/etc/dnsmasq.conf -k",
+		"  901 root      1192 R    ps ww",
+		procMark + "stat---",
+		stat("1", "procd", 0, 280),
+		stat("2", "kthreadd", 0, 0),
+		stat("647", "dnsmasq", 1, 341),
+		stat("901", "ps", 900, 100),
+		procMark + "exe---",
+		procMark + "end---",
+	}, "\n")
+	var l ProcessLister
+	got, err := l.parse(out)
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []Process{
+		{PID: 1, User: "root", RSS: 280 * 4096, Name: "procd", Args: "/sbin/procd", State: 'S', Start: 50},
+		{PID: 2, User: "root", Name: "kthreadd", Args: "[kthreadd]", State: 'S', Start: 50},
+		{PID: 647, PPID: 1, User: "dnsmasq", RSS: 341 * 4096, Name: "dnsmasq", Args: "/usr/sbin/dnsmasq -C /var/etc/dnsmasq.conf -k", State: 'S', Start: 50},
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got\n%+v\nwant\n%+v", got, want)

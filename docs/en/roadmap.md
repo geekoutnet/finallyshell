@@ -48,7 +48,11 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 
 ## In progress
 
-Nothing yet.
+- The AI assistant deletes conversations (a button on hover or the context menu in the sidebar, after asking).
+- The AI assistant's input is resized by dragging its top edge; a double click gives the default back.
+- The session list links desktops, panels and other child rows to their server with dashed tree lines, and separates servers.
+- The main window's whole left column folds into a thin strip and back, with a shortcut too; the choice is kept in `settings.json`.
+- The desktop shows the server's details on the right as part of the wallpaper (system, CPU, memory, disks, addresses, uptime and live usage), folded or shown, shown by default.
 
 ## Next
 

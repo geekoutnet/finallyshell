@@ -48,6 +48,11 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 ## In progress
 
 - An "Archive transfer" switch: one setting in the file panel's toolbar, on the Transfers page of the options and in the desktop Files app's toolbar; with it on, drops, the upload and download buttons, Download and Download to… and the desktop's uploads and downloads send files and folders, single files too, compressed with tar and gzip, unpacked at the other end (a symbolic link on its own, and connections that may not run commands, still use SFTP).
+- Table columns: every table's columns can be resized by dragging (the Docker containers list, the Trash window and the quick connect list were laid out by hand at fixed widths, and the desktop Files window locked its columns); the widths last while the app runs.
+- Switching models in the AI assistant: a default model and any number of other models in the settings, chosen in the chat's top bar for the current conversation alone; each reply shows the model that wrote it.
+- The AI assistant runs commands on the server itself (agent): the model calls a `run_command` tool, run on a separate SSH channel in the background (60 s per command, output cut to 16 KB and masked before it goes back). Read-only commands run at once, commands that change the system wait for the user's approval, and high-risk ones need RUN typed; a conversation can turn on "Run everything automatically", off by default. Logs and command output are always treated as untrusted data.
+- A new AI assistant window: command cards (the command, its state, exit code, time and collapsible output), a history sidebar that folds away, the context preview folded to one line, Enter to send and Shift+Enter for a new line, an input that grows with its text, and the server and model in the top bar.
+- Desktop windows can be dragged partly past the desktop's edges, keeping part of the title bar in reach.
 
 ## Next
 

@@ -44,7 +44,7 @@ func (a *App) dockerContainersSection(c *ui.Context, s *Session) {
 			widgets.Muted(c, locales.DockerNoContainers()).Padding(8, 4)
 			return
 		}
-		cols := ctrColumnsFor(width - 60)
+		cols := page.ctrList.columns(width - 60)
 		a.ctrHeader(c, &page.ctrList, cols, func() { page.selectAll(c) })
 		ui.Scroll(c).Grow(1).MinHeight(0).FillWidth().Children(func() {
 			if shown == 0 {

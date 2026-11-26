@@ -128,6 +128,14 @@ monitor follows the current session wherever it is, and a panel opened
 in a tab of its own has it beside it. The side is kept in
 `settings.json`; full screen shows the terminal alone.
 
+Every table's columns can be resized: drag the thin line at the right
+edge of a column's header, and double-click it to fit the column to its
+cells (or, in the Docker containers list, the Trash window and the quick
+connect list, to give the column its default width back). This works
+everywhere, including the Docker containers list and the desktop's Files
+and Trash windows, whose columns used to be fixed. The widths last until
+the app quits.
+
 ## Sessions and tabs
 
 The bottom left of the window is a vertical list of sessions, on the

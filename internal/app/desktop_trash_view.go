@@ -255,22 +255,21 @@ func desktopTrashFooter(c *ui.Context, state *desktopTrashState) {
 	})
 }
 
-func desktopTrashCell(cell ui.Element, column trashColumn) ui.Element {
-	switch column {
-	case trashDate:
-		return cell.Width(133).Shrink(0)
-	case trashSize:
-		return cell.Width(64).Shrink(0)
-	case trashMode:
-		return cell.Width(65).Shrink(0)
-	case trashOwner:
-		return cell.Width(85).Shrink(0)
-	default:
-		return cell.Grow(1).Basis(0).MinWidth(0)
-	}
+// trashColumnIDs name the columns, for the widths the user drags them to;
+// trashColumnWidths are their default widths, 0 sharing the room left.
+var (
+	trashColumnIDs    = []string{"name", "location", "date", "size", "mode", "owner", "note"}
+	trashColumnWidths = []float32{0, 0, 133, 64, 65, 85, 0}
+)
+
+func desktopTrashCell(widths widgets.ColumnWidths, cell ui.Element, column trashColumn) ui.Element {
+	return widths.Size(cell, trashColumnIDs[column], trashColumnWidths[column])
 }
 
 func (a *App) desktopTrashTable(c *ui.Context, w *desktopWindow, state *desktopTrashState, items []monitor.TrashItem, compact bool) {
+	if state.widths == nil {
+		state.widths = widgets.ColumnWidths{}
+	}
 	ui.Column(c).FillWidth().Grow(1).MinHeight(0).Radius(9).Border(1, colors.rowLine).Clip().Background(colors.card).Children(func() {
 		ui.Row(c).Shrink(0).Height(31).PaddingX(9).Gap(8).AlignItems(ui.Center).Background(colors.tableHead).Children(func() {
 			count := 0
@@ -302,15 +301,7 @@ func (a *App) desktopTrashTable(c *ui.Context, w *desktopWindow, state *desktopT
 				if compact && column != trashName && column != trashSize {
 					continue
 				}
-				header := desktopTrashCell(ui.Row(c).Gap(3).AlignItems(ui.Center).Role(ui.RoleButton).Label(label), column)
-				if header.Clicked() {
-					if state.sortBy == column {
-						state.ascending = !state.ascending
-					} else {
-						state.sortBy, state.ascending = column, column != trashDate
-					}
-				}
-				header.Children(func() {
+				header := widgets.ColumnHead(c, state.widths, trashColumnIDs[column], trashColumnWidths[column], 40, func() {
 					ui.Text(c, label).FontSize(11).Bold().SingleLine().MinWidth(0).Ellipsis("…").TextColor(theme.TextMuted)
 					if state.sortBy == column {
 						icon := "arrow-down"
@@ -319,7 +310,14 @@ func (a *App) desktopTrashTable(c *ui.Context, w *desktopWindow, state *desktopT
 						}
 						ui.Icon(c, icons.Get(icon)).FontSize(11).Shrink(0).TextColor(theme.Accent)
 					}
-				})
+				}).Gap(3).Role(ui.RoleButton).Label(label)
+				if header.Clicked() {
+					if state.sortBy == column {
+						state.ascending = !state.ascending
+					} else {
+						state.sortBy, state.ascending = column, column != trashDate
+					}
+				}
 			}
 		})
 		ui.Scroll(c).FillWidth().Grow(1).MinHeight(0).KeepScrollbars(true).Children(func() {
@@ -393,7 +391,7 @@ func (a *App) desktopTrashRow(c *ui.Context, w *desktopWindow, state *desktopTra
 				delete(state.selected, id)
 			}
 		}
-		desktopTrashCell(ui.Row(c).Gap(7).AlignItems(ui.Center), trashName).Children(func() {
+		desktopTrashCell(state.widths, ui.Row(c).Gap(7).AlignItems(ui.Center), trashName).Children(func() {
 			a.fileIcon(c, name, item.Directory, false, false)
 			ui.Column(c).MinWidth(0).Grow(1).Children(func() {
 				trashText(c, name).Bold()
@@ -415,7 +413,7 @@ func (a *App) desktopTrashRow(c *ui.Context, w *desktopWindow, state *desktopTra
 		for index := 1; index < len(values); index++ {
 			column := trashColumn(index)
 			if !compact || column == trashSize {
-				cell := desktopTrashCell(trashText(c, values[index]), column)
+				cell := desktopTrashCell(state.widths, trashText(c, values[index]), column)
 				if column == trashLocation {
 					cell.Tooltip(location)
 				}

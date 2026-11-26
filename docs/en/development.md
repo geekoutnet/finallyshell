@@ -406,7 +406,7 @@ internal/
   remotefs/          SFTP listing, upload, download (with progress and cancel), rename, mkdir, create and delete (ops.go); textfile.go is the editor's reading (detecting binary files) and safe saving; archive.go is archive transfers: packing and safely unpacking tar.gz streams, and running tar over an exec channel
   icons/             embedded SVG icons (Lucide, ISC license); agents/ has the coding agents' logos (LobeHub Icons, MIT license)
   fileicons/         VS Code file icon themes: reading VSIX files and extension folders, finding icons by name, font conversion, installing and finding installed themes; bundled/ has the built-in Material and Seti, languages_gen.go is VS Code's language table, internal/gen generates them
-  widgets/           small reusable widgets: icon buttons, usage bars, line charts, form rows, side navigation with pages (nav.go)
+  widgets/           small reusable widgets: icon buttons, usage bars, line charts, form rows, side navigation with pages (nav.go), resizable columns for tables built by hand (columns.go)
   app/               UI and state
     app.go           App state, overall layout, opening and closing sessions
     session.go       one session: connection, terminal, monitor, SFTP; translating error messages

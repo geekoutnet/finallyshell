@@ -30,6 +30,8 @@ type startState struct {
 	query string
 	row   int // in the rows listed, a host's, -1 for none
 	list  ui.ListState
+	// widths are the widths the user dragged the columns to.
+	widths widgets.ColumnWidths
 }
 
 // recentLimit is how many hosts the start page lists as recent; those
@@ -268,7 +270,15 @@ func (a *App) quickConnect(c *ui.Context, tab *Session, st *startState) {
 	ui.Column(c).Grow(1).MinHeight(0).Border(1, theme.Border).Radius(6).Clip().Children(func() {
 		// The list pads its rows by 4 more.
 		ui.Row(c).Gap(12).Padding(6, 16).Background(colors.tableHead).BorderWidth(0, 0, 1, 0).BorderColor(theme.Border).Children(func() {
-			quickColumns(c, theme.TextMuted, locales.HostColName(), locales.HostColHost(), locales.HostColUser())
+			if st.widths == nil {
+				st.widths = widgets.ColumnWidths{}
+			}
+			for _, col := range []struct{ id, title string }{{"name", locales.HostColName()}, {"host", locales.HostColHost()}} {
+				widgets.ColumnHead(c, st.widths, col.id, 0, 60, func() {
+					ui.Text(c, col.title).SingleLine().TextColor(theme.TextMuted).MinWidth(0)
+				})
+			}
+			quickUser(c, theme.TextMuted, locales.HostColUser())
 		})
 		st.list.Selected = &st.row
 		st.list.Key = func(i int) any {
@@ -299,7 +309,7 @@ func (a *App) quickConnect(c *ui.Context, tab *Session, st *startState) {
 				connect = h
 			}
 			row.Children(func() {
-				ui.Row(c).Gap(8).Grow(3).Basis(0).MinWidth(0).AlignItems(ui.Center).Children(func() {
+				st.widths.Size(ui.Row(c).Gap(8).AlignItems(ui.Center), "name", 0).Children(func() {
 					hostIcon(c, h, i == st.row, color)
 					ui.Text(c, h.Title()).SingleLine().TextColor(color).Shrink(1).MinWidth(0)
 					kindPill(c, h, i == st.row, color)
@@ -308,7 +318,8 @@ func (a *App) quickConnect(c *ui.Context, tab *Session, st *startState) {
 				if h.PortOr22() != h.DefaultPort() {
 					addr += ":" + strconv.Itoa(h.PortOr22())
 				}
-				quickColumns(c, color, "", addr, h.User)
+				st.widths.Size(ui.Text(c, addr).SingleLine().TextColor(color), "host", 0)
+				quickUser(c, color, h.User)
 			})
 		}).Grow(1).Padding(4).Children(func() {
 			// Only a search lists nothing: with no hosts, the page is
@@ -339,12 +350,9 @@ func (a *App) quickConnect(c *ui.Context, tab *Session, st *startState) {
 	}
 }
 
-// quickColumns lays out the columns of a quick connect row, past the
-// first for name == "": the name, the host and the user.
-func quickColumns(c *ui.Context, color ui.Color, name, host, user string) {
-	if name != "" {
-		ui.Text(c, name).SingleLine().TextColor(color).Grow(3).Basis(0).MinWidth(0)
-	}
-	ui.Text(c, host).SingleLine().TextColor(color).Grow(3).Basis(0).MinWidth(0)
-	ui.Text(c, user).SingleLine().TextColor(color).Grow(2).Basis(0).MinWidth(0)
+// quickUser is the last column of a quick connect row, the user, which
+// shares the room the name and the host leave: 2 parts to their 3 each
+// until the user resizes them.
+func quickUser(c *ui.Context, color ui.Color, user string) {
+	ui.Text(c, user).SingleLine().TextColor(color).Grow(2.0 / 3).Basis(0).MinWidth(0)
 }

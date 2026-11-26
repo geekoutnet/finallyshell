@@ -96,7 +96,6 @@ const (
 	aiCmdRefused                          // by the user
 	aiCmdCancelled                        // with the request
 	aiCmdFailed                           // could not run
-	aiCmdBlocked                          // never run: it would cut the connection, or the user's rules forbid it
 )
 
 // finished reports whether the command ran or will not.
@@ -227,12 +226,14 @@ func (a *App) aiCommands(run *aiRun, calls []ai.ToolCall) {
 			}
 		case run.client.Key != "" && strings.Contains(args.Command, run.client.Key):
 			card.Status, card.err, card.Text = aiCmdFailed, locales.AiKeyFieldOnly(), run.client.SafeText(args.Command)
-		// Before anything that would let it run: the user's rules, then
-		// what would cut the assistant's own connection.
+		// Before anything that would run it at once, read-only or the
+		// conversation running everything: a command matching the user's
+		// rules waits for them, and one that may cut the SSH connection
+		// waits for RUN typed.
 		case aiDenied(deny, args.Command) != "":
-			card.Status, card.denyRule = aiCmdBlocked, aiDenied(deny, args.Command)
+			card.Status, card.denyRule, card.highRisk = aiCmdWaiting, aiDenied(deny, args.Command), ai.HighRisk(args.Command)
 		case ai.CutsConnection(args.Command) != ai.CutNone:
-			card.Status, card.cut = aiCmdBlocked, ai.CutsConnection(args.Command)
+			card.Status, card.cut, card.highRisk = aiCmdWaiting, ai.CutsConnection(args.Command), true
 		case ai.ReadOnly(args.Command):
 			card.Status, card.Auto = aiCmdQueued, true
 		case run.state.autoRun && !ai.HighRisk(args.Command):
@@ -292,11 +293,6 @@ func (card *desktopAIMessage) toolResult() string {
 		return ai.CommandResult(-1, card.output, true, cmp.Or(card.timeout, int(aiCommandTimeout/time.Second)))
 	case aiCmdRefused:
 		return "The user refused to run this command. Do not run it another way; ask them what they want instead."
-	case aiCmdBlocked:
-		if card.denyRule != "" {
-			return "Not run: the user's rules forbid commands matching " + card.denyRule + ". Do not run it another way; tell the user."
-		}
-		return "Not run: " + card.cut.String() + ", which would cut the SSH connection you work over. Do not run it another way; if it is really needed, tell the user to run it themselves in the terminal, and how."
 	default:
 		return "The command could not run: " + card.err
 	}

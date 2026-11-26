@@ -756,9 +756,9 @@ func TestAIHistoryBudget(t *testing.T) {
 	}
 }
 
-// TestDesktopAIAgentGuard never runs a command that would cut the SSH
-// connection, even with everything run automatically, nor one the user's
-// rules forbid, read-only or not; the model learns why.
+// TestDesktopAIAgentGuard makes a command that may cut the SSH connection
+// wait for RUN typed, and one matching the user's rules wait for their
+// approval, read-only or with everything run automatically.
 func TestDesktopAIAgentGuard(t *testing.T) {
 	var round atomic.Int32
 	at := newAIAgentTest(t, func(body string) string {
@@ -766,30 +766,39 @@ func TestDesktopAIAgentGuard(t *testing.T) {
 		case 1:
 			return aiToolCallEvent("call_1", "systemctl restart sshd")
 		case 2:
-			if !strings.Contains(body, "cut the SSH connection") {
-				return aiTextEvent("no reason given")
-			}
 			return aiToolCallEvent("call_2", "cat /etc/hosts")
-		case 3:
-			if !strings.Contains(body, "the user's rules forbid") {
-				return aiTextEvent("no rule given")
-			}
 		}
 		return aiTextEvent("done")
 	})
 	at.a.settings.AI.DenyCommands = []string{`^cat\s+/etc/`, `([unclosed`}
 	at.state.autoRun = true
 	at.ask("restart ssh and read hosts")
-	at.platform.until(t, "answer", func() bool { return at.state.cancel == nil })
-	cards := at.cards()
-	if len(cards) != 2 || cards[0].Status != aiCmdBlocked || cards[0].cut != ai.CutSSH || cards[1].Status != aiCmdBlocked || cards[1].denyRule != `^cat\s+/etc/` {
-		t.Fatalf("cards %+v / %+v", cards[0], cards[len(cards)-1])
+	at.platform.until(t, "the ssh restart waits", func() bool { cards := at.cards(); return len(cards) == 1 && cards[0].Status == aiCmdWaiting })
+	ssh := at.cards()[0]
+	if ssh.cut != ai.CutSSH || !ssh.highRisk {
+		t.Fatalf("the ssh restart: cut %v, high-risk %v", ssh.cut, ssh.highRisk)
+	}
+	at.platform.tt.Frame()
+	if !at.platform.tt.HasText(locales.AiGuardCutConfirm()) {
+		t.Fatal("no warning that it may cut the connection")
+	}
+	at.a.aiAnswer(at.state, ssh, true) // without RUN typed: still waits
+	if ssh.Status != aiCmdWaiting {
+		t.Fatal("ran without RUN typed")
+	}
+	at.a.aiAnswer(at.state, ssh, false)
+	at.platform.until(t, "the hosts read waits", func() bool { cards := at.cards(); return len(cards) == 2 && cards[1].Status == aiCmdWaiting })
+	hosts := at.cards()[1]
+	if hosts.denyRule != `^cat\s+/etc/` {
+		t.Fatalf("rule %q", hosts.denyRule)
 	}
 	if ran := at.ran(); len(ran) != 0 {
-		t.Fatalf("ran %q", ran)
+		t.Fatalf("ran before the user allowed it: %q", ran)
 	}
-	if last := at.state.chat.Messages[len(at.state.chat.Messages)-1]; last.Text != "done" {
-		t.Fatalf("answer %q", last.Text)
+	at.a.aiAnswer(at.state, hosts, true)
+	at.platform.until(t, "answer", func() bool { return at.state.cancel == nil })
+	if ran := at.ran(); len(ran) != 1 || ran[0] != "cat /etc/hosts" {
+		t.Fatalf("ran %q", ran)
 	}
 	rules, bad := aiDenyRules(aiDenyLines("  ^rm\\s \n\n([x\n"))
 	if len(rules) != 1 || len(bad) != 1 || aiDenied(rules, "rm -rf /tmp/x") == "" || aiDenied(rules, "ls") != "" {

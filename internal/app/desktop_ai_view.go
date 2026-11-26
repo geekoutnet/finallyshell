@@ -472,14 +472,6 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 		status = locales.DesktopAICmdCancelled()
 	case aiCmdFailed:
 		icon, color, status = "triangle-alert", theme.Danger, locales.DesktopAICmdFailed(card.err)
-	case aiCmdBlocked:
-		icon, color, status = "shield-alert", theme.Danger, locales.AiGuardBlocked()
-		switch {
-		case card.denyRule != "":
-			status = locales.AiGuardDenied(card.denyRule)
-		case card.cut != ai.CutNone:
-			status = locales.AiGuardCutsConnection()
-		}
 	}
 	border := theme.Border
 	if card.Status == aiCmdWaiting {
@@ -529,8 +521,16 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 		}
 		if card.Status == aiCmdWaiting && state.run != nil {
 			ui.Column(c).Gap(6).Padding(0, 9, 9, 30).FillWidth().MinWidth(0).Children(func() {
+				switch {
+				case card.cut != ai.CutNone:
+					aiStatus(c, locales.AiGuardCutConfirm(), true)
+				case card.denyRule != "":
+					aiStatus(c, locales.AiGuardRuleConfirm(card.denyRule), false)
+				}
 				if card.highRisk {
-					aiStatus(c, locales.DesktopAIHighRisk(), true)
+					if card.cut == ai.CutNone {
+						aiStatus(c, locales.DesktopAIHighRisk(), true)
+					}
 					ui.TextInput(c, &card.confirm).Label(locales.DesktopAITypeRun()).Placeholder(locales.DesktopAITypeRun()).Width(200)
 				}
 				ui.Row(c).Gap(6).Children(func() {

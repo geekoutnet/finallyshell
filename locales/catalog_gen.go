@@ -27110,41 +27110,31 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
-// AiGuardBlocked says "Not run"
+// AiGuardRuleConfirm says "Matches your rule {rule}: runs only once you allow it"
 // in the language the app shows.
-func AiGuardBlocked() string { return In(i18n.Locale()).AiGuardBlocked() }
+func AiGuardRuleConfirm(rule string) string { return In(i18n.Locale()).AiGuardRuleConfirm(rule) }
 
-// AiGuardBlocked says "Not run"
+// AiGuardRuleConfirm says "Matches your rule {rule}: runs only once you allow it"
 // in the language of msgs.
-func (msgs Messages) AiGuardBlocked() string {
-	return Catalog.Format(msgs.locale, "aiGuardBlocked", nil)
+func (msgs Messages) AiGuardRuleConfirm(rule string) string {
+	return Catalog.Format(msgs.locale, "aiGuardRuleConfirm", map[string]any{"rule": rule})
 }
 
-// AiGuardDenied says "Not run: your rule {rule} forbids it"
+// AiGuardCutConfirm says "This command may cut the SSH connection. Type RUN to run it if you are sure there is a way back in."
 // in the language the app shows.
-func AiGuardDenied(rule string) string { return In(i18n.Locale()).AiGuardDenied(rule) }
+func AiGuardCutConfirm() string { return In(i18n.Locale()).AiGuardCutConfirm() }
 
-// AiGuardDenied says "Not run: your rule {rule} forbids it"
+// AiGuardCutConfirm says "This command may cut the SSH connection. Type RUN to run it if you are sure there is a way back in."
 // in the language of msgs.
-func (msgs Messages) AiGuardDenied(rule string) string {
-	return Catalog.Format(msgs.locale, "aiGuardDenied", map[string]any{"rule": rule})
+func (msgs Messages) AiGuardCutConfirm() string {
+	return Catalog.Format(msgs.locale, "aiGuardCutConfirm", nil)
 }
 
-// AiGuardCutsConnection says "Not run: it would cut the SSH connection"
-// in the language the app shows.
-func AiGuardCutsConnection() string { return In(i18n.Locale()).AiGuardCutsConnection() }
-
-// AiGuardCutsConnection says "Not run: it would cut the SSH connection"
-// in the language of msgs.
-func (msgs Messages) AiGuardCutsConnection() string {
-	return Catalog.Format(msgs.locale, "aiGuardCutsConnection", nil)
-}
-
-// AiGuardRules says "Forbidden commands"
+// AiGuardRules says "Commands to confirm"
 // in the language the app shows.
 func AiGuardRules() string { return In(i18n.Locale()).AiGuardRules() }
 
-// AiGuardRules says "Forbidden commands"
+// AiGuardRules says "Commands to confirm"
 // in the language of msgs.
 func (msgs Messages) AiGuardRules() string {
 	return Catalog.Format(msgs.locale, "aiGuardRules", nil)
@@ -27160,11 +27150,11 @@ func (msgs Messages) AiGuardRulesHint() string {
 	return Catalog.Format(msgs.locale, "aiGuardRulesHint", nil)
 }
 
-// AiGuardRulesNote says "A command the assistant calls that matches any of these never runs, even read-only or with everything run automatically."
+// AiGuardRulesNote says "A command the assistant calls that matches any of these always waits for you to allow it, even read-only or with ever…"
 // in the language the app shows.
 func AiGuardRulesNote() string { return In(i18n.Locale()).AiGuardRulesNote() }
 
-// AiGuardRulesNote says "A command the assistant calls that matches any of these never runs, even read-only or with everything run automatically."
+// AiGuardRulesNote says "A command the assistant calls that matches any of these always waits for you to allow it, even read-only or with ever…"
 // in the language of msgs.
 func (msgs Messages) AiGuardRulesNote() string {
 	return Catalog.Format(msgs.locale, "aiGuardRulesNote", nil)

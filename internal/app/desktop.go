@@ -396,14 +396,20 @@ func desktopRowName() string { return locales.DesktopTab() }
 // row in the list, the desktop's own menu, the button by the panel's tabs
 // and the shortcut switch between the two.
 
-// inDesktopMode reports whether the server root shows its desktop.
-func (a *App) inDesktopMode(root *Session) bool {
-	row := root.lastRow
+// tabRow is the row of the server root's group its tab shows: the row
+// the user is on, or was on last; root itself when none.
+func (a *App) tabRow(root *Session) *Session {
 	if cur := a.current(); cur != nil && sessionRoot(cur) == root {
-		row = cur
+		return cur
 	}
-	return row != nil && row.isDesktopRow() && row.panelOf == root && slices.Contains(a.sessions, row)
+	if row := root.lastRow; row != nil && sessionRoot(row) == root && slices.Contains(a.sessions, row) {
+		return row
+	}
+	return root
 }
+
+// inDesktopMode reports whether the server root shows its desktop.
+func (a *App) inDesktopMode(root *Session) bool { return a.tabRow(root).isDesktopRow() }
 
 // showTerminalMode shows the terminal of s's server: its own row.
 func (a *App) showTerminalMode(s *Session) {

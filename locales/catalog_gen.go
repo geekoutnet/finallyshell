@@ -27110,6 +27110,26 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// TabMode says "Showing: {mode}"
+// in the language the app shows.
+func TabMode(mode string) string { return In(i18n.Locale()).TabMode(mode) }
+
+// TabMode says "Showing: {mode}"
+// in the language of msgs.
+func (msgs Messages) TabMode(mode string) string {
+	return Catalog.Format(msgs.locale, "tabMode", map[string]any{"mode": mode})
+}
+
+// TabModeTerminal says "Terminal"
+// in the language the app shows.
+func TabModeTerminal() string { return In(i18n.Locale()).TabModeTerminal() }
+
+// TabModeTerminal says "Terminal"
+// in the language of msgs.
+func (msgs Messages) TabModeTerminal() string {
+	return Catalog.Format(msgs.locale, "tabModeTerminal", nil)
+}
+
 // SiteSettingsTab says "Nginx settings"
 // in the language the app shows.
 func SiteSettingsTab() string { return In(i18n.Locale()).SiteSettingsTab() }

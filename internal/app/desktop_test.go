@@ -109,3 +109,24 @@ func TestDesktopModeSwitch(t *testing.T) {
 		t.Fatalf("the shortcut went to %q, not the terminal", a.current().label())
 	}
 }
+
+// TestTabModeMark marks each server's tab with what it shows: its
+// terminal, its desktop or a panel row.
+func TestTabModeMark(t *testing.T) {
+	a, _, tt, web := desktopTestApp(t) // web-1, on its desktop
+	db := demoSession(a, "db-1", "10.0.0.12")
+	cache := demoSession(a, "cache-1", "10.0.0.13")
+	a.openPanelTab(cache, tabFiles)
+	tt.Frame() // shown, so its tab goes back to it
+	a.active = slices.Index(a.sessions, db)
+	tt.Frame()
+	for _, tc := range []struct {
+		s    *Session
+		icon string
+	}{{web, desktopRowIcon}, {db, "terminal"}, {cache, "folder"}} {
+		if got := tabModeIcon(tc.s, a.tabRow(tc.s)); got != tc.icon {
+			t.Errorf("%s's tab: %q, want %q", tc.s.label(), got, tc.icon)
+		}
+	}
+	saveShot(t, tt, "session-tabs-modes.png")
+}

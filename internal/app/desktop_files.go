@@ -68,10 +68,13 @@ type desktopFilesState struct {
 	inline                          *desktopFilesPrompt
 	modal                           *desktopFilesPrompt
 	job                             *desktopFilesJob
-	conflict                        *desktopFilesConflict
-	reveal                          string
-	marquee                         desktopFilesMarquee
-	edits                           map[*editTab]time.Time
+	// busySince is when the window started reading or working, the zero
+	// time while it is not: its note shows after desktopFilesBusyDelay.
+	busySince time.Time
+	conflict  *desktopFilesConflict
+	reveal    string
+	marquee   desktopFilesMarquee
+	edits     map[*editTab]time.Time
 }
 
 const (

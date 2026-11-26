@@ -6,6 +6,7 @@ import (
 	"path"
 	"slices"
 	"strings"
+	"time"
 
 	"finallyshell/internal/config"
 	"finallyshell/internal/icons"
@@ -52,6 +53,7 @@ func (a *App) desktopFilesView(c *ui.Context, w *desktopWindow) {
 				} else {
 					a.desktopFilesContent(c, w, items, chosen, width)
 				}
+				a.desktopFilesBusy(c, w)
 			})
 		})
 		a.desktopFilesStatus(c, w, items, chosen, width)
@@ -331,24 +333,49 @@ func (a *App) desktopFilesBanners(c *ui.Context, w *desktopWindow) {
 			}
 		})
 	}
-	if f.job != nil || f.loading {
-		ui.Row(c).Padding(4, 10).Gap(5).AlignItems(ui.Center).Background(colors.note).Shrink(0).Children(func() {
-			label := locales.DesktopFilesLoading()
-			var stop func()
-			if f.job != nil {
-				label, stop = f.job.label, f.job.cancel
-				if f.job.progress != "" {
-					label = label + " · " + f.job.progress
-				}
-			} else if f.readCancel != nil && f.searching {
-				stop = f.cancelSearch
-			}
-			ui.Text(c, label).Grow(1).MinWidth(0).SingleLine().Tooltip(label).TextColor(theme.TextMuted)
-			if stop != nil && ui.Button(c, locales.Cancel()).Clicked() {
-				stop()
-			}
-		})
+}
+
+// desktopFilesBusyDelay is how long reading or working goes on before the
+// window says so: a quick read shows nothing, rather than a flash.
+const desktopFilesBusyDelay = 300 * time.Millisecond
+
+// desktopFilesBusy says what the window is reading or doing, with a
+// spinner and a way to stop it, on a card over the bottom right of the
+// list: the list does not move as it comes and goes, so that a click or
+// a double click lands where it was aimed.
+func (a *App) desktopFilesBusy(c *ui.Context, w *desktopWindow) {
+	f := w.explorer()
+	if f.job == nil && !f.loading {
+		f.busySince = time.Time{}
+		return
 	}
+	now := c.Now()
+	if f.busySince.IsZero() {
+		f.busySince = now
+		time.AfterFunc(desktopFilesBusyDelay, func() { a.post(func() {}) })
+	}
+	if now.Sub(f.busySince) < desktopFilesBusyDelay {
+		return
+	}
+	label := locales.DesktopFilesLoading()
+	var stop func()
+	if f.job != nil {
+		label, stop = f.job.label, f.job.cancel
+		if f.job.progress != "" {
+			label = label + " · " + f.job.progress
+		}
+	} else if f.readCancel != nil && f.searching {
+		stop = f.cancelSearch
+	}
+	ui.Row(c.Key("busy")).Absolute().Right(14).Bottom(14).MaxWidth(420).MaxWidthPercent(80).Gap(8).Padding(6, 6, 6, 12).
+		AlignItems(ui.Center).Radius(10).Background(theme.Background).Border(1, theme.Border).
+		Shadow(0, 6, 18, 0, ui.RGBA(8, 11, 28, 0.18)).Role(ui.RoleStatus).Label(label).Children(func() {
+		ui.Spinner(c).Size(14, 14).Shrink(0)
+		ui.Text(c, label).FontSize(12).SingleLine().MinWidth(0).Shrink(1).Tooltip(label)
+		if stop != nil && ui.Button(c, locales.Cancel()).Clicked() {
+			stop()
+		}
+	})
 }
 
 func (a *App) desktopFilesStatus(c *ui.Context, w *desktopWindow, items, chosen []desktopFilesItem, width float32) {

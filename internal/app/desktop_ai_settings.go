@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -19,8 +20,10 @@ import (
 const pageAI = "ai"
 
 type aiOptionsState struct {
-	draft, base     config.AISettings
-	endpoint, key   string
+	draft, base   config.AISettings
+	endpoint, key string
+	// others are the other models, one per line.
+	others          string
 	models          []string
 	status          string
 	failed, writing bool
@@ -49,7 +52,23 @@ func aiValidate(settings config.AISettings, model bool) error {
 	if model && (strings.TrimSpace(settings.Model) == "" || len(settings.Model) > 256) {
 		return errors.New(locales.AiModelRequired())
 	}
+	if len(settings.Models) > 32 || slices.ContainsFunc(settings.Models, func(m string) bool { return len(m) > 256 }) {
+		return errors.New(locales.AiTooManyModels())
+	}
 	return nil
+}
+
+// aiModelList reads the other models, one per line: trimmed, without
+// blank lines, repeats or the default model.
+func aiModelList(text, def string) []string {
+	var out []string
+	for _, line := range strings.Split(text, "\n") {
+		line = strings.TrimSpace(line)
+		if line != "" && line != def && !slices.Contains(out, line) {
+			out = append(out, line)
+		}
+	}
+	return out
 }
 
 func aiLocalOllama(settings config.AISettings) bool {
@@ -116,7 +135,7 @@ func (a *App) aiOptionsPage(c *ui.Context) {
 	state := a.ai.options
 	if state == nil {
 		settings := a.aiSettings()
-		state = &aiOptionsState{base: settings, draft: settings, endpoint: settings.Endpoint}
+		state = &aiOptionsState{base: settings, draft: settings, endpoint: settings.Endpoint, others: strings.Join(settings.Models, "\n")}
 		a.ai.options = state
 	}
 	busy := state.cancel != nil || state.writing
@@ -142,7 +161,7 @@ func (a *App) aiOptionsPage(c *ui.Context) {
 				for index, preset := range presets {
 					if labels[index] == current {
 						state.draft.Provider, state.endpoint = preset.ID, preset.Endpoint
-						state.draft.Model, state.key, state.status, state.models = "", "", "", nil
+						state.draft.Model, state.key, state.status, state.models, state.others = "", "", "", nil, ""
 						break
 					}
 				}
@@ -172,6 +191,22 @@ func (a *App) aiOptionsPage(c *ui.Context) {
 					a.aiOptionsRequest(state, true)
 				}
 			})
+		})
+		aiField(c, locales.AiOtherModels(), func() {
+			ui.Row(c).Gap(6).AlignItems(ui.Start).Children(func() {
+				ui.TextArea(c, &state.others).Lines(2, 6).Grow(1).MinWidth(0).Label(locales.AiOtherModels()).Disabled(busy)
+				if len(state.models) > 0 {
+					widgets.IconButton(c, "plus", locales.AiAddModel()).Disabled(busy).PopoverMenuButton(func(menu *ui.Menu) {
+						listed := aiModelList(state.others, state.draft.Model)
+						for _, model := range state.models {
+							if menu.Item(model).Checked(slices.Contains(listed, model)).Disabled(model == state.draft.Model).Chosen() && !slices.Contains(listed, model) {
+								state.others = strings.Join(append(listed, model), "\n")
+							}
+						}
+					})
+				}
+			})
+			widgets.Muted(c, locales.AiOtherModelsHint()).FontSize(12)
 		})
 		aiField(c, locales.AiSystemPrompt(), func() {
 			ui.TextArea(c, &state.draft.SystemPrompt).FillWidth().Height(70).Label(locales.AiSystemPrompt()).Placeholder(locales.AiSystemHint()).Disabled(busy)
@@ -213,13 +248,15 @@ func (a *App) aiSaveOptions(state *aiOptionsState) {
 	settings, key := state.draft, strings.TrimSpace(state.key)
 	settings.Endpoint = strings.TrimSpace(state.endpoint)
 	settings.Model = strings.TrimSpace(settings.Model)
+	settings.Models = aiModelList(state.others, settings.Model)
 	if err := aiValidate(settings, true); err != nil {
 		state.status, state.failed = err.Error(), true
 		return
 	}
 	base, _ := ai.BaseURL(settings.Endpoint)
 	settings.Endpoint = base.String()
-	if key != "" && (strings.Contains(settings.Endpoint, key) || strings.Contains(settings.Model, key) || strings.Contains(settings.SystemPrompt, key)) {
+	models := strings.Join(settings.Models, "\n")
+	if key != "" && (strings.Contains(settings.Endpoint, key) || strings.Contains(settings.Model, key) || strings.Contains(models, key) || strings.Contains(settings.SystemPrompt, key)) {
 		state.status, state.failed = locales.AiKeyFieldOnly(), true
 		return
 	}
@@ -243,7 +280,7 @@ func (a *App) aiSaveOptions(state *aiOptionsState) {
 		default:
 			stored, found, err = a.plat.SecretGet(secretID)
 		}
-		if err == nil && stored != "" && (strings.Contains(settings.Endpoint, stored) || strings.Contains(settings.Model, stored) || strings.Contains(settings.SystemPrompt, stored)) {
+		if err == nil && stored != "" && (strings.Contains(settings.Endpoint, stored) || strings.Contains(settings.Model, stored) || strings.Contains(models, stored) || strings.Contains(settings.SystemPrompt, stored)) {
 			err = errAIKeyFieldOnly
 		}
 		if err == nil && key != "" {
@@ -263,7 +300,7 @@ func (a *App) aiSaveOptions(state *aiOptionsState) {
 			case !local && (!found || stored == ""):
 				state.status, state.failed = locales.AiKeyRequired(), true
 			default:
-				state.base, state.draft, state.endpoint = settings, settings, settings.Endpoint
+				state.base, state.draft, state.endpoint, state.others = settings, settings, settings.Endpoint, strings.Join(settings.Models, "\n")
 				state.status, state.failed = locales.AiSaved(), false
 				a.changeSettings(func() { a.settings.AI = &settings })
 				a.ai.readyFor, a.ai.ready, a.ai.checking, a.ai.keyError = settings, true, false, ""

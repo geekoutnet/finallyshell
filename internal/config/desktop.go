@@ -107,11 +107,25 @@ type AISettings struct {
 	// Endpoint is the base URL of an OpenAI-compatible API, such as
 	// https://api.openai.com/v1; "" turns the assistant off.
 	Endpoint string `json:"endpoint,omitempty"`
-	// Model is the model's name.
+	// Model is the default model's name, which new conversations use.
 	Model string `json:"model,omitempty"`
+	// Models are the other models a conversation can switch to.
+	Models []string `json:"models,omitempty"`
 	// SystemPrompt is added before the assistant's own instructions.
 	SystemPrompt string `json:"systemPrompt,omitempty"`
 	// SendContext lets the assistant send the server's OS, the current
 	// folder and the last lines of the terminal with a question.
 	SendContext bool `json:"sendContext,omitempty"`
+}
+
+// Equal reports whether s and o are the same settings.
+func (s AISettings) Equal(o AISettings) bool {
+	return s.Provider == o.Provider && s.Endpoint == o.Endpoint && s.Model == o.Model && slices.Equal(s.Models, o.Models) &&
+		s.SystemPrompt == o.SystemPrompt && s.SendContext == o.SendContext
+}
+
+// HasModel reports whether model is the default model or one of the
+// others.
+func (s AISettings) HasModel(model string) bool {
+	return model != "" && (model == s.Model || slices.Contains(s.Models, model))
 }

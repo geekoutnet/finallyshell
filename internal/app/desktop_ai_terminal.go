@@ -121,7 +121,7 @@ func (a *App) desktopAITerminal(c *ui.Context, session *Session, window *desktop
 	if state == nil || state.session != session || state.target != target {
 		return
 	}
-	if state.cancel != nil && state.requestFor != a.aiSettings() {
+	if state.cancel != nil && !state.requestFor.Equal(a.aiSettings()) {
 		a.aiCloseCommand()
 		return
 	}
@@ -269,7 +269,7 @@ func (a *App) aiGenerateCommand(state *aiCommandState) {
 		}
 	}
 	a.aiCredential(ctx, settings, "", false, func(client ai.Client, err error) {
-		if err == nil && (a.aiSettings() != settings || a.Locked() || a.ai.command != state || !state.open) {
+		if err == nil && (!a.aiSettings().Equal(settings) || a.Locked() || a.ai.command != state || !state.open) {
 			err = errors.New(locales.AiSettingsChanged())
 		}
 		if err == nil && client.Key != "" && strings.Contains(question, client.Key) {

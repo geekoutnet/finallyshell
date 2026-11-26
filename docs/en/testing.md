@@ -142,3 +142,30 @@ if you need to keep custom test settings.
   from that image. Running processes, tmpfs contents and mounted volumes
   are not saved. The images can contain password hashes and local TLS keys;
   never push or share them.
+
+## OpenWrt test machine
+
+`.claude/skills/testbox/openwrt.sh` runs `fs-openwrt`, the official OpenWrt
+rootfs with procd, dropbear, BusyBox and uci, with SSH on
+`127.0.0.1:2223` for `root` and a `tester` account without root. Its
+commands are `up`, `down`, `reset`, `ssh-env [root|tester]`, `exec` and
+`status`, as the Debian box's; the passwords are in `OPENWRT_ENV`, by
+default `$HOME/.finallyshell-openwrt.env`. `OPENWRT_IMAGE` with `reset`
+selects another release or a derivative, such as
+`openwrt/rootfs:x86-64-21.02.7` (fw3, iptables), `…-25.12.1` (apk) or
+`immortalwrt/rootfs:x86-64-openwrt-24.10`.
+
+```bash
+box=.claude/skills/testbox/openwrt.sh
+"$box" up
+ssh_export=$("$box" ssh-env root); eval "$ssh_export"; unset ssh_export
+FINALLYSHELL_TEST_MUTATE=1 go test ./internal/monitor -run '^TestOpenWrtLive$' -count=1 -v
+SHOT_DIR=/tmp/shots go test ./internal/app -run '^TestLiveTour$' -count=1 -v
+```
+
+`TestOpenWrtLive` reads the router, and with the opt-in changes it as the
+OpenWrt sections do, undoing each change; its SFTP step installs
+`openssh-sftp-server` from the feeds. `TestLiveTour` opens every tab,
+section and desktop app and saves a screenshot of each. Use `tester` for
+the process tests: as root, `TestProcessesLive` signals PID 1, which ends
+procd and the container.

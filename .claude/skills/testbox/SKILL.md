@@ -54,6 +54,20 @@ From the repo root, run `.claude/skills/testbox/testbox.sh <command>` in Bash
 | `snapshot NAME` | Saves the box's filesystem as the local image `finallyshell-testbox:NAME`. Reusing a name replaces the tag; `debian12` is reserved. |
 | `restore NAME` | Replaces the box with one created from the named local snapshot and applies the selected SSH credentials. |
 
+## OpenWrt
+
+`.claude/skills/testbox/openwrt.sh {up|down|reset|ssh-env [root|tester]|exec|status}`
+runs `fs-openwrt`, the official OpenWrt rootfs (procd, dropbear, BusyBox,
+uci, no bash, sudo or SFTP), SSH on `127.0.0.1:2223`. Passwords live in
+`OPENWRT_ENV` (default `$HOME/.finallyshell-openwrt.env`; on the
+coordinator's host `C:/Users/Administrator/codex-briefs/testbox/openwrt.env`).
+`OPENWRT_IMAGE=<image> openwrt.sh reset` switches release:
+`openwrt/rootfs:x86-64-21.02.7` (fw3), `-22.03.7`, `-23.05.6`,
+`-24.10.4` (default), `-25.12.1` (apk), or
+`immortalwrt/rootfs:x86-64-openwrt-24.10`. Run `TestOpenWrtLive` (monitor)
+and `TestLiveTour` (app) as root on each; run the process tests as
+`tester`, as root they signal PID 1 and stop the container.
+
 ## Live Go tests
 
 ```bash

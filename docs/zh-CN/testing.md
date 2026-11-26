@@ -90,3 +90,17 @@ Docker 测试使用测试箱自己的守护进程。`caddy` 会覆盖示例配�
 - `down` 停止测试箱但保留文件，之后用 `up` 再次启动。
 - `reset` 删除容器并用干净的基础镜像重建。仓库外的凭据文件会保留，后来装的组件（包括 Caddy）会被清除。
 - `snapshot NAME` 将容器的可写文件系统保存为本地镜像 `finallyshell-testbox:NAME`。`restore NAME` 删除当前测试箱并从快照重建。快照不保存运行中的进程、临时文件系统或挂载卷里的内容。镜像可能含密码哈希和本地 TLS 密钥，不要推送或分享。
+
+## OpenWrt 测试机
+
+`.claude/skills/testbox/openwrt.sh` 运行 `fs-openwrt`：官方 OpenWrt rootfs，带 procd、dropbear、BusyBox 和 uci，SSH 在 `127.0.0.1:2223`，账号有 `root` 和不带 root 权限的 `tester`。命令与 Debian 测试箱相同：`up`、`down`、`reset`、`ssh-env [root|tester]`、`exec`、`status`；密码保存在 `OPENWRT_ENV`，默认 `$HOME/.finallyshell-openwrt.env`。配合 `reset` 设置 `OPENWRT_IMAGE` 可切换其他版本或衍生系统，例如 `openwrt/rootfs:x86-64-21.02.7`（fw3、iptables）、`…-25.12.1`（apk）或 `immortalwrt/rootfs:x86-64-openwrt-24.10`。
+
+```bash
+box=.claude/skills/testbox/openwrt.sh
+"$box" up
+ssh_export=$("$box" ssh-env root); eval "$ssh_export"; unset ssh_export
+FINALLYSHELL_TEST_MUTATE=1 go test ./internal/monitor -run '^TestOpenWrtLive$' -count=1 -v
+SHOT_DIR=/tmp/shots go test ./internal/app -run '^TestLiveTour$' -count=1 -v
+```
+
+`TestOpenWrtLive` 读取路由器；开启写入开关后，按 OpenWrt 模块的方式逐项修改并撤销，其中 SFTP 一步会从软件源安装 `openssh-sftp-server`。`TestLiveTour` 依次打开每个标签页、模块和桌面应用，并分别截图。进程测试请用 `tester`：以 root 运行时 `TestProcessesLive` 会向 PID 1 发信号，结束 procd 和整个容器。

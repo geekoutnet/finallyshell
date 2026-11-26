@@ -83,6 +83,19 @@ type ctrList struct {
 	desc, flat  bool
 	hideStopped bool
 	closed      map[string]bool
+	// widths are the widths the user dragged the columns to.
+	widths widgets.ColumnWidths
+}
+
+// columns are the columns that fit in width, at the widths the user gave
+// them.
+func (l *ctrList) columns(width float32) ctrColumns {
+	if l.widths == nil {
+		l.widths = widgets.ColumnWidths{}
+	}
+	cols := ctrColumnsFor(width)
+	cols.w = l.widths
+	return cols
 }
 
 // shown tells whether the server has Docker, so that the cards show.
@@ -811,15 +824,19 @@ func (list *ctrList) groups(containers []monitor.Container, now time.Time) (grou
 	return groups, shown
 }
 
-// ctrColumns are the columns of the containers that fit in width.
-type ctrColumns struct{ image, status, ports, ip bool }
+// ctrColumns are the columns of the containers that fit in width, and the
+// widths the user gave them.
+type ctrColumns struct {
+	image, status, ports, ip bool
+	w                        widgets.ColumnWidths
+}
 
 func ctrColumnsFor(width float32) ctrColumns {
 	return ctrColumns{status: width >= 520, ip: width >= 640, ports: width >= 780, image: width >= 920}
 }
 
-// The widths of the containers' columns besides the name and the image,
-// which share what is left.
+// The default widths of the containers' columns besides the name and the
+// image, which share what is left; the user drags them wider or narrower.
 const (
 	ctrDotW    = 22
 	ctrStatusW = 168
@@ -835,7 +852,7 @@ func (a *App) dockerContainers(c *ui.Context, s *Session, width float32) {
 	d := &ds.d
 	now := time.Now()
 	groups, shown := ds.ctrGroups(now)
-	cols := ctrColumnsFor(width - 24)
+	cols := ds.ctrList.columns(width - 24)
 	ui.Column(c).FillWidth().Background(colors.card).Border(1, colors.line).Radius(8).Padding(8, 12, 12, 12).Gap(8).Children(func() {
 		ui.Row(c).Gap(8).AlignItems(ui.Center).FillWidth().Wrap().Children(func() {
 			ui.Row(c).Gap(7).AlignItems(ui.Center).Grow(1).MinWidth(180).Height(26).Children(func() {
@@ -879,11 +896,12 @@ func runningCount(list []monitor.Container) int {
 }
 
 // ctrHeader is the containers' column headers; a click on Name, Status,
-// CPU or Memory sorts by it, a second the other way.
+// CPU or Memory sorts by it, a second the other way. Dragging the end edge
+// of a header but the name's resizes its column.
 func (a *App) ctrHeader(c *ui.Context, ds *ctrList, cols ctrColumns, leading func()) {
-	head := func(title string, by int, width float32, end bool) {
-		label := title
-		if ds.sortBy == by {
+	title := func(text string, by int, end bool) ui.Element {
+		label := text
+		if by >= 0 && ds.sortBy == by {
 			// Names and states sort up, CPU and memory the busiest first.
 			if up := by == ctrSortName || by == ctrSortStatus; up != ds.desc {
 				label += " ↑"
@@ -891,55 +909,50 @@ func (a *App) ctrHeader(c *ui.Context, ds *ctrList, cols ctrColumns, leading fun
 				label += " ↓"
 			}
 		}
-		t := widgets.Muted(c, label).FontSize(12).SingleLine().Cursor(ui.CursorPointer).
-			Role(ui.RoleButton).Label(locales.DockerSortBy(title))
-		if ds.sortBy == by {
-			t.TextColor(theme.Text)
-		}
-		if width > 0 {
-			t.Width(width).Shrink(0)
-		} else {
-			t.Grow(2).Basis(0).MinWidth(0)
+		t := widgets.Muted(c, label).FontSize(12).SingleLine().Grow(1).MinWidth(0)
+		if by >= 0 {
+			t.Cursor(ui.CursorPointer).Role(ui.RoleButton).Label(locales.DockerSortBy(text))
+			if ds.sortBy == by {
+				t.TextColor(theme.Text)
+			}
+			if t.Clicked() {
+				if ds.sortBy == by {
+					ds.desc = !ds.desc
+				} else {
+					ds.sortBy, ds.desc = by, false
+				}
+			}
 		}
 		if end {
 			t.TextAlign(ui.End)
 		}
-		if t.Clicked() {
-			if ds.sortBy == by {
-				ds.desc = !ds.desc
-			} else {
-				ds.sortBy, ds.desc = by, false
-			}
-		}
+		return t
 	}
-	plain := func(title string, width float32) {
-		t := widgets.Muted(c, title).FontSize(12).SingleLine()
-		if width > 0 {
-			t.Width(width).Shrink(0)
-		} else {
-			t.Grow(1).Basis(0).MinWidth(0)
-		}
+	// head is the header of a column the user resizes; by is -1 for one
+	// that does not sort.
+	head := func(id, text string, by int, def float32, end bool) {
+		widgets.ColumnHead(c, cols.w, id, def, 40, func() { title(text, by, end) })
 	}
 	ui.Row(c).Gap(10).Padding(2, 6, 4, 6).AlignItems(ui.Center).FillWidth().BorderWidth(0, 0, 1, 0).BorderColor(colors.line).Children(func() {
 		if leading != nil {
 			leading()
 		}
 		ui.Box(c).Width(ctrDotW).Shrink(0)
-		head(locales.DockerColName(), ctrSortName, 0, false)
+		title(locales.DockerColName(), ctrSortName, false).Grow(2).Basis(0)
 		if cols.image {
-			plain(locales.DockerColImage(), 0)
+			head("image", locales.DockerColImage(), -1, 0, false)
 		}
 		if cols.status {
-			head(locales.DockerColStatus(), ctrSortStatus, ctrStatusW, false)
+			head("status", locales.DockerColStatus(), ctrSortStatus, ctrStatusW, false)
 		}
 		if cols.ports {
-			plain(locales.DockerColPorts(), ctrPortsW)
+			head("ports", locales.DockerColPorts(), -1, ctrPortsW, false)
 		}
 		if cols.ip {
-			plain(locales.DockerColIP(), ctrIPW)
+			head("ip", locales.DockerColIP(), -1, ctrIPW, false)
 		}
-		head(locales.Cpu(), ctrSortCPU, ctrCPUW, true)
-		head(locales.DockerColMemory(), ctrSortMemory, ctrMemW, true)
+		head("cpu", locales.Cpu(), ctrSortCPU, ctrCPUW, true)
+		head("mem", locales.DockerColMemory(), ctrSortMemory, ctrMemW, true)
 		ui.Box(c).Width(ctrMenuW).Shrink(0)
 	})
 }
@@ -1002,8 +1015,8 @@ func (a *App) ctrGroupView(c *ui.Context, s *Session, list *ctrList, g ctrGroup,
 					count = work.busyText()
 				}
 				widgets.Muted(c, count).FontSize(12).SingleLine().Grow(1).MinWidth(0).Tooltip(count)
-				widgets.Muted(c, fmt.Sprintf("%.1f%%", cpu)).FontSize(12).Width(ctrCPUW).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
-				widgets.Muted(c, formatBytes(float64(mem))).FontSize(12).Width(ctrMemW).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
+				widgets.Muted(c, fmt.Sprintf("%.1f%%", cpu)).FontSize(12).Width(cols.w.Width("cpu", ctrCPUW)).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
+				widgets.Muted(c, formatBytes(float64(mem))).FontSize(12).Width(cols.w.Width("mem", ctrMemW)).Shrink(0).TextAlign(ui.End).FontFeatures("tnum")
 			})
 			dockerMoreButton(c, title, menu)
 		})
@@ -1074,22 +1087,22 @@ func ctrRowCells(c *ui.Context, ct *monitor.Container, indent bool, cols ctrColu
 	}
 	ui.Text(c, name).SingleLine().Grow(2).Basis(0).MinWidth(0).Tooltip(tip)
 	if cols.image {
-		widgets.Muted(c, ct.Image).SingleLine().Grow(1).Basis(0).MinWidth(0).Tooltip(ct.Image)
+		cols.w.Size(widgets.Muted(c, ct.Image).SingleLine(), "image", 0).Tooltip(ct.Image)
 	}
 	if cols.status {
-		t := ui.Text(c, status).FontSize(12).SingleLine().Width(ctrStatusW).Shrink(0).Tooltip(status)
+		t := ui.Text(c, status).FontSize(12).SingleLine().Width(cols.w.Width("status", ctrStatusW)).Shrink(0).Tooltip(status)
 		if ct.Status != "running" || ct.Health == "unhealthy" {
 			t.TextColor(ctrColor(ct))
 		}
 	}
 	if cols.ports {
 		ports := portTexts(ct.Ports)
-		widgets.Muted(c, firstAndMore(ports)).FontSize(12).SingleLine().Width(ctrPortsW).Shrink(0).Tooltip(strings.Join(ports, "\n"))
+		widgets.Muted(c, firstAndMore(ports)).FontSize(12).SingleLine().Width(cols.w.Width("ports", ctrPortsW)).Shrink(0).Tooltip(strings.Join(ports, "\n"))
 	}
 	if cols.ip {
 		ips := ctrIPs(ct)
-		widgets.Muted(c, firstAndMore(ips)).FontSize(12).SingleLine().Width(ctrIPW).Shrink(0).Tooltip(strings.Join(ips, "\n"))
+		widgets.Muted(c, firstAndMore(ips)).FontSize(12).SingleLine().Width(cols.w.Width("ip", ctrIPW)).Shrink(0).Tooltip(strings.Join(ips, "\n"))
 	}
-	ui.Text(c, ctrCPUText(ct)).FontSize(12).Width(ctrCPUW).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
-	ui.Text(c, ctrMemText(ct)).FontSize(12).Width(ctrMemW).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
+	ui.Text(c, ctrCPUText(ct)).FontSize(12).Width(cols.w.Width("cpu", ctrCPUW)).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
+	ui.Text(c, ctrMemText(ct)).FontSize(12).Width(cols.w.Width("mem", ctrMemW)).Shrink(0).TextAlign(ui.End).SingleLine().FontFeatures("tnum")
 }

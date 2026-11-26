@@ -66,6 +66,12 @@ func TestDesktopAIChatPrivacy(t *testing.T) {
 	state.draft = "next question"
 	state.attach = true
 	state.preview = "messages-for-preview"
+	// A question goes on from the conversation by default; unchecked, the
+	// request holds the question and its context alone.
+	if !state.useHistory {
+		t.Fatal("a follow-up question does not send the conversation by default")
+	}
+	state.useHistory = false
 	a.desktopAISend(window, state)
 	platform.until(t, "attached reply", func() bool { return state.cancel == nil })
 	body = aiTestBody(t, bodies, state.status)

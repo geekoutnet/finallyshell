@@ -26708,11 +26708,11 @@ func (msgs Messages) DesktopAIWelcome() string {
 	return Catalog.Format(msgs.locale, "desktopAIWelcome", nil)
 }
 
-// DesktopAIWelcomeBody says "Troubleshoot, interpret output or draft a shell command. You stay in control of the terminal."
+// DesktopAIWelcomeBody says "I work on this server directly: I run commands to troubleshoot and check things, and explain what I find. Read-only c…"
 // in the language the app shows.
 func DesktopAIWelcomeBody() string { return In(i18n.Locale()).DesktopAIWelcomeBody() }
 
-// DesktopAIWelcomeBody says "Troubleshoot, interpret output or draft a shell command. You stay in control of the terminal."
+// DesktopAIWelcomeBody says "I work on this server directly: I run commands to troubleshoot and check things, and explain what I find. Read-only c…"
 // in the language of msgs.
 func (msgs Messages) DesktopAIWelcomeBody() string {
 	return Catalog.Format(msgs.locale, "desktopAIWelcomeBody", nil)
@@ -27110,6 +27110,322 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// DesktopAINoTools says "This model does not take tools, so the assistant answers with advice only and cannot run commands."
+// in the language the app shows.
+func DesktopAINoTools() string { return In(i18n.Locale()).DesktopAINoTools() }
+
+// DesktopAINoTools says "This model does not take tools, so the assistant answers with advice only and cannot run commands."
+// in the language of msgs.
+func (msgs Messages) DesktopAINoTools() string {
+	return Catalog.Format(msgs.locale, "desktopAINoTools", nil)
+}
+
+// DesktopAIAgentRan says "AI assistant ran on the server: {command}"
+// in the language the app shows.
+func DesktopAIAgentRan(command string) string { return In(i18n.Locale()).DesktopAIAgentRan(command) }
+
+// DesktopAIAgentRan says "AI assistant ran on the server: {command}"
+// in the language of msgs.
+func (msgs Messages) DesktopAIAgentRan(command string) string {
+	return Catalog.Format(msgs.locale, "desktopAIAgentRan", map[string]any{"command": command})
+}
+
+// AiOtherModels says "Other models"
+// in the language the app shows.
+func AiOtherModels() string { return In(i18n.Locale()).AiOtherModels() }
+
+// AiOtherModels says "Other models"
+// in the language of msgs.
+func (msgs Messages) AiOtherModels() string {
+	return Catalog.Format(msgs.locale, "aiOtherModels", nil)
+}
+
+// AiOtherModelsHint says "One model ID per line, to switch to in the assistant's top bar"
+// in the language the app shows.
+func AiOtherModelsHint() string { return In(i18n.Locale()).AiOtherModelsHint() }
+
+// AiOtherModelsHint says "One model ID per line, to switch to in the assistant's top bar"
+// in the language of msgs.
+func (msgs Messages) AiOtherModelsHint() string {
+	return Catalog.Format(msgs.locale, "aiOtherModelsHint", nil)
+}
+
+// AiAddModel says "Add a fetched model"
+// in the language the app shows.
+func AiAddModel() string { return In(i18n.Locale()).AiAddModel() }
+
+// AiAddModel says "Add a fetched model"
+// in the language of msgs.
+func (msgs Messages) AiAddModel() string {
+	return Catalog.Format(msgs.locale, "aiAddModel", nil)
+}
+
+// AiTooManyModels says "List at most 32 other models, each at most 256 bytes."
+// in the language the app shows.
+func AiTooManyModels() string { return In(i18n.Locale()).AiTooManyModels() }
+
+// AiTooManyModels says "List at most 32 other models, each at most 256 bytes."
+// in the language of msgs.
+func (msgs Messages) AiTooManyModels() string {
+	return Catalog.Format(msgs.locale, "aiTooManyModels", nil)
+}
+
+// DesktopAIModel says "Model"
+// in the language the app shows.
+func DesktopAIModel() string { return In(i18n.Locale()).DesktopAIModel() }
+
+// DesktopAIModel says "Model"
+// in the language of msgs.
+func (msgs Messages) DesktopAIModel() string {
+	return Catalog.Format(msgs.locale, "desktopAIModel", nil)
+}
+
+// DesktopAIDefaultModel says "{model} (default)"
+// in the language the app shows.
+func DesktopAIDefaultModel(model string) string {
+	return In(i18n.Locale()).DesktopAIDefaultModel(model)
+}
+
+// DesktopAIDefaultModel says "{model} (default)"
+// in the language of msgs.
+func (msgs Messages) DesktopAIDefaultModel(model string) string {
+	return Catalog.Format(msgs.locale, "desktopAIDefaultModel", map[string]any{"model": model})
+}
+
+// DesktopAIConversations says "Conversations"
+// in the language the app shows.
+func DesktopAIConversations() string { return In(i18n.Locale()).DesktopAIConversations() }
+
+// DesktopAIConversations says "Conversations"
+// in the language of msgs.
+func (msgs Messages) DesktopAIConversations() string {
+	return Catalog.Format(msgs.locale, "desktopAIConversations", nil)
+}
+
+// DesktopAIToggleSidebar says "Show or hide conversations"
+// in the language the app shows.
+func DesktopAIToggleSidebar() string { return In(i18n.Locale()).DesktopAIToggleSidebar() }
+
+// DesktopAIToggleSidebar says "Show or hide conversations"
+// in the language of msgs.
+func (msgs Messages) DesktopAIToggleSidebar() string {
+	return Catalog.Format(msgs.locale, "desktopAIToggleSidebar", nil)
+}
+
+// DesktopAIAutoRun says "Run everything automatically"
+// in the language the app shows.
+func DesktopAIAutoRun() string { return In(i18n.Locale()).DesktopAIAutoRun() }
+
+// DesktopAIAutoRun says "Run everything automatically"
+// in the language of msgs.
+func (msgs Messages) DesktopAIAutoRun() string {
+	return Catalog.Format(msgs.locale, "desktopAIAutoRun", nil)
+}
+
+// DesktopAIAutoRunNote says "In this conversation, commands that change the system run without asking too; high-risk ones still ask."
+// in the language the app shows.
+func DesktopAIAutoRunNote() string { return In(i18n.Locale()).DesktopAIAutoRunNote() }
+
+// DesktopAIAutoRunNote says "In this conversation, commands that change the system run without asking too; high-risk ones still ask."
+// in the language of msgs.
+func (msgs Messages) DesktopAIAutoRunNote() string {
+	return Catalog.Format(msgs.locale, "desktopAIAutoRunNote", nil)
+}
+
+// DesktopAICmdWaiting says "Waiting for your approval"
+// in the language the app shows.
+func DesktopAICmdWaiting() string { return In(i18n.Locale()).DesktopAICmdWaiting() }
+
+// DesktopAICmdWaiting says "Waiting for your approval"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdWaiting() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdWaiting", nil)
+}
+
+// DesktopAICmdRunning says "Running…"
+// in the language the app shows.
+func DesktopAICmdRunning() string { return In(i18n.Locale()).DesktopAICmdRunning() }
+
+// DesktopAICmdRunning says "Running…"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdRunning() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdRunning", nil)
+}
+
+// DesktopAICmdExit says "Exit code {status} · {elapsed}"
+// in the language the app shows.
+func DesktopAICmdExit(status string, elapsed string) string {
+	return In(i18n.Locale()).DesktopAICmdExit(status, elapsed)
+}
+
+// DesktopAICmdExit says "Exit code {status} · {elapsed}"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdExit(status string, elapsed string) string {
+	return Catalog.Format(msgs.locale, "desktopAICmdExit", map[string]any{"status": status, "elapsed": elapsed})
+}
+
+// DesktopAICmdTimedOut says "Stopped after 60 s"
+// in the language the app shows.
+func DesktopAICmdTimedOut() string { return In(i18n.Locale()).DesktopAICmdTimedOut() }
+
+// DesktopAICmdTimedOut says "Stopped after 60 s"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdTimedOut() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdTimedOut", nil)
+}
+
+// DesktopAICmdRefused says "Refused"
+// in the language the app shows.
+func DesktopAICmdRefused() string { return In(i18n.Locale()).DesktopAICmdRefused() }
+
+// DesktopAICmdRefused says "Refused"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdRefused() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdRefused", nil)
+}
+
+// DesktopAICmdCancelled says "Cancelled"
+// in the language the app shows.
+func DesktopAICmdCancelled() string { return In(i18n.Locale()).DesktopAICmdCancelled() }
+
+// DesktopAICmdCancelled says "Cancelled"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdCancelled() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdCancelled", nil)
+}
+
+// DesktopAICmdFailed says "Could not run: {reason}"
+// in the language the app shows.
+func DesktopAICmdFailed(reason string) string { return In(i18n.Locale()).DesktopAICmdFailed(reason) }
+
+// DesktopAICmdFailed says "Could not run: {reason}"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdFailed(reason string) string {
+	return Catalog.Format(msgs.locale, "desktopAICmdFailed", map[string]any{"reason": reason})
+}
+
+// DesktopAICmdAllow says "Allow"
+// in the language the app shows.
+func DesktopAICmdAllow() string { return In(i18n.Locale()).DesktopAICmdAllow() }
+
+// DesktopAICmdAllow says "Allow"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdAllow() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdAllow", nil)
+}
+
+// DesktopAICmdRefuse says "Refuse"
+// in the language the app shows.
+func DesktopAICmdRefuse() string { return In(i18n.Locale()).DesktopAICmdRefuse() }
+
+// DesktopAICmdRefuse says "Refuse"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdRefuse() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdRefuse", nil)
+}
+
+// DesktopAICmdAuto says "Read-only · ran automatically"
+// in the language the app shows.
+func DesktopAICmdAuto() string { return In(i18n.Locale()).DesktopAICmdAuto() }
+
+// DesktopAICmdAuto says "Read-only · ran automatically"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdAuto() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdAuto", nil)
+}
+
+// DesktopAICmdApproved says "Ran with your approval"
+// in the language the app shows.
+func DesktopAICmdApproved() string { return In(i18n.Locale()).DesktopAICmdApproved() }
+
+// DesktopAICmdApproved says "Ran with your approval"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdApproved() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdApproved", nil)
+}
+
+// DesktopAICmdShowOutput says "Show output"
+// in the language the app shows.
+func DesktopAICmdShowOutput() string { return In(i18n.Locale()).DesktopAICmdShowOutput() }
+
+// DesktopAICmdShowOutput says "Show output"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdShowOutput() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdShowOutput", nil)
+}
+
+// DesktopAICmdHideOutput says "Hide output"
+// in the language the app shows.
+func DesktopAICmdHideOutput() string { return In(i18n.Locale()).DesktopAICmdHideOutput() }
+
+// DesktopAICmdHideOutput says "Hide output"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdHideOutput() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdHideOutput", nil)
+}
+
+// DesktopAICmdNoOutput says "(no output)"
+// in the language the app shows.
+func DesktopAICmdNoOutput() string { return In(i18n.Locale()).DesktopAICmdNoOutput() }
+
+// DesktopAICmdNoOutput says "(no output)"
+// in the language of msgs.
+func (msgs Messages) DesktopAICmdNoOutput() string {
+	return Catalog.Format(msgs.locale, "desktopAICmdNoOutput", nil)
+}
+
+// DesktopAIAgentOff says "No SSH connection: the assistant can only suggest commands here."
+// in the language the app shows.
+func DesktopAIAgentOff() string { return In(i18n.Locale()).DesktopAIAgentOff() }
+
+// DesktopAIAgentOff says "No SSH connection: the assistant can only suggest commands here."
+// in the language of msgs.
+func (msgs Messages) DesktopAIAgentOff() string {
+	return Catalog.Format(msgs.locale, "desktopAIAgentOff", nil)
+}
+
+// DesktopAITooManySteps says "Stopped after {count} rounds of commands. Ask again to go on."
+// in the language the app shows.
+func DesktopAITooManySteps(count string) string {
+	return In(i18n.Locale()).DesktopAITooManySteps(count)
+}
+
+// DesktopAITooManySteps says "Stopped after {count} rounds of commands. Ask again to go on."
+// in the language of msgs.
+func (msgs Messages) DesktopAITooManySteps(count string) string {
+	return Catalog.Format(msgs.locale, "desktopAITooManySteps", map[string]any{"count": count})
+}
+
+// DesktopAIComposerHint says "Ask about this server… (Enter to send, Shift+Enter for a new line)"
+// in the language the app shows.
+func DesktopAIComposerHint() string { return In(i18n.Locale()).DesktopAIComposerHint() }
+
+// DesktopAIComposerHint says "Ask about this server… (Enter to send, Shift+Enter for a new line)"
+// in the language of msgs.
+func (msgs Messages) DesktopAIComposerHint() string {
+	return Catalog.Format(msgs.locale, "desktopAIComposerHint", nil)
+}
+
+// DesktopAIContextShow says "Show the context"
+// in the language the app shows.
+func DesktopAIContextShow() string { return In(i18n.Locale()).DesktopAIContextShow() }
+
+// DesktopAIContextShow says "Show the context"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextShow() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextShow", nil)
+}
+
+// DesktopAIContextHide says "Hide the context"
+// in the language the app shows.
+func DesktopAIContextHide() string { return In(i18n.Locale()).DesktopAIContextHide() }
+
+// DesktopAIContextHide says "Hide the context"
+// in the language of msgs.
+func (msgs Messages) DesktopAIContextHide() string {
+	return Catalog.Format(msgs.locale, "desktopAIContextHide", nil)
+}
+
 // AiConnection says "Model connection"
 // in the language the app shows.
 func AiConnection() string { return In(i18n.Locale()).AiConnection() }
@@ -27220,21 +27536,21 @@ func (msgs Messages) AiKeyFieldOnly() string {
 	return Catalog.Format(msgs.locale, "aiKeyFieldOnly", nil)
 }
 
-// AiModel says "Model ID"
+// AiModel says "Default model"
 // in the language the app shows.
 func AiModel() string { return In(i18n.Locale()).AiModel() }
 
-// AiModel says "Model ID"
+// AiModel says "Default model"
 // in the language of msgs.
 func (msgs Messages) AiModel() string {
 	return Catalog.Format(msgs.locale, "aiModel", nil)
 }
 
-// AiModelHint says "Enter the exact model ID"
+// AiModelHint says "The model ID new conversations use"
 // in the language the app shows.
 func AiModelHint() string { return In(i18n.Locale()).AiModelHint() }
 
-// AiModelHint says "Enter the exact model ID"
+// AiModelHint says "The model ID new conversations use"
 // in the language of msgs.
 func (msgs Messages) AiModelHint() string {
 	return Catalog.Format(msgs.locale, "aiModelHint", nil)

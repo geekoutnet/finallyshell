@@ -128,6 +128,14 @@ monitor follows the current session wherever it is, and a panel opened
 in a tab of its own has it beside it. The side is kept in
 `settings.json`; full screen shows the terminal alone.
 
+Every table's columns can be resized: drag the thin line at the right
+edge of a column's header, and double-click it to fit the column to its
+cells (or, in the Docker containers list, the Trash window and the quick
+connect list, to give the column its default width back). This works
+everywhere, including the Docker containers list and the desktop's Files
+and Trash windows, whose columns used to be fixed. The widths last until
+the app quits.
+
 ## Sessions and tabs
 
 The bottom left of the window is a vertical list of sessions, on the
@@ -2045,7 +2053,10 @@ nothing on the server. The app's full-screen shortcut works on this row too.
 - Drag a title bar to move a window; drag any edge or corner to resize it.
   Double-click the title bar to maximize or restore. Drag to the top, left,
   or right edge to preview and apply a snap. A narrow desktop may allocate
-  more than half its width to respect an app's minimum width.
+  more than half its width to respect an app's minimum width. A window can
+  be moved partly past the desktop's left, right and bottom edges; 120 DIPs
+  of its title bar stay on the desktop to drag it back. New and restored
+  windows still open wholly on the desktop.
 - Press anywhere in a window to focus it. The title-bar menu restores,
   minimizes, maximizes, keeps a window on top, or closes it. The shell
   remembers each app's last resized size in memory, not its position.
@@ -2187,11 +2198,13 @@ System tab’s security tools.
 
 ### Desktop mode › AI Assistant
 
-Configure your own OpenAI-compatible service in **Options › AI Assistant**. Pick a provider preset, enter the base URL and model ID, and test the connection or fetch models. Only loopback Ollama can be enabled without a key. Requests use the same system or environment proxy as the updater.
+Configure your own OpenAI-compatible service in **Options › AI Assistant**. Pick a provider preset, enter the base URL and the default model, list any other model IDs under **Other models**, one per line (**Add a fetched model** adds those **Fetch models** found), and test the connection. Only loopback Ollama can be enabled without a key. Requests use the same system or environment proxy as the updater.
 
-Open **AI Assistant** on a server desktop to chat, stop a streaming reply or switch between that server’s local conversations. By default a request sends the question and the assistant’s instructions, not server data or previous messages. Opt in separately to recent chat messages or to a previewed attachment: the detected OS, working directory, up to 20 terminal lines and selected log lines, when available. The performance prompt can also attach current load, CPU, memory and top processes. Recognizable secrets are masked, but always check the preview before sending. Attachments and replies based on them are not written to chat history.
+Open **AI Assistant** on a server desktop. Its top bar shows the server it works on and the model it answers with: the model menu switches the current conversation to the default model or another listed one, and each reply shows the model that wrote it. The server's conversations are listed on the left (the first button of the top bar folds them away; a narrow window lists them under **History** instead). Enter sends the question and Shift+Enter starts a new line. The first question of a conversation sends the question and the assistant's instructions only; later ones also send the recent conversation, which **Include chat history** turns off. Opt in to a previewed attachment: the detected OS, working directory, up to 20 terminal lines and selected log lines, when available, folded to its first line above the question until you open it. The performance prompt can also attach current load, CPU, memory and top processes. Recognizable secrets are masked, but always check the preview before sending. Attachments and replies based on them are not written to chat history.
 
-Copy a shell snippet or insert a single line without pressing Enter. **Run** shows the exact line and asks for confirmation; obvious disk-destructive commands also require typing `RUN`. Use an empty shell prompt: the assistant cannot verify what program or input is currently in the terminal. **Ctrl+Shift+I** (**Cmd+I** on macOS) opens a terminal popover that suggests one command and never runs it. To explain a terminal selection, copy it and use **Explain copied text with AI** from the command bar’s context menu, then review and send it in the assistant. The model has no tools, direct shell access, managed built-in service or knowledge base.
+On a server connected over SSH, the assistant runs commands itself to investigate: the model calls a tool that runs one command at a time on an SSH channel of its own, apart from the terminal, as the login user, with no terminal and no input, and stops it after 60 seconds. Each command shows as a card with its state, exit code and time; its output (the first and last 16 KB, secrets masked) opens below it. Read-only commands run at once: an allowlist of programs and options that change nothing, such as `df`, `ps`, `journalctl -n`, `systemctl status` or `docker ps`, with no redirection to a file, command substitution, variables or `sudo`, and not reading key or password files. Any other command waits on its card for **Allow** or **Refuse**; refusing tells the model to ask instead. Commands that look destructive also need `RUN` typed. **Run everything automatically** lets one conversation run the others without asking, but not the destructive ones; it is off in every new conversation. A question runs at most 12 rounds of commands. Commands that change the system go to the desktop's operation log. Command output, logs and attachments reach the model as untrusted data. Conversations keep the commands and their exit codes, not their output. Without SSH (local terminals, Telnet, serial), the assistant only suggests commands, as it does with a model or provider that refuses tools: the question is asked again without them, and the window says why.
+
+Copy a shell snippet or insert a single line without pressing Enter. **Run** shows the exact line and asks for confirmation; obvious disk-destructive commands also require typing `RUN`. Use an empty shell prompt: the assistant cannot verify what program or input is currently in the terminal. **Ctrl+Shift+I** (**Cmd+I** on macOS) opens a terminal popover that suggests one command and never runs it. To explain a terminal selection, copy it and use **Explain copied text with AI** from the command bar’s context menu, then review and send it in the assistant. The command popover only suggests; the assistant has no managed built-in service or knowledge base.
 
 ## System tab
 

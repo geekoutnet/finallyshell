@@ -652,16 +652,16 @@ func (a *App) desktopFilesContent(c *ui.Context, w *desktopWindow, items, chosen
 
 func (a *App) desktopFilesTable(c *ui.Context, w *desktopWindow, items []desktopFilesItem, width float32) {
 	f := w.explorer()
-	columns := []ui.TableColumn{{Title: locales.ColName(), ID: "name", MinWidth: 125, Fixed: true}}
+	columns := []ui.TableColumn{{Title: locales.ColName(), ID: "name", MinWidth: 125}}
 	if f.deep != "" {
-		columns = append(columns, ui.TableColumn{Title: locales.DesktopFilesAddress(), ID: "path", MinWidth: 160, Fixed: true})
+		columns = append(columns, ui.TableColumn{Title: locales.DesktopFilesAddress(), ID: "path", MinWidth: 160})
 	} else if f.view == desktopFilesDetails {
 		columns = append(columns,
-			ui.TableColumn{Title: locales.ColSize(), ID: "size", Width: 73, Fixed: true},
-			ui.TableColumn{Title: locales.ColModified(), ID: "time", Width: 128, Fixed: true},
-			ui.TableColumn{Title: locales.ColPermissions(), ID: "perm", Width: 96, Fixed: true},
-			ui.TableColumn{Title: locales.DesktopFilesOwnerGroup(), ID: "owner", Width: 126, Fixed: true},
-			ui.TableColumn{Title: locales.DesktopFilesNote(), ID: "note", MinWidth: 82, Fixed: true})
+			ui.TableColumn{Title: locales.ColSize(), ID: "size", Width: 73},
+			ui.TableColumn{Title: locales.ColModified(), ID: "time", Width: 128},
+			ui.TableColumn{Title: locales.ColPermissions(), ID: "perm", Width: 96},
+			ui.TableColumn{Title: locales.DesktopFilesOwnerGroup(), ID: "owner", Width: 126},
+			ui.TableColumn{Title: locales.DesktopFilesNote(), ID: "note", MinWidth: 82})
 		if f.sidebar && width < 810 || width < 660 {
 			columns[0].MinWidth = 112
 			columns[1].Width = 68

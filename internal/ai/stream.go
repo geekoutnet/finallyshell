@@ -28,7 +28,9 @@ func errorMessage(data []byte) string {
 	return result.Message
 }
 
-func readStream(source io.Reader, delta func(string)) error {
+// readStream reads a chat completion's events, its text to delta and the
+// tools it calls to calls, nil for a chat that offers none.
+func readStream(source io.Reader, delta func(string), calls *[]ToolCall) error {
 	scanner := bufio.NewScanner(source)
 	const maxEvent = 1 << 20
 	scanner.Buffer(make([]byte, 4096), maxEvent)
@@ -58,8 +60,11 @@ func readStream(source io.Reader, delta func(string)) error {
 		}
 		var chunk struct {
 			Choices []struct {
-				Index        int
-				Delta        struct{ Content string }
+				Index int
+				Delta struct {
+					Content   string
+					ToolCalls []toolCallDelta `json:"tool_calls"`
+				}
 				FinishReason string `json:"finish_reason"`
 			}
 			Error json.RawMessage
@@ -76,6 +81,13 @@ func readStream(source io.Reader, delta func(string)) error {
 			}
 			if choice.Delta.Content != "" {
 				delta(choice.Delta.Content)
+			}
+			if calls != nil {
+				for _, part := range choice.Delta.ToolCalls {
+					if err := part.addTo(calls); err != nil {
+						return false, err
+					}
+				}
 			}
 			finished = finished || choice.FinishReason != ""
 		}
@@ -136,4 +148,50 @@ func scanEventLine(data []byte, atEOF bool) (int, []byte, error) {
 		return len(data), data, nil
 	}
 	return 0, nil, nil
+}
+
+// toolCallDelta is a piece of a tool call, streamed: the first names the
+// call and the function, the others add to its arguments.
+type toolCallDelta struct {
+	Index    *int
+	ID       string
+	Type     string
+	Function struct{ Name, Arguments string }
+}
+
+// maxToolCalls and maxToolArguments bound what a reply may call.
+const (
+	maxToolCalls     = 16
+	maxToolArguments = 64 << 10
+)
+
+// addTo adds the piece to the calls it belongs to: by its index, or, as
+// some providers stream whole calls without one, the last call unless it
+// names a new one.
+func (part toolCallDelta) addTo(calls *[]ToolCall) error {
+	list := *calls
+	at := len(list) - 1
+	switch {
+	case part.Index != nil:
+		at = *part.Index
+	case part.ID != "" && (at < 0 || list[at].ID != part.ID):
+		at = len(list)
+	}
+	if at < 0 || at > len(list) || at >= maxToolCalls {
+		return errors.New("invalid tool call")
+	}
+	if at == len(list) {
+		list = append(list, ToolCall{Type: "function"})
+	}
+	call := &list[at]
+	if part.ID != "" {
+		call.ID = part.ID
+	}
+	call.Function.Name += part.Function.Name
+	call.Function.Arguments += part.Function.Arguments
+	if len(call.Function.Name) > 256 || len(call.Function.Arguments) > maxToolArguments {
+		return errors.New("tool call too large")
+	}
+	*calls = list
+	return nil
 }

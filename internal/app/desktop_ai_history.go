@@ -45,7 +45,20 @@ func readAIChats(file string) ([]*desktopAIChat, error) {
 		}
 		var messages []*desktopAIMessage
 		for _, message := range chat.Messages[max(0, len(chat.Messages)-aiMaxMessages):] {
-			if message != nil && (message.Role == "assistant" || message.Role == "user") && len(message.Text) <= aiReplyLimit {
+			if message == nil || len(message.Text) > aiReplyLimit {
+				continue
+			}
+			switch message.Role {
+			case "command":
+				// A command the app quit in the middle of did not finish.
+				if !message.Status.finished() || message.Status > aiCmdFailed {
+					message.Status = aiCmdCancelled
+				}
+				if message.Status != aiCmdDone {
+					message.Exit = nil
+				}
+				messages = append(messages, message)
+			case "assistant", "user":
 				messages = append(messages, message)
 			}
 		}
@@ -61,10 +74,12 @@ func (a *App) aiSaveChats() {
 	}
 	var snapshot []desktopAIChat
 	for _, chat := range a.ai.chats {
-		copy := desktopAIChat{Host: chat.Host, Title: chat.Title}
+		copy := desktopAIChat{Host: chat.Host, Title: chat.Title, Model: chat.Model}
 		for _, message := range chat.Messages {
 			if message.Text != "" && !message.private {
-				copy.Messages = append(copy.Messages, &desktopAIMessage{Role: message.Role, Text: message.Text})
+				// A command's output stays in memory.
+				copy.Messages = append(copy.Messages, &desktopAIMessage{Role: message.Role, Text: message.Text, Model: message.Model,
+					Reason: message.Reason, Status: message.Status, Exit: message.Exit, Millis: message.Millis, Auto: message.Auto})
 			}
 		}
 		if len(copy.Messages) != 0 {

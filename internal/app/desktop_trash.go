@@ -12,6 +12,7 @@ import (
 
 	"finallyshell/internal/config"
 	"finallyshell/internal/monitor"
+	"finallyshell/internal/widgets"
 	"finallyshell/locales"
 
 	"github.com/egoist/mygo/ui"
@@ -52,6 +53,8 @@ type desktopTrashState struct {
 	cancel         context.CancelFunc
 	question       *desktopTrashQuestion
 	conflict       *desktopTrashConflict
+	// widths are the widths the user dragged the columns to.
+	widths widgets.ColumnWidths
 }
 
 type trashItemID struct {

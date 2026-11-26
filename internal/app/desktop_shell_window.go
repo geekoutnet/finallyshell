@@ -59,6 +59,23 @@ func desktopFitWindow(r ui.Rect, w *desktopWindow, area desktopSize) ui.Rect {
 	return r
 }
 
+// desktopReachableW is how much of a window's title bar stays on the
+// desktop when the user moves it partly past an edge.
+const desktopReachableW = 120
+
+// desktopReachable sizes r as desktopFitWindow does but lets the window
+// hang past the desktop's left, right and bottom edges, as on a real
+// desktop, keeping desktopReachableW of its title bar on the desktop to
+// drag it back; its top stays on the desktop.
+func desktopReachable(r ui.Rect, w *desktopWindow, area desktopSize) ui.Rect {
+	r.W = desktopClamp(r.W, min(w.app.minSize.W, area.W), area.W)
+	r.H = desktopClamp(r.H, min(w.app.minSize.H+desktopTitleHeight+desktopTitleDivider, area.H), area.H)
+	keep := min(desktopReachableW, r.W)
+	r.X = desktopClamp(r.X, keep-r.W, area.W-keep)
+	r.Y = desktopClamp(r.Y, 0, max(0, area.H-desktopTitleHeight))
+	return r
+}
+
 func (a *App) placeDesktopWindow(d *desktopState, w *desktopWindow) {
 	area := desktopWorkArea(d, false)
 	if last, ok := a.desktopWindowSizes[w.app.id]; ok {
@@ -163,7 +180,7 @@ func (a *App) desktopWindowFrame(c *ui.Context, d *desktopState, w *desktopWindo
 	case w.snapped != "":
 		r = a.desktopSnapRect(d, w, w.snapped)
 	default:
-		r = desktopFitWindow(r, w, desktopWorkArea(d, false))
+		r = desktopReachable(r, w, desktopWorkArea(d, false))
 		desktopSetWindowRect(w, r)
 	}
 	frame := ui.Column(c.Key(w.id)).Absolute().Left(r.X).Top(r.Y).Size(r.W, r.H).
@@ -291,7 +308,7 @@ func (a *App) desktopMove(c *ui.Context, d *desktopState, w *desktopWindow, titl
 			next := g.frame
 			next.X += dx
 			next.Y += dy
-			desktopSetWindowRect(w, desktopFitWindow(next, w, desktopWorkArea(d, false)))
+			desktopSetWindowRect(w, desktopReachable(next, w, desktopWorkArea(d, false)))
 			d.shell.preview = ""
 			switch {
 			case p.Y <= 12:

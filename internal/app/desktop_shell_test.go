@@ -555,3 +555,51 @@ func TestDesktopShellShortcutDefaults(t *testing.T) {
 		}
 	}
 }
+
+// TestDesktopShellWindowPastEdges moves a window partly past the
+// desktop's left, right and bottom edges, keeping part of its title bar on
+// the desktop, and resizes it there without it jumping back.
+func TestDesktopShellWindowPastEdges(t *testing.T) {
+	a, _, tt, s := desktopShellTestApp(t)
+	w := a.desktopOpen(s, appFiles, nil)
+	tt.Frame()
+	d := a.desktopOf(s)
+	area := desktopWorkArea(d, false)
+	drag := func(grab, to ui.Point) {
+		x, y := desktopShellPoint(d, grab)
+		tt.Press(x, y)
+		tt.Move(x+6, y)
+		x, y = desktopShellPoint(d, to)
+		tt.Move(x, y)
+		tt.Release(x, y)
+		tt.Frame()
+	}
+	// The pointer stays 20 DIPs inside the edges, short of snapping.
+	grab := func() ui.Point { return ui.Point{X: w.x + 60, Y: w.y + desktopTitleHeight/2} }
+	drag(grab(), ui.Point{X: 20, Y: 200})
+	if w.maximized || w.snapped != "" || w.x >= 0 || w.x+w.w < desktopReachableW {
+		t.Fatalf("past the left edge: x=%v w=%v snapped=%q", w.x, w.w, w.snapped)
+	}
+	drag(grab(), ui.Point{X: area.W - 20, Y: 200})
+	if w.snapped != "" || w.x+w.w <= area.W || w.x > area.W-desktopReachableW {
+		t.Fatalf("past the right edge: x=%v w=%v area=%v", w.x, w.w, area.W)
+	}
+	drag(grab(), ui.Point{X: area.W / 2, Y: area.H - 20})
+	if w.maximized || w.y+w.h <= area.H || w.y > area.H-desktopTitleHeight {
+		t.Fatalf("past the bottom edge: y=%v h=%v area=%v", w.y, w.h, area.H)
+	}
+	// However far it goes, the title bar stays in reach.
+	r := desktopReachable(ui.Rect{X: -5000, Y: 5000, W: w.w, H: w.h}, w, area)
+	if r.X+r.W != desktopReachableW || r.Y != area.H-desktopTitleHeight {
+		t.Fatalf("far left and down: %+v", r)
+	}
+	r = desktopReachable(ui.Rect{X: 5000, Y: -300, W: w.w, H: w.h}, w, area)
+	if r.X != area.W-desktopReachableW || r.Y != 0 {
+		t.Fatalf("far right and up: %+v", r)
+	}
+	// Placing a window still puts all of it on the desktop.
+	a.placeDesktopWindow(d, w)
+	if w.x < 0 || w.x+w.w > area.W || w.y < 0 || w.y+w.h > area.H {
+		t.Fatalf("placed at %+v in %+v", desktopWindowRect(w), area)
+	}
+}

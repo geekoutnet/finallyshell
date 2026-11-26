@@ -2053,7 +2053,10 @@ nothing on the server. The app's full-screen shortcut works on this row too.
 - Drag a title bar to move a window; drag any edge or corner to resize it.
   Double-click the title bar to maximize or restore. Drag to the top, left,
   or right edge to preview and apply a snap. A narrow desktop may allocate
-  more than half its width to respect an app's minimum width.
+  more than half its width to respect an app's minimum width. A window can
+  be moved partly past the desktop's left, right and bottom edges; 120 DIPs
+  of its title bar stay on the desktop to drag it back. New and restored
+  windows still open wholly on the desktop.
 - Press anywhere in a window to focus it. The title-bar menu restores,
   minimizes, maximizes, keeps a window on top, or closes it. The shell
   remembers each app's last resized size in memory, not its position.

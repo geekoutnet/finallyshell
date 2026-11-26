@@ -499,3 +499,23 @@ func TestKeepAliveSetting(t *testing.T) {
 		t.Errorf("without the key: %d", got.KeepAliveInterval())
 	}
 }
+
+// The server profile goes with questions unless NoServerProfile is set,
+// which counts as a change of the settings and is only written when set.
+func TestAISettingsServerProfile(t *testing.T) {
+	on := AISettings{Endpoint: "https://api.openai.com/v1", Model: "demo"}
+	off := on
+	off.NoServerProfile = true
+	if on.Equal(off) {
+		t.Error("turning the server profile off is not a change")
+	}
+	data, _ := json.Marshal(on)
+	if strings.Contains(string(data), "noServerProfile") {
+		t.Errorf("default written: %s", data)
+	}
+	var read AISettings
+	data, _ = json.Marshal(off)
+	if err := json.Unmarshal(data, &read); err != nil || !read.Equal(off) || !strings.Contains(string(data), `"noServerProfile":true`) {
+		t.Errorf("read %+v from %s: %v", read, data, err)
+	}
+}

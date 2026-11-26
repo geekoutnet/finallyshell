@@ -126,13 +126,17 @@ type AISettings struct {
 	// DenyCommands are regular expressions: a command the model calls that
 	// matches one is never run, whatever else would let it.
 	DenyCommands []string `json:"denyCommands,omitempty"`
+	// NoServerProfile keeps the server profile (what the server is and
+	// runs, read once per connection) from going with the questions.
+	NoServerProfile bool `json:"noServerProfile,omitempty"`
 }
 
 // Equal reports whether s and o are the same settings.
 func (s AISettings) Equal(o AISettings) bool {
 	return s.Provider == o.Provider && s.Endpoint == o.Endpoint && s.Model == o.Model && slices.Equal(s.Models, o.Models) &&
 		s.SystemPrompt == o.SystemPrompt && s.SendContext == o.SendContext && s.ContextTokens == o.ContextTokens &&
-		slices.Equal(s.DenyCommands, o.DenyCommands)
+		slices.Equal(s.DenyCommands, o.DenyCommands) &&
+		s.NoServerProfile == o.NoServerProfile
 }
 
 // HasModel reports whether model is the default model or one of the

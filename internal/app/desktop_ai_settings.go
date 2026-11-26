@@ -214,6 +214,10 @@ func (a *App) aiOptionsPage(c *ui.Context) {
 			ui.TextArea(c, &state.draft.SystemPrompt).FillWidth().Height(70).Label(locales.AiSystemPrompt()).Placeholder(locales.AiSystemHint()).Disabled(busy)
 		})
 		ui.Checkbox(c, &state.draft.SendContext, locales.AiSendContext()).Disabled(busy)
+		sendProfile := !state.draft.NoServerProfile
+		if ui.Checkbox(c, &sendProfile, locales.AiProfileSetting()).Disabled(busy).Changed() {
+			state.draft.NoServerProfile = !sendProfile
+		}
 		aiField(c, locales.AiGuardRules(), func() {
 			ui.TextArea(c, &state.deny).FillWidth().Height(64).Font("monospace").Label(locales.AiGuardRules()).Placeholder(locales.AiGuardRulesHint()).Disabled(busy)
 			if _, bad := aiDenyRules(aiDenyLines(state.deny)); len(bad) > 0 {

@@ -27274,6 +27274,86 @@ func (msgs Messages) DesktopAIChatWaiting() string {
 	return Catalog.Format(msgs.locale, "desktopAIChatWaiting", nil)
 }
 
+// AiProfileChip says "Server profile"
+// in the language the app shows.
+func AiProfileChip() string { return In(i18n.Locale()).AiProfileChip() }
+
+// AiProfileChip says "Server profile"
+// in the language of msgs.
+func (msgs Messages) AiProfileChip() string {
+	return Catalog.Format(msgs.locale, "aiProfileChip", nil)
+}
+
+// AiProfileTip says "What the assistant knows about this server. It goes with your questions, so the commands fit the server"
+// in the language the app shows.
+func AiProfileTip() string { return In(i18n.Locale()).AiProfileTip() }
+
+// AiProfileTip says "What the assistant knows about this server. It goes with your questions, so the commands fit the server"
+// in the language of msgs.
+func (msgs Messages) AiProfileTip() string {
+	return Catalog.Format(msgs.locale, "aiProfileTip", nil)
+}
+
+// AiProfileReading says "Reading the server…"
+// in the language the app shows.
+func AiProfileReading() string { return In(i18n.Locale()).AiProfileReading() }
+
+// AiProfileReading says "Reading the server…"
+// in the language of msgs.
+func (msgs Messages) AiProfileReading() string {
+	return Catalog.Format(msgs.locale, "aiProfileReading", nil)
+}
+
+// AiProfileFailed says "Could not read the server profile. Questions go without it."
+// in the language the app shows.
+func AiProfileFailed() string { return In(i18n.Locale()).AiProfileFailed() }
+
+// AiProfileFailed says "Could not read the server profile. Questions go without it."
+// in the language of msgs.
+func (msgs Messages) AiProfileFailed() string {
+	return Catalog.Format(msgs.locale, "aiProfileFailed", nil)
+}
+
+// AiProfileCollected says "Read at {time}"
+// in the language the app shows.
+func AiProfileCollected(time_ string) string { return In(i18n.Locale()).AiProfileCollected(time_) }
+
+// AiProfileCollected says "Read at {time}"
+// in the language of msgs.
+func (msgs Messages) AiProfileCollected(time_ string) string {
+	return Catalog.Format(msgs.locale, "aiProfileCollected", map[string]any{"time": time_})
+}
+
+// AiProfileRefresh says "Refresh"
+// in the language the app shows.
+func AiProfileRefresh() string { return In(i18n.Locale()).AiProfileRefresh() }
+
+// AiProfileRefresh says "Refresh"
+// in the language of msgs.
+func (msgs Messages) AiProfileRefresh() string {
+	return Catalog.Format(msgs.locale, "aiProfileRefresh", nil)
+}
+
+// AiProfileNote says "This conversation sends the profile it started with. Refresh reads the server again and updates it."
+// in the language the app shows.
+func AiProfileNote() string { return In(i18n.Locale()).AiProfileNote() }
+
+// AiProfileNote says "This conversation sends the profile it started with. Refresh reads the server again and updates it."
+// in the language of msgs.
+func (msgs Messages) AiProfileNote() string {
+	return Catalog.Format(msgs.locale, "aiProfileNote", nil)
+}
+
+// AiProfileSetting says "Send the server profile (system, package manager, services…) with questions"
+// in the language the app shows.
+func AiProfileSetting() string { return In(i18n.Locale()).AiProfileSetting() }
+
+// AiProfileSetting says "Send the server profile (system, package manager, services…) with questions"
+// in the language of msgs.
+func (msgs Messages) AiProfileSetting() string {
+	return Catalog.Format(msgs.locale, "aiProfileSetting", nil)
+}
+
 // TabMode says "Showing: {mode}"
 // in the language the app shows.
 func TabMode(mode string) string { return In(i18n.Locale()).TabMode(mode) }

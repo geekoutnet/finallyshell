@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"finallyshell/internal/ai"
 	"finallyshell/internal/config"
 )
 
@@ -63,6 +64,7 @@ func readAIChats(file string) ([]*desktopAIChat, error) {
 			}
 		}
 		chat.Messages = messages
+		chat.Profile = ai.Limit(chat.Profile, aiContextLimit)
 		out = append(out, chat)
 	}
 	return out, nil
@@ -74,7 +76,7 @@ func (a *App) aiSaveChats() {
 	}
 	var snapshot []desktopAIChat
 	for _, chat := range a.ai.chats {
-		copy := desktopAIChat{Host: chat.Host, Title: chat.Title, Model: chat.Model}
+		copy := desktopAIChat{Host: chat.Host, Title: chat.Title, Model: chat.Model, Profile: chat.Profile}
 		for _, message := range chat.Messages {
 			if message.Text != "" && !message.private {
 				// A command's output stays in memory.

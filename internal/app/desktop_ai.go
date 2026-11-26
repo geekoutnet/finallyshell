@@ -46,6 +46,8 @@ type desktopAIRuntime struct {
 
 	command *aiCommandState
 	targets map[*Session]aiTerminalTarget
+	// profiles are the servers' profiles (desktop_ai_profile.go).
+	profiles map[*Session]*aiProfile
 	// requests are the conversations answering, with their windows;
 	// convs the conversations open in each window (desktop_ai_convs.go).
 	requests map[*desktopAIState]*desktopWindow
@@ -101,6 +103,8 @@ type desktopAIState struct {
 	copied *desktopAIMessage
 	// focusInput gives the question's field the keyboard in the next frame.
 	focusInput bool
+	// profileOpen shows the server profile's popover.
+	profileOpen bool
 }
 
 type desktopAISelection struct {
@@ -116,6 +120,9 @@ type desktopAIChat struct {
 	// Summary stands for the messages marked Compacted, which the model
 	// no longer gets (desktop_ai_context.go).
 	Summary string `json:"summary,omitempty"`
+	// Profile is the server profile message the conversation sends, as it
+	// was read when the conversation started, or refreshed.
+	Profile string `json:"profile,omitempty"`
 }
 
 // removeMessage takes message out of the chat.
@@ -182,6 +189,7 @@ func (a *App) desktopAIOpened(window *desktopWindow, arg any) {
 	}
 	a.aiLoadChats()
 	a.aiCheckReady()
+	a.aiProfileRead(window.session, false, nil)
 	if selection, ok := arg.(desktopAISelection); ok {
 		a.desktopAIStop(state)
 		state.draft, state.extra, state.attach = locales.DesktopAIExplainSelectionQuestion(), selection.text, true
@@ -358,6 +366,22 @@ func (a *App) desktopAIAsk(window *desktopWindow, state *desktopAIState, text, a
 		desktop := a.desktopOf(window.session)
 		return state.generation == generation && desktop != nil && slices.Contains(desktop.windows, window)
 	}
+	// The server profile, read now if it was not; the question waits a
+	// little for it, then goes without.
+	a.aiProfileRead(window.session, false, nil)
+	a.aiProfileReady(window.session, func() {
+		if !current() {
+			cancel()
+			return
+		}
+		a.desktopAIRequest(ctx, cancel, window, state, generation, current, settings, question, attachment, redo, fromDraft)
+	})
+}
+
+// desktopAIRequest sends the question desktopAIAsk asks, once the server
+// profile is read or given up on.
+func (a *App) desktopAIRequest(ctx context.Context, cancel context.CancelFunc, window *desktopWindow, state *desktopAIState, generation int, current func() bool,
+	settings config.AISettings, question, attachment string, redo *desktopAIMessage, fromDraft bool) {
 	a.aiCredential(ctx, settings, "", false, func(client ai.Client, err error) {
 		if !current() {
 			cancel()
@@ -403,6 +427,11 @@ func (a *App) desktopAIAsk(window *desktopWindow, state *desktopAIState, text, a
 			messages := []ai.Message{{Role: "system", Content: prompt}}
 			if settings.SystemPrompt != "" {
 				messages = append(messages, ai.Message{Role: "system", Content: ai.Limit(settings.SystemPrompt, aiQuestionLimit)})
+			}
+			// The server profile: data, not instructions, so not a system
+			// message; the same for the whole conversation.
+			if profile := a.aiProfileMessage(window.session, chat); profile != "" {
+				messages = append(messages, ai.Message{Role: "user", Content: client.SafeText(profile)})
 			}
 			content := question
 			if attachment != "" {

@@ -101,7 +101,9 @@ func useUpdater() {
 }
 
 // watchUpdates draws the windows again when what Updates reports changed,
-// and checks in the background, a day after the last check.
+// and checks in the background: once as the app starts, so that a newer
+// version shows on the update card at every start, and then a day after
+// the last check.
 func (p *platform) watchUpdates() {
 	updates.mu.Lock()
 	updates.redraw = p.Redraw
@@ -110,9 +112,9 @@ func (p *platform) watchUpdates() {
 		return
 	}
 	go func() {
-		for {
+		for started := true; ; started = false {
 			updates.mu.Lock()
-			due := updates.automatic() && time.Since(updates.saved.LastCheck) >= updateInterval
+			due := updateDue(updates.automatic(), started, time.Since(updates.saved.LastCheck))
 			updates.mu.Unlock()
 			if due {
 				updates.check(false)
@@ -120,6 +122,13 @@ func (p *platform) watchUpdates() {
 			time.Sleep(time.Hour)
 		}
 	}()
+}
+
+// updateDue reports whether the background check is due: never when the
+// user turned it off, at once as the app starts, and otherwise a day after
+// the last check, since.
+func updateDue(automatic, started bool, since time.Duration) bool {
+	return automatic && (started || since >= updateInterval)
 }
 
 func (u *updateChecker) automatic() bool { return u.saved.Automatic == nil || *u.saved.Automatic }

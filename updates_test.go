@@ -204,3 +204,23 @@ func TestDownloadUpdateChecksum(t *testing.T) {
 		t.Error("a tampered file was accepted")
 	}
 }
+
+// TestUpdateDue checks at every start, then a day after the last check,
+// and never once the user turned the checks off.
+func TestUpdateDue(t *testing.T) {
+	for _, tc := range []struct {
+		automatic, started bool
+		since              time.Duration
+		want               bool
+	}{
+		{true, true, time.Minute, true},
+		{true, false, time.Minute, false},
+		{true, false, updateInterval, true},
+		{false, true, 0, false},
+		{false, false, 48 * time.Hour, false},
+	} {
+		if got := updateDue(tc.automatic, tc.started, tc.since); got != tc.want {
+			t.Errorf("updateDue(%v, %v, %v) = %v", tc.automatic, tc.started, tc.since, got)
+		}
+	}
+}

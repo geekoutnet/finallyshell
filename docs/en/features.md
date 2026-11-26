@@ -3363,8 +3363,10 @@ Finallyshell updates itself from the releases of this project,
 does not use MyGo's signed updater: the app checks, downloads and installs
 updates itself (`updates.go`).
 
-- Checking: at launch, and once a day while the app runs (24 hours after
-  the last check that worked). It asks every download mirror of this
+- Checking: at every launch, however recent the last check, so that a
+  newer version shows on the update card each time the app starts, and
+  once a day while the app runs (24 hours after the last check that
+  worked). It asks every download mirror of this
   project at once (`updateMirrors` in `updates.go`) and takes the first
   answer; only when none answers does it ask the GitHub API. "Check for
   updates automatically" in Options › General turns the checks in the

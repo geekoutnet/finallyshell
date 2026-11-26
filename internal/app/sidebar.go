@@ -231,7 +231,7 @@ func (a *App) sessionPanel(c *ui.Context) {
 		// build with fewer sessions than the list was given.
 		var closing *Session
 		ui.List(c, &a.sessList, len(a.sessions), func(i int) {
-			if a.sessionRow(c, a.sessions[i], i == a.active) {
+			if a.sessionRow(c, a.sessions[i], i == a.active, a.sessionGuideOf(i)) {
 				closing = a.sessions[i]
 			}
 		}).Grow(1).Padding(0, 4, 4, 4).Children(func() {
@@ -259,11 +259,15 @@ func (a *App) sessionCount() int {
 }
 
 // sessionRow is the tab of s. It reports whether the user closed it.
-func (a *App) sessionRow(c *ui.Context, s *Session, active bool) (closed bool) {
+func (a *App) sessionRow(c *ui.Context, s *Session, active bool, guide sessionGuide) (closed bool) {
 	if s.isPanelTab() {
-		return a.panelRow(c, s, active)
+		return a.panelRow(c, s, active, guide)
 	}
 	row := ui.Row(c).Gap(8).Padding(5, 4, 5, 8).Radius(5)
+	if !guide.first {
+		row.Margin(5, 0, 0, 0)
+	}
+	drawServerGuide(row, guide)
 	a.relayDropZone(row, s)
 	hovered := row.Hovered()
 	if s.isNewTab() {

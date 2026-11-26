@@ -366,7 +366,7 @@ place. These files are not copied to this computer or synced.
 
 ### AI assistant settings
 
-`ai` stores `provider`, `endpoint`, `model` (the default model), `models` (the other models a conversation can switch to), `systemPrompt`, and `sendContext`. These preferences can sync; the per-endpoint API key and the explicit opt-in for keyless local Ollama live only in the system credential store. `shortcuts.generateAI` overrides the default Ctrl+Shift+I (Cmd+I on macOS), or disables it with `none`. `chats.json` keeps up to 24 recent conversations and 160 messages (questions, replies and commands) per conversation on this device.
+`ai` stores `provider`, `endpoint`, `model` (the default model), `models` (the other models a conversation can switch to), `systemPrompt`, `sendContext`, `contextTokens` (the context budget in tokens; missing for 64000) and `denyCommands` (regular expressions of commands never run). These preferences can sync; the per-endpoint API key and the explicit opt-in for keyless local Ollama live only in the system credential store. `shortcuts.generateAI` overrides the default Ctrl+Shift+I (Cmd+I on macOS), or disables it with `none`. `chats.json` keeps up to 24 recent conversations and 160 messages (questions, replies and commands) per conversation on this device; a conversation summarized past its budget also keeps `summary`, its summarized messages marked `compacted`.
 
 ### Caddy files
 

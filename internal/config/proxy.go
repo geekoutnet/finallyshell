@@ -17,6 +17,12 @@ const (
 	ProxySOCKS5 ProxyKind = "socks5"
 	// ProxyHTTP connects through an HTTP proxy with CONNECT.
 	ProxyHTTP ProxyKind = "http"
+	// ProxyHTTPS connects through an HTTP proxy with CONNECT, over TLS to
+	// the proxy.
+	ProxyHTTPS ProxyKind = "https"
+	// ProxySOCKS4 connects through a SOCKS4 proxy, as SOCKS4a with a
+	// host's name: no password.
+	ProxySOCKS4 ProxyKind = "socks4"
 	// ProxyJump connects through another saved host, a jump host, as
 	// OpenSSH's ProxyJump: its SSH server opens the connection.
 	ProxyJump ProxyKind = "jump"
@@ -26,10 +32,12 @@ const (
 // SOCKS5, 8080 for HTTP, 0 for the others.
 func DefaultProxyPort(k ProxyKind) int {
 	switch k {
-	case ProxySOCKS5:
+	case ProxySOCKS5, ProxySOCKS4:
 		return 1080
 	case ProxyHTTP:
 		return 8080
+	case ProxyHTTPS:
+		return 443
 	}
 	return 0
 }
@@ -45,6 +53,11 @@ type ProxyConfig struct {
 	User string    `json:"user,omitempty"`
 	// JumpHost is the ID of the jump host, for ProxyJump.
 	JumpHost string `json:"jumpHost,omitempty"`
+	// ProxyID is the ID of the proxy of the library (proxies.go) this one
+	// is a copy of: the fields above are always the proxy itself, which
+	// builds that know no library connect through, and editing the
+	// library's proxy updates them. "" for a proxy of the host's own.
+	ProxyID string `json:"proxyId,omitempty"`
 
 	extra extras
 }
@@ -56,6 +69,18 @@ func (p *ProxyConfig) PortOrDefault() int {
 		return DefaultProxyPort(p.Kind)
 	}
 	return p.Port
+}
+
+// TakesPassword reports whether a proxy of kind k has a user and a
+// password: SOCKS5 and HTTP(S) do, SOCKS4 has a user ID alone.
+func TakesPassword(k ProxyKind) bool {
+	return k == ProxySOCKS5 || k == ProxyHTTP || k == ProxyHTTPS
+}
+
+// Direct reports whether a proxy of kind k is a proxy server, reached at
+// an address, as a jump host is not.
+func Direct(k ProxyKind) bool {
+	return k == ProxySOCKS5 || k == ProxySOCKS4 || k == ProxyHTTP || k == ProxyHTTPS
 }
 
 // ProxyOf is the proxy h connects through: nil when it connects directly.

@@ -165,15 +165,11 @@ func bulkRoute(ctx context.Context, host *config.Host, opts Options, addr string
 		}
 		return nil, &HopError{JumpHost: jump.Title(), HostID: jump.ID, Err: err}
 	}
-	if proxy.Kind != config.ProxySOCKS5 && proxy.Kind != config.ProxyHTTP {
+	if !config.Direct(proxy.Kind) {
 		return nil, errors.New("unknown proxy kind")
 	}
 	if !bulkAddressValid(proxy.Addr, proxy.PortOrDefault()) {
 		return nil, ErrBulkAddress
-	}
-	dial := dialSOCKS5
-	if proxy.Kind == config.ProxyHTTP {
-		dial = dialHTTP
 	}
 	timeout := 15 * time.Second
 	if deadline, ok := ctx.Deadline(); ok {
@@ -188,7 +184,7 @@ func bulkRoute(ctx context.Context, host *config.Host, opts Options, addr string
 	}
 	done := make(chan routeResult)
 	go func() {
-		conn, err := dial(proxy, opts.ProxyPassword, addr, timeout)
+		conn, err := DialProxy(proxy, opts.ProxyPassword, addr, timeout)
 		select {
 		case done <- routeResult{conn, err}:
 		case <-ctx.Done():

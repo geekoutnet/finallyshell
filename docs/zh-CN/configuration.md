@@ -115,8 +115,10 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 
 `proxy` 是怎么连到这台主机：
 
-- `kind` 为 `socks5` 或 `http`，这两种有 `addr`、`port`，代理需要认证时有 `user`；
+- `kind` 为 `socks5`、`http`、`https` 或 `socks4`，有 `addr`、`port`，代理需要认证时有 `user`（SOCKS4 是用户 ID）；有 `proxyId` 时，它是代理库中这个 ID 的代理的副本，修改代理库会一起更新；
 - 或者 `kind` 为 `jump`，`jumpHost` 是跳板机的主机 ID。
+
+`proxies` 和 `hosts` 并列，是代理库：每个有 `id`、`name`、`kind`、`addr`、`port`、`user` 和 `note`。代理库的密码存在凭据库里，键为 `proxy/<id>/password`，随其他密码一起同步。不支持代理库的旧版本会原样保留这个键，并用各主机的副本连接；`https` 和 `socks4` 需要支持它们的版本。
 
 没有 `proxy` 就是直接连接。代理密码也不写进文件，和主机密码一样存在凭据存储里（见[密码存在哪里](#密码存在哪里)）。
 

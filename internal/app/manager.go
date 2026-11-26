@@ -399,6 +399,9 @@ func (a *App) managerToolbar(c *ui.Context) {
 			if toolText("import", locales.ImportTitle(), locales.Import()).Clicked() {
 				a.openImport()
 			}
+			if toolText("waypoints", locales.ProxyMgrTitle(), locales.ProxyMgrTitle()).Clicked() {
+				a.openProxyManager()
+			}
 		}).Label(locales.ManagerTitle()).Grow(1).MinWidth(0)
 		ui.Checkbox(c, &m.showDeleted, locales.ShowDeleted())
 		if ui.Button(c, "").Label(locales.BackupsTitle()).Tooltip(locales.BackupsTitle()).Children(func() {

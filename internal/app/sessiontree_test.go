@@ -6,8 +6,7 @@ import (
 	"github.com/egoist/mygo/ui"
 )
 
-// TestSessionTreeGuides joins each server's child rows to it and
-// separates the servers.
+// TestSessionTreeGuides joins each server's child rows to it.
 func TestSessionTreeGuides(t *testing.T) {
 	a, p := testApp(t)
 	web := demoSession(a, "web-1", "10.0.0.11")
@@ -23,7 +22,7 @@ func TestSessionTreeGuides(t *testing.T) {
 		t.Fatalf("rows %q", rowNames(a))
 	}
 	want := []sessionGuide{
-		{first: true, children: true},
+		{children: true},
 		{},
 		{lastChild: true},
 		{children: true},

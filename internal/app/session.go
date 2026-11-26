@@ -86,6 +86,11 @@ type Session struct {
 	// lastRow is, on a server's row, the row of its group the user was on
 	// last, which its session tab goes back to (sessiontabs.go).
 	lastRow *Session
+	// bottomTab is the tab of the bottom panel this session shows, kept
+	// while another session shows (syncBottomTab); bottomTabSet once it
+	// has one.
+	bottomTab    int
+	bottomTabSet bool
 
 	// desktop is a desktop row's state (desktop.go), nil on other rows.
 	desktop *desktopState

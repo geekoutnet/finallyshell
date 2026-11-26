@@ -175,7 +175,9 @@ type App struct {
 	monitorPct  float32
 	terminalPct float32
 	treeWidth   float32
-	bottomTab   int // tabFiles, tabTransfers, …
+	bottomTab   int // tabFiles, tabTransfers, …: the shown session's (syncBottomTab)
+	// bottomOwner is the session whose tab bottomTab is.
+	bottomOwner *Session
 	db          dbWorkspace
 	termFont    terminal.Font
 	termTheme   *terminal.Theme
@@ -185,9 +187,19 @@ type App struct {
 	bottomHidden bool
 	// sidebarHidden folds the left column away (sessiontabs.go).
 	sidebarHidden bool
+	// tabsRoom is the width the session tabs had to share in the last
+	// frame; tabsShown the server whose tab was last scrolled into view
+	// (sessiontabs.go).
+	tabsRoom   float32
+	tabsShown  *Session
+	tabsScroll ui.ScrollState
 	// closeAsk is the connected server the user is closing, while the
 	// app asks first (sessiontabs.go).
 	closeAsk *Session
+	// proxyMgr is the proxy manager's, and proxyTests the tests of the
+	// library's proxies by ID (proxymgr.go).
+	proxyMgr   proxyMgrState
+	proxyTests map[string]*proxyTest
 	// updateLater is the newer version whose card the user put off, for
 	// this run (updatenotice.go).
 	updateLater string
@@ -435,6 +447,7 @@ func (a *App) sidebar(c *ui.Context) {
 // monitor on the right, the right column holds it too, on top, over the
 // panel when that is there.
 func (a *App) mainArea(c *ui.Context) {
+	a.syncBottomTab()
 	var monitor func()
 	if a.monitorOnRight() {
 		monitor = func() { a.rightMonitor(c) }

@@ -22,6 +22,8 @@ import (
 	"bufio"
 	"bytes"
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -111,10 +113,8 @@ func dialRoute(h *config.Host, opts Options, cfg *ssh.ClientConfig) (*ssh.Client
 	var conn net.Conn
 	var err error
 	switch p.Kind {
-	case config.ProxySOCKS5:
-		conn, err = dialSOCKS5(p, opts.ProxyPassword, addr, cfg.Timeout)
-	case config.ProxyHTTP:
-		conn, err = dialHTTP(p, opts.ProxyPassword, addr, cfg.Timeout)
+	case config.ProxySOCKS5, config.ProxySOCKS4, config.ProxyHTTP, config.ProxyHTTPS:
+		conn, err = DialProxy(p, opts.ProxyPassword, addr, cfg.Timeout)
 	case config.ProxyJump:
 		conn, err = dialJump(opts.Jump, opts.KeepAlive, addr, cfg.Timeout)
 		if err == nil {
@@ -144,6 +144,28 @@ func dialRoute(h *config.Host, opts Options, cfg *ssh.ClientConfig) (*ssh.Client
 		return nil, err
 	}
 	return ssh.NewClient(c, chans, reqs), nil
+}
+
+// proxyRootCAs are the authorities an HTTPS proxy's certificate is
+// checked against: nil for the system's; tests set their own.
+var proxyRootCAs *x509.CertPool
+
+// DialProxy opens a connection to addr through the proxy server p, with
+// its password: SOCKS5, SOCKS4 (SOCKS4a for a name), HTTP or HTTPS, as
+// connecting to a host does, and as testing a proxy of the library does.
+// A failure is a *HopError naming the proxy.
+func DialProxy(p *config.ProxyConfig, password, addr string, timeout time.Duration) (net.Conn, error) {
+	switch p.Kind {
+	case config.ProxySOCKS5:
+		return dialSOCKS5(p, password, addr, timeout)
+	case config.ProxySOCKS4:
+		return dialSOCKS4(p, addr, timeout)
+	case config.ProxyHTTP:
+		return dialHTTP(p, password, addr, timeout, false)
+	case config.ProxyHTTPS:
+		return dialHTTP(p, password, addr, timeout, true)
+	}
+	return nil, fmt.Errorf("unknown proxy kind %q", p.Kind)
 }
 
 // ProxyAddr is the proxy's host:port.
@@ -208,10 +230,17 @@ func socksError(err error, addr string) error {
 }
 
 // dialHTTP asks the HTTP proxy p to connect to addr with CONNECT, with
-// basic authentication when p has a user.
-func dialHTTP(p *config.ProxyConfig, password, addr string, timeout time.Duration) (net.Conn, error) {
+// basic authentication when p has a user; over TLS to the proxy, which
+// its certificate for its name proves, for an HTTPS proxy.
+func dialHTTP(p *config.ProxyConfig, password, addr string, timeout time.Duration, overTLS bool) (net.Conn, error) {
 	paddr := ProxyAddr(p)
-	raw, err := net.DialTimeout("tcp", paddr, timeout)
+	var raw net.Conn
+	var err error
+	if overTLS {
+		raw, err = tls.DialWithDialer(&net.Dialer{Timeout: timeout}, "tcp", paddr, &tls.Config{ServerName: p.Addr, MinVersion: tls.VersionTLS12, RootCAs: proxyRootCAs})
+	} else {
+		raw, err = net.DialTimeout("tcp", paddr, timeout)
+	}
 	if err != nil {
 		return nil, &HopError{Proxy: paddr, Err: err}
 	}

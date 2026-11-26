@@ -85,6 +85,10 @@ type desktopAIState struct {
 	// inputH is the height the user dragged the question's field to, 0
 	// for one that grows with its text.
 	inputH float32
+	// prompts shows the common tasks (desktop_ai_prompts.go), in the
+	// category promptCat ("" for all), found by promptQuery.
+	prompts                bool
+	promptCat, promptQuery string
 }
 
 type desktopAISelection struct {

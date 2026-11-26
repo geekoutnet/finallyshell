@@ -27,10 +27,11 @@ func proxySecretKey(hostID string) string { return "proxy/" + hostID }
 func (a *App) proxySecrets() map[string]string { return a.passwords }
 
 // usesProxyPassword says whether connecting to h takes the password of
-// its proxy: a SOCKS5 or HTTP proxy with a user.
+// its proxy: a SOCKS5 or HTTP(S) proxy with a user. A SOCKS4 user ID
+// has none.
 func usesProxyPassword(h *config.Host) bool {
 	p := config.ProxyOf(h)
-	return p != nil && p.Kind != config.ProxyJump && p.User != ""
+	return p != nil && config.TakesPassword(p.Kind) && p.User != ""
 }
 
 // hopOptions are the options that log in to h with secret, its password

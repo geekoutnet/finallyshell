@@ -263,8 +263,8 @@ func (a *App) sessionRow(c *ui.Context, s *Session, active bool, guide sessionGu
 	if s.isPanelTab() {
 		return a.panelRow(c, s, active, guide)
 	}
-	// Room above every server's row, for the line that separates it from
-	// the one above; the same for all, so that the rows keep one pitch.
+	// Room above every server's row, which sets one server apart from the
+	// one above; the same for all, so that the rows keep one pitch.
 	row := ui.Row(c).Gap(8).Padding(5, 4, 5, 8).Margin(5, 0, 0, 0).Radius(5)
 	drawServerGuide(row, guide)
 	a.relayDropZone(row, s)

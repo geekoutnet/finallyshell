@@ -204,7 +204,12 @@ func (a *App) localPayload() *cloudsync.Payload {
 }
 
 func backupPayload(hosts *config.Store, settings config.Settings, quick *config.QuickCommands) *cloudsync.Payload {
-	p := &cloudsync.Payload{Schema: cloudsync.PayloadSchema, Settings: config.SyncedSettings(settings)}
+	p := &cloudsync.Payload{Schema: cloudsync.PayloadSchema, Settings: config.SyncedSettings(settings), Proxies: cloudsync.NewProxies()}
+	for _, x := range hosts.Proxies {
+		if b, err := json.Marshal(x); err == nil {
+			p.Proxies = append(p.Proxies, b)
+		}
+	}
 	for _, f := range hosts.Folders {
 		if b, err := json.Marshal(f); err == nil {
 			p.Folders = append(p.Folders, b)
@@ -241,6 +246,11 @@ func (a *App) syncSecretKeys() []string {
 				}
 				keys = append(keys, hostSecretKey(h.ID, name))
 			}
+		}
+	}
+	for _, p := range a.hosts.Proxies {
+		if libTakesPassword(p) {
+			keys = append(keys, libSecretKey(p.ID))
 		}
 	}
 	return keys
@@ -506,7 +516,22 @@ func (a *App) syncDone(res *cloudsync.Result, err error, run syncRun) {
 // Host values, which sessions point at. hosts.json is copied first.
 func (a *App) applyPayload(p *cloudsync.Payload) error {
 	local := a.localPayload()
-	if !sameList(local.Folders, p.Folders) || !sameList(local.Hosts, p.Hosts) {
+	// A payload with no library (a backup older than it) leaves this
+	// device's as it is.
+	proxies := a.hosts.Proxies
+	if p.Proxies != nil {
+		proxies = nil
+		kept := map[string]bool{}
+		for _, raw := range p.Proxies {
+			x := &config.Proxy{}
+			if json.Unmarshal(raw, x) != nil || x.ID == "" || kept[x.ID] {
+				continue
+			}
+			kept[x.ID] = true
+			proxies = append(proxies, x)
+		}
+	}
+	if !sameList(local.Folders, p.Folders) || !sameList(local.Hosts, p.Hosts) || p.Proxies != nil && !sameList(local.Proxies, p.Proxies) {
 		config.BackupHostsBeforeSync(a.hosts)
 		var folders []*config.Folder
 		for _, raw := range p.Folders {
@@ -529,7 +554,7 @@ func (a *App) applyPayload(p *cloudsync.Payload) error {
 			hosts = append(hosts, h)
 		}
 		next := *a.hosts
-		next.Folders, next.Hosts = folders, hosts
+		next.Folders, next.Hosts, next.Proxies = folders, hosts, proxies
 		if err := a.saveHosts(&next); err != nil {
 			return err
 		}
@@ -544,7 +569,7 @@ func (a *App) applyPayload(p *cloudsync.Payload) error {
 				a.deleteHostSecrets(h.ID) // deleted for good on another device
 			}
 		}
-		a.hosts.Folders, a.hosts.Hosts = folders, hosts
+		a.hosts.Folders, a.hosts.Hosts, a.hosts.Proxies = folders, hosts, proxies
 	}
 	if !cloudsync.Equal(&cloudsync.Payload{Settings: local.Settings}, &cloudsync.Payload{Settings: p.Settings}) {
 		before := a.settings
@@ -666,6 +691,9 @@ func (a *App) applySyncedSecrets(before, after map[string]string) {
 // password in memory: only while what the app knows is still what the
 // store had before (from, or nothing), as one typed since is newer.
 func (a *App) rememberSynced(key, from string, hadFrom bool, v string, keep bool) {
+	if a.rememberSyncedProxy(key, v, keep) {
+		return
+	}
 	rest, ok := strings.CutPrefix(key, "host/")
 	if !ok {
 		return

@@ -77,6 +77,9 @@ func AddMissing(local, backup *Payload, deleted map[string]bool) *Payload {
 		hosts = slices.DeleteFunc(slices.Clone(hosts), func(raw json.RawMessage) bool { return deleted[idOf(raw)] })
 	}
 	out.Hosts = addMissingItems(out.Hosts, hosts, true)
+	if backup.Proxies != nil {
+		out.Proxies = addMissingItems(out.Proxies, backup.Proxies, false)
+	}
 	if backup.Quick != nil {
 		if out.Quick == nil {
 			out.Quick = &QuickCommands{}

@@ -99,15 +99,46 @@ func (a *App) closeAskView(c *ui.Context) {
 	}
 }
 
+// The widths of a session tab: they share the room of the row between
+// sessionTabMin and sessionTabMax, past which the row scrolls.
+const (
+	sessionTabMin = 120
+	sessionTabMax = 220
+	sessionTabGap = 2
+)
+
 // sessionTabs is the row of the servers' tabs, after the button that
-// folds the left column away and before the one that opens a new tab.
+// folds the left column away: as many as fit share its width, and more
+// scroll sideways, with a menu of them all at its end, beside the button
+// that opens a new tab.
 func (a *App) sessionTabs(c *ui.Context) {
 	cur := a.current()
+	var shown *Session
 	if cur != nil {
-		sessionRoot(cur).lastRow = cur
+		shown = sessionRoot(cur)
+		shown.lastRow = cur
 	}
+	var roots []*Session
+	for _, s := range a.sessions {
+		if !s.isPanelTab() {
+			roots = append(roots, s)
+		}
+	}
+	// The tabs share the room, short of a DIP or two that rounding would
+	// otherwise take past its end; past their narrowest they scroll.
+	width := float32(sessionTabMax)
+	fits := true
+	if n := float32(len(roots)); n > 0 && a.tabsRoom > 0 {
+		share := (a.tabsRoom - 2 - sessionTabGap*(n-1)) / n
+		fits = share >= sessionTabMin
+		width = min(max(share, sessionTabMin), sessionTabMax)
+	}
+	if fits {
+		a.tabsScroll.X = 0 // nothing to scroll to
+	}
+	overflow := !fits || a.tabsScroll.MaxX > 0.5
 	var closing *Session
-	ui.Row(c).FillWidth().Shrink(0).Height(sessionTabsH).AlignItems(ui.End).PaddingX(4).Gap(2).
+	ui.Row(c).FillWidth().Shrink(0).Height(sessionTabsH).AlignItems(ui.End).PaddingX(4).Gap(4).
 		Background(colors.sidebar).BorderWidth(0, 0, 1, 0).BorderColor(colors.frame).Children(func() {
 		icon, label := "chevrons-left", locales.HideSidebar()
 		if a.sidebarHidden {
@@ -118,26 +149,64 @@ func (a *App) sessionTabs(c *ui.Context) {
 				a.toggleSidebar()
 			}
 		})
-		ui.ScrollHorizontal(c).Grow(1).MinWidth(0).Height(33).Children(func() {
-			ui.Row(c).Height(33).AlignItems(ui.End).Gap(2).Children(func() {
-				for _, s := range a.sessions {
-					if s.isPanelTab() {
-						continue
-					}
-					if a.sessionTab(c.Key(s.ID), s, cur != nil && sessionRoot(cur) == s) {
+		// No scrollbar, which would cover the names: the wheel scrolls the
+		// row, and the menu of the tabs reaches those out of view.
+		strip := ui.ScrollHorizontal(c.Key("session-tabs")).Grow(1).MinWidth(0).Height(33).
+			TrackScroll(&a.tabsScroll).Scrollbars(false)
+		if w := strip.Bounds().W; w > 0 && w != a.tabsRoom {
+			a.tabsRoom = w
+			c.Invalidate()
+		}
+		strip.Children(func() {
+			ui.Row(c).Height(33).AlignItems(ui.End).Gap(sessionTabGap).Children(func() {
+				for _, s := range roots {
+					tab, closed := a.sessionTab(c.Key(s.ID), s, s == shown, width)
+					if closed {
 						closing = s
+					}
+					// The chosen server's tab scrolls into view as it is chosen.
+					if s == shown && a.tabsShown != s {
+						a.tabsShown = s
+						tab.ScrollIntoView(ui.ScrollIntoViewOptions{Inline: ui.ScrollNearest})
 					}
 				}
 			})
 		})
-		ui.Row(c).Height(33).AlignItems(ui.Center).Shrink(0).Children(func() {
-			if widgets.IconButton(c, "plus", locales.NewTab()).Clicked() {
-				a.NewTab()
+		ui.Row(c).Height(33).AlignItems(ui.Center).Gap(4).Shrink(0).Children(func() {
+			if overflow {
+				widgets.IconButton(c, "chevron-down", locales.AllTabs()).PopoverMenuButton(func(m *ui.Menu) {
+					for _, s := range roots {
+						if m.Item(s.label()).Checked(s == shown).Chosen() {
+							// Its tab scrolls into view even when it is the one
+							// shown, scrolled away by hand.
+							a.tabsShown = nil
+							a.selectServer(s)
+						}
+					}
+				})
 			}
+			a.newTabButton(c)
 		})
 	})
 	if closing != nil {
 		a.requestCloseSession(closing)
+	}
+}
+
+// newTabButton opens a new tab: tinted with the accent, as the one way to
+// add a tab there, which the eye finds at once.
+func (a *App) newTabButton(c *ui.Context) {
+	label := locales.NewTab() + shortcutHint(a.shortcutLabel(scNewTab))
+	b := ui.Box(c.Key("new-tab")).Size(26, 26).Radius(7).Center().Shrink(0).Cursor(ui.CursorPointer).
+		Role(ui.RoleButton).Label(locales.NewTab()).Tooltip(label).Border(1, theme.Accent.Alpha(0.45))
+	if b.Hovered() {
+		b.Background(theme.Accent.Alpha(0.2))
+	} else {
+		b.Background(theme.Accent.Alpha(0.1))
+	}
+	b.Children(func() { ui.Icon(c, icons.Get("plus")).FontSize(15).TextColor(theme.Accent) })
+	if b.Clicked() {
+		a.NewTab()
 	}
 }
 
@@ -149,23 +218,28 @@ func shortcutHint(key string) string {
 	return " (" + key + ")"
 }
 
-// sessionTab is the tab of the server s. It reports whether the user
-// closed it.
-func (a *App) sessionTab(c *ui.Context, s *Session, active bool) (closed bool) {
-	tab := ui.Row(c).Height(30).MinWidth(96).MaxWidth(220).Shrink(0).Gap(6).PaddingX(10).AlignItems(ui.Center).
-		Cursor(ui.CursorPointer).Role(ui.RoleTab).Label(s.label()).Tooltip(listLabel(s)).
-		Radius(6).BorderWidth(1, 1, 0, 1)
+// sessionTab is the tab of the server s, width wide. It reports whether
+// the user closed it.
+func (a *App) sessionTab(c *ui.Context, s *Session, active bool, width float32) (tab ui.Element, closed bool) {
+	tab = ui.Row(c).Width(width).Shrink(0).Gap(6).PaddingX(10).AlignItems(ui.Center).
+		Cursor(ui.CursorPointer).Role(ui.RoleTab).Label(s.label()).Tooltip(listLabel(s)).Radius(6)
 	hovered := tab.Hovered()
 	switch {
 	case active:
 		// Joined to the area under it, with the accent on its top.
-		tab.Background(theme.Background).BorderColor(colors.frame).Checked(true).DrawOver(func(p *ui.Painter, r ui.Rect) {
-			p.Fill(ui.Rect{X: r.X + 6, Y: r.Y, W: r.W - 12, H: 2}, theme.Accent, 1)
-		})
-	case hovered:
-		tab.Background(theme.Text.Alpha(0.06)).BorderColor(ui.Transparent)
+		tab.Height(30).BorderWidth(1, 1, 0, 1).Background(theme.Background).BorderColor(colors.frame).Checked(true).
+			DrawOver(func(p *ui.Painter, r ui.Rect) {
+				p.Fill(ui.Rect{X: r.X + 6, Y: r.Y, W: r.W - 12, H: 2}, theme.Accent, 1)
+			})
 	default:
-		tab.BorderColor(ui.Transparent)
+		// An open server that is not shown: a tile of its own, above the
+		// line under the row.
+		tab.Height(27).Margin(0, 0, 3, 0).Border(1, theme.Border.Alpha(0.7))
+		if hovered {
+			tab.Background(theme.Text.Alpha(0.09))
+		} else {
+			tab.Background(theme.Text.Alpha(0.045))
+		}
 	}
 	if tab.Clicked() {
 		a.selectServer(s)
@@ -197,7 +271,7 @@ func (a *App) sessionTab(c *ui.Context, s *Session, active bool) (closed bool) {
 		if active {
 			name.FontWeight(600)
 		} else {
-			name.TextColor(theme.TextMuted)
+			name.TextColor(theme.Text.Alpha(0.82))
 		}
 		close := widgets.IconButton(c, "x", locales.CloseSession()).Size(18, 18)
 		if !hovered && !active {
@@ -207,5 +281,5 @@ func (a *App) sessionTab(c *ui.Context, s *Session, active bool) (closed bool) {
 			closed = true
 		}
 	})
-	return closed
+	return tab, closed
 }

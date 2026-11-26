@@ -76,6 +76,14 @@ func desktopFilesTestItem(t *testing.T, f *desktopFilesState, name string) deskt
 	return desktopFilesItem{}
 }
 
+// desktopFilesBusyShown waits out the delay before the window says it is
+// busy, for its Cancel to show.
+func desktopFilesBusyShown(tt *ui.Tester) {
+	tt.Frame()
+	tt.Advance(desktopFilesBusyDelay + 50*time.Millisecond)
+	tt.Frame()
+}
+
 func desktopFilesTestConfirm(t *testing.T, tt *ui.Tester, label string) {
 	t.Helper()
 	tt.Frame()
@@ -247,6 +255,7 @@ func TestDesktopFilesSearchAndProperties(t *testing.T) {
 		return "", "expected fake error", errors.New("denied")
 	}
 	a.desktopFilesSearch(window, "wait")
+	desktopFilesBusyShown(tester)
 	desktopFilesTestConfirm(t, tester, locales.Cancel())
 	if f.loading || f.searching {
 		t.Fatal("cancel left the search banner active")
@@ -437,6 +446,7 @@ func TestDesktopFilesArchivesAndFetch(t *testing.T) {
 	case <-time.After(5 * time.Second):
 		t.Fatal("download did not start")
 	}
+	desktopFilesBusyShown(tester)
 	desktopFilesTestConfirm(t, tester, locales.Cancel())
 	platform.until(t, "download cancellation", func() bool { return f.job == nil && !f.loading })
 	if _, err := os.Stat(filepath.Join(local, "canceled.bin")); f.err != nil || !errors.Is(err, fs.ErrNotExist) {
@@ -686,3 +696,40 @@ func (info desktopFilesDemoInfo) Mode() fs.FileMode  { return info.entry.Mode }
 func (info desktopFilesDemoInfo) ModTime() time.Time { return info.entry.ModTime }
 func (info desktopFilesDemoInfo) IsDir() bool        { return info.entry.IsDir() }
 func (info desktopFilesDemoInfo) Sys() any           { return nil }
+
+// TestDesktopFilesBusyCard says what the window reads on a card over the
+// list, after a moment, and the list does not move as it comes and goes.
+func TestDesktopFilesBusyCard(t *testing.T) {
+	_, _, tt, _, window, _, _ := desktopFilesFixture(t)
+	f := window.explorer()
+	before, ok := tt.Find("reports")
+	if !ok {
+		t.Fatalf("no reports row: %q", tt.Texts())
+	}
+	f.loading = true
+	tt.Frame()
+	if tt.HasText(locales.DesktopFilesLoading()) {
+		t.Fatal("a read just started shows the card")
+	}
+	tt.Advance(desktopFilesBusyDelay + 50*time.Millisecond)
+	tt.Frame()
+	card, ok := tt.Find(locales.DesktopFilesLoading())
+	if !ok {
+		t.Fatalf("no card while reading: %q", tt.Texts())
+	}
+	if after, _ := tt.Find("reports"); after != before {
+		t.Fatalf("the list moved from %+v to %+v", before, after)
+	}
+	if card.Y < before.Y {
+		t.Errorf("the card is above the list: %+v", card)
+	}
+	saveShot(t, tt, "desktop-files-busy.png")
+	f.loading = false
+	tt.Frame()
+	if tt.HasText(locales.DesktopFilesLoading()) {
+		t.Fatal("the card stayed")
+	}
+	if after, _ := tt.Find("reports"); after != before {
+		t.Fatalf("the list moved from %+v to %+v", before, after)
+	}
+}

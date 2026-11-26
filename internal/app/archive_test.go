@@ -15,10 +15,12 @@ import (
 	"testing"
 	"time"
 
+	"finallyshell/internal/config"
 	"finallyshell/internal/remotefs"
 	"finallyshell/locales"
 
 	"github.com/egoist/mygo/ui"
+	"golang.org/x/crypto/ssh"
 )
 
 // archiveFixture is a session whose files are a temporary folder over
@@ -410,4 +412,115 @@ func testArchiveTransfers(t *testing.T, a *App, p *fakePlatform, s *Session, hom
 	if j.state != transferFailed || !errors.As(j.err, &te) || !strings.Contains(te.Stderr, "missing") || !a.canRetryOverSFTP(j) {
 		t.Errorf("missing: state %d, %v", j.state, j.err)
 	}
+}
+
+// The "Archive transfer" toggle of the toolbar and of the options is one
+// setting, saved; it packs only on a connection that may run tar, so
+// here, without SSH, a dropped folder still goes over SFTP. It packs a
+// single file too, to compress it, but not a symbolic link on its own.
+func TestArchiveModeSetting(t *testing.T) {
+	a, p, s, remote, tt := archiveFixture(t)
+	if err := tt.Click(locales.ArchiveTransfers()); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if !a.settings.ArchiveTransfers || !config.LoadSettings().ArchiveTransfers {
+		t.Fatal("the toolbar toggle did not turn archive transfer on")
+	}
+	saveShot(t, tt, "archive-mode-en.png")
+
+	// Packing needs an SSH connection, and commands allowed on the host.
+	if a.packing(s) {
+		t.Error("packs without an SSH connection")
+	}
+	s.client = &ssh.Client{}
+	if !a.packing(s) {
+		t.Error("does not pack with archive transfer on")
+	}
+	s.Host.NoMonitor = true
+	if a.packing(s) {
+		t.Error("packs on a host that may not run commands")
+	}
+	s.Host.NoMonitor, s.client = false, nil
+
+	local := t.TempDir()
+	writeTree(t, filepath.Join(local, "assets"), 4)
+	os.WriteFile(filepath.Join(local, "one.txt"), []byte("one"), 0o644)
+	cases := []struct {
+		paths []string
+		want  bool
+	}{
+		{nil, false},
+		{[]string{filepath.Join(local, "one.txt")}, true},
+		{[]string{filepath.Join(local, "assets")}, true},
+		{[]string{filepath.Join(local, "one.txt"), filepath.Join(local, "two.txt")}, true},
+		{[]string{filepath.Join(local, "missing")}, false},
+	}
+	if runtime.GOOS != "windows" {
+		cases = append(cases, struct {
+			paths []string
+			want  bool
+		}{[]string{filepath.Join(local, "assets", "start")}, false})
+	}
+	for _, c := range cases {
+		if got := localPackable(c.paths); got != c.want {
+			t.Errorf("localPackable(%q) = %v", c.paths, got)
+		}
+	}
+	for _, c := range []struct {
+		names []string
+		want  bool
+	}{
+		{[]string{"notes.txt"}, true},
+		{[]string{"site"}, true},
+		{[]string{"notes.txt", "site"}, true},
+		{[]string{"missing"}, false},
+	} {
+		if got := s.files.packable(c.names); got != c.want {
+			t.Errorf("packable(%q) = %v", c.names, got)
+		}
+	}
+
+	// No SSH connection: the folder goes over SFTP, as with it off.
+	a.upload(s, []string{filepath.Join(local, "assets")}, remote)
+	p.until(t, "the upload", func() bool { return len(a.transfers.jobs) == 1 && a.transfers.active() == 0 })
+	if j := a.transfers.jobs[0]; j.archive || j.state != transferDone {
+		t.Fatalf("job %+v", j)
+	}
+	sameTreeFiles(t, filepath.Join(local, "assets"), filepath.Join(remote, "assets"))
+
+	// The same setting on the Transfers page of the options, in Chinese.
+	p.SetLocale("zh-Hans")
+	a.settings.ArchiveTransfers = false
+	ot := ui.NewTester(a.transfersPage, 720, 300)
+	ot.Frame()
+	if !ot.HasText("压缩打包上传和下载（打包传输）") {
+		t.Fatalf("texts %q", ot.Texts())
+	}
+	if err := ot.Click("压缩打包上传和下载（打包传输）"); err != nil {
+		t.Fatal(err)
+	}
+	ot.Frame()
+	if !a.settings.ArchiveTransfers {
+		t.Error("the option did not turn archive transfer on")
+	}
+	saveShot(t, ot, "archive-mode-option-zh.png")
+}
+
+// sameTreeFiles checks that the regular files of want are in got, with
+// the same contents, as SFTP copies them.
+func sameTreeFiles(t *testing.T, want, got string) {
+	t.Helper()
+	filepath.WalkDir(want, func(p string, d fs.DirEntry, err error) error {
+		if err != nil || !d.Type().IsRegular() {
+			return err
+		}
+		rel, _ := filepath.Rel(want, p)
+		wd, _ := os.ReadFile(p)
+		gd, err := os.ReadFile(filepath.Join(got, rel))
+		if err != nil || string(wd) != string(gd) {
+			t.Errorf("%s: %q, %v", rel, gd, err)
+		}
+		return nil
+	})
 }

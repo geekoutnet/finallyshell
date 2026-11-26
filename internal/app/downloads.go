@@ -260,5 +260,10 @@ func (a *App) transfersPage(c *ui.Context) {
 		if ui.Checkbox(c, &ask, locales.OptionAskDownloadDir()).Changed() {
 			a.changeSettings(func() { a.settings.AskDownloadDir = ask })
 		}
+		packed := a.settings.ArchiveTransfers
+		if ui.Checkbox(c, &packed, locales.OptionArchiveTransfers()).Changed() {
+			a.changeSettings(func() { a.settings.ArchiveTransfers = packed })
+		}
+		widgets.Muted(c, locales.OptionArchiveTransfersNote()).FontSize(12)
 	})
 }

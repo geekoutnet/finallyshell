@@ -233,6 +233,7 @@ default.
 | `x11Display` | Override the local X display for X11 forwarding (for example `localhost:1`). This computer's own: not synced. | `$DISPLAY`, or `localhost:0` on Windows when unset. |
 | `downloadDir` | Folder downloads go into. | The system's Downloads folder. |
 | `askDownloadDir` | `true` asks where to save each download. | Use `downloadDir`. |
+| `archiveTransfers` | `true` sends plain uploads and downloads, single files too, compressed with tar and gzip ("Archive transfer"), on connections that may run commands; a symbolic link on its own still goes over SFTP. | Over SFTP. |
 | `copyOnSelect` | `true` copies the mouse selection to the clipboard. | Off. |
 | `rightClick` | `paste`, `copy`, `copy-or-paste` or `ignore`. | The context menu (also for unknown values). |
 | `noLinkClick` | `true` keeps Ctrl+click (Cmd+click) from opening links. | Links open. |

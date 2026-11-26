@@ -208,6 +208,10 @@ type Settings struct {
 	// AskDownloadDir asks for the folder of each download, rather than
 	// putting it in DownloadDir.
 	AskDownloadDir bool `json:"askDownloadDir,omitempty"`
+	// ArchiveTransfers sends a folder or several items of a plain upload
+	// or download packed with tar and gzip, as "Upload as archive" and
+	// "Download as archive" do, where the connection may run commands.
+	ArchiveTransfers bool `json:"archiveTransfers,omitempty"`
 
 	// KeepManagerOpen leaves the connection manager open after it
 	// connects; by default connecting from it closes it, as FinalShell's

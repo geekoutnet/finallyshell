@@ -387,7 +387,9 @@ func (a *App) desktopFilesDownload(w *desktopWindow, items []desktopFilesItem) {
 		names[parent] = append(names[parent], path.Base(item.target))
 	}
 	if len(parents) == 1 {
-		a.downloadFrom(w.session, parents[0], names[parents[0]], "", false)
+		// As an archive with "Archive transfer" on (see packable).
+		packed := a.packing(w.session) && (len(items) > 1 || !items[0].Link)
+		a.downloadFrom(w.session, parents[0], names[parents[0]], "", packed)
 		return
 	}
 	start := func(dir string) { a.desktopFilesDownloadGroups(w, dir, parents, names) }
@@ -516,6 +518,12 @@ func (a *App) desktopFilesEnqueueUpload(w *desktopWindow, sc *sftp.Client, dir s
 		}
 		start := func() {
 			var jobs []*transferJob
+			if a.packing(s) && localPackable(local) {
+				job := &transferJob{sess: s, sftp: sc, ssh: s.client, dir: upload, archive: true, src: local[0], srcs: local, dstDir: dir}
+				a.enqueue(job)
+				a.desktopFilesWatchTransfers(w, s, dir, locales.DesktopFilesUpload(), []*transferJob{job})
+				return
+			}
 			for _, target := range local {
 				job := &transferJob{sess: s, sftp: sc, dir: upload, src: target, dstDir: dir}
 				jobs = append(jobs, job)

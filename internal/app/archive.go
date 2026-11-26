@@ -2,6 +2,8 @@ package app
 
 import (
 	"errors"
+	"io/fs"
+	"os"
 	"path"
 	"slices"
 	"strings"
@@ -26,6 +28,43 @@ func (f *fileState) archivable(names []string) bool {
 	}
 	e, ok := f.entry(names)
 	return ok && e.IsDir() && !e.Link
+}
+
+// packable tells whether the names chosen in the file table go as an
+// archive with "Archive transfer" on, which compresses even a single
+// file: all but a symbolic link on its own, which tar would send as the
+// link and SFTP sends as what it points to.
+func (f *fileState) packable(names []string) bool {
+	if len(names) != 1 {
+		return len(names) > 1
+	}
+	e, ok := f.entry(names)
+	return ok && !e.Link
+}
+
+// localPackable is packable for local paths.
+func localPackable(paths []string) bool {
+	if len(paths) != 1 {
+		return len(paths) > 1
+	}
+	fi, err := os.Lstat(paths[0])
+	return err == nil && fi.Mode()&fs.ModeSymlink == 0
+}
+
+// packing tells whether the plain uploads and downloads of s go as
+// archives: with "Archive transfer" on, on a connection that may run tar.
+// Elsewhere they go over SFTP, as with it off.
+func (a *App) packing(s *Session) bool {
+	return a.settings.ArchiveTransfers && s.client != nil && execAllowed(s.Host)
+}
+
+// archiveModeButton is the file panels' toggle of "Archive transfer",
+// for every session.
+func (a *App) archiveModeButton(c *ui.Context) {
+	on := a.settings.ArchiveTransfers
+	if widgets.ToggleIconButton(c, "package", locales.ArchiveTransfers(), on).Clicked() {
+		a.changeSettings(func() { a.settings.ArchiveTransfers = !on })
+	}
 }
 
 // uploadMenuItems are the menu items that upload into the remote folder

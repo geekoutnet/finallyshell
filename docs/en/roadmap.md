@@ -47,7 +47,7 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 
 ## In progress
 
-Nothing.
+- An "Archive transfer" switch: one setting in the file panel's toolbar, on the Transfers page of the options and in the desktop Files app's toolbar; with it on, drops, the upload and download buttons, Download and Download to… and the desktop's uploads and downloads send files and folders, single files too, compressed with tar and gzip, unpacked at the other end (a symbolic link on its own, and connections that may not run commands, still use SFTP).
 
 ## Next
 

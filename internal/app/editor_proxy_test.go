@@ -246,3 +246,40 @@ func TestEditorProxyKeepsUnknownKeys(t *testing.T) {
 		t.Errorf("saved %s", *saved)
 	}
 }
+
+// TestEditorProxyFromLibrary chooses a proxy of the library on the Proxy
+// page: the host saves a whole copy of it, naming it, and opens on it
+// again.
+func TestEditorProxyFromLibrary(t *testing.T) {
+	a, p := testApp(t)
+	p.SetLocale("zh-Hans")
+	h := proxyEditorHosts(a)
+	office := &config.Proxy{ID: "p1", Name: "Office", Kind: config.ProxyHTTPS, Addr: "proxy.example", Port: 443, User: "bob"}
+	if _, err := a.saveLibraryProxy(office, "pw", true); err != nil {
+		t.Fatal(err)
+	}
+	a.editConnection(h)
+	tt := editorWindow(t, a, p)
+	if err := tt.Click(locales.EditorPageProxy()); err != nil {
+		t.Fatal(err)
+	}
+	choose(t, tt, locales.FieldProxyType(), locales.ProxyFromLibrary())
+	if !tt.HasText(locales.ProxyLibraryHint()) {
+		t.Fatalf("library: %q", tt.Texts())
+	}
+	choose(t, tt, locales.ProxyFromLibrary(), "Office — HTTPS proxy.example:443")
+	saveShot(t, tt, "editor-proxy-library-zh-Hans.png")
+	if err := tt.Click(locales.Ok()); err != nil {
+		t.Fatal(err)
+	}
+	p.until(t, "saved", func() bool { return h.Proxy != nil })
+	if hp := h.Proxy; hp.Kind != config.ProxyHTTPS || hp.Addr != "proxy.example" || hp.Port != 443 || hp.User != "bob" || hp.ProxyID != "p1" {
+		t.Fatalf("host's copy %+v", hp)
+	}
+	if a.proxySecrets()[proxySecretKey(h.ID)] != "pw" {
+		t.Fatal("no copy of the proxy's password")
+	}
+	if pf := a.proxyFieldsOf(h); pf.kind != proxyLibrary || pf.lib != "p1" {
+		t.Fatalf("reopened on %+v", pf)
+	}
+}

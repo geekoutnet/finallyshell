@@ -133,10 +133,10 @@ func (a *App) connInfoFields(h *config.Host, reading bool) []connField {
 	}
 	if p := config.ProxyOf(h); p != nil {
 		switch p.Kind {
-		case config.ProxySOCKS5, config.ProxyHTTP:
-			kind := "SOCKS5"
-			if p.Kind == config.ProxyHTTP {
-				kind = "HTTP"
+		case config.ProxySOCKS5, config.ProxySOCKS4, config.ProxyHTTP, config.ProxyHTTPS:
+			kind := proxyKindLabel(p.Kind)
+			if lib := a.hosts.LinkedProxy(h); lib != nil {
+				kind += " · " + locales.ProxyFromLibrary() + ": " + lib.Name
 			}
 			add(locales.ConnInfoProxyType(), kind)
 			add(locales.ConnInfoProxyAddr(), hostPort(p.Addr, p.PortOrDefault()))

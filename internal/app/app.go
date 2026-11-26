@@ -196,6 +196,10 @@ type App struct {
 	// closeAsk is the connected server the user is closing, while the
 	// app asks first (sessiontabs.go).
 	closeAsk *Session
+	// proxyMgr is the proxy manager's, and proxyTests the tests of the
+	// library's proxies by ID (proxymgr.go).
+	proxyMgr   proxyMgrState
+	proxyTests map[string]*proxyTest
 	// updateLater is the newer version whose card the user put off, for
 	// this run (updatenotice.go).
 	updateLater string

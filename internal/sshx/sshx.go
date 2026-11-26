@@ -377,9 +377,12 @@ func Classify(err error) string {
 	switch {
 	case strings.Contains(msg, "unable to authenticate"):
 		return "auth"
-	case strings.Contains(msg, "connection refused"):
+	// Windows says "No connection could be made because the target
+	// machine actively refused it" and "...the connected party did not
+	// properly respond after a period of time".
+	case strings.Contains(msg, "connection refused"), strings.Contains(msg, "actively refused"):
 		return "refused"
-	case strings.Contains(msg, "i/o timeout"):
+	case strings.Contains(msg, "i/o timeout"), strings.Contains(msg, "did not properly respond"):
 		return "timeout"
 	case strings.Contains(msg, "no such host"):
 		return "nohost"

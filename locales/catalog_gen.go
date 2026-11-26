@@ -27110,6 +27110,496 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// ProxyFromLibrary says "Proxy library"
+// in the language the app shows.
+func ProxyFromLibrary() string { return In(i18n.Locale()).ProxyFromLibrary() }
+
+// ProxyFromLibrary says "Proxy library"
+// in the language of msgs.
+func (msgs Messages) ProxyFromLibrary() string {
+	return Catalog.Format(msgs.locale, "proxyFromLibrary", nil)
+}
+
+// ProxyLibraryHint says "A proxy saved in the proxy library: change it there, and every host that uses it follows."
+// in the language the app shows.
+func ProxyLibraryHint() string { return In(i18n.Locale()).ProxyLibraryHint() }
+
+// ProxyLibraryHint says "A proxy saved in the proxy library: change it there, and every host that uses it follows."
+// in the language of msgs.
+func (msgs Messages) ProxyLibraryHint() string {
+	return Catalog.Format(msgs.locale, "proxyLibraryHint", nil)
+}
+
+// ProxyLibraryRequired says "Choose a proxy of the library."
+// in the language the app shows.
+func ProxyLibraryRequired() string { return In(i18n.Locale()).ProxyLibraryRequired() }
+
+// ProxyLibraryRequired says "Choose a proxy of the library."
+// in the language of msgs.
+func (msgs Messages) ProxyLibraryRequired() string {
+	return Catalog.Format(msgs.locale, "proxyLibraryRequired", nil)
+}
+
+// ProxyLibraryEmpty says "The proxy library is empty."
+// in the language the app shows.
+func ProxyLibraryEmpty() string { return In(i18n.Locale()).ProxyLibraryEmpty() }
+
+// ProxyLibraryEmpty says "The proxy library is empty."
+// in the language of msgs.
+func (msgs Messages) ProxyLibraryEmpty() string {
+	return Catalog.Format(msgs.locale, "proxyLibraryEmpty", nil)
+}
+
+// ProxyLibraryNote says "Builds without the proxy library connect through the copy this host keeps."
+// in the language the app shows.
+func ProxyLibraryNote() string { return In(i18n.Locale()).ProxyLibraryNote() }
+
+// ProxyLibraryNote says "Builds without the proxy library connect through the copy this host keeps."
+// in the language of msgs.
+func (msgs Messages) ProxyLibraryNote() string {
+	return Catalog.Format(msgs.locale, "proxyLibraryNote", nil)
+}
+
+// ProxyManage says "Manage proxies…"
+// in the language the app shows.
+func ProxyManage() string { return In(i18n.Locale()).ProxyManage() }
+
+// ProxyManage says "Manage proxies…"
+// in the language of msgs.
+func (msgs Messages) ProxyManage() string {
+	return Catalog.Format(msgs.locale, "proxyManage", nil)
+}
+
+// ProxySaveToLibrary says "Save to the proxy library…"
+// in the language the app shows.
+func ProxySaveToLibrary() string { return In(i18n.Locale()).ProxySaveToLibrary() }
+
+// ProxySaveToLibrary says "Save to the proxy library…"
+// in the language of msgs.
+func (msgs Messages) ProxySaveToLibrary() string {
+	return Catalog.Format(msgs.locale, "proxySaveToLibrary", nil)
+}
+
+// ProxySaveToLibraryNote says "Save this proxy by name, to choose it for other hosts too."
+// in the language the app shows.
+func ProxySaveToLibraryNote() string { return In(i18n.Locale()).ProxySaveToLibraryNote() }
+
+// ProxySaveToLibraryNote says "Save this proxy by name, to choose it for other hosts too."
+// in the language of msgs.
+func (msgs Messages) ProxySaveToLibraryNote() string {
+	return Catalog.Format(msgs.locale, "proxySaveToLibraryNote", nil)
+}
+
+// ProxyMgrTitle says "Proxies"
+// in the language the app shows.
+func ProxyMgrTitle() string { return In(i18n.Locale()).ProxyMgrTitle() }
+
+// ProxyMgrTitle says "Proxies"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrTitle() string {
+	return Catalog.Format(msgs.locale, "proxyMgrTitle", nil)
+}
+
+// ProxyMgrNew says "New proxy"
+// in the language the app shows.
+func ProxyMgrNew() string { return In(i18n.Locale()).ProxyMgrNew() }
+
+// ProxyMgrNew says "New proxy"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrNew() string {
+	return Catalog.Format(msgs.locale, "proxyMgrNew", nil)
+}
+
+// ProxyMgrTestAll says "Test all"
+// in the language the app shows.
+func ProxyMgrTestAll() string { return In(i18n.Locale()).ProxyMgrTestAll() }
+
+// ProxyMgrTestAll says "Test all"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrTestAll() string {
+	return Catalog.Format(msgs.locale, "proxyMgrTestAll", nil)
+}
+
+// ProxyMgrSearch says "Search proxies"
+// in the language the app shows.
+func ProxyMgrSearch() string { return In(i18n.Locale()).ProxyMgrSearch() }
+
+// ProxyMgrSearch says "Search proxies"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrSearch() string {
+	return Catalog.Format(msgs.locale, "proxyMgrSearch", nil)
+}
+
+// ProxyMgrCount says "{count, plural, one {# proxy} other {# proxies}}"
+// in the language the app shows.
+func ProxyMgrCount(count int) string { return In(i18n.Locale()).ProxyMgrCount(count) }
+
+// ProxyMgrCount says "{count, plural, one {# proxy} other {# proxies}}"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrCount(count int) string {
+	return Catalog.Format(msgs.locale, "proxyMgrCount", map[string]any{"count": count})
+}
+
+// ProxyMgrTestNote says "Testing goes through the proxy to ip-api.com, ip.sb or Cloudflare to learn its address and place."
+// in the language the app shows.
+func ProxyMgrTestNote() string { return In(i18n.Locale()).ProxyMgrTestNote() }
+
+// ProxyMgrTestNote says "Testing goes through the proxy to ip-api.com, ip.sb or Cloudflare to learn its address and place."
+// in the language of msgs.
+func (msgs Messages) ProxyMgrTestNote() string {
+	return Catalog.Format(msgs.locale, "proxyMgrTestNote", nil)
+}
+
+// ProxyMgrEmptyTitle says "No proxies yet"
+// in the language the app shows.
+func ProxyMgrEmptyTitle() string { return In(i18n.Locale()).ProxyMgrEmptyTitle() }
+
+// ProxyMgrEmptyTitle says "No proxies yet"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrEmptyTitle() string {
+	return Catalog.Format(msgs.locale, "proxyMgrEmptyTitle", nil)
+}
+
+// ProxyMgrEmptyBody says "Save a SOCKS or HTTP proxy once, then choose it for any connection, test it, and keep it in sync."
+// in the language the app shows.
+func ProxyMgrEmptyBody() string { return In(i18n.Locale()).ProxyMgrEmptyBody() }
+
+// ProxyMgrEmptyBody says "Save a SOCKS or HTTP proxy once, then choose it for any connection, test it, and keep it in sync."
+// in the language of msgs.
+func (msgs Messages) ProxyMgrEmptyBody() string {
+	return Catalog.Format(msgs.locale, "proxyMgrEmptyBody", nil)
+}
+
+// ProxyMgrColName says "Name"
+// in the language the app shows.
+func ProxyMgrColName() string { return In(i18n.Locale()).ProxyMgrColName() }
+
+// ProxyMgrColName says "Name"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrColName() string {
+	return Catalog.Format(msgs.locale, "proxyMgrColName", nil)
+}
+
+// ProxyMgrColKind says "Type"
+// in the language the app shows.
+func ProxyMgrColKind() string { return In(i18n.Locale()).ProxyMgrColKind() }
+
+// ProxyMgrColKind says "Type"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrColKind() string {
+	return Catalog.Format(msgs.locale, "proxyMgrColKind", nil)
+}
+
+// ProxyMgrColAddress says "Address"
+// in the language the app shows.
+func ProxyMgrColAddress() string { return In(i18n.Locale()).ProxyMgrColAddress() }
+
+// ProxyMgrColAddress says "Address"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrColAddress() string {
+	return Catalog.Format(msgs.locale, "proxyMgrColAddress", nil)
+}
+
+// ProxyMgrColUser says "User"
+// in the language the app shows.
+func ProxyMgrColUser() string { return In(i18n.Locale()).ProxyMgrColUser() }
+
+// ProxyMgrColUser says "User"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrColUser() string {
+	return Catalog.Format(msgs.locale, "proxyMgrColUser", nil)
+}
+
+// ProxyMgrColHosts says "Hosts"
+// in the language the app shows.
+func ProxyMgrColHosts() string { return In(i18n.Locale()).ProxyMgrColHosts() }
+
+// ProxyMgrColHosts says "Hosts"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrColHosts() string {
+	return Catalog.Format(msgs.locale, "proxyMgrColHosts", nil)
+}
+
+// ProxyMgrColTest says "Test"
+// in the language the app shows.
+func ProxyMgrColTest() string { return In(i18n.Locale()).ProxyMgrColTest() }
+
+// ProxyMgrColTest says "Test"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrColTest() string {
+	return Catalog.Format(msgs.locale, "proxyMgrColTest", nil)
+}
+
+// ProxyMgrUsedBy says "{count, plural, =0 {No host uses it} one {Used by # host} other {Used by # hosts}}"
+// in the language the app shows.
+func ProxyMgrUsedBy(count int) string { return In(i18n.Locale()).ProxyMgrUsedBy(count) }
+
+// ProxyMgrUsedBy says "{count, plural, =0 {No host uses it} one {Used by # host} other {Used by # hosts}}"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrUsedBy(count int) string {
+	return Catalog.Format(msgs.locale, "proxyMgrUsedBy", map[string]any{"count": count})
+}
+
+// ProxyMgrEdit says "Edit…"
+// in the language the app shows.
+func ProxyMgrEdit() string { return In(i18n.Locale()).ProxyMgrEdit() }
+
+// ProxyMgrEdit says "Edit…"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrEdit() string {
+	return Catalog.Format(msgs.locale, "proxyMgrEdit", nil)
+}
+
+// ProxyMgrTest says "Test"
+// in the language the app shows.
+func ProxyMgrTest() string { return In(i18n.Locale()).ProxyMgrTest() }
+
+// ProxyMgrTest says "Test"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrTest() string {
+	return Catalog.Format(msgs.locale, "proxyMgrTest", nil)
+}
+
+// ProxyMgrDuplicate says "Duplicate"
+// in the language the app shows.
+func ProxyMgrDuplicate() string { return In(i18n.Locale()).ProxyMgrDuplicate() }
+
+// ProxyMgrDuplicate says "Duplicate"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrDuplicate() string {
+	return Catalog.Format(msgs.locale, "proxyMgrDuplicate", nil)
+}
+
+// ProxyMgrNotTested says "Not tested"
+// in the language the app shows.
+func ProxyMgrNotTested() string { return In(i18n.Locale()).ProxyMgrNotTested() }
+
+// ProxyMgrNotTested says "Not tested"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrNotTested() string {
+	return Catalog.Format(msgs.locale, "proxyMgrNotTested", nil)
+}
+
+// ProxyMgrTesting says "Testing…"
+// in the language the app shows.
+func ProxyMgrTesting() string { return In(i18n.Locale()).ProxyMgrTesting() }
+
+// ProxyMgrTesting says "Testing…"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrTesting() string {
+	return Catalog.Format(msgs.locale, "proxyMgrTesting", nil)
+}
+
+// ProxyMgrNoExitInfo says "address unknown"
+// in the language the app shows.
+func ProxyMgrNoExitInfo() string { return In(i18n.Locale()).ProxyMgrNoExitInfo() }
+
+// ProxyMgrNoExitInfo says "address unknown"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrNoExitInfo() string {
+	return Catalog.Format(msgs.locale, "proxyMgrNoExitInfo", nil)
+}
+
+// ProxyMgrTestSource says "From {source}"
+// in the language the app shows.
+func ProxyMgrTestSource(source string) string { return In(i18n.Locale()).ProxyMgrTestSource(source) }
+
+// ProxyMgrTestSource says "From {source}"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrTestSource(source string) string {
+	return Catalog.Format(msgs.locale, "proxyMgrTestSource", map[string]any{"source": source})
+}
+
+// ProxyMgrCopyName says "{name} copy"
+// in the language the app shows.
+func ProxyMgrCopyName(name string) string { return In(i18n.Locale()).ProxyMgrCopyName(name) }
+
+// ProxyMgrCopyName says "{name} copy"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrCopyName(name string) string {
+	return Catalog.Format(msgs.locale, "proxyMgrCopyName", map[string]any{"name": name})
+}
+
+// ProxyMgrAddrRequired says "Enter the proxy's host name or address."
+// in the language the app shows.
+func ProxyMgrAddrRequired() string { return In(i18n.Locale()).ProxyMgrAddrRequired() }
+
+// ProxyMgrAddrRequired says "Enter the proxy's host name or address."
+// in the language of msgs.
+func (msgs Messages) ProxyMgrAddrRequired() string {
+	return Catalog.Format(msgs.locale, "proxyMgrAddrRequired", nil)
+}
+
+// ProxyMgrPortInvalid says "Enter a port from 1 to 65535."
+// in the language the app shows.
+func ProxyMgrPortInvalid() string { return In(i18n.Locale()).ProxyMgrPortInvalid() }
+
+// ProxyMgrPortInvalid says "Enter a port from 1 to 65535."
+// in the language of msgs.
+func (msgs Messages) ProxyMgrPortInvalid() string {
+	return Catalog.Format(msgs.locale, "proxyMgrPortInvalid", nil)
+}
+
+// ProxyMgrSaveFailed says "Could not save: {error}"
+// in the language the app shows.
+func ProxyMgrSaveFailed(error string) string { return In(i18n.Locale()).ProxyMgrSaveFailed(error) }
+
+// ProxyMgrSaveFailed says "Could not save: {error}"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrSaveFailed(error string) string {
+	return Catalog.Format(msgs.locale, "proxyMgrSaveFailed", map[string]any{"error": error})
+}
+
+// ProxyMgrNewTitle says "New proxy"
+// in the language the app shows.
+func ProxyMgrNewTitle() string { return In(i18n.Locale()).ProxyMgrNewTitle() }
+
+// ProxyMgrNewTitle says "New proxy"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrNewTitle() string {
+	return Catalog.Format(msgs.locale, "proxyMgrNewTitle", nil)
+}
+
+// ProxyMgrEditTitle says "Edit proxy"
+// in the language the app shows.
+func ProxyMgrEditTitle() string { return In(i18n.Locale()).ProxyMgrEditTitle() }
+
+// ProxyMgrEditTitle says "Edit proxy"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrEditTitle() string {
+	return Catalog.Format(msgs.locale, "proxyMgrEditTitle", nil)
+}
+
+// ProxyMgrName says "Name"
+// in the language the app shows.
+func ProxyMgrName() string { return In(i18n.Locale()).ProxyMgrName() }
+
+// ProxyMgrName says "Name"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrName() string {
+	return Catalog.Format(msgs.locale, "proxyMgrName", nil)
+}
+
+// ProxyMgrNameHint says "Office, Hong Kong node…"
+// in the language the app shows.
+func ProxyMgrNameHint() string { return In(i18n.Locale()).ProxyMgrNameHint() }
+
+// ProxyMgrNameHint says "Office, Hong Kong node…"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrNameHint() string {
+	return Catalog.Format(msgs.locale, "proxyMgrNameHint", nil)
+}
+
+// ProxyMgrUserID says "User ID"
+// in the language the app shows.
+func ProxyMgrUserID() string { return In(i18n.Locale()).ProxyMgrUserID() }
+
+// ProxyMgrUserID says "User ID"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrUserID() string {
+	return Catalog.Format(msgs.locale, "proxyMgrUserID", nil)
+}
+
+// ProxyMgrPasswordKeep says "Leave empty to keep the saved password"
+// in the language the app shows.
+func ProxyMgrPasswordKeep() string { return In(i18n.Locale()).ProxyMgrPasswordKeep() }
+
+// ProxyMgrPasswordKeep says "Leave empty to keep the saved password"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrPasswordKeep() string {
+	return Catalog.Format(msgs.locale, "proxyMgrPasswordKeep", nil)
+}
+
+// ProxyMgrPasswordNote says "Kept in the system's credential store; it syncs with the other passwords."
+// in the language the app shows.
+func ProxyMgrPasswordNote() string { return In(i18n.Locale()).ProxyMgrPasswordNote() }
+
+// ProxyMgrPasswordNote says "Kept in the system's credential store; it syncs with the other passwords."
+// in the language of msgs.
+func (msgs Messages) ProxyMgrPasswordNote() string {
+	return Catalog.Format(msgs.locale, "proxyMgrPasswordNote", nil)
+}
+
+// ProxyMgrNote says "Note"
+// in the language the app shows.
+func ProxyMgrNote() string { return In(i18n.Locale()).ProxyMgrNote() }
+
+// ProxyMgrNote says "Note"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrNote() string {
+	return Catalog.Format(msgs.locale, "proxyMgrNote", nil)
+}
+
+// ProxyMgrEditUsed says "{count, plural, one {# host uses this proxy: saving changes it too.} other {# hosts use this proxy: saving changes th…"
+// in the language the app shows.
+func ProxyMgrEditUsed(count int) string { return In(i18n.Locale()).ProxyMgrEditUsed(count) }
+
+// ProxyMgrEditUsed says "{count, plural, one {# host uses this proxy: saving changes it too.} other {# hosts use this proxy: saving changes th…"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrEditUsed(count int) string {
+	return Catalog.Format(msgs.locale, "proxyMgrEditUsed", map[string]any{"count": count})
+}
+
+// ProxyMgrSave says "Save"
+// in the language the app shows.
+func ProxyMgrSave() string { return In(i18n.Locale()).ProxyMgrSave() }
+
+// ProxyMgrSave says "Save"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrSave() string {
+	return Catalog.Format(msgs.locale, "proxyMgrSave", nil)
+}
+
+// ProxyMgrKindHTTPS says "An HTTP proxy reached over TLS, its certificate checked."
+// in the language the app shows.
+func ProxyMgrKindHTTPS() string { return In(i18n.Locale()).ProxyMgrKindHTTPS() }
+
+// ProxyMgrKindHTTPS says "An HTTP proxy reached over TLS, its certificate checked."
+// in the language of msgs.
+func (msgs Messages) ProxyMgrKindHTTPS() string {
+	return Catalog.Format(msgs.locale, "proxyMgrKindHTTPS", nil)
+}
+
+// ProxyMgrKindSOCKS4 says "No password; a host name goes as SOCKS4a, for the proxy to resolve. IPv4 only."
+// in the language the app shows.
+func ProxyMgrKindSOCKS4() string { return In(i18n.Locale()).ProxyMgrKindSOCKS4() }
+
+// ProxyMgrKindSOCKS4 says "No password; a host name goes as SOCKS4a, for the proxy to resolve. IPv4 only."
+// in the language of msgs.
+func (msgs Messages) ProxyMgrKindSOCKS4() string {
+	return Catalog.Format(msgs.locale, "proxyMgrKindSOCKS4", nil)
+}
+
+// ProxyMgrDeleteTitle says "Delete “{name}”?"
+// in the language the app shows.
+func ProxyMgrDeleteTitle(name string) string { return In(i18n.Locale()).ProxyMgrDeleteTitle(name) }
+
+// ProxyMgrDeleteTitle says "Delete “{name}”?"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrDeleteTitle(name string) string {
+	return Catalog.Format(msgs.locale, "proxyMgrDeleteTitle", map[string]any{"name": name})
+}
+
+// ProxyMgrDeleteBody says "It is removed from the proxy library."
+// in the language the app shows.
+func ProxyMgrDeleteBody() string { return In(i18n.Locale()).ProxyMgrDeleteBody() }
+
+// ProxyMgrDeleteBody says "It is removed from the proxy library."
+// in the language of msgs.
+func (msgs Messages) ProxyMgrDeleteBody() string {
+	return Catalog.Format(msgs.locale, "proxyMgrDeleteBody", nil)
+}
+
+// ProxyMgrDeleteUsed says "{count, plural, one {# host uses it: it keeps the proxy as its own and connects as before.} other {# hosts use it: th…"
+// in the language the app shows.
+func ProxyMgrDeleteUsed(count int) string { return In(i18n.Locale()).ProxyMgrDeleteUsed(count) }
+
+// ProxyMgrDeleteUsed says "{count, plural, one {# host uses it: it keeps the proxy as its own and connects as before.} other {# hosts use it: th…"
+// in the language of msgs.
+func (msgs Messages) ProxyMgrDeleteUsed(count int) string {
+	return Catalog.Format(msgs.locale, "proxyMgrDeleteUsed", map[string]any{"count": count})
+}
+
 // AllTabs says "All tabs"
 // in the language the app shows.
 func AllTabs() string { return In(i18n.Locale()).AllTabs() }

@@ -22,10 +22,15 @@ const (
 	fieldProxyAddr editorField = 100 + iota
 	fieldProxyPort
 	fieldJumpHost
+	fieldLibraryProxy
 )
 
+// proxyLibrary is the Proxy page's choice of a proxy of the library
+// (proxymgr.go): the host saves a copy of it, naming it.
+const proxyLibrary config.ProxyKind = "\x00library"
+
 // proxyFieldOrder are the Proxy page's fields, in the order they show.
-var proxyFieldOrder = []editorField{fieldProxyAddr, fieldProxyPort, fieldJumpHost}
+var proxyFieldOrder = []editorField{fieldLibraryProxy, fieldProxyAddr, fieldProxyPort, fieldJumpHost}
 
 // proxyFields are the Proxy page's fields, as typed. Those of a kind not
 // chosen are kept while the editor is open, and not saved.
@@ -33,6 +38,7 @@ type proxyFields struct {
 	kind                       config.ProxyKind
 	addr, port, user, password string
 	jump                       string // the jump host's ID
+	lib                        string // the library's proxy's ID
 
 	// saved is the host's proxy as the editor opened, whose JSON keys
 	// this build does not know saving keeps; nil for none.
@@ -50,6 +56,9 @@ func (a *App) proxyFieldsOf(h *config.Host) proxyFields {
 	p := h.Proxy
 	pf.saved = p
 	pf.kind, pf.addr, pf.user, pf.jump = p.Kind, p.Addr, p.User, p.JumpHost
+	if lib := a.hosts.LinkedProxy(h); lib != nil {
+		pf.kind, pf.lib = proxyLibrary, lib.ID
+	}
 	if port := p.PortOrDefault(); port != 0 {
 		pf.port = strconv.Itoa(port)
 	}
@@ -73,7 +82,11 @@ func (pf *proxyFields) setKind(k config.ProxyKind) {
 func (ed *connEditor) proxyProblems(errs map[editorField]string) {
 	pf := &ed.proxy
 	switch pf.kind {
-	case config.ProxySOCKS5, config.ProxyHTTP:
+	case proxyLibrary:
+		if pf.hosts.Proxy(pf.lib) == nil {
+			errs[fieldLibraryProxy] = locales.ProxyLibraryRequired()
+		}
+	case config.ProxySOCKS5, config.ProxySOCKS4, config.ProxyHTTP, config.ProxyHTTPS:
 		if strings.TrimSpace(pf.addr) == "" {
 			errs[fieldProxyAddr] = locales.ErrHostRequired()
 		}
@@ -114,20 +127,28 @@ func (a *App) saveProxy(h *config.Host, pf *proxyFields) {
 		h.Proxy = nil
 		return
 	}
+	if pf.kind == proxyLibrary {
+		if lib := a.hosts.Proxy(pf.lib); lib != nil {
+			a.useLibraryProxy(h, lib)
+			pf.saved = h.Proxy
+		}
+		return
+	}
 	// A new value, not the saved one changed: a session connecting
 	// reads its copy of the host's.
 	var p config.ProxyConfig
 	if pf.saved != nil {
 		p = *pf.saved
 	}
-	p.Kind, p.Addr, p.Port, p.User, p.JumpHost = pf.kind, "", 0, "", ""
+	// Typed here: the host's own proxy, no longer the library's.
+	p.Kind, p.Addr, p.Port, p.User, p.JumpHost, p.ProxyID = pf.kind, "", 0, "", "", ""
 	switch pf.kind {
 	case config.ProxyJump:
 		p.JumpHost = pf.jump
 	default:
 		p.Addr, p.User = strings.TrimSpace(pf.addr), strings.TrimSpace(pf.user)
 		p.Port, _ = strconv.Atoi(strings.TrimSpace(pf.port))
-		if p.User != "" && pf.password != "" {
+		if config.TakesPassword(p.Kind) && p.User != "" && pf.password != "" {
 			a.proxySecrets()[key] = pf.password
 		}
 	}
@@ -167,8 +188,8 @@ func jumpChoices(hosts *config.Store, id string) []jumpChoice {
 // proxyKinds are the kinds the Proxy page offers, in order, with their
 // labels.
 func proxyKinds() ([]config.ProxyKind, []string) {
-	return []config.ProxyKind{config.ProxyNone, config.ProxySOCKS5, config.ProxyHTTP, config.ProxyJump},
-		[]string{locales.ProxyNone(), "SOCKS5", "HTTP", locales.ProxyJumpHost()}
+	return []config.ProxyKind{config.ProxyNone, proxyLibrary, config.ProxySOCKS5, config.ProxyHTTP, config.ProxyHTTPS, config.ProxySOCKS4, config.ProxyJump},
+		[]string{locales.ProxyNone(), locales.ProxyFromLibrary(), "SOCKS5", "HTTP", "HTTPS", "SOCKS4 / 4a", locales.ProxyJumpHost()}
 }
 
 // proxyPage is the editor's Proxy page. input marks a text input whose
@@ -193,7 +214,9 @@ func (a *App) proxyPage(c *ui.Context, ed *connEditor, errs map[editorField]stri
 			}
 		}).Description(proxyKindHint(pf.kind))
 		switch pf.kind {
-		case config.ProxySOCKS5, config.ProxyHTTP:
+		case proxyLibrary:
+			a.proxyLibraryField(c, pf, errs[fieldLibraryProxy])
+		case config.ProxySOCKS5, config.ProxySOCKS4, config.ProxyHTTP, config.ProxyHTTPS:
 			ui.Field(c, locales.FieldHost(), func() {
 				input(ui.TextInput(c, &pf.addr).Placeholder(locales.FieldHostPlaceholder()))
 			}).Error(errs[fieldProxyAddr])
@@ -203,11 +226,16 @@ func (a *App) proxyPage(c *ui.Context, ed *connEditor, errs map[editorField]stri
 			ui.Field(c, locales.FieldUser(), func() {
 				input(ui.TextInput(c, &pf.user).Placeholder(locales.ProxyUserPlaceholder()))
 			})
-			if strings.TrimSpace(pf.user) != "" {
+			if config.TakesPassword(pf.kind) && strings.TrimSpace(pf.user) != "" {
 				ui.Field(c, locales.FieldPassword(), func() {
 					input(ui.TextInput(c, &pf.password).Password())
 				}).Description(a.rememberNote(ed.remember))
 			}
+			ui.Field(c, "", func() {
+				if ui.Button(c, locales.ProxySaveToLibrary()).Clicked() {
+					a.saveTypedProxyToLibrary(pf)
+				}
+			}).Description(locales.ProxySaveToLibraryNote())
 		case config.ProxyJump:
 			choices := jumpChoices(pf.hosts, ed.id)
 			if len(choices) == 0 {
@@ -273,12 +301,75 @@ func jumpHostSelect(c *ui.Context, selected *string, choices []jumpChoice) {
 // proxyKindHint says what the kind of proxy does.
 func proxyKindHint(k config.ProxyKind) string {
 	switch k {
+	case proxyLibrary:
+		return locales.ProxyLibraryHint()
 	case config.ProxySOCKS5:
 		return locales.ProxySOCKS5Hint()
 	case config.ProxyHTTP:
 		return locales.ProxyHTTPHint()
+	case config.ProxyHTTPS:
+		return locales.ProxyMgrKindHTTPS()
+	case config.ProxySOCKS4:
+		return locales.ProxyMgrKindSOCKS4()
 	case config.ProxyJump:
 		return locales.ProxyJumpHint()
 	}
 	return locales.ProxyNoneHint()
+}
+
+// proxyLibraryField chooses the library's proxy the host connects
+// through, with its last test, and the buttons that test it, add one and
+// open the proxy manager.
+func (a *App) proxyLibraryField(c *ui.Context, pf *proxyFields, problem string) {
+	ui.Field(c, locales.ProxyFromLibrary(), func() {
+		ui.Column(c).Gap(8).FillWidth().Children(func() {
+			if len(a.hosts.Proxies) > 0 {
+				var labels []string
+				chosen := ""
+				for _, p := range a.hosts.Proxies {
+					label := p.Name + " — " + proxyKindLabel(p.Kind) + " " + proxyAddress(p)
+					labels = append(labels, label)
+					if p.ID == pf.lib {
+						chosen = label
+					}
+				}
+				if ui.Select(c, &chosen, labels).Width(360).Shrink(1).MinWidth(0).Label(locales.ProxyFromLibrary()).Changed() {
+					for i, l := range labels {
+						if l == chosen {
+							pf.lib = a.hosts.Proxies[i].ID
+						}
+					}
+				}
+			} else {
+				widgets.Muted(c, locales.ProxyLibraryEmpty())
+			}
+			if p := a.hosts.Proxy(pf.lib); p != nil {
+				ui.Row(c).Gap(6).AlignItems(ui.Center).Children(func() {
+					proxyTestSummary(c, a.proxyTests[p.ID])
+				})
+			}
+			ui.Row(c).Gap(6).Wrap().Children(func() {
+				if p := a.hosts.Proxy(pf.lib); p != nil && ui.Button(c, locales.ProxyMgrTest()).Disabled(a.proxyTesting(p.ID)).Clicked() {
+					a.testLibraryProxy(p)
+				}
+				if ui.Button(c, locales.ProxyMgrNew()).Clicked() {
+					a.editProxy(nil, func(p *config.Proxy) { pf.lib = p.ID })
+				}
+				if ui.Button(c, locales.ProxyManage()).Clicked() {
+					a.openProxyManager()
+				}
+			})
+		})
+	}).Error(problem).Description(locales.ProxyLibraryNote())
+}
+
+// saveTypedProxyToLibrary opens the proxy manager's form with the proxy
+// typed on the Proxy page; once saved, the host uses it from the library.
+func (a *App) saveTypedProxyToLibrary(pf *proxyFields) {
+	port, _ := strconv.Atoi(strings.TrimSpace(pf.port))
+	p := &config.Proxy{Kind: pf.kind, Addr: strings.TrimSpace(pf.addr), Port: port, User: strings.TrimSpace(pf.user)}
+	p.Name = p.Addr
+	a.editProxy(p, func(saved *config.Proxy) { pf.kind, pf.lib = proxyLibrary, saved.ID })
+	a.proxyMgr.edit.id, a.proxyMgr.edit.original = "", nil
+	a.proxyMgr.edit.password = pf.password
 }

@@ -234,3 +234,36 @@ func closedTCPPort(t *testing.T) int {
 	ln.Close()
 	return port
 }
+
+// TestProxyOptionsPage manages the library on Options' Proxies page: its
+// form shows there, without opening the proxy manager.
+func TestProxyOptionsPage(t *testing.T) {
+	a, p := testApp(t)
+	p.SetLocale("zh-Hans")
+	a.optionsNav.Page = pageProxies
+	a.openOptions()
+	tt := p.show(t, WindowOptions)
+	tt.SetSize(980, 720)
+	tt.Frame()
+	if !tt.HasText(locales.ProxyMgrEmptyTitle()) {
+		t.Fatalf("no library on the page: %q", tt.Texts())
+	}
+	if err := tt.Click(locales.ProxyMgrNew()); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if a.proxyMgr.edit == nil || a.proxyMgr.owner != WindowOptions || a.windowOpen(windowProxies) {
+		t.Fatalf("the form: owner %q, manager open %v", a.proxyMgr.owner, a.windowOpen(windowProxies))
+	}
+	e := a.proxyMgr.edit
+	e.name, e.addr, e.port = "香港节点", "203.0.113.9", "1080"
+	tt.Frame()
+	if err := tt.Click(locales.ProxyMgrSave()); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if len(a.hosts.Proxies) != 1 || !tt.HasText("香港节点") {
+		t.Fatalf("saved %d; %q", len(a.hosts.Proxies), tt.Texts())
+	}
+	saveShot(t, tt, "options-proxies-zh-Hans.png")
+}

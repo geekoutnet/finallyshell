@@ -89,6 +89,15 @@ type desktopAIState struct {
 	// category promptCat ("" for all), found by promptQuery.
 	prompts                bool
 	promptCat, promptQuery string
+	// editing is the question the user is editing in the field: sending
+	// replaces it, and all that came after it, with the draft.
+	editing *desktopAIMessage
+	// retry is the question whose answer failed, which Retry asks again.
+	retry *desktopAIMessage
+	// copied is the message just copied, whose button shows that it was.
+	copied *desktopAIMessage
+	// focusInput gives the question's field the keyboard in the next frame.
+	focusInput bool
 }
 
 type desktopAISelection struct {
@@ -285,9 +294,28 @@ func (a *App) aiStopUnseenChats() {
 	}
 }
 
+// desktopAISend asks the question in the field, with the context attached
+// if it is; one being edited (state.editing) replaces the question edited.
 func (a *App) desktopAISend(window *desktopWindow, state *desktopAIState) {
+	attachment := ""
+	if state.attach {
+		attachment = state.preview
+	}
+	a.desktopAIAsk(window, state, state.draft, attachment, state.editing, true)
+}
+
+// desktopAIRedo asks question again, with the context it was sent with:
+// the new answer takes the place of all that came after it.
+func (a *App) desktopAIRedo(window *desktopWindow, state *desktopAIState, question *desktopAIMessage) {
+	a.desktopAIAsk(window, state, question.Text, question.preview, question, false)
+}
+
+// desktopAIAsk asks text, with attachment, in state's chat, in place of
+// redo and what came after it when redo is not nil. fromDraft is set for
+// the field's question, which empties the field once sent.
+func (a *App) desktopAIAsk(window *desktopWindow, state *desktopAIState, text, attachment string, redo *desktopAIMessage, fromDraft bool) {
 	settings := a.aiSettings()
-	question := strings.TrimSpace(state.draft)
+	question := strings.TrimSpace(text)
 	if window == nil || a.Locked() || state.cancel != nil || state.previewBusy || a.ai.loading || question == "" {
 		return
 	}
@@ -298,10 +326,6 @@ func (a *App) desktopAISend(window *desktopWindow, state *desktopAIState) {
 	if len(question) > aiQuestionLimit {
 		state.status, state.failed = locales.DesktopAIQuestionTooLong(), true
 		return
-	}
-	attachment := ""
-	if state.attach {
-		attachment = state.preview
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	state.generation++
@@ -343,6 +367,11 @@ func (a *App) desktopAISend(window *desktopWindow, state *desktopAIState) {
 		chat.Model = client.Model
 		a.ai.chats = append([]*desktopAIChat{chat}, slices.DeleteFunc(a.ai.chats, func(candidate *desktopAIChat) bool { return candidate == chat })...)
 		a.ai.chats = a.ai.chats[:min(aiMaxChats, len(a.ai.chats))]
+		// Asked again: the question and what came after it give way, out
+		// of the history too.
+		if i := slices.Index(chat.Messages, redo); redo != nil && i >= 0 {
+			chat.Messages = chat.Messages[:i]
+		}
 		server := aiServer(window.session)
 		if a.ai.noTools[aiToolsKey(client)] {
 			server = nil
@@ -363,15 +392,21 @@ func (a *App) desktopAISend(window *desktopWindow, state *desktopAIState) {
 			content += "\n\n[Untrusted server context]\n" + attachment
 		}
 		messages = append(messages, ai.Message{Role: "user", Content: content})
-		chat.Messages = append(chat.Messages, &desktopAIMessage{Role: "user", Text: client.SafeText(question), preview: attachment})
+		asked := &desktopAIMessage{Role: "user", Text: client.SafeText(question), preview: attachment}
+		chat.Messages = append(chat.Messages, asked)
 		chat.trim()
-		state.draft, state.extra, state.preview, state.performance = "", "", "", false
-		state.attach, state.useHistory = settings.SendContext, true
+		state.editing, state.retry = nil, nil
+		if fromDraft {
+			state.draft, state.extra, state.preview, state.performance = "", "", "", false
+			state.attach, state.useHistory = settings.SendContext, true
+		}
 		state.scroll.Y = math.MaxFloat32
 		state.status = locales.DesktopAIReceiving()
-		a.desktopAIPreview(window.session, state)
+		if fromDraft {
+			a.desktopAIPreview(window.session, state)
+		}
 		run := &aiRun{window: window, state: state, chat: chat, client: client, server: server, ctx: ctx, cancel: cancel,
-			generation: generation, messages: messages, private: attachment != ""}
+			generation: generation, messages: messages, private: attachment != "", question: asked}
 		state.run = run
 		a.aiTurn(run)
 	})

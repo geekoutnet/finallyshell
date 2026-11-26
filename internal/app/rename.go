@@ -24,6 +24,9 @@ type renameState struct {
 	// fresh is set until the field has shown once: it then takes the
 	// focus, with its text selected.
 	fresh bool
+	// inTab is set when the field is in the session's tab rather than its
+	// row in the session list: renamed from the tab's menu.
+	inTab bool
 }
 
 // canRename reports whether s's tab can be renamed: a new tab has no host

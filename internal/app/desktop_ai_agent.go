@@ -73,6 +73,8 @@ type aiRun struct {
 	private bool
 	// cards are this round's commands, in the order the model called them.
 	cards []*desktopAIMessage
+	// question is the user's message the run answers.
+	question *desktopAIMessage
 }
 
 // current reports whether the run is still the window's, and the window
@@ -286,6 +288,9 @@ func (a *App) aiFinish(run *aiRun, status string, failed bool) {
 	run.cancel()
 	state.run, state.cancel, state.activeReply = nil, nil, nil
 	state.status, state.failed = status, failed
+	if failed {
+		state.retry = run.question
+	}
 	a.aiSaveChats()
 }
 

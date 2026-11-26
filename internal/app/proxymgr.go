@@ -50,6 +50,9 @@ type proxyMgrState struct {
 	edit     *proxyEdit
 	deleting *config.Proxy
 	err      string
+	// owner is the window the form and the question about deleting show
+	// in: the proxy manager's, or Options' Proxies page.
+	owner WindowKind
 }
 
 // proxyEdit is the form of a proxy being added or edited.
@@ -119,12 +122,38 @@ func (a *App) shownProxies() []*config.Proxy {
 }
 
 func (a *App) proxyManagerView(c *ui.Context) {
+	ui.Column(c).Fill().Children(func() { a.proxyLibraryPanel(c, windowProxies) })
+	a.proxyDialogs(c, windowProxies)
+}
+
+// proxyOptionsPage is Options' Proxies page: the library, as the proxy
+// manager shows it.
+func (a *App) proxyOptionsPage(c *ui.Context) {
+	ui.Column(c).FillWidth().Height(540).Border(1, theme.Border).Radius(8).Clip().Children(func() {
+		a.proxyLibraryPanel(c, WindowOptions)
+	})
+	a.proxyDialogs(c, WindowOptions)
+}
+
+// proxyDialogs are the form and the question about deleting, in the
+// window that asked for them.
+func (a *App) proxyDialogs(c *ui.Context, owner WindowKind) {
+	if a.proxyMgr.owner != owner {
+		return
+	}
+	a.proxyEditView(c)
+	a.proxyDeleteView(c)
+}
+
+// proxyLibraryPanel is the library's toolbar, table and footer, in the
+// window owner.
+func (a *App) proxyLibraryPanel(c *ui.Context, owner WindowKind) {
 	m := &a.proxyMgr
 	proxies := a.shownProxies()
-	ui.Column(c).Fill().Children(func() {
+	ui.Column(c).Grow(1).FillWidth().MinHeight(0).Children(func() {
 		ui.Row(c).Gap(8).Padding(10, 12).AlignItems(ui.Center).FillWidth().Children(func() {
 			if ui.PrimaryButton(c, locales.ProxyMgrNew()).Clicked() {
-				a.editProxy(nil, nil)
+				a.editProxyIn(owner, nil, nil)
 			}
 			if ui.Button(c, locales.ProxyMgrTestAll()).Disabled(len(proxies) == 0).Clicked() {
 				for _, p := range proxies {
@@ -139,22 +168,20 @@ func (a *App) proxyManagerView(c *ui.Context) {
 		}
 		ui.Column(c).Grow(1).MinHeight(0).Padding(0, 12, 8, 12).Children(func() {
 			if len(a.hosts.Proxies) == 0 {
-				a.proxyEmpty(c)
+				a.proxyEmpty(c, owner)
 				return
 			}
-			a.proxyTable(c, proxies)
+			a.proxyTable(c, proxies, owner)
 		})
 		ui.Row(c).Gap(12).Padding(8, 12).AlignItems(ui.Center).BorderWidth(1, 0, 0, 0).BorderColor(theme.Border).Children(func() {
 			widgets.Muted(c, locales.ProxyMgrCount(len(a.hosts.Proxies))).FontSize(12).Grow(1).MinWidth(0)
 			widgets.Muted(c, locales.ProxyMgrTestNote()).FontSize(11).SingleLine().MinWidth(0).Shrink(1)
 		})
 	})
-	a.proxyEditView(c)
-	a.proxyDeleteView(c)
 }
 
 // proxyEmpty is the manager with no proxy yet.
-func (a *App) proxyEmpty(c *ui.Context) {
+func (a *App) proxyEmpty(c *ui.Context, owner WindowKind) {
 	ui.Column(c).Grow(1).AlignItems(ui.Center).Justify(ui.Center).Gap(10).Children(func() {
 		ui.Box(c).Size(48, 48).Radius(12).Center().Background(theme.Accent.Alpha(0.12)).Children(func() {
 			ui.Icon(c, icons.Get("waypoints")).FontSize(24).TextColor(theme.Accent)
@@ -162,25 +189,25 @@ func (a *App) proxyEmpty(c *ui.Context) {
 		ui.Text(c, locales.ProxyMgrEmptyTitle()).FontSize(16).Bold()
 		widgets.Muted(c, locales.ProxyMgrEmptyBody()).MaxWidth(420).TextAlign(ui.Center)
 		if ui.PrimaryButton(c, locales.ProxyMgrNew()).Clicked() {
-			a.editProxy(nil, nil)
+			a.editProxyIn(owner, nil, nil)
 		}
 	})
 }
 
-func (a *App) proxyTable(c *ui.Context, proxies []*config.Proxy) {
+func (a *App) proxyTable(c *ui.Context, proxies []*config.Proxy, owner WindowKind) {
 	m := &a.proxyMgr
 	columns := []ui.TableColumn{
-		{ID: "name", Title: locales.ProxyMgrColName(), Width: 170, MinWidth: 90},
-		{ID: "kind", Title: locales.ProxyMgrColKind(), Width: 92, MinWidth: 70},
-		{ID: "addr", Title: locales.ProxyMgrColAddress(), Width: 190, MinWidth: 110},
-		{ID: "user", Title: locales.ProxyMgrColUser(), Width: 100, MinWidth: 60},
-		{ID: "hosts", Title: locales.ProxyMgrColHosts(), Width: 70, MinWidth: 50, Align: ui.End},
-		{ID: "test", Title: locales.ProxyMgrColTest(), MinWidth: 200},
+		{ID: "name", Title: locales.ProxyMgrColName(), Width: 150, MinWidth: 90},
+		{ID: "kind", Title: locales.ProxyMgrColKind(), Width: 84, MinWidth: 64},
+		{ID: "addr", Title: locales.ProxyMgrColAddress(), Width: 170, MinWidth: 100},
+		{ID: "user", Title: locales.ProxyMgrColUser(), Width: 90, MinWidth: 56},
+		{ID: "hosts", Title: locales.ProxyMgrColHosts(), Width: 56, MinWidth: 44, Align: ui.End},
+		{ID: "test", Title: locales.ProxyMgrColTest(), MinWidth: 150},
 	}
 	m.list.Selected = &m.selected
 	m.list.Key = func(i int) any { return proxies[i].ID }
 	m.list.Label = func(i int) string { return proxies[i].Name }
-	m.list.CellMenu = func(menu *ui.Menu, row, _ int) { a.proxyMenu(menu, proxies[row]) }
+	m.list.CellMenu = func(menu *ui.Menu, row, _ int) { a.proxyMenu(menu, proxies[row], owner) }
 	table := ui.Table(c, &m.list, columns, len(proxies), func(row, col int) {
 		p := proxies[row]
 		switch columns[col].ID {
@@ -194,37 +221,37 @@ func (a *App) proxyTable(c *ui.Context, proxies []*config.Proxy) {
 		case "addr":
 			ui.Text(c, proxyAddress(p)).SingleLine().Tooltip(proxyAddress(p)).Selectable()
 		case "user":
-			widgets.Muted(c, cmp.Or(p.User, "—")).SingleLine()
+			ui.Text(c, cmp.Or(p.User, "—")).SingleLine().Opacity(0.7)
 		case "hosts":
 			users := a.hosts.ProxyUsers(p.ID)
 			tip := locales.ProxyMgrUsedBy(len(users))
 			if len(users) > 0 {
 				tip += "\n" + proxyHostsText(users)
 			}
-			widgets.Muted(c, strconv.Itoa(len(users))).SingleLine().Tooltip(tip)
+			ui.Text(c, strconv.Itoa(len(users))).SingleLine().Opacity(0.7).Tooltip(tip)
 		case "test":
 			a.proxyTestCell(c, p)
 		}
 	}).Grow(1).MinHeight(0)
 	if table.Submitted() && m.selected >= 0 && m.selected < len(proxies) {
-		a.editProxy(proxies[m.selected], nil)
+		a.editProxyIn(owner, proxies[m.selected], nil)
 	}
 }
 
 // proxyMenu is a proxy's context menu.
-func (a *App) proxyMenu(menu *ui.Menu, p *config.Proxy) {
+func (a *App) proxyMenu(menu *ui.Menu, p *config.Proxy, owner WindowKind) {
 	if menu.Item(locales.ProxyMgrEdit()).Chosen() {
-		a.editProxy(p, nil)
+		a.editProxyIn(owner, p, nil)
 	}
 	if menu.Item(locales.ProxyMgrTest()).Disabled(a.proxyTesting(p.ID)).Chosen() {
 		a.testLibraryProxy(p)
 	}
 	if menu.Item(locales.ProxyMgrDuplicate()).Chosen() {
-		a.duplicateProxy(p)
+		a.duplicateProxy(owner, p)
 	}
 	menu.Separator()
 	if menu.Item(locales.Delete()).Danger().Chosen() {
-		a.proxyMgr.deleting = p
+		a.proxyMgr.deleting, a.proxyMgr.owner = p, owner
 	}
 }
 
@@ -246,10 +273,10 @@ func (a *App) proxyTestCell(c *ui.Context, p *config.Proxy) {
 func proxyTestSummary(c *ui.Context, t *proxyTest) {
 	switch {
 	case t == nil:
-		widgets.Muted(c, locales.ProxyMgrNotTested()).FontSize(12).SingleLine()
+		ui.Text(c, locales.ProxyMgrNotTested()).FontSize(12).SingleLine().Opacity(0.7)
 	case t.running:
 		ui.Spinner(c).Size(12, 12).Shrink(0)
-		widgets.Muted(c, locales.ProxyMgrTesting()).FontSize(12).SingleLine()
+		ui.Text(c, locales.ProxyMgrTesting()).FontSize(12).SingleLine().Opacity(0.7)
 	case t.err != nil:
 		text := proxyTestError(t.err)
 		widgets.StatusDot(c, theme.Danger)
@@ -396,10 +423,10 @@ func (a *App) stopProxyTest(key string) {
 }
 
 // duplicateProxy opens the form for a copy of p, named so.
-func (a *App) duplicateProxy(p *config.Proxy) {
+func (a *App) duplicateProxy(owner WindowKind, p *config.Proxy) {
 	c := p.Clone()
 	c.ID, c.Name = "", locales.ProxyMgrCopyName(p.Name)
-	a.editProxy(c, nil)
+	a.editProxyIn(owner, c, nil)
 	a.proxyMgr.edit.id, a.proxyMgr.edit.original = "", nil
 	pw := a.passwords[libMemKey(p.ID)]
 	if pw != "" {
@@ -407,9 +434,15 @@ func (a *App) duplicateProxy(p *config.Proxy) {
 	}
 }
 
-// editProxy opens the form for p, nil for a new proxy; then, when not
-// nil, gets the proxy once saved.
+// editProxy opens the form for p in the proxy manager, nil for a new
+// proxy; then, when not nil, gets the proxy once saved.
 func (a *App) editProxy(p *config.Proxy, then func(*config.Proxy)) {
+	a.editProxyIn(windowProxies, p, then)
+}
+
+// editProxyIn opens the form for p in the window owner: the proxy
+// manager, which opens, or Options' Proxies page.
+func (a *App) editProxyIn(owner WindowKind, p *config.Proxy, then func(*config.Proxy)) {
 	e := &proxyEdit{kind: config.ProxySOCKS5, port: "1080", then: then, errs: map[string]string{}}
 	if p != nil {
 		e.id, e.original, e.kind, e.name, e.addr, e.user, e.note = p.ID, p, p.Kind, p.Name, p.Addr, p.User, p.Note
@@ -419,11 +452,11 @@ func (a *App) editProxy(p *config.Proxy, then func(*config.Proxy)) {
 		}
 	}
 	a.stopProxyTest(proxyEditTestKey)
-	a.proxyMgr.edit, a.proxyMgr.err = e, ""
-	if !a.windowOpen(windowProxies) {
+	a.proxyMgr.edit, a.proxyMgr.err, a.proxyMgr.owner = e, "", owner
+	if owner == windowProxies && !a.windowOpen(windowProxies) {
 		a.openProxyManager()
 	}
-	a.plat.FocusWindow(windowProxies)
+	a.plat.FocusWindow(owner)
 	a.redraw()
 }
 

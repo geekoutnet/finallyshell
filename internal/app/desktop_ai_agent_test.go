@@ -13,6 +13,7 @@ import (
 	"slices"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -74,6 +75,12 @@ func newAIAgentTest(t *testing.T, script func(body string) string) *aiAgentTest 
 		if rest, ok := strings.CutPrefix(out, "400 "); ok {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
+			out = rest
+		}
+		// "500 …" fails, as a provider that is down does.
+		if rest, ok := strings.CutPrefix(out, "500 "); ok {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
 			out = rest
 		}
 		io.WriteString(w, out)
@@ -446,5 +453,87 @@ func TestDesktopAIDeleteAndResize(t *testing.T) {
 	tt.Frame()
 	if at.state.inputH != 0 {
 		t.Fatalf("a double click left the height at %v", at.state.inputH)
+	}
+}
+
+// TestDesktopAIMessageActions copies a reply, asks for another in its
+// place, edits a question to send it again, and retries one that failed.
+func TestDesktopAIMessageActions(t *testing.T) {
+	var calls atomic.Int32
+	at := newAIAgentTest(t, func(string) string {
+		switch calls.Add(1) {
+		case 1:
+			return aiTextEvent("first answer")
+		case 2:
+			return aiTextEvent("second answer")
+		case 3:
+			return aiTextEvent("edited answer")
+		case 4:
+			return `500 {"error":{"message":"upstream down"}}`
+		}
+		return aiTextEvent("retried answer")
+	})
+	tt := at.platform.tt
+	idle := func(what string) {
+		t.Helper()
+		at.platform.until(t, what, func() bool { return at.state.cancel == nil })
+		tt.Frame()
+	}
+	texts := func() []string {
+		var out []string
+		for _, m := range at.state.chat.Messages {
+			out = append(out, m.Role+":"+m.Text)
+		}
+		return out
+	}
+	at.ask("disk usage?")
+	idle("first answer")
+	// Copy, on the question and on the reply.
+	if err := tt.Click(locales.DesktopAICopyMessage()); err != nil {
+		t.Fatalf("copy: %v; %q", err, tt.Texts())
+	}
+	tt.Frame()
+	if at.state.copied == nil {
+		t.Fatal("copying did not show that it did")
+	}
+	// Regenerate replaces the reply.
+	if err := tt.Click(locales.DesktopAIRegenerate()); err != nil {
+		t.Fatalf("regenerate: %v; %q", err, tt.Texts())
+	}
+	idle("second answer")
+	if got := texts(); !slices.Equal(got, []string{"user:disk usage?", "assistant:second answer"}) {
+		t.Fatalf("after regenerating: %q", got)
+	}
+	if strings.Contains(at.body(1), "first answer") {
+		t.Fatal("regenerating sent the reply it replaces")
+	}
+	// Editing puts the question in the field; sending replaces it.
+	if err := tt.Click(locales.DesktopAIEditQuestion()); err != nil {
+		t.Fatalf("edit: %v; %q", err, tt.Texts())
+	}
+	tt.Frame()
+	if at.state.draft != "disk usage?" || !tt.HasText(locales.DesktopAIEditing()) {
+		t.Fatalf("editing: draft %q", at.state.draft)
+	}
+	saveShot(t, tt, "ai-message-actions.png")
+	at.state.draft = "memory usage?"
+	at.a.desktopAISend(at.window, at.state)
+	idle("edited answer")
+	if got := texts(); !slices.Equal(got, []string{"user:memory usage?", "assistant:edited answer"}) {
+		t.Fatalf("after editing: %q", got)
+	}
+	// A failed answer offers Retry, which asks the question again.
+	at.ask("load?")
+	idle("failure")
+	if !at.state.failed || at.state.retry == nil || !tt.HasText(locales.Retry()) {
+		t.Fatalf("no retry after a failure: %q", at.state.status)
+	}
+	saveShot(t, tt, "ai-retry.png")
+	if err := tt.Click(locales.Retry()); err != nil {
+		t.Fatal(err)
+	}
+	idle("retried answer")
+	if got := texts(); !slices.Equal(got, []string{"user:memory usage?", "assistant:edited answer", "user:load?", "assistant:retried answer"}) {
+		t.Fatalf("after retrying: %q", got)
 	}
 }

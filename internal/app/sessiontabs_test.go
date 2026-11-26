@@ -76,6 +76,84 @@ func TestSessionTabs(t *testing.T) {
 	}
 }
 
+// TestSessionTabMenu closes tabs from a tab's menu: the disconnected ones
+// at once, others after asking once, and renames a tab in place.
+func TestSessionTabMenu(t *testing.T) {
+	a, p := testApp(t)
+	one := demoSession(a, "one", "10.0.0.1")
+	two := demoSession(a, "two", "10.0.0.2")
+	three := demoSession(a, "three", "10.0.0.3")
+	four := demoSession(a, "four", "10.0.0.4")
+	two.status = statusClosed
+	a.sidebarHidden = true // the names are on the tabs alone
+	tt := ui.NewTester(a.View, 1100, 700)
+	p.tt = tt
+	tt.Frame()
+	menu := func(tab, item string) {
+		t.Helper()
+		if err := tt.RightClick(tab); err != nil {
+			t.Fatalf("right-click %q: %v", tab, err)
+		}
+		tt.Frame()
+		if err := tt.ChooseMenuItem(item); err != nil {
+			t.Fatalf("%q in %q: %v", item, tt.Menu(), err)
+		}
+		tt.Frame()
+	}
+	if err := tt.RightClick("three"); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	for _, want := range []string{locales.Reconnect(), locales.DuplicateSession(), locales.CopyConnInfo(), locales.Rename(),
+		locales.CloseOtherTabs(), locales.CloseTabsRight(), locales.CloseTabsLeft(), locales.CloseDisconnectedTabs(), locales.CloseAllTabs()} {
+		if !slices.Contains(tt.Menu(), want) {
+			t.Fatalf("no %q in the tab's menu %q", want, tt.Menu())
+		}
+	}
+	tt.Key(0, ui.KeyEscape)
+	tt.Frame()
+	menu("three", locales.CloseDisconnectedTabs())
+	if slices.Contains(a.sessions, two) || a.closeAskMany != nil || a.closeAsk != nil {
+		t.Fatalf("closing the disconnected tabs: %q, asked %v", rowNames(a), a.closeAskMany)
+	}
+	// Two connected tabs: one question for both, which Cancel answers.
+	menu("three", locales.CloseOtherTabs())
+	if len(a.closeAskMany) != 2 || !tt.HasText(locales.CloseTabsTitle(2)) {
+		t.Fatalf("closing the other tabs asked %v", a.closeAskMany)
+	}
+	saveShot(t, tt, "session-tabs-close-others.png")
+	if err := tt.Click(locales.Cancel()); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if a.closeAskMany != nil || len(a.sessions) != 3 {
+		t.Fatalf("cancel closed tabs: %q", rowNames(a))
+	}
+	menu("three", locales.CloseTabsRight())
+	if a.closeAsk != four {
+		t.Fatalf("closing the tab to the right asked about %v", a.closeAsk)
+	}
+	if err := tt.Click(locales.CloseSessionConfirm()); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
+	if slices.Contains(a.sessions, four) || !slices.Contains(a.sessions, one) {
+		t.Fatalf("closing the tab to the right left %q", rowNames(a))
+	}
+	// Renaming from the menu shows the field in the tab.
+	menu("three", locales.Rename())
+	if !a.rename.inTab {
+		t.Fatal("renaming from the tab did not rename in it")
+	}
+	tt.Frame()
+	tt.Type("db")
+	tt.Key(0, ui.KeyEnter)
+	tt.Frame()
+	if three.label() != "db" || a.rename.s != nil {
+		t.Fatalf("the tab is named %q", three.label())
+	}
+}
+
 // TestSidebarHidden folds the left column away and back, with the button
 // and the shortcut, and keeps the choice.
 func TestSidebarHidden(t *testing.T) {

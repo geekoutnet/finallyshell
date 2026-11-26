@@ -196,6 +196,9 @@ type App struct {
 	// closeAsk is the connected server the user is closing, while the
 	// app asks first (sessiontabs.go).
 	closeAsk *Session
+	// closeAskMany are the tabs the user is closing at once, some of them
+	// still connected, while the app asks first.
+	closeAskMany []*Session
 	// proxyMgr is the proxy manager's, and proxyTests the tests of the
 	// library's proxies by ID (proxymgr.go).
 	proxyMgr   proxyMgrState

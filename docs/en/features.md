@@ -151,7 +151,11 @@ for its row and the rows under it (its panel row and its desktop). A click
 on a tab goes back to the row of that server the user was on last, so the
 terminal, the bottom panel, the desktop and the monitor switch with it;
 choosing a row in the list moves the tabs along. A tab's context menu has
-Reconnect, Disconnect and Close, and "+", tinted at the row's end, opens
+what the list's has for the server (Reconnect, Duplicate session,
+Disconnect, its connection info, Open desktop), Split right and Split
+down, Rename, which renames it on the tab itself, and Close, then Close
+other tabs, Close tabs to the right, Close tabs to the left, Close
+disconnected tabs and Close all tabs. "+", tinted at the row's end, opens
 a new tab. The tabs share the row's width, down to 120 DIPs each; more
 scroll sideways with the wheel, without a scrollbar, and a menu at the
 row's end lists them all, scrolling the one chosen into view. Each session
@@ -162,7 +166,8 @@ desktop to it, and a little room sets one server apart from the next.
 Closing a server that is connected or connecting, from its tab, the list's
 close button or context menu, or the shortcut, asks first: closing ends
 the connection, its desktop and panel, and its transfers. A disconnected
-server, a panel row and a new tab close at once.
+server, a panel row and a new tab close at once. Closing several tabs from
+the menu asks once, saying how many of them are still connected.
 
 The first button of the tab row folds the whole left column (the monitor
 and the session list) away, and the main area takes the window's width;
@@ -1093,8 +1098,9 @@ HTTPS, SOCKS4 / 4a or Jump host.
 
 #### Proxy manager
 
-The proxy manager (Proxies in the connection manager's toolbar, or Manage
-proxies… on the Proxy page) keeps proxies by name: SOCKS5, HTTP, HTTPS
+The proxy manager (Proxies in the connection manager's toolbar, Manage
+proxies… on the Proxy page, or the Proxies page of Options, which shows
+the same library) keeps proxies by name: SOCKS5, HTTP, HTTPS
 and SOCKS4, with a user and a password. The table lists each with its
 address, how many hosts use it and its last test; New proxy, Edit,
 Duplicate and Delete change the library, and a search finds proxies by
@@ -2272,6 +2278,13 @@ question, to fill in what [ ] marks and send. The conversations on the
 left delete from the button on their row or their context menu, after
 asking; the bar above the question drags it taller or shorter, and a
 double click on it gives the default height back.
+
+Under each question are Copy message and Edit and resend: editing puts
+the question back in the field, with a note above it, and sending
+replaces it and the conversation after it. Under each reply is Copy
+message, and under the conversation's last reply Regenerate, which asks
+its question again for another reply in its place. When a request fails,
+Retry beside the error asks the question again.
 
 On a server connected over SSH, the assistant runs commands itself to investigate: the model calls a tool that runs one command at a time on an SSH channel of its own, apart from the terminal, as the login user, with no terminal and no input, and stops it after 60 seconds. Each command shows as a card with its state, exit code and time; its output (the first and last 16 KB, secrets masked) opens below it. Read-only commands run at once: an allowlist of programs and options that change nothing, such as `df`, `ps`, `journalctl -n`, `systemctl status` or `docker ps`, with no redirection to a file, command substitution, variables or `sudo`, and not reading key or password files. Any other command waits on its card for **Allow** or **Refuse**; refusing tells the model to ask instead. Commands that look destructive also need `RUN` typed. **Run everything automatically** lets one conversation run the others without asking, but not the destructive ones; it is off in every new conversation. A question runs at most 12 rounds of commands. Commands that change the system go to the desktop's operation log. Command output, logs and attachments reach the model as untrusted data. Conversations keep the commands and their exit codes, not their output. Without SSH (local terminals, Telnet, serial), the assistant only suggests commands, as it does with a model or provider that refuses tools: the question is asked again without them, and the window says why.
 

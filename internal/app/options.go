@@ -35,6 +35,7 @@ const (
 	pageFileIcons  = "files/icons"
 	pageNetwork    = "network"
 	pageSync       = "sync"
+	pageProxies    = "proxies"
 )
 
 // optionPage is a page of the options window.
@@ -115,6 +116,10 @@ var optionPages = []optionPage{
 	{
 		id: pageNetwork, title: locales.OptionsNetwork,
 		view: (*App).networkPage,
+	},
+	{
+		id: pageProxies, title: locales.ProxyMgrTitle,
+		view: (*App).proxyOptionsPage,
 	},
 	{
 		id: pageSync, title: locales.OptionsSync,

@@ -27110,6 +27110,126 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// DesktopAICopyMessage says "Copy message"
+// in the language the app shows.
+func DesktopAICopyMessage() string { return In(i18n.Locale()).DesktopAICopyMessage() }
+
+// DesktopAICopyMessage says "Copy message"
+// in the language of msgs.
+func (msgs Messages) DesktopAICopyMessage() string {
+	return Catalog.Format(msgs.locale, "desktopAICopyMessage", nil)
+}
+
+// DesktopAIEditQuestion says "Edit and resend"
+// in the language the app shows.
+func DesktopAIEditQuestion() string { return In(i18n.Locale()).DesktopAIEditQuestion() }
+
+// DesktopAIEditQuestion says "Edit and resend"
+// in the language of msgs.
+func (msgs Messages) DesktopAIEditQuestion() string {
+	return Catalog.Format(msgs.locale, "desktopAIEditQuestion", nil)
+}
+
+// DesktopAIRegenerate says "Regenerate"
+// in the language the app shows.
+func DesktopAIRegenerate() string { return In(i18n.Locale()).DesktopAIRegenerate() }
+
+// DesktopAIRegenerate says "Regenerate"
+// in the language of msgs.
+func (msgs Messages) DesktopAIRegenerate() string {
+	return Catalog.Format(msgs.locale, "desktopAIRegenerate", nil)
+}
+
+// DesktopAICopied says "Copied"
+// in the language the app shows.
+func DesktopAICopied() string { return In(i18n.Locale()).DesktopAICopied() }
+
+// DesktopAICopied says "Copied"
+// in the language of msgs.
+func (msgs Messages) DesktopAICopied() string {
+	return Catalog.Format(msgs.locale, "desktopAICopied", nil)
+}
+
+// DesktopAIEditing says "Editing a question: sending replaces it and the conversation after it."
+// in the language the app shows.
+func DesktopAIEditing() string { return In(i18n.Locale()).DesktopAIEditing() }
+
+// DesktopAIEditing says "Editing a question: sending replaces it and the conversation after it."
+// in the language of msgs.
+func (msgs Messages) DesktopAIEditing() string {
+	return Catalog.Format(msgs.locale, "desktopAIEditing", nil)
+}
+
+// CloseOtherTabs says "Close other tabs"
+// in the language the app shows.
+func CloseOtherTabs() string { return In(i18n.Locale()).CloseOtherTabs() }
+
+// CloseOtherTabs says "Close other tabs"
+// in the language of msgs.
+func (msgs Messages) CloseOtherTabs() string {
+	return Catalog.Format(msgs.locale, "closeOtherTabs", nil)
+}
+
+// CloseTabsRight says "Close tabs to the right"
+// in the language the app shows.
+func CloseTabsRight() string { return In(i18n.Locale()).CloseTabsRight() }
+
+// CloseTabsRight says "Close tabs to the right"
+// in the language of msgs.
+func (msgs Messages) CloseTabsRight() string {
+	return Catalog.Format(msgs.locale, "closeTabsRight", nil)
+}
+
+// CloseTabsLeft says "Close tabs to the left"
+// in the language the app shows.
+func CloseTabsLeft() string { return In(i18n.Locale()).CloseTabsLeft() }
+
+// CloseTabsLeft says "Close tabs to the left"
+// in the language of msgs.
+func (msgs Messages) CloseTabsLeft() string {
+	return Catalog.Format(msgs.locale, "closeTabsLeft", nil)
+}
+
+// CloseDisconnectedTabs says "Close disconnected tabs"
+// in the language the app shows.
+func CloseDisconnectedTabs() string { return In(i18n.Locale()).CloseDisconnectedTabs() }
+
+// CloseDisconnectedTabs says "Close disconnected tabs"
+// in the language of msgs.
+func (msgs Messages) CloseDisconnectedTabs() string {
+	return Catalog.Format(msgs.locale, "closeDisconnectedTabs", nil)
+}
+
+// CloseAllTabs says "Close all tabs"
+// in the language the app shows.
+func CloseAllTabs() string { return In(i18n.Locale()).CloseAllTabs() }
+
+// CloseAllTabs says "Close all tabs"
+// in the language of msgs.
+func (msgs Messages) CloseAllTabs() string {
+	return Catalog.Format(msgs.locale, "closeAllTabs", nil)
+}
+
+// CloseTabsTitle says "{count, plural, one {Close # tab?} other {Close # tabs?}}"
+// in the language the app shows.
+func CloseTabsTitle(count int) string { return In(i18n.Locale()).CloseTabsTitle(count) }
+
+// CloseTabsTitle says "{count, plural, one {Close # tab?} other {Close # tabs?}}"
+// in the language of msgs.
+func (msgs Messages) CloseTabsTitle(count int) string {
+	return Catalog.Format(msgs.locale, "closeTabsTitle", map[string]any{"count": count})
+}
+
+// CloseTabsBody says "{count, plural, one {# of them is still connected. Closing ends its connection and closes its desktop and panel; runn…"
+// in the language the app shows.
+func CloseTabsBody(count int) string { return In(i18n.Locale()).CloseTabsBody(count) }
+
+// CloseTabsBody says "{count, plural, one {# of them is still connected. Closing ends its connection and closes its desktop and panel; runn…"
+// in the language of msgs.
+func (msgs Messages) CloseTabsBody(count int) string {
+	return Catalog.Format(msgs.locale, "closeTabsBody", map[string]any{"count": count})
+}
+
 // DesktopAIPrompts says "Common tasks"
 // in the language the app shows.
 func DesktopAIPrompts() string { return In(i18n.Locale()).DesktopAIPrompts() }

@@ -68,8 +68,46 @@ func (a *App) requestCloseSession(s *Session) {
 	a.closeSession(s)
 }
 
-// closeAskView asks before closing a connected server.
+// requestCloseSessions closes the servers list, asking once first when
+// any of them is still connected or connecting.
+func (a *App) requestCloseSessions(list []*Session) {
+	if len(list) == 1 {
+		a.requestCloseSession(list[0])
+		return
+	}
+	if liveSessions(list) > 0 {
+		a.closeAskMany = list
+		return
+	}
+	for _, s := range list {
+		a.closeSession(s)
+	}
+}
+
+// liveSessions is how many of list are connected or connecting.
+func liveSessions(list []*Session) int {
+	n := 0
+	for _, s := range list {
+		if s.status == statusConnected || s.status == statusConnecting {
+			n++
+		}
+	}
+	return n
+}
+
+// closeAskView asks before closing a connected server, or tabs some of
+// which are.
 func (a *App) closeAskView(c *ui.Context) {
+	a.closeAskMany = slices.DeleteFunc(a.closeAskMany, func(s *Session) bool { return !slices.Contains(a.sessions, s) })
+	if len(a.closeAskMany) > 0 {
+		list := a.closeAskMany
+		a.closeQuestion(c, locales.CloseTabsTitle(len(list)), locales.CloseTabsBody(liveSessions(list)), func() {
+			for _, s := range list {
+				a.closeSession(s)
+			}
+		}, func() { a.closeAskMany = nil })
+		return
+	}
 	s := a.closeAsk
 	if s == nil {
 		return
@@ -78,24 +116,31 @@ func (a *App) closeAskView(c *ui.Context) {
 		a.closeAsk = nil
 		return
 	}
+	a.closeQuestion(c, locales.CloseSessionTitle(s.label()), locales.CloseSessionBody(), func() { a.closeSession(s) },
+		func() { a.closeAsk = nil })
+}
+
+// closeQuestion is the dialog asking title, with body under it: closing
+// calls yes, and done once it is answered either way.
+func (a *App) closeQuestion(c *ui.Context, title, body string, yes, done func()) {
 	open := true
 	ui.Modal(c, &open, func() {
 		ui.Column(c).Width(420).MaxWidthPercent(90).Gap(10).Children(func() {
-			ui.Text(c, locales.CloseSessionTitle(s.label())).FontSize(16).Bold().MaxWidthPercent(100)
-			widgets.Muted(c, locales.CloseSessionBody()).MaxWidthPercent(100)
+			ui.Text(c, title).FontSize(16).Bold().MaxWidthPercent(100)
+			widgets.Muted(c, body).MaxWidthPercent(100)
 			ui.Row(c).Gap(7).Justify(ui.End).Children(func() {
 				if ui.Button(c, locales.Cancel()).Clicked() {
 					open = false
 				}
 				if ui.PrimaryButton(c, locales.CloseSessionConfirm()).Clicked() {
-					a.closeSession(s)
+					yes()
 					open = false
 				}
 			})
 		})
 	})
 	if !open {
-		a.closeAsk = nil
+		done()
 	}
 }
 
@@ -137,7 +182,7 @@ func (a *App) sessionTabs(c *ui.Context) {
 		a.tabsScroll.X = 0 // nothing to scroll to
 	}
 	overflow := !fits || a.tabsScroll.MaxX > 0.5
-	var closing *Session
+	var closing []*Session
 	ui.Row(c).FillWidth().Shrink(0).Height(sessionTabsH).AlignItems(ui.End).PaddingX(4).Gap(4).
 		Background(colors.sidebar).BorderWidth(0, 0, 1, 0).BorderColor(colors.frame).Children(func() {
 		icon, label := "chevrons-left", locales.HideSidebar()
@@ -160,9 +205,9 @@ func (a *App) sessionTabs(c *ui.Context) {
 		strip.Children(func() {
 			ui.Row(c).Height(33).AlignItems(ui.End).Gap(sessionTabGap).Children(func() {
 				for _, s := range roots {
-					tab, closed := a.sessionTab(c.Key(s.ID), s, s == shown, width)
-					if closed {
-						closing = s
+					tab, closed := a.sessionTab(c.Key(s.ID), s, s == shown, width, roots)
+					if closed != nil {
+						closing = closed
 					}
 					// The chosen server's tab scrolls into view as it is chosen.
 					if s == shown && a.tabsShown != s {
@@ -189,7 +234,7 @@ func (a *App) sessionTabs(c *ui.Context) {
 		})
 	})
 	if closing != nil {
-		a.requestCloseSession(closing)
+		a.requestCloseSessions(closing)
 	}
 }
 
@@ -218,9 +263,10 @@ func shortcutHint(key string) string {
 	return " (" + key + ")"
 }
 
-// sessionTab is the tab of the server s, width wide. It reports whether
-// the user closed it.
-func (a *App) sessionTab(c *ui.Context, s *Session, active bool, width float32) (tab ui.Element, closed bool) {
+// sessionTab is the tab of the server s, width wide, among the tabs of
+// roots. It returns the tabs the user closed from it: its own, or those
+// its menu closes.
+func (a *App) sessionTab(c *ui.Context, s *Session, active bool, width float32, roots []*Session) (tab ui.Element, closing []*Session) {
 	tab = ui.Row(c).Width(width).Shrink(0).Gap(6).PaddingX(10).AlignItems(ui.Center).
 		Cursor(ui.CursorPointer).Role(ui.RoleTab).Label(s.label()).Tooltip(listLabel(s)).Radius(6)
 	hovered := tab.Hovered()
@@ -244,42 +290,121 @@ func (a *App) sessionTab(c *ui.Context, s *Session, active bool, width float32) 
 	if tab.Clicked() {
 		a.selectServer(s)
 	}
-	tab.ContextMenu(func(m *ui.Menu) {
-		if !s.isNewTab() {
-			if m.Item(locales.Reconnect()).Chosen() {
-				a.reconnect(s)
-			}
-			if m.Item(locales.Disconnect()).Disabled(s.status != statusConnected && s.status != statusConnecting).Chosen() {
-				a.transfers.cancelSession(s)
-				s.disconnect()
-				s.status, s.err = statusClosed, nil
-				a.syncAlertSessions()
-			}
-			m.Separator()
-		}
-		if m.Item(locales.Close()).Danger().Chosen() {
-			closed = true
-		}
-	})
+	tab.ContextMenu(func(m *ui.Menu) { closing = a.sessionTabMenu(c, m, s, roots) })
 	tab.Children(func() {
 		if s.isNewTab() {
 			ui.Icon(c, icons.Get("app-window")).FontSize(13).TextColor(theme.TextMuted).Shrink(0)
 		} else {
 			sessionMark(c, s, false)
 		}
-		name := ui.Text(c, s.label()).FontSize(13).SingleLine().MinWidth(0).Grow(1).Shrink(1)
-		if active {
-			name.FontWeight(600)
+		if a.renaming(s) && a.rename.inTab {
+			ui.Row(c).Grow(1).Shrink(1).MinWidth(0).Children(func() { a.renameField(c, active) })
 		} else {
-			name.TextColor(theme.Text.Alpha(0.82))
+			name := ui.Text(c, s.label()).FontSize(13).SingleLine().MinWidth(0).Grow(1).Shrink(1)
+			if active {
+				name.FontWeight(600)
+			} else {
+				name.TextColor(theme.Text.Alpha(0.82))
+			}
 		}
 		close := widgets.IconButton(c, "x", locales.CloseSession()).Size(18, 18)
 		if !hovered && !active {
 			close.Invisible()
 		}
 		if close.Clicked() {
-			closed = true
+			closing = []*Session{s}
 		}
 	})
-	return tab, closed
+	return tab, closing
+}
+
+// sessionTabMenu is the context menu of s's tab, roots the servers the
+// tabs show: what the session list's menu has for s, then closing it or
+// the tabs around it, as a browser's or an editor's tabs. It returns the
+// tabs to close.
+func (a *App) sessionTabMenu(c *ui.Context, m *ui.Menu, s *Session, roots []*Session) (closing []*Session) {
+	if !s.isNewTab() {
+		a.sessionMenuItems(c, m, s)
+		if !s.isDeviceSession() && canSplit(s) {
+			m.Separator()
+			if m.Item(locales.SplitRight()).Chosen() {
+				a.splitPane(s, splitRight)
+			}
+			if m.Item(locales.SplitDown()).Chosen() {
+				a.splitPane(s, splitDown)
+			}
+		}
+		if canRename(s) {
+			m.Separator()
+			if m.Item(locales.Rename()).Chosen() {
+				a.startRename(s)
+				a.rename.inTab = true
+			}
+			if s.name != "" && m.Item(locales.ResetName()).Chosen() {
+				a.endRename(false)
+				s.name = ""
+			}
+		}
+	}
+	m.Separator()
+	if m.Item(locales.Close()).Chosen() {
+		closing = []*Session{s}
+	}
+	i := slices.Index(roots, s)
+	others := slices.DeleteFunc(slices.Clone(roots), func(o *Session) bool { return o == s })
+	var gone []*Session
+	for _, o := range roots {
+		if !o.isNewTab() && o.status != statusConnected && o.status != statusConnecting {
+			gone = append(gone, o)
+		}
+	}
+	for _, item := range []struct {
+		label string
+		tabs  []*Session
+	}{
+		{locales.CloseOtherTabs(), others},
+		{locales.CloseTabsRight(), roots[i+1:]},
+		{locales.CloseTabsLeft(), roots[:i]},
+		{locales.CloseDisconnectedTabs(), gone},
+	} {
+		if m.Item(item.label).Disabled(len(item.tabs) == 0).Chosen() {
+			closing = item.tabs
+		}
+	}
+	m.Separator()
+	if m.Item(locales.CloseAllTabs()).Danger().Chosen() {
+		closing = roots
+	}
+	return closing
+}
+
+// sessionMenuItems are the items of a server's menu in the session list
+// and on its tab: connecting again, another session to the host,
+// disconnecting, its connection info and its desktop.
+func (a *App) sessionMenuItems(c *ui.Context, m *ui.Menu, s *Session) {
+	if m.Item(locales.Reconnect()).Chosen() {
+		a.reconnect(s)
+	}
+	if m.Item(locales.DuplicateSession()).Chosen() {
+		// In a tab of its own, though a new tab is selected.
+		if s.isLocal() {
+			a.openLocal(nil)
+		} else {
+			a.openSessionIn(nil, s.Host)
+		}
+	}
+	if m.Item(locales.Disconnect()).Disabled(s.status != statusConnected && s.status != statusConnecting).Chosen() {
+		a.transfers.cancelSession(s)
+		s.disconnect()
+		s.status, s.err = statusClosed, nil
+		a.syncAlertSessions()
+	}
+	if !s.isLocal() {
+		m.Separator()
+		a.connInfoMenuItems(c, m, &a.connTree, s.Host, func(fn func()) { fn() })
+	}
+	if canOpenDesktop(s) {
+		m.Separator()
+		a.desktopMenuItem(m, s)
+	}
 }

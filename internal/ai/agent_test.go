@@ -186,6 +186,22 @@ data: {"choices":[{"index":0,"delta":{"tool_calls":[{"id":"call_2","type":"funct
 
 data: {"choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}]}
 `,
+		// Text between the pieces of the calls, and in the same event as
+		// one, as some relays send it: none of it is lost.
+		"interleaved": `data: {"choices":[{"index":0,"delta":{"content":"Let"}}]}
+
+data: {"choices":[{"index":0,"delta":{"content":" me","tool_calls":[{"index":0,"id":"call_1","type":"function","function":{"name":"run_command","arguments":"{\"command\":"}}]}}]}
+
+data: {"choices":[{"index":0,"delta":{"content":" check."}}]}
+
+data: {"choices":[{"index":0,"delta":{"tool_calls":[{"index":0,"function":{"arguments":"\"df -h\"}"}}]}}]}
+
+data: {"choices":[{"index":0,"delta":{"tool_calls":[{"index":1,"id":"call_2","type":"function","function":{"name":"run_command","arguments":"{\"command\":\"uptime\"}"}}]}}]}
+
+data: {"choices":[{"index":0,"delta":{},"finish_reason":"tool_calls"}]}
+
+data: [DONE]
+`,
 	} {
 		var text strings.Builder
 		var calls []ToolCall

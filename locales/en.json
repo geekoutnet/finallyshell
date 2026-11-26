@@ -3297,6 +3297,8 @@
   "desktopAIRunConfirm": "Run command",
   "desktopAITargetChanged": "The target terminal changed or disconnected. Nothing was sent.",
   "desktopAIRunLogged": "Submitted an AI-suggested command to the terminal after confirmation",
+  "tabMode": "Showing: {mode}",
+  "tabModeTerminal": "Terminal",
   "siteSettingsTab": "Nginx settings",
   "siteServiceTitle": "Service",
   "siteStart": "Start",

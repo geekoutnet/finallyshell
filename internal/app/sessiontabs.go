@@ -268,7 +268,13 @@ func shortcutHint(key string) string {
 // its menu closes.
 func (a *App) sessionTab(c *ui.Context, s *Session, active bool, width float32, roots []*Session) (tab ui.Element, closing []*Session) {
 	tab = ui.Row(c).Width(width).Shrink(0).Gap(6).PaddingX(10).AlignItems(ui.Center).
-		Cursor(ui.CursorPointer).Role(ui.RoleTab).Label(s.label()).Tooltip(listLabel(s)).Radius(6)
+		Cursor(ui.CursorPointer).Role(ui.RoleTab).Label(s.label()).Radius(6)
+	row := a.tabRow(s)
+	if s.isNewTab() {
+		tab.Tooltip(listLabel(s))
+	} else {
+		tab.Tooltip(listLabel(s) + "\n" + locales.TabMode(tabModeName(row)))
+	}
 	hovered := tab.Hovered()
 	switch {
 	case active:
@@ -295,7 +301,7 @@ func (a *App) sessionTab(c *ui.Context, s *Session, active bool, width float32, 
 		if s.isNewTab() {
 			ui.Icon(c, icons.Get("app-window")).FontSize(13).TextColor(theme.TextMuted).Shrink(0)
 		} else {
-			sessionMark(c, s, false)
+			tabModeMark(c, s, row, active)
 		}
 		if a.renaming(s) && a.rename.inTab {
 			ui.Row(c).Grow(1).Shrink(1).MinWidth(0).Children(func() { a.renameField(c, active) })
@@ -408,4 +414,54 @@ func (a *App) sessionMenuItems(c *ui.Context, m *ui.Menu, s *Session) {
 		m.Separator()
 		a.connInfoMenuItems(c, m, &a.connTree, s.Host, func(fn func()) { fn() })
 	}
+}
+
+// tabModeMark marks a server's tab with what it shows, in the room of the
+// status dot it takes the place of, a few DIPs wider: an icon for the
+// terminal, the desktop or the panel row the tab is on (row), with the
+// connection's status as a dot on its lower corner, ringed in the tab's
+// color.
+func tabModeMark(c *ui.Context, s, row *Session, active bool) {
+	icon := tabModeIcon(s, row)
+	color := theme.Text.Alpha(0.62)
+	if active {
+		color = theme.Text.Alpha(0.85)
+	}
+	ring := colors.sidebar
+	if active {
+		ring = theme.Background
+	}
+	status := s.statusColor(theme)
+	ui.Box(c).Size(15, 14).Shrink(0).Children(func() {
+		ui.Icon(c, icons.Get(icon)).FontSize(12).TextColor(color)
+	}).DrawOver(func(p *ui.Painter, r ui.Rect) {
+		const d, w = 7, 1.5
+		x, y := r.X+r.W-d+1, r.Y+r.H-d+1
+		p.Fill(ui.Rect{X: x - w, Y: y - w, W: d + 2*w, H: d + 2*w}, ring, d/2+w)
+		p.Fill(ui.Rect{X: x, Y: y, W: d, H: d}, status, d/2)
+	})
+}
+
+// tabModeIcon is the icon of what the tab of s shows, row.
+func tabModeIcon(s, row *Session) string {
+	switch {
+	case row.isDesktopRow():
+		return desktopRowIcon
+	case row.isPanelTab() && row.panelTab >= 0 && row.panelTab < len(panelTabIcons):
+		return panelTabIcons[row.panelTab]
+	case s.isLocal():
+		return "laptop"
+	}
+	return "terminal"
+}
+
+// tabModeName names what a tab shows, row, for its tooltip.
+func tabModeName(row *Session) string {
+	switch {
+	case row.isDesktopRow():
+		return locales.DesktopTab()
+	case row.isPanelTab():
+		return panelTabName(row)
+	}
+	return locales.TabModeTerminal()
 }

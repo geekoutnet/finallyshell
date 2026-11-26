@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"maps"
 	"slices"
+	"strings"
 	"time"
 )
 
@@ -24,6 +25,11 @@ type Payload struct {
 
 	Folders []json.RawMessage `json:"folders"`
 	Hosts   []json.RawMessage `json:"hosts"`
+	// Proxies are the proxy library, by ID. A build with the library
+	// always writes the key, [] for none (NewProxies); a build without it
+	// writes none, which reads as nil: its payload says nothing of the
+	// library, so merging it changes none (Merge).
+	Proxies []json.RawMessage `json:"proxies"`
 	Quick   *QuickCommands    `json:"quickCommands,omitempty"`
 	Note    string            `json:"note,omitempty"`
 	// Settings are the settings that are synced, by their key in
@@ -44,6 +50,7 @@ func (p *Payload) Clone() *Payload {
 	c := *p
 	c.Folders = slices.Clone(p.Folders)
 	c.Hosts = slices.Clone(p.Hosts)
+	c.Proxies = slices.Clone(p.Proxies)
 	if p.Quick != nil {
 		c.Quick = &QuickCommands{Groups: slices.Clone(p.Quick.Groups), Commands: slices.Clone(p.Quick.Commands)}
 	}
@@ -56,8 +63,34 @@ func (p *Payload) Clone() *Payload {
 // secrets. The order of folders and hosts, the device and the time do not
 // count.
 func Equal(a, b *Payload) bool {
-	return sameItems(a.Folders, b.Folders) && sameItems(a.Hosts, b.Hosts) && equalQuick(a.Quick, b.Quick) &&
+	return sameItems(a.Folders, b.Folders) && sameItems(a.Hosts, b.Hosts) && sameItems(a.Proxies, b.Proxies) && equalQuick(a.Quick, b.Quick) &&
 		maps.EqualFunc(a.Settings, b.Settings, sameJSON) && maps.Equal(a.Secrets, b.Secrets)
+}
+
+// NewProxies is the proxy library of a build that has one, and none in
+// it: the key is written, unlike a build without the library's.
+func NewProxies() []json.RawMessage { return []json.RawMessage{} }
+
+// ProxySecretPrefix starts the keys of the library's proxies' passwords
+// among the secrets: "proxy/<id>/password".
+const ProxySecretPrefix = "proxy/"
+
+// withProxySecrets is secrets with the library's passwords base has, as
+// a side that knows no library leaves them, where secrets has none: a
+// payload without secrets stays without.
+func withProxySecrets(secrets, base map[string]string) map[string]string {
+	if secrets == nil {
+		return nil
+	}
+	out := maps.Clone(secrets)
+	for k, v := range base {
+		if strings.HasPrefix(k, ProxySecretPrefix) {
+			if _, ok := out[k]; !ok {
+				out[k] = v
+			}
+		}
+	}
+	return out
 }
 
 func equalQuick(first, second *QuickCommands) bool {
@@ -89,11 +122,26 @@ func Merge(base, local, remote *Payload) (merged *Payload, conflicts int) {
 	conflicts += n
 	m.Hosts, n = mergeItems(base.Hosts, local.Hosts, remote.Hosts)
 	conflicts += n
+	// A side a build without the proxy library wrote left it as it was,
+	// with its passwords: it neither adds nor deletes a proxy.
+	localProxies, remoteProxies := local.Proxies, remote.Proxies
+	localSecrets, remoteSecrets := local.Secrets, remote.Secrets
+	if localProxies == nil {
+		localProxies, localSecrets = base.Proxies, withProxySecrets(local.Secrets, base.Secrets)
+	}
+	if remoteProxies == nil {
+		remoteProxies, remoteSecrets = base.Proxies, withProxySecrets(remote.Secrets, base.Secrets)
+	}
+	m.Proxies, n = mergeItems(base.Proxies, localProxies, remoteProxies)
+	conflicts += n
+	if m.Proxies == nil {
+		m.Proxies = NewProxies()
+	}
 	m.Quick, n = mergeQuick(base.Quick, local.Quick, remote.Quick)
 	conflicts += n
 	m.Settings, n = mergeMap(base.Settings, local.Settings, remote.Settings, sameJSON)
 	conflicts += n
-	m.Secrets, n = mergeMap(base.Secrets, local.Secrets, remote.Secrets, func(a, b string) bool { return a == b })
+	m.Secrets, n = mergeMap(base.Secrets, localSecrets, remoteSecrets, func(a, b string) bool { return a == b })
 	conflicts += n
 	if len(m.Secrets) == 0 {
 		m.Secrets = nil

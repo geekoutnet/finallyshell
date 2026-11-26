@@ -160,7 +160,7 @@ disconnected tabs and Close all tabs. "+", tinted at the row's end, opens
 a new tab. A server's tab starts with an icon of what it shows, in about
 the room of a status dot: `>_` for its terminal, a monitor for its desktop,
 or the icon of a panel row's page, with the connection's status as a dot
-on the icon's lower corner; its tooltip names it too. The tabs share the row's width, down to 120 DIPs each; more
+on the icon's upper corner, as a badge; its tooltip names it too. The tabs share the row's width, down to 120 DIPs each; more
 scroll sideways with the wheel, without a scrollbar, and a menu at the
 row's end lists them all, scrolling the one chosen into view. Each session
 keeps the tab of the bottom panel it shows: switching servers does not

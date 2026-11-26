@@ -60,7 +60,7 @@ Nothing yet.
 
 ## Next
 
-Nothing yet. Every feature the roadmap listed is built; add new ideas to Candidates.
+- AI assistant: long commands go on in the background on the server instead of stopping at their limit (BT Panel's agent does it): the command runs detached with its output and exit code in `/tmp/finallyshell-ai/`, kept 24 hours; `command_status` and `stop_command` tools; the model is told when it ends; the full output stays readable on the server.
 
 ## Candidates
 

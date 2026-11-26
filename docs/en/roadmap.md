@@ -52,6 +52,7 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 | v2.0.27 | Nginx settings on the Websites page, as a hosting panel has them: start, stop, restart, reload and test; the main nginx.conf and the error and access logs; performance settings (workers, connections, keep-alive, upload size, buffers, gzip, server tokens) saved with a backup, tested and reloaded; the app checks for updates at every launch; a server's tab shows whether it is on its terminal, its desktop or a panel page, with its status as a badge on the icon's upper corner |
 | v2.0.28 | A session tab's status dot moves to its icon's upper corner, as a badge, covering none of the icon |
 | v2.0.29 | The AI assistant answers in several conversations at once, the history open and old conversations deleting meanwhile; commands get the time limit the model gives them (up to 15 minutes, Wait 5 more min up to an hour), and one stopped at its limit is narrowed or run again with a longer one; read-only commands behind nice, ionice or timeout run at once |
+| v2.0.30 | The AI assistant gets a profile of the server (system, package manager, init, firewall, services, ports) read once per connection, so its commands fit the server; the context is budgeted (32K to 200K tokens) and the earlier conversation summarized automatically past it; commands that may cut the SSH connection wait for RUN typed, and commands matching the user's own rules wait for their approval, even read-only or run automatically; up to 30 rounds of commands per question |
 
 ## In progress
 

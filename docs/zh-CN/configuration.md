@@ -271,7 +271,7 @@ DNS 属性。恢复后仍保留首次备份。这些文件不会复制到本机�
 
 ### AI 助手设置
 
-`ai` 保存 `provider`、`endpoint`、`model`（默认模型）、`models`（对话可以切换的其他模型）、`systemPrompt` 和 `sendContext`。这些偏好可以同步；每个接口的 API 密钥以及对本机 Ollama 免密钥访问的授权仅存系统凭据库。`shortcuts.generateAI` 可覆盖默认的 Ctrl+Shift+I（macOS 为 Cmd+I），也可设为 `none` 禁用。`chats.json` 在本机保留最近 24 个对话，每个最多 160 条消息（问题、回复和命令）。
+`ai` 保存 `provider`、`endpoint`、`model`（默认模型）、`models`（对话可以切换的其他模型）、`systemPrompt`、`sendContext`、`noServerProfile`（为 true 时不随提问发送服务器概况）、`contextTokens`（上下文预算，单位 token，缺省为 64000）和 `denyCommands`（需要手动确认的命令，正则表达式）。这些偏好可以同步；每个接口的 API 密钥以及对本机 Ollama 免密钥访问的授权仅存系统凭据库。`shortcuts.generateAI` 可覆盖默认的 Ctrl+Shift+I（macOS 为 Cmd+I），也可设为 `none` 禁用。`chats.json` 在本机保留最近 24 个对话，每个最多 160 条消息（问题、回复和命令）；超出预算被压缩过的对话还保存 `summary`，被摘要代替的消息标记为 `compacted`；每个对话还保存它发送的服务器概况 `profile`。
 
 ### Caddy 文件
 

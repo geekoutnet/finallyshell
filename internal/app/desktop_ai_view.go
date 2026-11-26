@@ -141,6 +141,7 @@ func (a *App) desktopAITopBar(c *ui.Context, window *desktopWindow, state *deskt
 		})
 		if a.ai.ready {
 			a.desktopAIModelPicker(c, state, settings, busy)
+			a.desktopAIProfileChip(c, window, state)
 		}
 		ui.Spacer(c)
 		if !wide && (a.ai.ready || len(a.desktopAIChats(window.session)) > 0) {
@@ -329,6 +330,13 @@ func (a *App) desktopAIMessageView(c *ui.Context, window *desktopWindow, state *
 	case "command":
 		a.desktopAICommandView(c, state, message)
 		return
+	case "notice":
+		// The earlier part summarized: a quiet line where it ends.
+		ui.Row(c).FillWidth().Justify(ui.Center).Gap(6).AlignItems(ui.Center).Padding(2, 0).Children(func() {
+			ui.Icon(c, icons.Get("archive")).FontSize(12).TextColor(theme.TextMuted)
+			widgets.Muted(c, message.Text).FontSize(11).Tooltip(locales.AiContextCompactedNote())
+		})
+		return
 	case "user":
 		// The user's question, on the right, with copying it and editing it
 		// under it.
@@ -514,8 +522,16 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 		}
 		if card.Status == aiCmdWaiting && state.run != nil {
 			ui.Column(c).Gap(6).Padding(0, 9, 9, 30).FillWidth().MinWidth(0).Children(func() {
+				switch {
+				case card.cut != ai.CutNone:
+					aiStatus(c, locales.AiGuardCutConfirm(), true)
+				case card.denyRule != "":
+					aiStatus(c, locales.AiGuardRuleConfirm(card.denyRule), false)
+				}
 				if card.highRisk {
-					aiStatus(c, locales.DesktopAIHighRisk(), true)
+					if card.cut == ai.CutNone {
+						aiStatus(c, locales.DesktopAIHighRisk(), true)
+					}
 					ui.TextInput(c, &card.confirm).Label(locales.DesktopAITypeRun()).Placeholder(locales.DesktopAITypeRun()).Width(200)
 				}
 				ui.Row(c).Gap(6).Children(func() {

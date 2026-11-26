@@ -27110,6 +27110,118 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// AiGuardRuleConfirm says "Matches your rule {rule}: runs only once you allow it"
+// in the language the app shows.
+func AiGuardRuleConfirm(rule string) string { return In(i18n.Locale()).AiGuardRuleConfirm(rule) }
+
+// AiGuardRuleConfirm says "Matches your rule {rule}: runs only once you allow it"
+// in the language of msgs.
+func (msgs Messages) AiGuardRuleConfirm(rule string) string {
+	return Catalog.Format(msgs.locale, "aiGuardRuleConfirm", map[string]any{"rule": rule})
+}
+
+// AiGuardCutConfirm says "This command may cut the SSH connection. Type RUN to run it if you are sure there is a way back in."
+// in the language the app shows.
+func AiGuardCutConfirm() string { return In(i18n.Locale()).AiGuardCutConfirm() }
+
+// AiGuardCutConfirm says "This command may cut the SSH connection. Type RUN to run it if you are sure there is a way back in."
+// in the language of msgs.
+func (msgs Messages) AiGuardCutConfirm() string {
+	return Catalog.Format(msgs.locale, "aiGuardCutConfirm", nil)
+}
+
+// AiGuardRules says "Commands to confirm"
+// in the language the app shows.
+func AiGuardRules() string { return In(i18n.Locale()).AiGuardRules() }
+
+// AiGuardRules says "Commands to confirm"
+// in the language of msgs.
+func (msgs Messages) AiGuardRules() string {
+	return Catalog.Format(msgs.locale, "aiGuardRules", nil)
+}
+
+// AiGuardRulesHint says "One regular expression per line, e.g. ^rm\\s"
+// in the language the app shows.
+func AiGuardRulesHint() string { return In(i18n.Locale()).AiGuardRulesHint() }
+
+// AiGuardRulesHint says "One regular expression per line, e.g. ^rm\\s"
+// in the language of msgs.
+func (msgs Messages) AiGuardRulesHint() string {
+	return Catalog.Format(msgs.locale, "aiGuardRulesHint", nil)
+}
+
+// AiGuardRulesNote says "A command the assistant calls that matches any of these always waits for you to allow it, even read-only or with ever…"
+// in the language the app shows.
+func AiGuardRulesNote() string { return In(i18n.Locale()).AiGuardRulesNote() }
+
+// AiGuardRulesNote says "A command the assistant calls that matches any of these always waits for you to allow it, even read-only or with ever…"
+// in the language of msgs.
+func (msgs Messages) AiGuardRulesNote() string {
+	return Catalog.Format(msgs.locale, "aiGuardRulesNote", nil)
+}
+
+// AiGuardRulesInvalid says "Not regular expressions, ignored: {lines}"
+// in the language the app shows.
+func AiGuardRulesInvalid(lines string) string { return In(i18n.Locale()).AiGuardRulesInvalid(lines) }
+
+// AiGuardRulesInvalid says "Not regular expressions, ignored: {lines}"
+// in the language of msgs.
+func (msgs Messages) AiGuardRulesInvalid(lines string) string {
+	return Catalog.Format(msgs.locale, "aiGuardRulesInvalid", map[string]any{"lines": lines})
+}
+
+// AiContextTokens says "Context length"
+// in the language the app shows.
+func AiContextTokens() string { return In(i18n.Locale()).AiContextTokens() }
+
+// AiContextTokens says "Context length"
+// in the language of msgs.
+func (msgs Messages) AiContextTokens() string {
+	return Catalog.Format(msgs.locale, "aiContextTokens", nil)
+}
+
+// AiContextTokensNote says "How much of a conversation the model gets; past three quarters of it, the earlier part is summarized."
+// in the language the app shows.
+func AiContextTokensNote() string { return In(i18n.Locale()).AiContextTokensNote() }
+
+// AiContextTokensNote says "How much of a conversation the model gets; past three quarters of it, the earlier part is summarized."
+// in the language of msgs.
+func (msgs Messages) AiContextTokensNote() string {
+	return Catalog.Format(msgs.locale, "aiContextTokensNote", nil)
+}
+
+// AiContextCompacting says "Summarizing the earlier conversation…"
+// in the language the app shows.
+func AiContextCompacting() string { return In(i18n.Locale()).AiContextCompacting() }
+
+// AiContextCompacting says "Summarizing the earlier conversation…"
+// in the language of msgs.
+func (msgs Messages) AiContextCompacting() string {
+	return Catalog.Format(msgs.locale, "aiContextCompacting", nil)
+}
+
+// AiContextCompacted says "Earlier conversation summarized · about {before} → {after} tokens"
+// in the language the app shows.
+func AiContextCompacted(before string, after string) string {
+	return In(i18n.Locale()).AiContextCompacted(before, after)
+}
+
+// AiContextCompacted says "Earlier conversation summarized · about {before} → {after} tokens"
+// in the language of msgs.
+func (msgs Messages) AiContextCompacted(before string, after string) string {
+	return Catalog.Format(msgs.locale, "aiContextCompacted", map[string]any{"before": before, "after": after})
+}
+
+// AiContextCompactedNote says "The model now gets a summary of the messages above instead of the messages themselves"
+// in the language the app shows.
+func AiContextCompactedNote() string { return In(i18n.Locale()).AiContextCompactedNote() }
+
+// AiContextCompactedNote says "The model now gets a summary of the messages above instead of the messages themselves"
+// in the language of msgs.
+func (msgs Messages) AiContextCompactedNote() string {
+	return Catalog.Format(msgs.locale, "aiContextCompactedNote", nil)
+}
+
 // DesktopAICmdRunningFor says "Running · {elapsed} of {limit}"
 // in the language the app shows.
 func DesktopAICmdRunningFor(elapsed string, limit string) string {
@@ -27160,6 +27272,86 @@ func DesktopAIChatWaiting() string { return In(i18n.Locale()).DesktopAIChatWaiti
 // in the language of msgs.
 func (msgs Messages) DesktopAIChatWaiting() string {
 	return Catalog.Format(msgs.locale, "desktopAIChatWaiting", nil)
+}
+
+// AiProfileChip says "Server profile"
+// in the language the app shows.
+func AiProfileChip() string { return In(i18n.Locale()).AiProfileChip() }
+
+// AiProfileChip says "Server profile"
+// in the language of msgs.
+func (msgs Messages) AiProfileChip() string {
+	return Catalog.Format(msgs.locale, "aiProfileChip", nil)
+}
+
+// AiProfileTip says "What the assistant knows about this server. It goes with your questions, so the commands fit the server"
+// in the language the app shows.
+func AiProfileTip() string { return In(i18n.Locale()).AiProfileTip() }
+
+// AiProfileTip says "What the assistant knows about this server. It goes with your questions, so the commands fit the server"
+// in the language of msgs.
+func (msgs Messages) AiProfileTip() string {
+	return Catalog.Format(msgs.locale, "aiProfileTip", nil)
+}
+
+// AiProfileReading says "Reading the server…"
+// in the language the app shows.
+func AiProfileReading() string { return In(i18n.Locale()).AiProfileReading() }
+
+// AiProfileReading says "Reading the server…"
+// in the language of msgs.
+func (msgs Messages) AiProfileReading() string {
+	return Catalog.Format(msgs.locale, "aiProfileReading", nil)
+}
+
+// AiProfileFailed says "Could not read the server profile. Questions go without it."
+// in the language the app shows.
+func AiProfileFailed() string { return In(i18n.Locale()).AiProfileFailed() }
+
+// AiProfileFailed says "Could not read the server profile. Questions go without it."
+// in the language of msgs.
+func (msgs Messages) AiProfileFailed() string {
+	return Catalog.Format(msgs.locale, "aiProfileFailed", nil)
+}
+
+// AiProfileCollected says "Read at {time}"
+// in the language the app shows.
+func AiProfileCollected(time_ string) string { return In(i18n.Locale()).AiProfileCollected(time_) }
+
+// AiProfileCollected says "Read at {time}"
+// in the language of msgs.
+func (msgs Messages) AiProfileCollected(time_ string) string {
+	return Catalog.Format(msgs.locale, "aiProfileCollected", map[string]any{"time": time_})
+}
+
+// AiProfileRefresh says "Refresh"
+// in the language the app shows.
+func AiProfileRefresh() string { return In(i18n.Locale()).AiProfileRefresh() }
+
+// AiProfileRefresh says "Refresh"
+// in the language of msgs.
+func (msgs Messages) AiProfileRefresh() string {
+	return Catalog.Format(msgs.locale, "aiProfileRefresh", nil)
+}
+
+// AiProfileNote says "This conversation sends the profile it started with. Refresh reads the server again and updates it."
+// in the language the app shows.
+func AiProfileNote() string { return In(i18n.Locale()).AiProfileNote() }
+
+// AiProfileNote says "This conversation sends the profile it started with. Refresh reads the server again and updates it."
+// in the language of msgs.
+func (msgs Messages) AiProfileNote() string {
+	return Catalog.Format(msgs.locale, "aiProfileNote", nil)
+}
+
+// AiProfileSetting says "Send the server profile (system, package manager, services…) with questions"
+// in the language the app shows.
+func AiProfileSetting() string { return In(i18n.Locale()).AiProfileSetting() }
+
+// AiProfileSetting says "Send the server profile (system, package manager, services…) with questions"
+// in the language of msgs.
+func (msgs Messages) AiProfileSetting() string {
+	return Catalog.Format(msgs.locale, "aiProfileSetting", nil)
 }
 
 // TabMode says "Showing: {mode}"

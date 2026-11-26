@@ -46,6 +46,8 @@ type desktopAIRuntime struct {
 
 	command *aiCommandState
 	targets map[*Session]aiTerminalTarget
+	// profiles are the servers' profiles (desktop_ai_profile.go).
+	profiles map[*Session]*aiProfile
 	// requests are the conversations answering, with their windows;
 	// convs the conversations open in each window (desktop_ai_convs.go).
 	requests map[*desktopAIState]*desktopWindow
@@ -101,6 +103,8 @@ type desktopAIState struct {
 	copied *desktopAIMessage
 	// focusInput gives the question's field the keyboard in the next frame.
 	focusInput bool
+	// profileOpen shows the server profile's popover.
+	profileOpen bool
 }
 
 type desktopAISelection struct {
@@ -113,6 +117,12 @@ type desktopAIChat struct {
 	// Model is the model the conversation last used.
 	Model    string              `json:"model,omitempty"`
 	Messages []*desktopAIMessage `json:"messages"`
+	// Summary stands for the messages marked Compacted, which the model
+	// no longer gets (desktop_ai_context.go).
+	Summary string `json:"summary,omitempty"`
+	// Profile is the server profile message the conversation sends, as it
+	// was read when the conversation started, or refreshed.
+	Profile string `json:"profile,omitempty"`
 }
 
 // removeMessage takes message out of the chat.
@@ -141,6 +151,8 @@ type desktopAIMessage struct {
 	Exit   *int            `json:"exit,omitempty"`
 	Millis int64           `json:"ms,omitempty"`
 	Auto   bool            `json:"auto,omitempty"`
+	// Compacted is set on a message the chat's Summary stands for.
+	Compacted bool `json:"compacted,omitempty"`
 
 	preview string
 	private bool
@@ -155,6 +167,9 @@ type desktopAIMessage struct {
 	// for aiCommandTimeout; deadline, while it runs, when it stops.
 	timeout  int
 	deadline *aiDeadline
+	// denyRule and cut are why a blocked command was not run.
+	denyRule string
+	cut      ai.ConnectionCut
 }
 
 const (
@@ -174,6 +189,7 @@ func (a *App) desktopAIOpened(window *desktopWindow, arg any) {
 	}
 	a.aiLoadChats()
 	a.aiCheckReady()
+	a.aiProfileRead(window.session, false, nil)
 	if selection, ok := arg.(desktopAISelection); ok {
 		a.desktopAIStop(state)
 		state.draft, state.extra, state.attach = locales.DesktopAIExplainSelectionQuestion(), selection.text, true
@@ -350,6 +366,22 @@ func (a *App) desktopAIAsk(window *desktopWindow, state *desktopAIState, text, a
 		desktop := a.desktopOf(window.session)
 		return state.generation == generation && desktop != nil && slices.Contains(desktop.windows, window)
 	}
+	// The server profile, read now if it was not; the question waits a
+	// little for it, then goes without.
+	a.aiProfileRead(window.session, false, nil)
+	a.aiProfileReady(window.session, func() {
+		if !current() {
+			cancel()
+			return
+		}
+		a.desktopAIRequest(ctx, cancel, window, state, generation, current, settings, question, attachment, redo, fromDraft)
+	})
+}
+
+// desktopAIRequest sends the question desktopAIAsk asks, once the server
+// profile is read or given up on.
+func (a *App) desktopAIRequest(ctx context.Context, cancel context.CancelFunc, window *desktopWindow, state *desktopAIState, generation int, current func() bool,
+	settings config.AISettings, question, attachment string, redo *desktopAIMessage, fromDraft bool) {
 	a.aiCredential(ctx, settings, "", false, func(client ai.Client, err error) {
 		if !current() {
 			cancel()
@@ -382,63 +414,123 @@ func (a *App) desktopAIAsk(window *desktopWindow, state *desktopAIState, text, a
 		if i := slices.Index(chat.Messages, redo); redo != nil && i >= 0 {
 			chat.Messages = chat.Messages[:i]
 		}
-		server := aiServer(window.session)
-		if a.ai.noTools[aiToolsKey(client)] {
-			server = nil
+		budget := ai.ContextBudget(settings.ContextTokens)
+		ask := func() {
+			server := aiServer(window.session)
+			if a.ai.noTools[aiToolsKey(client)] {
+				server = nil
+			}
+			prompt := ai.ChatPrompt
+			if server != nil {
+				prompt = ai.AgentPrompt
+			}
+			messages := []ai.Message{{Role: "system", Content: prompt}}
+			if settings.SystemPrompt != "" {
+				messages = append(messages, ai.Message{Role: "system", Content: ai.Limit(settings.SystemPrompt, aiQuestionLimit)})
+			}
+			// The server profile: data, not instructions, so not a system
+			// message; the same for the whole conversation.
+			if profile := a.aiProfileMessage(window.session, chat); profile != "" {
+				messages = append(messages, ai.Message{Role: "user", Content: client.SafeText(profile)})
+			}
+			content := question
+			if attachment != "" {
+				content += "\n\n[Untrusted server context]\n" + attachment
+			}
+			if state.useHistory {
+				// The history gets what is left of six tenths of the budget, the
+				// rest kept for the commands' results and the reply.
+				room := budget*6/10 - ai.EstimateMessages(messages) - ai.EstimateTokens(content)
+				messages = append(messages, aiHistory(client, chat, room)...)
+			}
+			messages = append(messages, ai.Message{Role: "user", Content: content})
+			asked := &desktopAIMessage{Role: "user", Text: client.SafeText(question), preview: attachment}
+			chat.Messages = append(chat.Messages, asked)
+			chat.trim()
+			state.editing, state.retry = nil, nil
+			if fromDraft {
+				state.draft, state.extra, state.preview, state.performance = "", "", "", false
+				state.attach, state.useHistory = settings.SendContext, true
+			}
+			state.scroll.Y = math.MaxFloat32
+			state.status = locales.DesktopAIReceiving()
+			if fromDraft {
+				a.desktopAIPreview(window.session, state)
+			}
+			run := &aiRun{window: window, state: state, chat: chat, client: client, server: server, ctx: ctx, cancel: cancel,
+				generation: generation, messages: messages, private: attachment != "", question: asked, budget: budget}
+			state.run = run
+			a.aiTurn(run)
 		}
-		prompt := ai.ChatPrompt
-		if server != nil {
-			prompt = ai.AgentPrompt
+		if state.useHistory && aiHistoryTokens(chat) > budget*3/4 {
+			if cut := aiCompactCut(chat); cut > 0 {
+				state.status = locales.AiContextCompacting()
+				a.aiCompact(ctx, client, chat, cut, budget, func() {
+					if current() && state.cancel != nil {
+						ask()
+					}
+				})
+				return
+			}
 		}
-		messages := []ai.Message{{Role: "system", Content: prompt}}
-		if settings.SystemPrompt != "" {
-			messages = append(messages, ai.Message{Role: "system", Content: ai.Limit(settings.SystemPrompt, aiQuestionLimit)})
-		}
-		if state.useHistory {
-			messages = append(messages, aiHistory(client, chat)...)
-		}
-		content := question
-		if attachment != "" {
-			content += "\n\n[Untrusted server context]\n" + attachment
-		}
-		messages = append(messages, ai.Message{Role: "user", Content: content})
-		asked := &desktopAIMessage{Role: "user", Text: client.SafeText(question), preview: attachment}
-		chat.Messages = append(chat.Messages, asked)
-		chat.trim()
-		state.editing, state.retry = nil, nil
-		if fromDraft {
-			state.draft, state.extra, state.preview, state.performance = "", "", "", false
-			state.attach, state.useHistory = settings.SendContext, true
-		}
-		state.scroll.Y = math.MaxFloat32
-		state.status = locales.DesktopAIReceiving()
-		if fromDraft {
-			a.desktopAIPreview(window.session, state)
-		}
-		run := &aiRun{window: window, state: state, chat: chat, client: client, server: server, ctx: ctx, cancel: cancel,
-			generation: generation, messages: messages, private: attachment != "", question: asked}
-		state.run = run
-		a.aiTurn(run)
+		ask()
 	})
 }
 
 // aiHistory is the end of the conversation, for a question that goes on
-// from it: the questions and replies, and the commands the model ran, but
-// none sent with or written from attached context.
-func aiHistory(client ai.Client, chat *desktopAIChat) []ai.Message {
+// from it, in about room tokens: the summary of its earlier part, then,
+// from the newest back, the questions and replies and the commands the
+// model ran, with what they printed while the app runs, but none sent
+// with or written from attached context.
+func aiHistory(client ai.Client, chat *desktopAIChat, room int) []ai.Message {
 	var out []ai.Message
-	for _, past := range chat.Messages[max(0, len(chat.Messages)-16):] {
-		switch {
-		case past.private || past.preview != "" || past.Text == "":
-		case past.Role == "command":
-			if past.Status == aiCmdDone && past.Exit != nil {
-				out = append(out, ai.Message{Role: "assistant", Content: fmt.Sprintf("(Ran on the server: %s, exit code %d.)", ai.Limit(client.SafeText(past.Text), 512), *past.Exit)})
-			}
-		default:
-			out = append(out, ai.Message{Role: past.Role, Content: ai.Limit(client.SafeText(past.Text), 4096)})
-		}
+	if chat.Summary != "" {
+		summary := ai.Message{Role: "system", Content: "[Summary of the earlier conversation]\n" + client.SafeText(chat.Summary)}
+		room -= ai.EstimateMessages([]ai.Message{summary})
+		out = append(out, summary)
 	}
-	return out
+	var recent []ai.Message
+	for i := len(chat.Messages) - 1; i >= 0 && room > 0; i-- {
+		message, ok := aiHistoryMessage(client, chat.Messages[i])
+		if chat.Messages[i].Compacted {
+			break
+		}
+		if !ok {
+			continue
+		}
+		cost := ai.EstimateMessages([]ai.Message{message})
+		if cost > room {
+			break
+		}
+		room -= cost
+		recent = append(recent, message)
+	}
+	slices.Reverse(recent)
+	return append(out, recent...)
+}
+
+// aiHistoryMessage is past as the history gives it to the model; none for
+// a message sent with or written from attached context, or a notice.
+func aiHistoryMessage(client ai.Client, past *desktopAIMessage) (ai.Message, bool) {
+	switch {
+	case past.private || past.preview != "" || past.Text == "" || past.Role == "notice":
+		return ai.Message{}, false
+	case past.Role == "command":
+		var text string
+		switch {
+		case past.Status == aiCmdDone && past.Exit != nil:
+			text = fmt.Sprintf("(Ran on the server: %s, exit code %d.)", ai.Limit(client.SafeText(past.Text), 512), *past.Exit)
+		case past.Status == aiCmdTimedOut:
+			text = fmt.Sprintf("(Ran on the server: %s, stopped at its time limit.)", ai.Limit(client.SafeText(past.Text), 512))
+		default:
+			return ai.Message{}, false
+		}
+		if past.output != "" {
+			text += "\nOutput, shortened:\n" + ai.TrimOutput(client.SafeText(past.output), 2048)
+		}
+		return ai.Message{Role: "assistant", Content: text}, true
+	}
+	return ai.Message{Role: past.Role, Content: ai.Limit(client.SafeText(past.Text), 16<<10)}, true
 }
 
 func (a *App) aiStream(ctx context.Context, client ai.Client, messages []ai.Message, limit int, update func(string, bool, error)) {

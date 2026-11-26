@@ -29,7 +29,7 @@ const (
 	// window get: its start and its end.
 	aiOutputLimit = 16 << 10
 	// aiMaxSteps is how many rounds of commands one question may run.
-	aiMaxSteps = 12
+	aiMaxSteps = 30
 )
 
 // aiCommandTimeout is how long a command may run when the model does not
@@ -122,6 +122,8 @@ type aiRun struct {
 	cards []*desktopAIMessage
 	// question is the user's message the run answers.
 	question *desktopAIMessage
+	// budget is the context's, in tokens.
+	budget int
 }
 
 // current reports whether the run is still the window's, and the window
@@ -211,6 +213,7 @@ func (a *App) aiTurn(run *aiRun) {
 // not high-risk queued to run, the rest waiting for the user.
 func (a *App) aiCommands(run *aiRun, calls []ai.ToolCall) {
 	run.cards = run.cards[:0]
+	deny, _ := aiDenyRules(a.aiSettings().DenyCommands)
 	for _, call := range calls {
 		card := &desktopAIMessage{Role: "command", callID: call.ID}
 		args, err := ai.ParseCommandCall(call)
@@ -223,6 +226,14 @@ func (a *App) aiCommands(run *aiRun, calls []ai.ToolCall) {
 			}
 		case run.client.Key != "" && strings.Contains(args.Command, run.client.Key):
 			card.Status, card.err, card.Text = aiCmdFailed, locales.AiKeyFieldOnly(), run.client.SafeText(args.Command)
+		// Before anything that would run it at once, read-only or the
+		// conversation running everything: a command matching the user's
+		// rules waits for them, and one that may cut the SSH connection
+		// waits for RUN typed.
+		case aiDenied(deny, args.Command) != "":
+			card.Status, card.denyRule, card.highRisk = aiCmdWaiting, aiDenied(deny, args.Command), ai.HighRisk(args.Command)
+		case ai.CutsConnection(args.Command) != ai.CutNone:
+			card.Status, card.cut, card.highRisk = aiCmdWaiting, ai.CutsConnection(args.Command), true
 		case ai.ReadOnly(args.Command):
 			card.Status, card.Auto = aiCmdQueued, true
 		case run.state.autoRun && !ai.HighRisk(args.Command):
@@ -264,6 +275,10 @@ func (a *App) aiNext(run *aiRun) {
 	if run.steps >= aiMaxSteps {
 		a.aiFinish(run, locales.DesktopAITooManySteps(strconv.Itoa(aiMaxSteps)), false)
 		return
+	}
+	// Many rounds of long results: the oldest give way first.
+	if run.budget > 0 {
+		ai.ShrinkToolResults(run.messages, run.budget*85/100)
 	}
 	state.status, state.failed = locales.DesktopAIReceiving(), false
 	a.aiTurn(run)

@@ -22,8 +22,9 @@ const pageAI = "ai"
 type aiOptionsState struct {
 	draft, base   config.AISettings
 	endpoint, key string
-	// others are the other models, one per line.
-	others          string
+	// others are the other models, one per line; deny the rules that
+	// forbid commands.
+	others, deny    string
 	models          []string
 	status          string
 	failed, writing bool
@@ -135,7 +136,8 @@ func (a *App) aiOptionsPage(c *ui.Context) {
 	state := a.ai.options
 	if state == nil {
 		settings := a.aiSettings()
-		state = &aiOptionsState{base: settings, draft: settings, endpoint: settings.Endpoint, others: strings.Join(settings.Models, "\n")}
+		state = &aiOptionsState{base: settings, draft: settings, endpoint: settings.Endpoint, others: strings.Join(settings.Models, "\n"),
+			deny: strings.Join(settings.DenyCommands, "\n")}
 		a.ai.options = state
 	}
 	busy := state.cancel != nil || state.writing
@@ -212,6 +214,27 @@ func (a *App) aiOptionsPage(c *ui.Context) {
 			ui.TextArea(c, &state.draft.SystemPrompt).FillWidth().Height(70).Label(locales.AiSystemPrompt()).Placeholder(locales.AiSystemHint()).Disabled(busy)
 		})
 		ui.Checkbox(c, &state.draft.SendContext, locales.AiSendContext()).Disabled(busy)
+		sendProfile := !state.draft.NoServerProfile
+		if ui.Checkbox(c, &sendProfile, locales.AiProfileSetting()).Disabled(busy).Changed() {
+			state.draft.NoServerProfile = !sendProfile
+		}
+		aiField(c, locales.AiGuardRules(), func() {
+			ui.TextArea(c, &state.deny).FillWidth().Height(64).Font("monospace").Label(locales.AiGuardRules()).Placeholder(locales.AiGuardRulesHint()).Disabled(busy)
+			if _, bad := aiDenyRules(aiDenyLines(state.deny)); len(bad) > 0 {
+				ui.Text(c, locales.AiGuardRulesInvalid(strings.Join(bad, ", "))).TextColor(theme.Danger).FontSize(12).MaxWidthPercent(100)
+			} else {
+				widgets.Muted(c, locales.AiGuardRulesNote()).FontSize(12).MaxWidthPercent(100)
+			}
+		})
+		aiField(c, locales.AiContextTokens(), func() {
+			ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
+				choice := aiContextChoice(state.draft.ContextTokens)
+				if ui.Select(c, &choice, aiContextChoices).Disabled(busy).Label(locales.AiContextTokens()).Changed() {
+					state.draft.ContextTokens = aiContextTokensOf(choice)
+				}
+				widgets.Muted(c, locales.AiContextTokensNote()).FontSize(12).Shrink(1).MinWidth(0)
+			})
+		})
 		ui.Row(c).Gap(6).Wrap().Children(func() {
 			if ui.PrimaryButton(c, locales.AiSave()).Disabled(busy).Clicked() {
 				a.aiSaveOptions(state)
@@ -249,6 +272,7 @@ func (a *App) aiSaveOptions(state *aiOptionsState) {
 	settings.Endpoint = strings.TrimSpace(state.endpoint)
 	settings.Model = strings.TrimSpace(settings.Model)
 	settings.Models = aiModelList(state.others, settings.Model)
+	settings.DenyCommands = aiDenyLines(state.deny)
 	if err := aiValidate(settings, true); err != nil {
 		state.status, state.failed = err.Error(), true
 		return
@@ -301,6 +325,7 @@ func (a *App) aiSaveOptions(state *aiOptionsState) {
 				state.status, state.failed = locales.AiKeyRequired(), true
 			default:
 				state.base, state.draft, state.endpoint, state.others = settings, settings, settings.Endpoint, strings.Join(settings.Models, "\n")
+				state.deny = strings.Join(settings.DenyCommands, "\n")
 				state.status, state.failed = locales.AiSaved(), false
 				a.changeSettings(func() { a.settings.AI = &settings })
 				a.ai.readyFor, a.ai.ready, a.ai.checking, a.ai.keyError = settings, true, false, ""

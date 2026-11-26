@@ -87,6 +87,18 @@ func (a *App) siteServiceMenu(menu *ui.Menu, s *Session, narrow bool) {
 	if page.status.State != "active" {
 		reload = cmp.Or(reload, locales.SiteNotRunning())
 	}
+	start, stop := siteMutationReason(page), siteMutationReason(page)
+	if nginxRunning(page.status) {
+		start = cmp.Or(start, locales.SiteRunning())
+	} else {
+		stop = cmp.Or(stop, locales.SiteNotRunning())
+	}
+	if resourceMenuItem(menu, locales.SiteStart(), start, false) {
+		a.siteServiceAction(s, "start", locales.SiteStart(), "")
+	}
+	if resourceMenuItem(menu, locales.SiteStop(), stop, true) {
+		a.siteServiceAction(s, "stop", locales.SiteStop(), locales.SiteStopWarning())
+	}
 	if !page.status.Unit {
 		restart = cmp.Or(restart, locales.SiteNeedSystemd())
 	}
@@ -172,14 +184,7 @@ func (a *App) siteRowMenu(menu *ui.Menu, s *Session, rows []siteRow) {
 			reason = cmp.Or(reason, locales.SiteNoLogFile())
 		}
 		if resourceMenuItem(menu, log.label, reason, false) {
-			if monitor.ValidLogPath(log.file) {
-				logs := &s.server.logs
-				logs.path, logs.sourceMode, logs.priority, logs.since = log.file, 2, 0, 0
-				a.setSystemLog(s, monitor.JournalSource{File: log.file, Lines: 300})
-				a.openServerPage(s, serverSecLogs)
-			} else {
-				a.siteCommand(s, log.label, log.file, "", monitor.NginxLogsCommand(log.file), nil, false)
-			}
+			a.siteOpenLog(s, log.label, log.file)
 		}
 	}
 }

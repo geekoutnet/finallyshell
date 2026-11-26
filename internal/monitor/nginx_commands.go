@@ -132,6 +132,23 @@ func NginxActionCommand(action string, systemd bool, main string) (string, error
 		if systemd && main == NginxMain {
 			return "set -e\n" + test + "\n" + SystemCommand("systemctl", "restart", "nginx.service"), nil
 		}
+	case "start":
+		// Tested first, as a configuration nginx refuses would not start.
+		if main != NginxMain {
+			break
+		}
+		if systemd {
+			return "set -e\n" + test + "\n" + SystemCommand("systemctl", "start", "nginx.service"), nil
+		}
+		return "set -e\n" + test + "\n" + SystemCommand("nginx"), nil
+	case "stop":
+		if main != NginxMain {
+			break
+		}
+		if systemd {
+			return SystemCommand("systemctl", "stop", "nginx.service"), nil
+		}
+		return SystemCommand("nginx", "-s", "quit"), nil
 	}
 	return "", errNginxInput
 }

@@ -27110,6 +27110,276 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// SiteSettingsTab says "Nginx settings"
+// in the language the app shows.
+func SiteSettingsTab() string { return In(i18n.Locale()).SiteSettingsTab() }
+
+// SiteSettingsTab says "Nginx settings"
+// in the language of msgs.
+func (msgs Messages) SiteSettingsTab() string {
+	return Catalog.Format(msgs.locale, "siteSettingsTab", nil)
+}
+
+// SiteServiceTitle says "Service"
+// in the language the app shows.
+func SiteServiceTitle() string { return In(i18n.Locale()).SiteServiceTitle() }
+
+// SiteServiceTitle says "Service"
+// in the language of msgs.
+func (msgs Messages) SiteServiceTitle() string {
+	return Catalog.Format(msgs.locale, "siteServiceTitle", nil)
+}
+
+// SiteStart says "Start"
+// in the language the app shows.
+func SiteStart() string { return In(i18n.Locale()).SiteStart() }
+
+// SiteStart says "Start"
+// in the language of msgs.
+func (msgs Messages) SiteStart() string {
+	return Catalog.Format(msgs.locale, "siteStart", nil)
+}
+
+// SiteStop says "Stop"
+// in the language the app shows.
+func SiteStop() string { return In(i18n.Locale()).SiteStop() }
+
+// SiteStop says "Stop"
+// in the language of msgs.
+func (msgs Messages) SiteStop() string {
+	return Catalog.Format(msgs.locale, "siteStop", nil)
+}
+
+// SiteStopWarning says "Every site nginx serves stops answering until nginx starts again."
+// in the language the app shows.
+func SiteStopWarning() string { return In(i18n.Locale()).SiteStopWarning() }
+
+// SiteStopWarning says "Every site nginx serves stops answering until nginx starts again."
+// in the language of msgs.
+func (msgs Messages) SiteStopWarning() string {
+	return Catalog.Format(msgs.locale, "siteStopWarning", nil)
+}
+
+// SiteFilesTitle says "Configuration and logs"
+// in the language the app shows.
+func SiteFilesTitle() string { return In(i18n.Locale()).SiteFilesTitle() }
+
+// SiteFilesTitle says "Configuration and logs"
+// in the language of msgs.
+func (msgs Messages) SiteFilesTitle() string {
+	return Catalog.Format(msgs.locale, "siteFilesTitle", nil)
+}
+
+// SiteMainConfig says "Main configuration"
+// in the language the app shows.
+func SiteMainConfig() string { return In(i18n.Locale()).SiteMainConfig() }
+
+// SiteMainConfig says "Main configuration"
+// in the language of msgs.
+func (msgs Messages) SiteMainConfig() string {
+	return Catalog.Format(msgs.locale, "siteMainConfig", nil)
+}
+
+// SiteViewLog says "View"
+// in the language the app shows.
+func SiteViewLog() string { return In(i18n.Locale()).SiteViewLog() }
+
+// SiteViewLog says "View"
+// in the language of msgs.
+func (msgs Messages) SiteViewLog() string {
+	return Catalog.Format(msgs.locale, "siteViewLog", nil)
+}
+
+// SiteTuningTitle says "Performance"
+// in the language the app shows.
+func SiteTuningTitle() string { return In(i18n.Locale()).SiteTuningTitle() }
+
+// SiteTuningTitle says "Performance"
+// in the language of msgs.
+func (msgs Messages) SiteTuningTitle() string {
+	return Catalog.Format(msgs.locale, "siteTuningTitle", nil)
+}
+
+// SiteTuningNote says "Saved to nginx.conf after a backup of it. nginx tests the file and reloads; a file it refuses is restored at once. Se…"
+// in the language the app shows.
+func SiteTuningNote() string { return In(i18n.Locale()).SiteTuningNote() }
+
+// SiteTuningNote says "Saved to nginx.conf after a backup of it. nginx tests the file and reloads; a file it refuses is restored at once. Se…"
+// in the language of msgs.
+func (msgs Messages) SiteTuningNote() string {
+	return Catalog.Format(msgs.locale, "siteTuningNote", nil)
+}
+
+// SiteTuneReading says "Reading nginx.conf…"
+// in the language the app shows.
+func SiteTuneReading() string { return In(i18n.Locale()).SiteTuneReading() }
+
+// SiteTuneReading says "Reading nginx.conf…"
+// in the language of msgs.
+func (msgs Messages) SiteTuneReading() string {
+	return Catalog.Format(msgs.locale, "siteTuneReading", nil)
+}
+
+// SiteTuneUnreadable says "The settings could not be read from nginx.conf; edit it as a file instead."
+// in the language the app shows.
+func SiteTuneUnreadable() string { return In(i18n.Locale()).SiteTuneUnreadable() }
+
+// SiteTuneUnreadable says "The settings could not be read from nginx.conf; edit it as a file instead."
+// in the language of msgs.
+func (msgs Messages) SiteTuneUnreadable() string {
+	return Catalog.Format(msgs.locale, "siteTuneUnreadable", nil)
+}
+
+// SiteTuneDefault says "default {value}"
+// in the language the app shows.
+func SiteTuneDefault(value string) string { return In(i18n.Locale()).SiteTuneDefault(value) }
+
+// SiteTuneDefault says "default {value}"
+// in the language of msgs.
+func (msgs Messages) SiteTuneDefault(value string) string {
+	return Catalog.Format(msgs.locale, "siteTuneDefault", map[string]any{"value": value})
+}
+
+// SiteTuneInvalid says "A value is not one its setting takes."
+// in the language the app shows.
+func SiteTuneInvalid() string { return In(i18n.Locale()).SiteTuneInvalid() }
+
+// SiteTuneInvalid says "A value is not one its setting takes."
+// in the language of msgs.
+func (msgs Messages) SiteTuneInvalid() string {
+	return Catalog.Format(msgs.locale, "siteTuneInvalid", nil)
+}
+
+// SiteTuneReset says "Reset"
+// in the language the app shows.
+func SiteTuneReset() string { return In(i18n.Locale()).SiteTuneReset() }
+
+// SiteTuneReset says "Reset"
+// in the language of msgs.
+func (msgs Messages) SiteTuneReset() string {
+	return Catalog.Format(msgs.locale, "siteTuneReset", nil)
+}
+
+// SiteTuneSaveTitle says "Save the performance settings"
+// in the language the app shows.
+func SiteTuneSaveTitle() string { return In(i18n.Locale()).SiteTuneSaveTitle() }
+
+// SiteTuneSaveTitle says "Save the performance settings"
+// in the language of msgs.
+func (msgs Messages) SiteTuneSaveTitle() string {
+	return Catalog.Format(msgs.locale, "siteTuneSaveTitle", nil)
+}
+
+// SiteTuneWorkerProcesses says "Worker processes; auto is one per CPU core"
+// in the language the app shows.
+func SiteTuneWorkerProcesses() string { return In(i18n.Locale()).SiteTuneWorkerProcesses() }
+
+// SiteTuneWorkerProcesses says "Worker processes; auto is one per CPU core"
+// in the language of msgs.
+func (msgs Messages) SiteTuneWorkerProcesses() string {
+	return Catalog.Format(msgs.locale, "siteTuneWorkerProcesses", nil)
+}
+
+// SiteTuneWorkerConnections says "Most connections each worker opens"
+// in the language the app shows.
+func SiteTuneWorkerConnections() string { return In(i18n.Locale()).SiteTuneWorkerConnections() }
+
+// SiteTuneWorkerConnections says "Most connections each worker opens"
+// in the language of msgs.
+func (msgs Messages) SiteTuneWorkerConnections() string {
+	return Catalog.Format(msgs.locale, "siteTuneWorkerConnections", nil)
+}
+
+// SiteTuneKeepalive says "How long an idle keep-alive connection stays open"
+// in the language the app shows.
+func SiteTuneKeepalive() string { return In(i18n.Locale()).SiteTuneKeepalive() }
+
+// SiteTuneKeepalive says "How long an idle keep-alive connection stays open"
+// in the language of msgs.
+func (msgs Messages) SiteTuneKeepalive() string {
+	return Catalog.Format(msgs.locale, "siteTuneKeepalive", nil)
+}
+
+// SiteTuneBodySize says "Largest request body, as an upload, a client may send"
+// in the language the app shows.
+func SiteTuneBodySize() string { return In(i18n.Locale()).SiteTuneBodySize() }
+
+// SiteTuneBodySize says "Largest request body, as an upload, a client may send"
+// in the language of msgs.
+func (msgs Messages) SiteTuneBodySize() string {
+	return Catalog.Format(msgs.locale, "siteTuneBodySize", nil)
+}
+
+// SiteTuneHeaderBuffer says "Buffer for a client's request header"
+// in the language the app shows.
+func SiteTuneHeaderBuffer() string { return In(i18n.Locale()).SiteTuneHeaderBuffer() }
+
+// SiteTuneHeaderBuffer says "Buffer for a client's request header"
+// in the language of msgs.
+func (msgs Messages) SiteTuneHeaderBuffer() string {
+	return Catalog.Format(msgs.locale, "siteTuneHeaderBuffer", nil)
+}
+
+// SiteTuneBodyBuffer says "Buffer for a request body before it goes to a file"
+// in the language the app shows.
+func SiteTuneBodyBuffer() string { return In(i18n.Locale()).SiteTuneBodyBuffer() }
+
+// SiteTuneBodyBuffer says "Buffer for a request body before it goes to a file"
+// in the language of msgs.
+func (msgs Messages) SiteTuneBodyBuffer() string {
+	return Catalog.Format(msgs.locale, "siteTuneBodyBuffer", nil)
+}
+
+// SiteTuneHashBucket says "Hash bucket size of server names; larger for long domain names"
+// in the language the app shows.
+func SiteTuneHashBucket() string { return In(i18n.Locale()).SiteTuneHashBucket() }
+
+// SiteTuneHashBucket says "Hash bucket size of server names; larger for long domain names"
+// in the language of msgs.
+func (msgs Messages) SiteTuneHashBucket() string {
+	return Catalog.Format(msgs.locale, "siteTuneHashBucket", nil)
+}
+
+// SiteTuneGzip says "Compress responses with gzip"
+// in the language the app shows.
+func SiteTuneGzip() string { return In(i18n.Locale()).SiteTuneGzip() }
+
+// SiteTuneGzip says "Compress responses with gzip"
+// in the language of msgs.
+func (msgs Messages) SiteTuneGzip() string {
+	return Catalog.Format(msgs.locale, "siteTuneGzip", nil)
+}
+
+// SiteTuneGzipMin says "Smallest response gzip compresses"
+// in the language the app shows.
+func SiteTuneGzipMin() string { return In(i18n.Locale()).SiteTuneGzipMin() }
+
+// SiteTuneGzipMin says "Smallest response gzip compresses"
+// in the language of msgs.
+func (msgs Messages) SiteTuneGzipMin() string {
+	return Catalog.Format(msgs.locale, "siteTuneGzipMin", nil)
+}
+
+// SiteTuneGzipLevel says "Compression level 1–9: higher saves traffic and costs CPU"
+// in the language the app shows.
+func SiteTuneGzipLevel() string { return In(i18n.Locale()).SiteTuneGzipLevel() }
+
+// SiteTuneGzipLevel says "Compression level 1–9: higher saves traffic and costs CPU"
+// in the language of msgs.
+func (msgs Messages) SiteTuneGzipLevel() string {
+	return Catalog.Format(msgs.locale, "siteTuneGzipLevel", nil)
+}
+
+// SiteTuneServerTokens says "Show nginx's version in error pages and headers"
+// in the language the app shows.
+func SiteTuneServerTokens() string { return In(i18n.Locale()).SiteTuneServerTokens() }
+
+// SiteTuneServerTokens says "Show nginx's version in error pages and headers"
+// in the language of msgs.
+func (msgs Messages) SiteTuneServerTokens() string {
+	return Catalog.Format(msgs.locale, "siteTuneServerTokens", nil)
+}
+
 // SwitchToDesktopMode says "Switch to desktop mode"
 // in the language the app shows.
 func SwitchToDesktopMode() string { return In(i18n.Locale()).SwitchToDesktopMode() }

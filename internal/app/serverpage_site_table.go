@@ -94,7 +94,7 @@ func (row siteRow) stateText() string {
 func (a *App) sitesHeader(c *ui.Context, s *Session) {
 	page := &s.server.sites
 	ui.Row(c).FillWidth().Padding(4, 8).Gap(8).AlignItems(ui.Center).Children(func() {
-		ui.Segmented(c, &page.tabs, locales.ServerSites(), locales.CertTitle()).Shrink(0).Label(locales.ServerSites())
+		ui.Segmented(c, &page.tabs, locales.ServerSites(), locales.CertTitle(), locales.SiteSettingsTab()).Shrink(0).Label(locales.ServerSites())
 		if page.reading {
 			ui.Spinner(c).Label(locales.SiteReading())
 		}

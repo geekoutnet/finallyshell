@@ -39,6 +39,10 @@ func TestSitesTableAndExpiry(t *testing.T) {
 
 const siteExampleFile = "/etc/nginx/sites-available/front.conf"
 const siteExampleOriginal = "server {\n    listen 80;\n    server_name front.example.org;\n    root /srv/front;\n}\n"
+
+// siteExampleMain is the nginx.conf of siteExampleDump.
+const siteExampleMain = "events {}\nhttp {\n    error_log /var/log/nginx/error.log;\n    access_log /var/log/nginx/access.log;\n    include /etc/nginx/sites-enabled/*;\n    include /etc/nginx/conf.d/*.conf;\n}\n"
+
 const siteExampleDump = `# configuration file /etc/nginx/nginx.conf:
 events {}
 http {
@@ -116,6 +120,8 @@ func (fake *sitesFixture) privilege(_ context.Context, request monitor.Privilege
 		result.Stdout = "== " + fake.cert.File + "\n"
 	case strings.Contains(script, "'head' '-c' '262145' '"+siteExampleFile+"'"):
 		result.Stdout = siteExampleOriginal
+	case strings.Contains(script, "'head' '-c' '262145' '"+monitor.NginxMain+"'"):
+		result.Stdout = siteExampleMain
 	default:
 		var input []byte
 		if request.Stdin != nil {
@@ -486,4 +492,58 @@ func TestSitesScreenshots(t *testing.T) {
 			}
 		})
 	}
+}
+
+// TestSitesNginxSettings stops nginx after asking, and saves performance
+// settings to nginx.conf, tested and reloaded.
+func TestSitesNginxSettings(t *testing.T) {
+	a, platform, tester, s, fake := sitesTestApp(t)
+	page := &s.server.sites
+	if err := tester.Click(locales.SiteSettingsTab()); err != nil {
+		t.Fatalf("no settings tab: %v; %q", err, tester.Texts())
+	}
+	tester.Frame()
+	platform.until(t, "nginx.conf read", func() bool { return page.tuning.loaded && !page.tuning.reading })
+	tester.Frame()
+	if page.tuning.err != "" || page.tuning.values == nil {
+		t.Fatalf("settings: %q", page.tuning.err)
+	}
+	if item, ok := tester.AccessByRole(ui.RoleButton, locales.SiteStart()); !ok || !item.Disabled {
+		t.Fatal("Start is not disabled while nginx runs")
+	}
+	saveShot(t, tester, "nginx-settings.png")
+	// Stop asks first.
+	systemClick(t, tester, locales.SiteStop())
+	systemClick(t, tester, locales.Cancel())
+	sitesNoCall(t, fake)
+	systemClick(t, tester, locales.SiteStop())
+	systemClick(t, tester, locales.SvcConfirm())
+	want, _ := monitor.NginxActionCommand("stop", true, monitor.NginxMain)
+	if call := systemNext(t, platform, fake.calls); call.command != want {
+		t.Fatalf("stop: %q", call.command)
+	}
+	platform.until(t, "stopped", func() bool { return page.dialog.done && !page.reading })
+	tester.Frame()
+	systemClick(t, tester, locales.Close())
+	platform.until(t, "nginx.conf read again", func() bool { return page.tuning.loaded && !page.tuning.reading })
+	tester.Frame()
+	// The settings: a larger upload limit and gzip on, saved.
+	page.tuning.edits["client_max_body_size"] = "100m"
+	page.tuning.edits["gzip"] = "on"
+	tester.Frame()
+	// Below the fold of the window: enabled, and pressed.
+	if item, ok := tester.AccessByRole(ui.RoleButton, locales.Save()); !ok || item.Disabled {
+		t.Fatal("Save is not enabled with changes")
+	}
+	a.saveNginxTuning(s, nginxTuningChanges(&page.tuning))
+	tester.Frame()
+	if !tester.HasText("client_max_body_size: 1m → 100m") {
+		t.Fatalf("the question does not list the changes: %q", tester.Texts())
+	}
+	systemClick(t, tester, locales.SvcConfirm())
+	write, test := systemNext(t, platform, fake.calls), systemNext(t, platform, fake.calls)
+	if !strings.Contains(write.input, "http {\n    client_max_body_size 100m;\n    gzip on;\n    error_log") || !strings.Contains(test.command, "'nginx' '-t'") {
+		t.Fatalf("saved %q, then %q", write.input, test.command)
+	}
+	platform.until(t, "saved", func() bool { return page.dialog.done && !page.reading })
 }

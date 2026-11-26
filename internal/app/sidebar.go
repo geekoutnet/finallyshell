@@ -285,29 +285,8 @@ func (a *App) sessionRow(c *ui.Context, s *Session, active bool, guide sessionGu
 		return closed
 	}
 	row.ContextMenu(func(m *ui.Menu) {
-		if m.Item(locales.Reconnect()).Chosen() {
-			a.reconnect(s)
-		}
-		if m.Item(locales.DuplicateSession()).Chosen() {
-			// In a tab of its own, though a new tab is selected.
-			if s.isLocal() {
-				a.openLocal(nil)
-			} else {
-				a.openSessionIn(nil, s.Host)
-			}
-		}
-		if m.Item(locales.Disconnect()).Disabled(s.status != statusConnected && s.status != statusConnecting).Chosen() {
-			a.transfers.cancelSession(s)
-			s.disconnect()
-			s.status, s.err = statusClosed, nil
-			a.syncAlertSessions()
-		}
-		if !s.isLocal() {
-			m.Separator()
-			a.connInfoMenuItems(c, m, &a.connTree, s.Host, func(fn func()) { fn() })
-		}
+		a.sessionMenuItems(c, m, s)
 		m.Separator()
-		a.desktopMenuItem(m, s)
 		a.paneMenu(m, s)
 		m.Separator()
 		a.renameMenu(m, s)
@@ -319,7 +298,7 @@ func (a *App) sessionRow(c *ui.Context, s *Session, active bool, guide sessionGu
 	// RowDoubleClicked, not DoubleClicked: that makes this row clickable,
 	// and the press goes to the innermost clickable element, so the
 	// list's row, which chooses the session, would never see a click.
-	renaming := a.renaming(s)
+	renaming := a.renaming(s) && !a.rename.inTab
 	if row.RowDoubleClicked() && !renaming && s.status != statusConnected && s.status != statusConnecting {
 		a.reconnect(s)
 	}

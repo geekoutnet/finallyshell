@@ -52,6 +52,9 @@ type DesktopSettings struct {
 	// CoverDock lets maximized windows cover the dock (full-screen mode)
 	// instead of leaving it visible.
 	CoverDock bool `json:"coverDock,omitempty"`
+	// HideServerInfo folds the server's details on the right of the
+	// desktop to the server's name.
+	HideServerInfo bool `json:"hideServerInfo,omitempty"`
 	// IconSize is the desktop icons' size: "" for medium, "small" or
 	// "large".
 	IconSize string `json:"iconSize,omitempty"`

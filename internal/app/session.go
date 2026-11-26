@@ -83,6 +83,9 @@ type Session struct {
 	// other row.
 	panelOf  *Session
 	panelTab int
+	// lastRow is, on a server's row, the row of its group the user was on
+	// last, which its session tab goes back to (sessiontabs.go).
+	lastRow *Session
 
 	// desktop is a desktop row's state (desktop.go), nil on other rows.
 	desktop *desktopState

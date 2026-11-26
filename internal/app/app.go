@@ -183,6 +183,11 @@ type App struct {
 
 	// bottomHidden collapses the bottom panel to its tabs (panelhide.go).
 	bottomHidden bool
+	// sidebarHidden folds the left column away (sessiontabs.go).
+	sidebarHidden bool
+	// closeAsk is the connected server the user is closing, while the
+	// app asks first (sessiontabs.go).
+	closeAsk *Session
 	// panelTabsScroll is how far the bottom panel's tabs are scrolled
 	// sideways, where they do not fit.
 	panelTabsScroll ui.ScrollState
@@ -388,9 +393,13 @@ func (a *App) View(c *ui.Context) {
 		a.dialogs(c)
 		return
 	}
-	a.gripSplit(c, &a.sideWidth, defaultSideWidth, sidebarLimits, func() ui.Element {
-		return ui.Split(c, &a.sideWidth, func() { a.sidebar(c) }, func() { a.mainArea(c) })
-	})
+	if a.sidebarHidden {
+		a.mainColumn(c)
+	} else {
+		a.gripSplit(c, &a.sideWidth, defaultSideWidth, sidebarLimits, func() ui.Element {
+			return ui.Split(c, &a.sideWidth, func() { a.sidebar(c) }, func() { a.mainColumn(c) })
+		})
+	}
 	a.dialogs(c)
 }
 

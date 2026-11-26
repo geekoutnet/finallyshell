@@ -97,6 +97,7 @@ func (a *App) desktopArea(c *ui.Context, row *Session) {
 	a.desktopWallpaper(root, prefs.Wallpaper, 0)
 	root.Children(func() {
 		a.desktopIcons(c, d, s)
+		a.desktopServerInfo(c, d, s)
 		for _, w := range a.desktopWindowsByZ(d) {
 			a.desktopWindowFrame(c, d, w)
 		}

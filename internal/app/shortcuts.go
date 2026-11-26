@@ -50,6 +50,7 @@ const (
 	scFocusBar
 	scLeftPanel
 	scBottomPanel
+	scSidebar
 	scSplitRight
 	scSplitDown
 	scZoomPane
@@ -178,6 +179,12 @@ var shortcutActions = []shortcutAction{
 		id: scBottomPanel, title: locales.ScToggleBottomPanel,
 		field: func(s *config.Shortcuts) *string { return &s.ToggleBottomPanel },
 		mac:   keyCombo{ui.Super, ui.KeyJ}, other: keyCombo{ui.Ctrl | ui.Shift, ui.KeyJ},
+	},
+	{
+		// B as VS Code's side bar; Ctrl+B alone is tmux's prefix.
+		id: scSidebar, title: locales.ScToggleSidebar,
+		field: func(s *config.Shortcuts) *string { return &s.ToggleSidebar },
+		mac:   keyCombo{ui.Super, ui.KeyB}, other: keyCombo{ui.Ctrl | ui.Shift, ui.KeyB},
 	},
 	// The panes' keys (panes.go): Ghostty's on macOS, Windows Terminal's
 	// elsewhere, whose Alt+Shift+= is Alt+Shift+Plus on a US keyboard.
@@ -560,6 +567,8 @@ func (a *App) shortcuts(c *ui.Context) {
 		a.toggleBarFocus()
 	case pressed(scLeftPanel):
 		a.switchLeftPanel()
+	case pressed(scSidebar) && !a.fullScreen.on:
+		a.toggleSidebar()
 	case pressed(scBottomPanel) && !a.fullScreen.on && !a.current().isPanelTab():
 		// Only where the panel under the terminal shows.
 		a.toggleBottomPanel()

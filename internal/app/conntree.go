@@ -73,10 +73,14 @@ func (a *App) restoreLeftPanel() {
 
 // openFolders are the IDs of the folders open in the page's tree, each
 // after the one it is in.
-func (a *App) openFolders() []string {
+func (a *App) openFolders() []string { return a.openFoldersOf(&a.connTree) }
+
+// openFoldersOf are the IDs of the folders open in m's tree, each after
+// the one it is in.
+func (a *App) openFoldersOf(m *managerState) []string {
 	out := []string{}
 	for _, f := range a.allFolders() {
-		if a.connTree.tree.Open.Has(managerItem{folder: f.ID}) {
+		if m.tree.Open.Has(managerItem{folder: f.ID}) {
 			out = append(out, f.ID)
 		}
 	}

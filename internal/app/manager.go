@@ -68,6 +68,9 @@ type managerState struct {
 	// holding what it found, to open again as it is cleared.
 	beforeSearch []managerItem
 	searching    bool
+	// savedOpen are the IDs of the open folders as last saved
+	// (keepManagerFoldersOpen).
+	savedOpen []string
 
 	prompt   *managerPrompt
 	question *managerQuestion
@@ -118,7 +121,15 @@ func (a *App) showManager(newHost bool) {
 		m.query = ""
 		a.searchChanged(m)
 	}
-	m.tree.Open.Clear() // it opens with every folder closed
+	// It opens with the folders open as the user left them, or with every
+	// folder closed the first time.
+	m.tree.Open.Clear()
+	if ids := a.settings.ManagerTreeExpanded; ids != nil {
+		for _, id := range *ids {
+			m.tree.Open.Add(managerItem{folder: id})
+		}
+	}
+	m.savedOpen = a.openFoldersOf(m)
 	a.openWindow(managerSpec, a.managerView)
 	if newHost && len(a.hosts.Live()) == 0 {
 		a.openEditor(nil, WindowManager)
@@ -325,9 +336,26 @@ func (a *App) managerView(c *ui.Context) {
 	for _, fn := range later {
 		fn()
 	}
+	a.keepManagerFoldersOpen(m)
 	a.managerPromptView(c, m)
 	a.managerQuestionView(c, m)
 	a.connInfoView(c, m)
+}
+
+// keepManagerFoldersOpen saves the folders open in the manager's tree as
+// they change, for the manager to open with them next time; not while
+// searching, which opens the folders holding what it finds.
+func (a *App) keepManagerFoldersOpen(m *managerState) {
+	if m.searching || m.query != "" {
+		return
+	}
+	ids := a.openFoldersOf(m)
+	if slices.Equal(ids, m.savedOpen) {
+		return
+	}
+	m.savedOpen = ids
+	a.settings.ManagerTreeExpanded = &ids
+	a.saveSettings(a.settings)
 }
 
 func (a *App) managerToolbar(c *ui.Context) {

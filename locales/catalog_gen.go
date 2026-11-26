@@ -27110,6 +27110,48 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// DesktopAIDeleteChat says "Delete conversation"
+// in the language the app shows.
+func DesktopAIDeleteChat() string { return In(i18n.Locale()).DesktopAIDeleteChat() }
+
+// DesktopAIDeleteChat says "Delete conversation"
+// in the language of msgs.
+func (msgs Messages) DesktopAIDeleteChat() string {
+	return Catalog.Format(msgs.locale, "desktopAIDeleteChat", nil)
+}
+
+// DesktopAIDeleteChatTitle says "Delete this conversation?"
+// in the language the app shows.
+func DesktopAIDeleteChatTitle() string { return In(i18n.Locale()).DesktopAIDeleteChatTitle() }
+
+// DesktopAIDeleteChatTitle says "Delete this conversation?"
+// in the language of msgs.
+func (msgs Messages) DesktopAIDeleteChatTitle() string {
+	return Catalog.Format(msgs.locale, "desktopAIDeleteChatTitle", nil)
+}
+
+// DesktopAIDeleteChatBody says "“{title}” is removed from this computer for good."
+// in the language the app shows.
+func DesktopAIDeleteChatBody(title string) string {
+	return In(i18n.Locale()).DesktopAIDeleteChatBody(title)
+}
+
+// DesktopAIDeleteChatBody says "“{title}” is removed from this computer for good."
+// in the language of msgs.
+func (msgs Messages) DesktopAIDeleteChatBody(title string) string {
+	return Catalog.Format(msgs.locale, "desktopAIDeleteChatBody", map[string]any{"title": title})
+}
+
+// DesktopAIResizeInput says "Drag to resize; double-click to reset"
+// in the language the app shows.
+func DesktopAIResizeInput() string { return In(i18n.Locale()).DesktopAIResizeInput() }
+
+// DesktopAIResizeInput says "Drag to resize; double-click to reset"
+// in the language of msgs.
+func (msgs Messages) DesktopAIResizeInput() string {
+	return Catalog.Format(msgs.locale, "desktopAIResizeInput", nil)
+}
+
 // DesktopAINoTools says "This model does not take tools, so the assistant answers with advice only and cannot run commands."
 // in the language the app shows.
 func DesktopAINoTools() string { return In(i18n.Locale()).DesktopAINoTools() }

@@ -27110,6 +27110,86 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// UpdateCardTitle says "Version {version} is available"
+// in the language the app shows.
+func UpdateCardTitle(version string) string { return In(i18n.Locale()).UpdateCardTitle(version) }
+
+// UpdateCardTitle says "Version {version} is available"
+// in the language of msgs.
+func (msgs Messages) UpdateCardTitle(version string) string {
+	return Catalog.Format(msgs.locale, "updateCardTitle", map[string]any{"version": version})
+}
+
+// UpdateCardCurrent says "You have {version}"
+// in the language the app shows.
+func UpdateCardCurrent(version string) string { return In(i18n.Locale()).UpdateCardCurrent(version) }
+
+// UpdateCardCurrent says "You have {version}"
+// in the language of msgs.
+func (msgs Messages) UpdateCardCurrent(version string) string {
+	return Catalog.Format(msgs.locale, "updateCardCurrent", map[string]any{"version": version})
+}
+
+// UpdateCardRestart says "the app restarts to update"
+// in the language the app shows.
+func UpdateCardRestart() string { return In(i18n.Locale()).UpdateCardRestart() }
+
+// UpdateCardRestart says "the app restarts to update"
+// in the language of msgs.
+func (msgs Messages) UpdateCardRestart() string {
+	return Catalog.Format(msgs.locale, "updateCardRestart", nil)
+}
+
+// UpdateCardNotes says "What's new"
+// in the language the app shows.
+func UpdateCardNotes() string { return In(i18n.Locale()).UpdateCardNotes() }
+
+// UpdateCardNotes says "What's new"
+// in the language of msgs.
+func (msgs Messages) UpdateCardNotes() string {
+	return Catalog.Format(msgs.locale, "updateCardNotes", nil)
+}
+
+// UpdateCardLater says "Later"
+// in the language the app shows.
+func UpdateCardLater() string { return In(i18n.Locale()).UpdateCardLater() }
+
+// UpdateCardLater says "Later"
+// in the language of msgs.
+func (msgs Messages) UpdateCardLater() string {
+	return Catalog.Format(msgs.locale, "updateCardLater", nil)
+}
+
+// UpdateCardInstall says "Update now"
+// in the language the app shows.
+func UpdateCardInstall() string { return In(i18n.Locale()).UpdateCardInstall() }
+
+// UpdateCardInstall says "Update now"
+// in the language of msgs.
+func (msgs Messages) UpdateCardInstall() string {
+	return Catalog.Format(msgs.locale, "updateCardInstall", nil)
+}
+
+// UpdateCardRetry says "Try again"
+// in the language the app shows.
+func UpdateCardRetry() string { return In(i18n.Locale()).UpdateCardRetry() }
+
+// UpdateCardRetry says "Try again"
+// in the language of msgs.
+func (msgs Messages) UpdateCardRetry() string {
+	return Catalog.Format(msgs.locale, "updateCardRetry", nil)
+}
+
+// UpdateCardDownload says "Download"
+// in the language the app shows.
+func UpdateCardDownload() string { return In(i18n.Locale()).UpdateCardDownload() }
+
+// UpdateCardDownload says "Download"
+// in the language of msgs.
+func (msgs Messages) UpdateCardDownload() string {
+	return Catalog.Format(msgs.locale, "updateCardDownload", nil)
+}
+
 // DesktopInfoTitle says "Server details"
 // in the language the app shows.
 func DesktopInfoTitle() string { return In(i18n.Locale()).DesktopInfoTitle() }

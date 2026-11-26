@@ -209,10 +209,12 @@ func (a *App) generalPage(c *ui.Context) {
 			ui.Text(c, locales.OptionKeepAliveAfter())
 		})
 		widgets.Muted(c, locales.OptionKeepAliveNote()).FontSize(12)
-		a.agentOption(c)
 	})
 
 	a.updatesSection(c)
+
+	// The SSH agent, after Updates, which the user looks for more often.
+	ui.Column(c).Gap(8).Padding(8, 0, 0, 0).Children(func() { a.agentOption(c) })
 }
 
 // changeSettings changes the settings with fn, saves them and shows the

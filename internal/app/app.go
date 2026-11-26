@@ -188,6 +188,9 @@ type App struct {
 	// closeAsk is the connected server the user is closing, while the
 	// app asks first (sessiontabs.go).
 	closeAsk *Session
+	// updateLater is the newer version whose card the user put off, for
+	// this run (updatenotice.go).
+	updateLater string
 	// panelTabsScroll is how far the bottom panel's tabs are scrolled
 	// sideways, where they do not fit.
 	panelTabsScroll ui.ScrollState
@@ -400,6 +403,7 @@ func (a *App) View(c *ui.Context) {
 			return ui.Split(c, &a.sideWidth, func() { a.sidebar(c) }, func() { a.mainColumn(c) })
 		})
 	}
+	a.updateCard(c)
 	a.dialogs(c)
 }
 

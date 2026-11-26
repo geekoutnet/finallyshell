@@ -12,7 +12,6 @@ import (
 	"finallyshell/locales"
 
 	"github.com/egoist/mygo"
-	"github.com/egoist/mygo/plugins/updater"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -43,10 +42,14 @@ func (p *platform) HideToTray() bool {
 }
 
 func (p *platform) trayMenu() *mygo.Menu {
-	update := updater.MenuItem()
-	if p.app != nil && p.app.Locked() {
-		update.Disabled = true
-	}
+	// This project's own check (updates.go), not MyGo's updater, whose
+	// manifests are signed builds of another repository.
+	update := &mygo.MenuItem{Label: locales.CheckForUpdates(), Disabled: p.app == nil || p.app.Locked(), Click: func(*mygo.MenuItem, *mygo.Window) {
+		if p.app != nil {
+			p.showMain()
+			p.app.CheckForUpdatesNow()
+		}
+	}}
 	return mygo.NewMenu([]*mygo.MenuItem{
 		{Label: locales.TrayShow(), Click: func(*mygo.MenuItem, *mygo.Window) { p.showMain() }},
 		{Label: locales.TmgrTitle(), Disabled: p.app == nil || p.app.Locked(), Click: func(*mygo.MenuItem, *mygo.Window) {

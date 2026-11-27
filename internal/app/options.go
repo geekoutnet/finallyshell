@@ -35,6 +35,7 @@ const (
 	pageFileIcons  = "files/icons"
 	pageNetwork    = "network"
 	pageSync       = "sync"
+	pageAccount    = "account"
 	pageProxies    = "proxies"
 )
 
@@ -126,6 +127,10 @@ var optionPages = []optionPage{
 		view: (*App).syncPage,
 	},
 	{
+		id: pageAccount, title: locales.AccountWindowTitle,
+		view: (*App).accountOptionsPage,
+	},
+	{
 		id: "ssh-keys", title: locales.KeysTitle,
 		view: (*App).keysOptions,
 	},
@@ -148,15 +153,23 @@ func (a *App) openOptions() {
 // optionsView is the options window: the pages, and Done below them.
 // The options apply as they change, so there is nothing to confirm.
 func (a *App) optionsView(c *ui.Context) {
-	pages := make([]widgets.NavPage, len(optionPages))
-	for i, p := range optionPages {
-		pages[i] = widgets.NavPage{ID: p.id, Parent: p.parent, Title: p.title, View: func(c *ui.Context) {
+	// The Account page shows while an account is signed in.
+	signedIn := a.settings.Account.SignedIn()
+	if !signedIn && a.optionsNav.Page == pageAccount {
+		a.optionsNav.Page = pageGeneral
+	}
+	pages := make([]widgets.NavPage, 0, len(optionPages))
+	for _, p := range optionPages {
+		if p.id == pageAccount && !signedIn {
+			continue
+		}
+		pages = append(pages, widgets.NavPage{ID: p.id, Parent: p.parent, Title: p.title, View: func(c *ui.Context) {
 			if p.view == nil {
 				widgets.Muted(c, locales.OptionsComingLater())
 				return
 			}
 			p.view(a, c)
-		}}
+		}})
 	}
 	ui.Column(c).Fill().Children(func() {
 		widgets.NavPages(c, &a.optionsNav, pages).Grow(1).MinHeight(0)

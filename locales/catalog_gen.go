@@ -46005,3 +46005,103 @@ func AccountActEmailChanged() string { return In(i18n.Locale()).AccountActEmailC
 func (msgs Messages) AccountActEmailChanged() string {
 	return Catalog.Format(msgs.locale, "accountActEmailChanged", nil)
 }
+
+// AccountLogCount says "{n, plural, one {# entry} other {# entries}}"
+// in the language the app shows.
+func AccountLogCount(n int) string { return In(i18n.Locale()).AccountLogCount(n) }
+
+// AccountLogCount says "{n, plural, one {# entry} other {# entries}}"
+// in the language of msgs.
+func (msgs Messages) AccountLogCount(n int) string {
+	return Catalog.Format(msgs.locale, "accountLogCount", map[string]any{"n": n})
+}
+
+// AccountLogAll says "All"
+// in the language the app shows.
+func AccountLogAll() string { return In(i18n.Locale()).AccountLogAll() }
+
+// AccountLogAll says "All"
+// in the language of msgs.
+func (msgs Messages) AccountLogAll() string {
+	return Catalog.Format(msgs.locale, "accountLogAll", nil)
+}
+
+// AccountLogChanges says "Changes"
+// in the language the app shows.
+func AccountLogChanges() string { return In(i18n.Locale()).AccountLogChanges() }
+
+// AccountLogChanges says "Changes"
+// in the language of msgs.
+func (msgs Messages) AccountLogChanges() string {
+	return Catalog.Format(msgs.locale, "accountLogChanges", nil)
+}
+
+// AccountLogProblems says "Problems"
+// in the language the app shows.
+func AccountLogProblems() string { return In(i18n.Locale()).AccountLogProblems() }
+
+// AccountLogProblems says "Problems"
+// in the language of msgs.
+func (msgs Messages) AccountLogProblems() string {
+	return Catalog.Format(msgs.locale, "accountLogProblems", nil)
+}
+
+// AccountLogAccount says "Account"
+// in the language the app shows.
+func AccountLogAccount() string { return In(i18n.Locale()).AccountLogAccount() }
+
+// AccountLogAccount says "Account"
+// in the language of msgs.
+func (msgs Messages) AccountLogAccount() string {
+	return Catalog.Format(msgs.locale, "accountLogAccount", nil)
+}
+
+// AccountLogToday says "Today"
+// in the language the app shows.
+func AccountLogToday() string { return In(i18n.Locale()).AccountLogToday() }
+
+// AccountLogToday says "Today"
+// in the language of msgs.
+func (msgs Messages) AccountLogToday() string {
+	return Catalog.Format(msgs.locale, "accountLogToday", nil)
+}
+
+// AccountLogYesterday says "Yesterday"
+// in the language the app shows.
+func AccountLogYesterday() string { return In(i18n.Locale()).AccountLogYesterday() }
+
+// AccountLogYesterday says "Yesterday"
+// in the language of msgs.
+func (msgs Messages) AccountLogYesterday() string {
+	return Catalog.Format(msgs.locale, "accountLogYesterday", nil)
+}
+
+// AccountLogMore says "{n, plural, one {Show # earlier entry} other {Show # earlier entries}}"
+// in the language the app shows.
+func AccountLogMore(n int) string { return In(i18n.Locale()).AccountLogMore(n) }
+
+// AccountLogMore says "{n, plural, one {Show # earlier entry} other {Show # earlier entries}}"
+// in the language of msgs.
+func (msgs Messages) AccountLogMore(n int) string {
+	return Catalog.Format(msgs.locale, "accountLogMore", map[string]any{"n": n})
+}
+
+// AccountLogNone says "No entries of this kind."
+// in the language the app shows.
+func AccountLogNone() string { return In(i18n.Locale()).AccountLogNone() }
+
+// AccountLogNone says "No entries of this kind."
+// in the language of msgs.
+func (msgs Messages) AccountLogNone() string {
+	return Catalog.Format(msgs.locale, "accountLogNone", nil)
+}
+
+// AccountLogRepeat says "{n} checks, nothing to do, since {from}"
+// in the language the app shows.
+func AccountLogRepeat(n int, from string) string { return In(i18n.Locale()).AccountLogRepeat(n, from) }
+
+// AccountLogRepeat says "{n} checks, nothing to do, since {from}"
+// in the language of msgs.
+func (msgs Messages) AccountLogRepeat(n int, from string) string {
+	return Catalog.Format(msgs.locale, "accountLogRepeat", map[string]any{"n": n, "from": from})
+}

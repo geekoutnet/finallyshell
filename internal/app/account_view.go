@@ -9,6 +9,7 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"slices"
 	"strings"
 	"time"
 
@@ -58,8 +59,11 @@ type accountView struct {
 	// before signing out. showEmail shows the whole address.
 	// showPassword shows the sync password; pwCopiedAt is when it was
 	// copied.
-	showPassword             bool
-	pwCopiedAt               time.Time
+	showPassword bool
+	pwCopiedAt   time.Time
+	// logFilter is the log's filter (accountLogFilters), logShown how
+	// many of its rows show.
+	logFilter, logShown      int
 	cardOpen, cardConfirmOut bool
 	showEmail                bool
 	// The sync password's form: open, the new password typed twice, the
@@ -297,15 +301,29 @@ func (a *App) accountView(c *ui.Context) {
 		})
 		return
 	}
+	ui.Scroll(c).Fill().Children(func() {
+		ui.Column(c).Gap(16).Padding(18).Children(func() { a.accountBody(c) })
+	})
+}
+
+// accountBody is who signed in, the account's sync and its log: the
+// account window's, and the Account page of the options.
+func (a *App) accountBody(c *ui.Context) {
+	s := a.settings.Account
 	a.loadAccount()
 	a.loadSyncStateOn(a.accountSync())
-	ui.Scroll(c).Fill().Children(func() {
-		ui.Column(c).Gap(16).Padding(18).Children(func() {
-			a.accountHeader(c, s)
-			a.accountSyncSection(c, s)
-			a.accountLogSection(c)
-		})
-	})
+	a.accountHeader(c, s)
+	a.accountSyncSection(c, s)
+	a.accountLogSection(c)
+}
+
+// accountOptionsPage is Options › Account, shown while an account is
+// signed in: the account window, in the options.
+func (a *App) accountOptionsPage(c *ui.Context) {
+	if !a.settings.Account.SignedIn() {
+		return
+	}
+	ui.Column(c).Gap(16).Children(func() { a.accountBody(c) })
 }
 
 // accountHeader is who signed in, with what, and the account's buttons.
@@ -317,10 +335,7 @@ func (a *App) accountHeader(c *ui.Context, s config.AccountSettings) {
 			ui.Text(c, initial).FontSize(22).Bold().TextColor(theme.AccentText).Background(theme.Accent).
 				Size(52, 52).Radius(26).TextAlign(ui.Center).Padding(11, 0).Shrink(0).AccessHidden(true)
 			ui.Column(c).Gap(4).Grow(1).MinWidth(0).Children(func() {
-				name := s.Name
-				if name == "" {
-					name = s.Login
-				}
+				name := accountDisplayName(s)
 				ui.Text(c, name).Bold().FontSize(16).SingleLine().MinWidth(0)
 				widgets.Muted(c, "@"+s.Login).SingleLine()
 				a.accountEmailRow(c, s)
@@ -631,7 +646,10 @@ func (a *App) accountPasswordSection(c *ui.Context, s config.AccountSettings, op
 }
 
 // accountLogSection is the account's log, newest first: each sync with
-// the steps it went through, each sign-in, sign-out and renewal.
+// the steps it went through, each sign-in, sign-out and renewal. Quiet
+// automatic syncs are one row (config.AccountEvent.Repeat). A filter
+// keeps the changes, the problems or the account's own events; the rows
+// are grouped by day, the latest accountLogPage shown, more on request.
 func (a *App) accountLogSection(c *ui.Context) {
 	v := &a.account.view
 	if v.events == nil {
@@ -644,9 +662,21 @@ func (a *App) accountLogSection(c *ui.Context) {
 	if v.open == nil {
 		v.open = map[time.Time]bool{}
 	}
+	if v.logShown == 0 {
+		v.logShown = accountLogPage
+	}
+	var shown []config.AccountEvent
+	for _, e := range v.events {
+		if accountLogFilters[v.logFilter].keep(e) {
+			shown = append(shown, e)
+		}
+	}
 	ui.Column(c).Gap(8).Children(func() {
 		ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
 			ui.Text(c, locales.AccountLog()).Bold().FontSize(14)
+			if len(v.events) > 0 {
+				widgets.Muted(c, locales.AccountLogCount(len(v.events))).FontSize(12)
+			}
 			ui.Spacer(c)
 			if len(v.events) > 0 && !v.confirmClear && ui.Button(c, locales.AccountLogClear()).Clicked() {
 				v.confirmClear = true
@@ -669,19 +699,117 @@ func (a *App) accountLogSection(c *ui.Context) {
 			widgets.Muted(c, locales.AccountLogEmpty()).FontSize(12)
 			return
 		}
-		for _, e := range v.events {
+		labels := make([]string, len(accountLogFilters))
+		for i, f := range accountLogFilters {
+			labels[i] = f.label()
+		}
+		if logFilterSwitch(c, &v.logFilter, labels).Changed() {
+			v.logShown = accountLogPage
+		}
+		if len(shown) == 0 {
+			widgets.Muted(c, locales.AccountLogNone()).FontSize(12).Padding(6, 0)
+			return
+		}
+		now := c.Now()
+		day := ""
+		for i, e := range shown {
+			if i == v.logShown {
+				break
+			}
+			if d := accountLogDay(now, e.At); d != day {
+				day = d
+				widgets.Muted(c, d).FontSize(12).Bold().Padding(6, 2, 0, 2)
+			}
 			a.accountEventRow(c, e)
+		}
+		if rest := len(shown) - v.logShown; rest > 0 {
+			ui.Row(c).Justify(ui.Center).Children(func() {
+				if ui.Button(c, locales.AccountLogMore(rest)).Clicked() {
+					v.logShown += accountLogPage * 2
+				}
+			})
 		}
 	})
 }
 
+// accountLogPage is how many rows the log shows at first.
+const accountLogPage = 30
+
+// accountLogFilters are the log's filters, in the order of its switch.
+var accountLogFilters = []struct {
+	label func() string
+	keep  func(config.AccountEvent) bool
+}{
+	{locales.AccountLogAll, func(config.AccountEvent) bool { return true }},
+	{locales.AccountLogChanges, func(e config.AccountEvent) bool {
+		switch e.Action {
+		case config.AccountSync, config.AccountReplace:
+			return e.Local != [3]int{} || e.Server != [3]int{} || e.Conflicts > 0 ||
+				slices.Contains(e.Steps, config.StepCreate) || slices.Contains(e.Steps, config.StepApply)
+		case config.AccountPassword, config.AccountChoice:
+			return true
+		}
+		return false
+	}},
+	{locales.AccountLogProblems, func(e config.AccountEvent) bool { return e.Result != "ok" }},
+	{locales.AccountLogAccount, func(e config.AccountEvent) bool {
+		return e.Action != config.AccountSync && e.Action != config.AccountReplace
+	}},
+}
+
+// accountLogDay names the day of at: today, yesterday, or its date.
+func accountLogDay(now, at time.Time) string {
+	n, d := now.Local(), at.Local()
+	y1, m1, d1 := n.Date()
+	y2, m2, d2 := d.Date()
+	today := time.Date(y1, m1, d1, 0, 0, 0, 0, time.Local)
+	that := time.Date(y2, m2, d2, 0, 0, 0, 0, time.Local)
+	switch today.Sub(that) {
+	case 0:
+		return locales.AccountLogToday()
+	case 24 * time.Hour:
+		return locales.AccountLogYesterday()
+	}
+	return d.Format("2006-01-02")
+}
+
+// logFilterSwitch is the log's filters, a segmented control in small
+// text, as the left panel's page switch.
+func logFilterSwitch(c *ui.Context, chosen *int, labels []string) ui.Element {
+	parts := ui.SegmentedBase(c, chosen, len(labels))
+	track := parts.Track.Label(locales.AccountLog()).MinWidth(0).Shrink(1).AlignSelf(ui.Start).
+		AlignItems(ui.Stretch).Padding(theme.Space(0.5)).Gap(theme.Space(0.5)).
+		Radius(theme.Radius).Background(theme.Surface).Border(1, theme.Border)
+	track.Children(func() {
+		for i, label := range labels {
+			s := parts.Segment(i).MinWidth(0).Padding(theme.Space(1), theme.Space(2.5)).
+				Radius(max(theme.Radius-theme.Space(0.5), 0)).TextColor(theme.Text)
+			switch {
+			case i == *chosen && theme.Dark:
+				s.Background(theme.SurfacePressed).Shadow(0, 1, 2, 0, ui.RGBA(0, 0, 0, 0.12))
+			case i == *chosen:
+				s.Background(theme.Background).Shadow(0, 1, 2, 0, ui.RGBA(0, 0, 0, 0.12))
+			case s.Hovered():
+				s.Background(theme.SurfaceHover)
+			}
+			s.Children(func() { ui.Text(c, label).FontSize(12).SingleLine() })
+		}
+	})
+	return track
+}
+
 // accountEventRow is an event of the account's log: when, what, why and
-// how it went, and, clicked, its steps and what it changed.
+// how it went, and, clicked, its steps and what it changed. Quiet syncs
+// counted in one event say how many, and since when.
 func (a *App) accountEventRow(c *ui.Context, e config.AccountEvent) {
 	v := &a.account.view
-	open := v.open[e.At]
+	key := e.At
+	if !e.Since.IsZero() {
+		key = e.Since // the row stays open as more are counted in it
+	}
+	open := v.open[key]
 	detailed := len(e.Steps) > 0 || e.Error != ""
-	row := ui.Column(c.Key("account-event|"+e.At.Format(time.RFC3339Nano))).Gap(6).Padding(8, 10).Radius(6).
+	row := ui.Column(c.Key("account-event|"+key.Format(time.RFC3339Nano))).Gap(6).Padding(8, 10).Radius(6).
 		Border(1, theme.Border)
 	if detailed {
 		row.Role(ui.RoleButton).Label(accountActionText(e))
@@ -689,7 +817,7 @@ func (a *App) accountEventRow(c *ui.Context, e config.AccountEvent) {
 			row.Background(theme.SurfaceHover)
 		}
 		if row.Clicked() {
-			v.open[e.At] = !open
+			v.open[key] = !open
 		}
 	}
 	row.Children(func() {
@@ -702,10 +830,17 @@ func (a *App) accountEventRow(c *ui.Context, e config.AccountEvent) {
 				color = theme.Warning
 			}
 			widgets.StatusDot(c, color)
-			widgets.Muted(c, e.At.Local().Format("2006-01-02 15:04:05")).FontSize(12).Shrink(0)
-			ui.Text(c, accountActionText(e)).Bold().FontSize(12).SingleLine().MinWidth(0)
+			widgets.Muted(c, e.At.Local().Format("15:04:05")).FontSize(12).Shrink(0)
+			ui.Text(c, accountActionText(e)).Bold().FontSize(12).SingleLine().MinWidth(0).Shrink(0)
 			if r := accountReasonText(e.Reason); r != "" {
 				widgets.Muted(c, r).FontSize(12).Shrink(0)
+			}
+			if e.Repeat > 0 {
+				from := e.Since.Local().Format("15:04")
+				if accountLogDay(e.At, e.Since) != accountLogDay(e.At, e.At) {
+					from = e.Since.Local().Format("01-02 15:04")
+				}
+				widgets.Muted(c, locales.AccountLogRepeat(e.Repeat+1, from)).FontSize(12).SingleLine().MinWidth(0).Shrink(1)
 			}
 			ui.Spacer(c)
 			ui.Text(c, accountResultText(e.Result)).FontSize(12).TextColor(color).Shrink(0)

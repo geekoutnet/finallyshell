@@ -335,7 +335,7 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 | `passwords`、`auto`、`interval` | 与“同步”页的同名键相同，`customSync` 为 `true` 时生效。 | 默认设置的值。 |
 
 - `account-sync-state.json`：账户的 `sync-state.json`，字段相同。它的 `remote` 带有账户标识（`account github:<用户 ID> <Gist ID>`），所以换了账户后不会拿它当合并基准。
-- `account-log.json`：最近 200 条账户记录，字段有：`at`、`provider`、`login`、`device`、`action`（`sign-in`、`sign-out`、`refresh`、`expired`、`sync`、`replace`、`password`、`choice`）、`reason`（`auto`、`manual`、`restore`；修改密码时为 `auto` 或 `email-changed`；选择同步方式时为 `merge`、`remote` 或 `local`）、`result`（`ok`、`failed`、`paused`、`history-warning`）、`error`、`steps`（`refresh`、`read`、`create`、`merge`、`upload`、`backup`、`apply`、`uptodate`、`reseal`、`autopassword`）、`local` 和 `server`（新增、删除、修改的数量）以及 `conflicts`。不包含密码，也不包含项目名称。
+- `account-log.json`：最近 200 条账户记录，字段有：`at`、`provider`、`login`、`device`、`action`（`sign-in`、`sign-out`、`refresh`、`expired`、`sync`、`replace`、`password`、`choice`）、`reason`（`auto`、`manual`、`restore`；修改密码时为 `auto` 或 `email-changed`；选择同步方式时为 `merge`、`remote` 或 `local`）、`result`（`ok`、`failed`、`paused`、`history-warning`）、`error`、`steps`（`refresh`、`read`、`create`、`merge`、`upload`、`backup`、`apply`、`uptodate`、`reseal`、`autopassword`）、`local` 和 `server`（新增、删除、修改的数量）、`repeat` 和 `since`（第一次之后又有多少次没有改动的自动同步，以及第一次的时间）以及 `conflicts`。不包含密码，也不包含项目名称。
 
 账户的 Gist 里存放 `finallyshell-account.json`，格式与 `finallyshell-sync.json` 相同（见[同步](#同步)），用账户的同步密码加密，历史版本就是这个 Gist 的修订记录。它的明文 `snapshot` 头里有 `keyHint`，表示用的是哪种密码（`email` 或 `custom`），从不记录密码本身。应用通过 client ID 为 `account.GitHubClientID`（`internal/account/github.go`）的 OAuth 应用登录，使用设备授权流程，不需要 client secret，申请 `gist` 和 `user:email` 两项权限。
 

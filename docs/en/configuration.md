@@ -481,7 +481,8 @@ has signed in. It stays on this computer.
   `result` (`ok`, `failed`, `paused`, `history-warning`), `error`, `steps`
   (`refresh`, `read`, `create`, `merge`, `upload`, `backup`, `apply`,
   `uptodate`, `reseal`, `autopassword`), `local` and `server` (added,
-  removed, changed) and
+  removed, changed), `repeat` and `since` (automatic syncs with nothing
+  to do after the first, and when the first was) and
   `conflicts`. No passwords and no item names.
 
 The account's gist holds `finallyshell-account.json`, in the format of

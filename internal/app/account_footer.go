@@ -41,6 +41,15 @@ func accountAvatar(c *ui.Context, s config.AccountSettings, size float32, dot ui
 	})
 }
 
+// accountDisplayName is the account's display name, its user name when
+// it has none.
+func accountDisplayName(s config.AccountSettings) string {
+	if name := strings.TrimSpace(s.Name); name != "" {
+		return name
+	}
+	return s.Login
+}
+
 // accountSyncState is how the account's sync stands, for the bar and the
 // card: an icon, the text, its color, and whether it is busy (a spinner
 // instead of the icon).
@@ -120,10 +129,11 @@ func (a *App) accountBar(c *ui.Context) {
 	case busy:
 		dot = theme.Accent
 	}
-	bar.Label(s.Login + " · " + status).Tooltip(locales.AccountButtonSignedIn(s.Login))
+	name := accountDisplayName(s)
+	bar.Label(name + " · " + status).Tooltip(locales.AccountButtonSignedIn(s.Login))
 	bar.Children(func() {
 		accountAvatar(c, s, 18, dot)
-		ui.Text(c, s.Login).FontSize(12).Bold().SingleLine().MinWidth(0).Shrink(1)
+		ui.Text(c, name).FontSize(12).Bold().SingleLine().MinWidth(0).Shrink(1)
 		ui.Icon(c, icons.Get("github")).FontSize(11).TextColor(theme.TextMuted).Shrink(0)
 		ui.Spacer(c)
 		ui.Row(c).Gap(4).AlignItems(ui.Center).MinWidth(0).Shrink(1).Children(func() {
@@ -159,10 +169,7 @@ func (a *App) accountCard(c *ui.Context, now time.Time) {
 			}
 			accountAvatar(c, s, 40, dot)
 			ui.Column(c).Gap(2).Grow(1).MinWidth(0).Children(func() {
-				name := s.Name
-				if name == "" {
-					name = s.Login
-				}
+				name := accountDisplayName(s)
 				ui.Text(c, name).Bold().FontSize(14).SingleLine().MinWidth(0)
 				widgets.Muted(c, "@"+s.Login).FontSize(12).SingleLine()
 			})

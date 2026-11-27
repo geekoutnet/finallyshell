@@ -694,7 +694,7 @@ func TestAccountBar(t *testing.T) {
 	d.p.until(t, "the sign-in", func() bool { return d.a.settings.Account.SignedIn() && d.a.account.sync.loaded })
 	d.a.closeWindow(WindowAccount)
 	tt.Frame()
-	if !tt.HasText("octo") {
+	if !tt.HasText("Octo Cat") { // the display name, before the user name
 		t.Fatalf("no account in the bar; texts %q", tt.Texts())
 	}
 	d.a.account.view.cardOpen = true
@@ -1005,6 +1005,84 @@ func TestAccountEmailMigrates(t *testing.T) {
 	old.syncAccount(t)
 	if err := old.a.account.sync.err; err != nil || old.a.account.sync.password != "new@example.com" {
 		t.Fatalf("the old computer: %v, %q", err, old.a.account.sync.password)
+	}
+}
+
+// Automatic syncs that find nothing to do are one entry of the log,
+// counting them; one that changes something is an entry of its own.
+func TestAccountLogCoalescesQuietSyncs(t *testing.T) {
+	prov := newFakeProvider()
+	acc := &memRemote{}
+	d := newAccountDevice(t, prov, &memRemote{}, map[string]cloudsync.Remote{"github:42": acc})
+	d.addHost("h1", "web")
+	d.signIn(t, "")
+	d.syncAccount(t)
+	auto := func() {
+		t.Helper()
+		d.use(t)
+		d.a.startSyncOn(d.a.accountSync(), syncOptions{reason: cloudsync.ReasonAuto}, time.Now())
+		d.p.until(t, "the sync", func() bool { return !d.a.account.sync.running })
+	}
+	for range 3 {
+		auto()
+	}
+	events, _ := config.ReadAccountLog()
+	last := events[len(events)-1]
+	if len(events) != 3 || last.Repeat != 2 || last.Since.IsZero() || !quietSync(last) {
+		t.Fatalf("%d events, last %+v", len(events), last)
+	}
+	d.addHost("h2", "db")
+	auto()
+	auto()
+	if got := accountActions(t); len(got) != 5 {
+		t.Fatalf("log %v", got)
+	}
+
+	// The window: the count, a filter, the day.
+	tt := d.p.show(t, WindowAccount)
+	tt.Frame()
+	for _, s := range []string{locales.AccountLogCount(5), locales.AccountLogToday(), locales.AccountLogRepeat(3, last.Since.Local().Format("15:04"))} {
+		if !tt.HasText(s) {
+			t.Errorf("no %q; texts %q", s, tt.Texts())
+		}
+	}
+	d.a.account.view.logFilter = 3 // the account's own
+	tt.Frame()
+	if tt.HasText(locales.AccountLogRepeat(3, last.Since.Local().Format("15:04"))) || !tt.HasText(locales.AccountActSignIn("octo")) {
+		t.Errorf("the account filter; texts %q", tt.Texts())
+	}
+}
+
+// Options has an Account page while an account is signed in, the account
+// window's, and none signed out; the bar shows the display name.
+func TestAccountOptionsPage(t *testing.T) {
+	d := newAccountDevice(t, newFakeProvider(), &memRemote{}, map[string]cloudsync.Remote{"github:42": &memRemote{}})
+	d.a.openOptions()
+	tt := d.p.show(t, WindowOptions)
+	tt.Frame()
+	if tt.HasText(locales.AccountWindowTitle()) {
+		t.Fatal("an Account page while signed out")
+	}
+	d.signIn(t, "")
+	d.a.optionsNav.Page = pageAccount
+	tt.Frame()
+	for _, s := range []string{"Octo Cat", "@octo", locales.AccountSyncTitle(), locales.AccountLog(), locales.AccountCurrentPassword()} {
+		if !tt.HasText(s) {
+			t.Errorf("no %q; texts %q", s, tt.Texts())
+		}
+	}
+	saveShot(t, tt, "options-account.png")
+	if got := accountDisplayName(d.a.settings.Account); got != "Octo Cat" {
+		t.Fatalf("display name %q", got)
+	}
+	d.a.settings.Account.Name = " "
+	if got := accountDisplayName(d.a.settings.Account); got != "octo" {
+		t.Fatalf("no display name: %q", got)
+	}
+	d.a.signOut()
+	tt.Frame()
+	if d.a.optionsNav.Page == pageAccount || tt.HasText(locales.AccountSyncTitle()) {
+		t.Fatal("the Account page stays after signing out")
 	}
 }
 

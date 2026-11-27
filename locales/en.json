@@ -5875,5 +5875,40 @@
   "accountActPasswordAuto": "Followed the sync password of another computer",
   "accountStepAutoPassword": "The cloud now uses your GitHub email as the sync password, changed on another computer: this one uses it too",
   "accountCurrentPassword": "Sync password in use",
-  "accountActEmailChanged": "Your GitHub primary email changed: re-encrypted with the new one"
+  "accountActEmailChanged": "Your GitHub primary email changed: re-encrypted with the new one",
+  "accountLogCount": "{n, plural, one {# entry} other {# entries}}",
+  "@accountLogCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "accountLogAll": "All",
+  "accountLogChanges": "Changes",
+  "accountLogProblems": "Problems",
+  "accountLogAccount": "Account",
+  "accountLogToday": "Today",
+  "accountLogYesterday": "Yesterday",
+  "accountLogMore": "{n, plural, one {Show # earlier entry} other {Show # earlier entries}}",
+  "@accountLogMore": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "accountLogNone": "No entries of this kind.",
+  "accountLogRepeat": "{n} checks, nothing to do, since {from}",
+  "@accountLogRepeat": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "from": {
+        "type": "String",
+        "example": "19:10"
+      }
+    }
+  }
 }

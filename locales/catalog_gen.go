@@ -9952,6 +9952,58 @@ func (msgs Messages) ErrHostKeyChanged(fingerprint string, file string) string {
 	return Catalog.Format(msgs.locale, "errHostKeyChanged", map[string]any{"fingerprint": fingerprint, "file": file})
 }
 
+// HostKeyTrustNew says "Trust new key"
+// in the language the app shows.
+func HostKeyTrustNew() string { return In(i18n.Locale()).HostKeyTrustNew() }
+
+// HostKeyTrustNew says "Trust new key"
+// in the language of msgs.
+func (msgs Messages) HostKeyTrustNew() string {
+	return Catalog.Format(msgs.locale, "hostKeyTrustNew", nil)
+}
+
+// HostKeyTrustTitle says "Trust the new host key"
+// in the language the app shows.
+func HostKeyTrustTitle() string { return In(i18n.Locale()).HostKeyTrustTitle() }
+
+// HostKeyTrustTitle says "Trust the new host key"
+// in the language of msgs.
+func (msgs Messages) HostKeyTrustTitle() string {
+	return Catalog.Format(msgs.locale, "hostKeyTrustTitle", nil)
+}
+
+// HostKeyTrustMessage says "Replace the saved keys of {host} with the key the server has now?"
+// in the language the app shows.
+func HostKeyTrustMessage(host string) string { return In(i18n.Locale()).HostKeyTrustMessage(host) }
+
+// HostKeyTrustMessage says "Replace the saved keys of {host} with the key the server has now?"
+// in the language of msgs.
+func (msgs Messages) HostKeyTrustMessage(host string) string {
+	return Catalog.Format(msgs.locale, "hostKeyTrustMessage", map[string]any{"host": host})
+}
+
+// HostKeyTrustDetail says "New key: {fingerprint}\nDo this only if you know the server was reinstalled or its keys were changed, ideally after ch…"
+// in the language the app shows.
+func HostKeyTrustDetail(fingerprint string) string {
+	return In(i18n.Locale()).HostKeyTrustDetail(fingerprint)
+}
+
+// HostKeyTrustDetail says "New key: {fingerprint}\nDo this only if you know the server was reinstalled or its keys were changed, ideally after ch…"
+// in the language of msgs.
+func (msgs Messages) HostKeyTrustDetail(fingerprint string) string {
+	return Catalog.Format(msgs.locale, "hostKeyTrustDetail", map[string]any{"fingerprint": fingerprint})
+}
+
+// HostKeyTrustOK says "Trust and reconnect"
+// in the language the app shows.
+func HostKeyTrustOK() string { return In(i18n.Locale()).HostKeyTrustOK() }
+
+// HostKeyTrustOK says "Trust and reconnect"
+// in the language of msgs.
+func (msgs Messages) HostKeyTrustOK() string {
+	return Catalog.Format(msgs.locale, "hostKeyTrustOK", nil)
+}
+
 // ErrHostKeyRejected says "The host key was rejected"
 // in the language the app shows.
 func ErrHostKeyRejected() string { return In(i18n.Locale()).ErrHostKeyRejected() }

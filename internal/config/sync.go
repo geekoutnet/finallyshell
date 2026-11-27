@@ -273,6 +273,9 @@ type SyncState struct {
 	// that sync, so that Base's passwords are its own.
 	Secrets       bool `json:"secrets,omitempty"`
 	RestorePaused bool `json:"restorePaused,omitempty"`
+	// KeyFiles are the keys of the private key files this device had at
+	// that sync (cloudsync.Request.HeldKeyFiles).
+	KeyFiles []string `json:"keyFiles,omitempty"`
 }
 
 // SyncStateName is the Sync page's state file.

@@ -146,10 +146,40 @@ func mergeLists(base, local, remote map[string][]json.RawMessage) (map[string][]
 // it: the key is written, unlike a build without the library's.
 func NewProxies() []json.RawMessage { return []json.RawMessage{} }
 
-// AddOnlySecretPrefix starts the keys of the secrets a merge never
-// deletes: private key files, which a device may lack, or have another
-// of by the same name, without deleting the others'.
-const AddOnlySecretPrefix = "sshkey/"
+// KeyFilePrefix starts the keys of the private key files among the
+// secrets: KeyFilePrefix + name + "#" + content hash. Devices may each
+// have another key by the same name, so what a device says of them is
+// only what changed in its own files (keyFileSecrets).
+const KeyFilePrefix = "sshkey/"
+
+// keyFileSecrets is local's secrets with its private key files as what
+// this device changed since base: held are the files it had at the last
+// sync, those of local the ones it has now. A file it has, and did not
+// have, is added; one it had, and has no longer, deleted; of the others
+// it says nothing, base's kept as they are, so that a key deleted on
+// another device is not added again by one that still has the file, and
+// one it never had stays.
+func keyFileSecrets(local, base map[string]string, held []string) map[string]string {
+	wasHeld := map[string]bool{}
+	for _, k := range held {
+		wasHeld[k] = true
+	}
+	out := map[string]string{}
+	for k, v := range local {
+		if !strings.HasPrefix(k, KeyFilePrefix) || !wasHeld[k] {
+			out[k] = v
+		}
+	}
+	for k, v := range base {
+		if !strings.HasPrefix(k, KeyFilePrefix) {
+			continue
+		}
+		if _, has := local[k]; has || !wasHeld[k] {
+			out[k] = v
+		}
+	}
+	return out
+}
 
 // ProxySecretPrefix starts the keys of the library's proxies' passwords
 // among the secrets: "proxy/<id>/password".
@@ -225,17 +255,6 @@ func Merge(base, local, remote *Payload) (merged *Payload, conflicts int) {
 	conflicts += n
 	m.Secrets, n = mergeMap(base.Secrets, localSecrets, remoteSecrets, func(a, b string) bool { return a == b })
 	conflicts += n
-	// Files are only ever added: a device without one deletes none.
-	for _, side := range []map[string]string{localSecrets, remoteSecrets} {
-		for k, v := range side {
-			if _, ok := m.Secrets[k]; !ok && strings.HasPrefix(k, AddOnlySecretPrefix) {
-				if m.Secrets == nil {
-					m.Secrets = map[string]string{}
-				}
-				m.Secrets[k] = v
-			}
-		}
-	}
 	if len(m.Secrets) == 0 {
 		m.Secrets = nil
 	}

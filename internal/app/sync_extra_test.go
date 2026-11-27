@@ -141,7 +141,7 @@ func TestSyncListsFromAnOlderBuild(t *testing.T) {
 	d.addHost("h1", "web")
 	config.AddHistory("h1", "uptime")
 	d.sync(t)
-	if err := d.a.applySyncLists(nil); err != nil {
+	if err := d.a.applySyncLists(nil, nil); err != nil {
 		t.Fatal(err)
 	}
 	if got, _ := config.LoadHistory("h1"); !slices.Equal(got, []string{"uptime"}) {
@@ -150,5 +150,127 @@ func TestSyncListsFromAnOlderBuild(t *testing.T) {
 	p := d.a.localPayload()
 	if p.Lists == nil || len(p.Lists[cloudsync.ListHistoryPrefix+"h1"]) != 1 {
 		t.Fatalf("lists %v", p.Lists)
+	}
+}
+
+// remoteSecrets are the secrets the remote has, opened with password.
+func remoteSecrets(t *testing.T, r *memRemote, password string) map[string]string {
+	t.Helper()
+	r.mu.Lock()
+	data := r.data
+	r.mu.Unlock()
+	p, err := cloudsync.OpenSnapshot(password, data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return p.Secrets
+}
+
+// A host key deleted on one computer, as when its server was reinstalled
+// and the new key trusted, is deleted on the others: a computer that
+// still has the old one does not add it back. Comments stay.
+func TestSyncHostKeyDeleted(t *testing.T) {
+	r := &memRemote{}
+	const (
+		oldKey = "203.0.113.7 ssh-ed25519 AAAAC3old"
+		newKey = "203.0.113.7 ssh-ed25519 AAAAC3new"
+		other  = "other.example ssh-ed25519 AAAAC3other"
+	)
+	one := newDevice(t, r)
+	useHome(t, t.TempDir())
+	os.WriteFile(knownHostsPath(), []byte(oldKey+"\n"+other+"\n"), 0o600)
+	one.sync(t)
+	two := newDevice(t, r)
+	two.use(t)
+	os.WriteFile(knownHostsPath(), []byte("# my notes\n"), 0o600)
+	two.sync(t)
+	if data, _ := os.ReadFile(knownHostsPath()); string(data) != "# my notes\n"+oldKey+"\n"+other+"\n" {
+		t.Fatalf("the second computer's known_hosts %q", data)
+	}
+
+	// The server is reinstalled: the first computer trusts its new key.
+	one.use(t)
+	os.WriteFile(knownHostsPath(), []byte(other+"\n"+newKey+"\n"), 0o600)
+	one.sync(t)
+	two.sync(t)
+	one.sync(t)
+	two.sync(t)
+	for _, d := range []*device{one, two} {
+		d.use(t)
+		data, _ := os.ReadFile(knownHostsPath())
+		if strings.Contains(string(data), oldKey) || !strings.Contains(string(data), newKey) || !strings.Contains(string(data), other) {
+			t.Errorf("known_hosts of %s: %q", d.dir, data)
+		}
+	}
+	two.use(t)
+	if data, _ := os.ReadFile(knownHostsPath()); !strings.HasPrefix(string(data), "# my notes\n") {
+		t.Errorf("the comment went: %q", data)
+	}
+}
+
+// A host key trusted while a sync runs stays: the sync applies only what
+// it changed.
+func TestSyncHostKeyTrustedDuringSync(t *testing.T) {
+	before := map[string]bool{"a ssh-ed25519 AAAA1": true}
+	after := map[string]bool{"a ssh-ed25519 AAAA1": true, "b ssh-ed25519 AAAA2": true}
+	data, changed := knownHostsChanged([]byte("a ssh-ed25519 AAAA1\nc ssh-ed25519 AAAA3\n"), after, before)
+	if !changed || string(data) != "a ssh-ed25519 AAAA1\nc ssh-ed25519 AAAA3\nb ssh-ed25519 AAAA2\n" {
+		t.Fatalf("%q %v", data, changed)
+	}
+	if _, changed := knownHostsChanged([]byte("a ssh-ed25519 AAAA1\n"), before, before); changed {
+		t.Fatal("rewritten with nothing to change")
+	}
+}
+
+// A private key replaced on one computer is replaced in the sync: the old
+// one is deleted, and a computer that still has it does not add it back.
+func TestSyncKeyFileReplaced(t *testing.T) {
+	r := &memRemote{}
+	homes := []string{t.TempDir(), t.TempDir()}
+	oldKey, newKey := "old test key\n", "new test key\n"
+	one := newDevice(t, r)
+	useHome(t, homes[0])
+	one.a.settings.Sync.Passwords = true
+	h := one.addHost("h1", "web")
+	keyPath := filepath.Join(homes[0], ".ssh", "id_test")
+	h.Auth, h.KeyPath = config.AuthKey, keyPath
+	one.a.saveHosts(one.a.hosts)
+	os.MkdirAll(filepath.Dir(keyPath), 0o700)
+	os.WriteFile(keyPath, []byte(oldKey), 0o600)
+	one.sync(t)
+
+	two := newDevice(t, r)
+	useHome(t, homes[1])
+	two.a.settings.Sync.Passwords = true
+	two.sync(t)
+	two.p.until(t, "the store", storeSettled(two.a, two.p))
+	twoKey := filepath.Join(homes[1], ".ssh", "id_test")
+	if data, _ := os.ReadFile(twoKey); string(data) != oldKey {
+		t.Fatalf("the key was not installed: %q", data)
+	}
+
+	useHome(t, homes[0])
+	os.WriteFile(keyPath, []byte(newKey), 0o600)
+	one.sync(t)
+	one.p.until(t, "the store", storeSettled(one.a, one.p))
+	for i := 0; i < 2; i++ {
+		useHome(t, homes[1])
+		two.sync(t)
+		two.p.until(t, "the store", storeSettled(two.a, two.p))
+		useHome(t, homes[0])
+		one.sync(t)
+		one.p.until(t, "the store", storeSettled(one.a, one.p))
+	}
+	var keys []string
+	for k := range remoteSecrets(t, r, one.a.sync.password) {
+		if strings.HasPrefix(k, sshKeySecretPrefix) {
+			keys = append(keys, k)
+		}
+	}
+	if want := sshKeySecret("id_test", []byte(newKey)); len(keys) != 1 || keys[0] != want {
+		t.Fatalf("the synced keys %v, want only %s", keys, want)
+	}
+	if data, _ := os.ReadFile(twoKey); string(data) != oldKey {
+		t.Fatalf("the second computer's file was changed: %q", data)
 	}
 }

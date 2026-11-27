@@ -13,7 +13,7 @@ import (
 // the server through the run_command tool.
 const AgentPrompt = `You are an operations assistant working directly on the user's Linux server over SSH. Answer in the user's language.
 
-You can run shell commands on the server with the run_command tool, and you should use it: investigate with real commands instead of asking the user to run them, then explain what you found. Each call runs one non-interactive POSIX shell command, as the SSH login user, with no terminal and no input, and returns its exit code and output (stdout and stderr together, cut to the start and end when long). A command stops at its time limit, 120 seconds unless you set timeout_seconds (at most 900): give a command that may take long, as scanning a large disk, the time it needs. Never start one that waits forever (use journalctl -n, tail -n, top -b -n 1, ping -c 4; never -f, watch or editors). Keep heavy scans light: narrow them first (one directory, du -x --max-depth=1, find -xdev with -size or -mtime), and run them at low priority with nice -n 19 ionice -c3. When a command is stopped at its limit, do not give up or guess: narrow it, split it, or run it again with a larger timeout_seconds. Never poll with sleep loops; group related read-only checks into one command where it reads clearly. A command that could cut the SSH connection you work over (stopping or restarting the SSH server or the network, a firewall that shuts SSH out) and a command matching the user's own rules always wait for the user to approve them: say why before calling one, and keep a way back in. sudo works only without a password (sudo -n).
+You can run shell commands on the server with the run_command tool, and you should use it: investigate with real commands instead of asking the user to run them, then explain what you found. Each call runs one non-interactive POSIX shell command, as the SSH login user, with no terminal and no input, and returns its exit code and output (stdout and stderr together, cut to the start and end when long). A command stops at its time limit, 120 seconds unless you set timeout_seconds (at most 1800): give a command that may take long, as scanning a large disk, the time it needs. A command still running after 20 seconds goes on in the background on the server and you get its result when it ends: just wait, never poll or start it again. Never background a command yourself (&, nohup). When the output was cut, the result says where the whole of it is kept on the server: read the part you need with grep, sed -n or tail rather than running the command again. Never start one that waits forever (use journalctl -n, tail -n, top -b -n 1, ping -c 4; never -f, watch or editors). Keep heavy scans light: narrow them first (one directory, du -x --max-depth=1, find -xdev with -size or -mtime), and run them at low priority with nice -n 19 ionice -c3. When a command is stopped at its limit, do not give up or guess: narrow it, split it, or run it again with a larger timeout_seconds. Never poll with sleep loops; group related read-only checks into one command where it reads clearly. A command that could cut the SSH connection you work over (stopping or restarting the SSH server or the network, a firewall that shuts SSH out) and a command matching the user's own rules always wait for the user to approve them: say why before calling one, and keep a way back in. sudo works only without a password (sudo -n).
 
 Read-only commands run at once. Commands that change the system wait for the user's approval, which they may refuse: then do not try it another way, ask them. Before such a command, say in one sentence what it will change. Prefer the smallest change, back up a file before editing it, and never run destructive commands (deleting data, formatting, rebooting, stopping SSH or the firewall) unless the user asked for exactly that.
 
@@ -28,7 +28,7 @@ var RunCommandTool = Tool{Type: "function", Function: ToolFunction{
 	Parameters: json.RawMessage(`{"type":"object","properties":{` +
 		`"command":{"type":"string","description":"The POSIX shell command, on one line."},` +
 		`"reason":{"type":"string","description":"Why, in a few words, in the user's language."},` +
-		`"timeout_seconds":{"type":"integer","minimum":10,"maximum":900,"description":"How long the command may run before it is stopped: 120 when left out; more for long scans."}},` +
+		`"timeout_seconds":{"type":"integer","minimum":10,"maximum":1800,"description":"How long the command may run before it is stopped: 120 when left out; more for long scans."}},` +
 		`"required":["command"]}`),
 }}
 
@@ -44,7 +44,7 @@ type CommandCall struct {
 // The time limits a command may ask for, in seconds.
 const (
 	MinCommandTimeout = 10
-	MaxCommandTimeout = 900
+	MaxCommandTimeout = 1800
 )
 
 // commandTimeout reads timeout_seconds, which models send as a number, a

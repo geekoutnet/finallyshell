@@ -308,8 +308,9 @@ func TestDesktopAIAgentStop(t *testing.T) {
 	}
 }
 
-// TestAIRunCommand stops a command at the timeout and when the request
-// ends, on a real SSH connection.
+// TestAIRunCommand gives up on a server that never answers, and on the
+// request ending, on a real SSH connection that runs nothing; jobs on a
+// real shell are TestAIJobsOnServer's.
 func TestAIRunCommand(t *testing.T) {
 	server := sshtest.Start(t)
 	client := server.Dial(t)
@@ -317,24 +318,13 @@ func TestAIRunCommand(t *testing.T) {
 		t.Fatal("a refused exec did not fail")
 	}
 	server.HangExec()
-	timeout := aiCommandTimeout
-	aiCommandTimeout = 200 * time.Millisecond
-	t.Cleanup(func() { aiCommandTimeout = timeout })
+	sync, grace, stop := aiJobSync, aiJobGrace, aiJobStopWait
+	aiJobSync, aiJobGrace, aiJobStopWait = 100*time.Millisecond, 200*time.Millisecond, 200*time.Millisecond
+	t.Cleanup(func() { aiJobSync, aiJobGrace, aiJobStopWait = sync, grace, stop })
 	start := time.Now()
 	_, _, timedOut, err := aiRunCommand(context.Background(), client, "sleep 100", nil)
-	if err != nil || !timedOut || time.Since(start) > 5*time.Second {
-		t.Fatalf("timed out %v, err %v, after %v", timedOut, err, time.Since(start))
-	}
-	// Put off as it runs, it goes on past the first deadline.
-	start = time.Now()
-	deadline := newAIDeadline(start, 200*time.Millisecond)
-	time.AfterFunc(100*time.Millisecond, func() { deadline.extend(400 * time.Millisecond) })
-	_, _, timedOut, err = aiRunCommand(context.Background(), client, "sleep 100", deadline)
-	if err != nil || !timedOut || time.Since(start) < 550*time.Millisecond {
-		t.Fatalf("extended: timed out %v, err %v, after %v", timedOut, err, time.Since(start))
-	}
-	if limit := newAIDeadline(start, time.Minute); limit.extend(2*aiMaxRunTime) && limit.limit() != aiMaxRunTime {
-		t.Fatalf("extended past the longest run: %v", limit.limit())
+	if err == nil || timedOut || time.Since(start) > 5*time.Second {
+		t.Fatalf("a server that never answers: timed out %v, err %v, after %v", timedOut, err, time.Since(start))
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	time.AfterFunc(50*time.Millisecond, cancel)
@@ -345,16 +335,100 @@ func TestAIRunCommand(t *testing.T) {
 	if _, _, _, err := aiRunCommand(context.Background(), nil, "true", nil); err == nil {
 		t.Fatal("ran without a connection")
 	}
+	if limit := newAIDeadline(start, time.Minute); limit.extend(2*aiMaxRunTime) && limit.limit() != aiMaxRunTime {
+		t.Fatalf("extended past the longest run: %v", limit.limit())
+	}
 }
 
-func TestAIOutputKeepsStartAndEnd(t *testing.T) {
-	var out aiOutput
-	for i := range 5000 {
-		fmt.Fprintf(&out, "line %d\n", i)
+// TestAIJobParse reads what the job scripts print: after anything a login
+// script printed, a result with its exit code, one stopped without, the
+// output cut with where the whole of it is, a job still running or lost.
+func TestAIJobParse(t *testing.T) {
+	res := aiJobParse("welcome\nfinallyshell-rc 3 6 /tmp/finallyshell-ai-0/ab\nhello\n")
+	if res.state != "done" || !res.exited || res.exit != 3 || res.output != "hello\n" {
+		t.Fatalf("done: %+v", res)
 	}
-	text := out.String()
-	if !strings.HasPrefix(text, "line 0\n") || !strings.HasSuffix(text, "line 4999\n") || !strings.Contains(text, "bytes left out") || len(text) > aiOutputLimit+100 {
-		t.Fatalf("output %d bytes: %q … %q", len(text), text[:40], text[len(text)-40:])
+	if res := aiJobParse("finallyshell-rc x 0 /tmp/finallyshell-ai-0/ab\n"); res.state != "done" || res.exited {
+		t.Fatalf("stopped: %+v", res)
+	}
+	res = aiJobParse("finallyshell-rc 0 100000 /tmp/finallyshell-ai-1000/cd\nHEAD\nfinallyshell-cut\nTAIL")
+	if !strings.HasPrefix(res.output, "HEAD") || !strings.Contains(res.output, "[… 99992 bytes left out …]") ||
+		!strings.Contains(res.output, "TAIL\n[The whole output is on the server: /tmp/finallyshell-ai-1000/cd/out, 100000 bytes;") {
+		t.Fatalf("cut: %q", res.output)
+	}
+	for text, state := range map[string]string{"finallyshell-running\n": "running", "finallyshell-lost": "lost", "garbage": ""} {
+		if got := aiJobParse(text).state; got != state {
+			t.Errorf("%q: %q, want %q", text, got, state)
+		}
+	}
+	for _, script := range []string{aiJobStart("0123456789abcdef", 20*time.Second), aiJobState("0123456789abcdef"), aiJobStop("0123456789abcdef")} {
+		if !strings.Contains(script, "d=$b/0123456789abcdef") || strings.Contains(script, "%!") {
+			t.Fatalf("script: %s", script)
+		}
+	}
+	if got := aiShQuote(`it's`); got != `'it'\''s'` {
+		t.Fatalf("aiShQuote: %s", got)
+	}
+	if !ai.ReadOnly("tail -n 50 /tmp/finallyshell-ai-0/0123456789abcdef/out") || !ai.ReadOnly("grep -n error /tmp/finallyshell-ai-1000/0123456789abcdef/out") {
+		t.Fatal("reading the whole output on the server is not read-only")
+	}
+}
+
+// TestAIJobsOnServer runs jobs on the server FINALLYSHELL_TEST_SSH names
+// (user:password@host:port, a disposable test machine): one that ends at
+// once, one that goes on in the background and ends, one stopped at its
+// deadline with its process group, one cancelled, and one whose output is
+// kept whole on the server.
+func TestAIJobsOnServer(t *testing.T) {
+	spec := os.Getenv("FINALLYSHELL_TEST_SSH")
+	if spec == "" {
+		t.Skip("FINALLYSHELL_TEST_SSH not set")
+	}
+	cred, addr, _ := strings.Cut(spec, "@")
+	user, pass, _ := strings.Cut(cred, ":")
+	client, err := ssh.Dial("tcp", addr, &ssh.ClientConfig{User: user, Auth: []ssh.AuthMethod{ssh.Password(pass)},
+		HostKeyCallback: ssh.InsecureIgnoreHostKey(), Timeout: 10 * time.Second}) // a disposable test machine
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer client.Close()
+	sync, poll := aiJobSync, aiJobPoll
+	aiJobSync, aiJobPoll = 2*time.Second, 300*time.Millisecond
+	t.Cleanup(func() { aiJobSync, aiJobPoll = sync, poll })
+	run := func(command string, limit time.Duration) (int, string, bool, error, *aiDeadline) {
+		d := newAIDeadline(time.Now(), limit)
+		exit, out, timedOut, err := aiRunCommand(context.Background(), client, command, d)
+		return exit, out, timedOut, err, d
+	}
+	if exit, out, timedOut, err, d := run(`echo "it's here"; echo oops >&2; exit 3`, time.Minute); err != nil || exit != 3 || timedOut || d.inBackground() ||
+		out != "it's here\noops\n" {
+		t.Fatalf("at once: exit %d, %q, timed out %v, err %v", exit, out, timedOut, err)
+	}
+	if exit, out, _, err, d := run("sleep 3; echo late", time.Minute); err != nil || exit != 0 || out != "late\n" || !d.inBackground() {
+		t.Fatalf("in the background: exit %d, %q, background %v, err %v", exit, out, d.inBackground(), err)
+	}
+	start := time.Now()
+	marker := "finallyshell-ai-test-" + newAIJobID()
+	if _, _, timedOut, err, _ := run("sh -c 'sleep 300; true "+marker+"'", 3*time.Second); err != nil || !timedOut || time.Since(start) > 30*time.Second {
+		t.Fatalf("at its deadline: timed out %v, err %v, after %v", timedOut, err, time.Since(start))
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	time.AfterFunc(2500*time.Millisecond, cancel)
+	if _, _, _, err := aiRunCommand(ctx, client, "sh -c 'sleep 300; true "+marker+"'", nil); !errors.Is(err, context.Canceled) {
+		t.Fatalf("cancelled: %v", err)
+	}
+	time.Sleep(time.Second)
+	if _, out, _, _, _ := run("ps -eo args | grep -c '[f]inallyshell-ai-test-'; true", time.Minute); strings.TrimSpace(out) != "0" {
+		t.Fatalf("stopped commands still run: %q", out)
+	}
+	_, out, _, err, _ := run("seq 1 200000", time.Minute)
+	_, path, found := strings.Cut(out, "[The whole output is on the server: ")
+	path, _, _ = strings.Cut(path, ",")
+	if err != nil || !found || !strings.Contains(out, "bytes left out") {
+		t.Fatalf("long output: %v, %.200q", err, out)
+	}
+	if _, last, _, err, _ := run("tail -n 1 "+path, time.Minute); err != nil || last != "200000\n" {
+		t.Fatalf("the whole output %s: %q, %v", path, last, err)
 	}
 }
 

@@ -454,6 +454,9 @@ func (a *App) desktopAICommandView(c *ui.Context, state *desktopAIState, card *d
 		icon, color, status = "", desktopAIAccent(), locales.DesktopAICmdRunning()
 		if d := card.deadline; d != nil && card.Status == aiCmdRunning {
 			status = locales.DesktopAICmdRunningFor(aiDuration(time.Since(d.start)), aiDuration(d.limit()))
+			if d.inBackground() {
+				status = locales.AiBgRunning(aiDuration(time.Since(d.start)), aiDuration(d.limit()))
+			}
 		}
 	case aiCmdDone:
 		icon, color = "circle-check", theme.Success

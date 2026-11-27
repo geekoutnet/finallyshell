@@ -3,8 +3,6 @@ package app
 import (
 	"cmp"
 	"context"
-	"errors"
-	"fmt"
 	"math"
 	"slices"
 	"strconv"
@@ -49,6 +47,22 @@ type aiDeadline struct {
 	mu    sync.Mutex
 	start time.Time
 	at    time.Time
+	// background is set once the command goes on in the background on
+	// the server (desktop_ai_jobs.go).
+	background bool
+}
+
+func (d *aiDeadline) setBackground() {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	d.background = true
+}
+
+// inBackground reports whether the command goes on in the background.
+func (d *aiDeadline) inBackground() bool {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	return d.background
 }
 
 func newAIDeadline(start time.Time, limit time.Duration) *aiDeadline {
@@ -376,106 +390,4 @@ func (a *App) aiFinish(run *aiRun, status string, failed bool) {
 		state.retry = run.question
 	}
 	a.aiSaveChats()
-}
-
-// aiRunCommand runs command on server, with no terminal and no input,
-// stopping it at deadline, which may move as it runs (aiCommandTimeout
-// from now when nil), or when ctx ends. It returns its exit code and its
-// output, stdout and stderr together, cut to aiOutputLimit.
-func aiRunCommand(ctx context.Context, server *ssh.Client, command string, deadline *aiDeadline) (exit int, output string, timedOut bool, err error) {
-	if deadline == nil {
-		deadline = newAIDeadline(time.Now(), aiCommandTimeout)
-	}
-	if server == nil {
-		return 0, "", false, errors.New("not connected")
-	}
-	session, err := server.NewSession()
-	if err != nil {
-		return 0, "", false, err
-	}
-	defer session.Close()
-	var out aiOutput
-	session.Stdout, session.Stderr = &out, &out
-	done := make(chan error, 1)
-	go func() { done <- session.Run(command) }()
-	stop := func() {
-		// The server stops the command if it honors signals; closing the
-		// channel ends the wait either way.
-		_ = session.Signal(ssh.SIGKILL)
-		session.Close()
-		<-done
-	}
-	// The deadline is looked at again as it passes, as the user may have
-	// put it off meanwhile.
-	timer := time.NewTimer(time.Until(deadline.when()))
-	defer timer.Stop()
-wait:
-	for {
-		select {
-		case err = <-done:
-			break wait
-		case <-ctx.Done():
-			stop()
-			return 0, out.String(), false, ctx.Err()
-		case <-timer.C:
-			if left := time.Until(deadline.when()); left > 0 {
-				timer.Reset(left)
-				continue
-			}
-			stop()
-			return 0, out.String(), true, nil
-		}
-	}
-	var exitErr *ssh.ExitError
-	switch {
-	case err == nil:
-		return 0, out.String(), false, nil
-	case errors.As(err, &exitErr):
-		return exitErr.ExitStatus(), out.String(), false, nil
-	default:
-		return 0, out.String(), false, err
-	}
-}
-
-// aiOutput keeps the start and the end of a command's output, as it
-// comes on stdout and stderr at once.
-type aiOutput struct {
-	mu         sync.Mutex
-	head, tail []byte
-	total      int
-}
-
-const (
-	aiOutputHead = aiOutputLimit * 3 / 8
-	aiOutputTail = aiOutputLimit - aiOutputHead
-)
-
-func (o *aiOutput) Write(p []byte) (int, error) {
-	o.mu.Lock()
-	defer o.mu.Unlock()
-	n := len(p)
-	o.total += n
-	if room := aiOutputHead - len(o.head); room > 0 {
-		k := min(room, len(p))
-		o.head, p = append(o.head, p[:k]...), p[k:]
-	}
-	o.tail = append(o.tail, p...)
-	if len(o.tail) > 4*aiOutputTail {
-		o.tail = append([]byte(nil), o.tail[len(o.tail)-aiOutputTail:]...)
-	}
-	return n, nil
-}
-
-func (o *aiOutput) String() string {
-	o.mu.Lock()
-	defer o.mu.Unlock()
-	tail := o.tail
-	if len(tail) > aiOutputTail {
-		tail = tail[len(tail)-aiOutputTail:]
-	}
-	text := string(o.head) + string(tail)
-	if cut := o.total - len(o.head) - len(tail); cut > 0 {
-		text = string(o.head) + fmt.Sprintf("\n[… %d bytes left out …]\n", cut) + string(tail)
-	}
-	return strings.ToValidUTF8(text, "�")
 }

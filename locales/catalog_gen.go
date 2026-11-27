@@ -27110,6 +27110,18 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// AiBgRunning says "In the background on the server · {elapsed} of {limit}"
+// in the language the app shows.
+func AiBgRunning(elapsed string, limit string) string {
+	return In(i18n.Locale()).AiBgRunning(elapsed, limit)
+}
+
+// AiBgRunning says "In the background on the server · {elapsed} of {limit}"
+// in the language of msgs.
+func (msgs Messages) AiBgRunning(elapsed string, limit string) string {
+	return Catalog.Format(msgs.locale, "aiBgRunning", map[string]any{"elapsed": elapsed, "limit": limit})
+}
+
 // AiGuardRuleConfirm says "Matches your rule {rule}: runs only once you allow it"
 // in the language the app shows.
 func AiGuardRuleConfirm(rule string) string { return In(i18n.Locale()).AiGuardRuleConfirm(rule) }

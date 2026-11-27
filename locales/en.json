@@ -5910,5 +5910,61 @@
         "example": "19:10"
       }
     }
+  },
+  "accountVersionsTitle": "Account Versions",
+  "accountVersions": "Version History…",
+  "accountVersionsShort": "Versions",
+  "accountVersionsHint": "Each sync of the account is a version of its gist on GitHub, kept for good; this computer's own backups are listed with them. Preview a version to see how it differs from this computer's data, then restore it, or add only what this computer lacks. This computer's data is backed up first either way.",
+  "backupPreviewTotal": "{added} added, {removed} removed, {changed} changed",
+  "@backupPreviewTotal": {
+    "placeholders": {
+      "added": {
+        "type": "int"
+      },
+      "removed": {
+        "type": "int"
+      },
+      "changed": {
+        "type": "int"
+      }
+    }
+  },
+  "backupPreviewLoses": "{n, plural, one {Restoring removes # item this computer has (listed under Removed). To keep what is here, use Add Missing Items instead.} other {Restoring removes # items this computer has (listed under Removed). To keep what is here, use Add Missing Items instead.}}",
+  "@backupPreviewLoses": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "backupPreviewSame": "This version is the same as this computer's data.",
+  "backupSettingsDiff": "Settings",
+  "backupDatabasesDiff": "Databases",
+  "backupKnownHostsDiff": "Trusted host keys",
+  "backupHistoryDiff": "Command history",
+  "accountLogAllButton": "Show All…",
+  "accountLogTitle": "Account Activity",
+  "accountLogShown": "{shown} of {all}",
+  "@accountLogShown": {
+    "placeholders": {
+      "shown": {
+        "type": "int"
+      },
+      "all": {
+        "type": "int"
+      }
+    }
+  },
+  "accountLogClearConfirm": "Clear the whole log?",
+  "accountLogChoose": "Choose an entry to see its steps.",
+  "accountLogColAction": "Action",
+  "accountLogColTrigger": "Trigger",
+  "accountLogRepeatShort": "Automatic ×{n}",
+  "@accountLogRepeatShort": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
   }
 }

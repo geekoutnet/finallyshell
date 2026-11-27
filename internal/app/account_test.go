@@ -1076,18 +1076,52 @@ func TestAccountLogCoalescesQuietSyncs(t *testing.T) {
 		t.Fatalf("log %v", got)
 	}
 
-	// The window: the count, a filter, the day.
+	// The page: the count and the latest; the whole log, a table, in a
+	// window of its own, filtered.
 	tt := d.p.show(t, WindowAccount)
 	tt.Frame()
-	for _, s := range []string{locales.AccountLogCount(5), locales.AccountLogToday(), locales.AccountLogRepeat(3, last.Since.Local().Format("15:04"))} {
+	for _, s := range []string{locales.AccountLogCount(5), locales.AccountLogAllButton(), locales.AccountLogRepeat(3, last.Since.Local().Format("15:04"))} {
 		if !tt.HasText(s) {
 			t.Errorf("no %q; texts %q", s, tt.Texts())
 		}
 	}
+	d.a.openAccountLog()
+	lt := d.p.show(t, WindowAccountLog)
+	lt.Frame()
+	for _, s := range []string{locales.AccountLogShown(5, 5), locales.AccountLogColTrigger(), locales.AccountLogRepeatShort(3), "+1 −0 ~0"} {
+		if !lt.HasText(s) {
+			t.Errorf("log window: no %q; texts %q", s, lt.Texts())
+		}
+	}
+	d.a.account.view.logRow = 0
+	lt.Frame()
+	if !lt.HasText("1. " + locales.AccountStepRead()) {
+		t.Errorf("the chosen entry's steps; texts %q", lt.Texts())
+	}
 	d.a.account.view.logFilter = 3 // the account's own
-	tt.Frame()
-	if tt.HasText(locales.AccountLogRepeat(3, last.Since.Local().Format("15:04"))) || !tt.HasText(locales.AccountActSignIn("octo")) {
-		t.Errorf("the account filter; texts %q", tt.Texts())
+	lt.Frame()
+	if !lt.HasText(locales.AccountLogShown(1, 5)) || !lt.HasText(locales.AccountActSignIn("octo")) {
+		t.Errorf("the account filter; texts %q", lt.Texts())
+	}
+	saveShot(t, lt, "account-log-window.png")
+}
+
+// Quiet automatic syncs an older build logged one by one show as one.
+func TestAccountLogCompactsOldEntries(t *testing.T) {
+	d := newAccountDevice(t, newFakeProvider(), &memRemote{}, map[string]cloudsync.Remote{"github:42": &memRemote{}})
+	d.signIn(t, "")
+	quiet := config.AccountEvent{Action: config.AccountSync, Reason: cloudsync.ReasonAuto, Result: "ok",
+		Steps: []string{config.StepRead, config.StepMerge, config.StepUpToDate}, Login: "octo", Device: "pc"}
+	for range 12 {
+		if err := config.AppendAccountEvent(quiet); err != nil {
+			t.Fatal(err)
+		}
+	}
+	d.a.account.view.events = nil
+	d.a.loadAccountLog()
+	events := d.a.account.view.events
+	if len(events) != 2 || events[0].Repeat != 11 || !quietSync(events[0]) {
+		t.Fatalf("%d events, first %+v", len(events), events[0])
 	}
 }
 
@@ -1218,5 +1252,75 @@ func TestAccountWindows(t *testing.T) {
 			}
 			saveShot(t, at, "account-"+lang+".png")
 		})
+	}
+}
+
+// The account's versions: each sync's, previewed against this computer
+// with what restoring would remove, then restored here and on the gist,
+// this computer's data backed up first; or only what is missing added.
+func TestAccountVersionsRestore(t *testing.T) {
+	gist := &memRemote{}
+	d := newAccountDevice(t, newFakeProvider(), &memRemote{}, map[string]cloudsync.Remote{"github:42": gist})
+	d.addHost("h1", "web")
+	d.addHost("h2", "db")
+	d.signIn(t, "")
+	d.syncAccount(t)
+	d.a.hosts.SoftDelete("h2", time.Now())
+	d.addHost("h3", "cache")
+	d.syncAccount(t)
+
+	a := d.a
+	t2 := a.accountSync()
+	a.openVersionsOn(t2, WindowMain)
+	if !a.windowOpen(WindowAccountBackups) || a.windowOpen(WindowBackups) {
+		t.Fatal("the account's versions window is not the one open")
+	}
+	st := a.account.sync.backups
+	d.p.until(t, "the versions", func() bool { return !st.listing })
+	var oldest versionEntry
+	for _, e := range st.entries {
+		if e.remote && e.Counted && e.Counts.Live == 2 && (oldest.ID == "" || e.At.Before(oldest.At)) {
+			oldest = e
+		}
+	}
+	if oldest.ID == "" {
+		t.Fatalf("no first version among %+v", st.entries)
+	}
+	a.selectVersion(st, oldest, "")
+	d.p.until(t, "the preview", func() bool { return !st.busy })
+	if st.err != nil || st.preview == nil {
+		t.Fatalf("preview: %v", st.err)
+	}
+	changes := cloudsync.Compare(a.localPayload(), st.preview.payload)
+	if !slices.Contains(changes.Hosts.Removed, "cache") || !slices.Contains(changes.Hosts.Added, "db") {
+		t.Fatalf("diff %+v", changes.Hosts)
+	}
+	wt := d.p.show(t, WindowAccountBackups)
+	wt.Frame()
+	if _, removed, _ := changes.Total(); !wt.HasText(locales.BackupPreviewLoses(removed)) {
+		t.Errorf("no warning of what restoring removes; texts %q", wt.Texts())
+	}
+	saveShot(t, wt, "account-versions.png")
+
+	a.restoreVersion(st)
+	d.p.until(t, "the restore", func() bool { return !a.account.sync.running && !st.busy && !st.listing })
+	if st.err != nil {
+		t.Fatal(st.err)
+	}
+	if got := hostNames(a); !slices.Contains(got, "db") || a.hosts.Host("h3") != nil || a.hosts.Host("h2").Deleted() {
+		t.Fatalf("restored %v", got)
+	}
+	if backups, _ := config.ListBackups(); len(backups) == 0 || backups[0].Reason != cloudsync.ReasonPreRestore {
+		t.Fatalf("no backup before the restore: %+v", backups)
+	}
+	p, err := cloudsync.OpenSnapshot("octocat@example.com", gist.data)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if n := p.Counts().Live; n != 2 {
+		t.Fatalf("the gist has %d connections", n)
+	}
+	if a.account.sync.restorePaused {
+		t.Fatal("automatic sync stays paused after a restore that reached the gist")
 	}
 }

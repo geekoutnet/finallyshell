@@ -46105,3 +46105,195 @@ func AccountLogRepeat(n int, from string) string { return In(i18n.Locale()).Acco
 func (msgs Messages) AccountLogRepeat(n int, from string) string {
 	return Catalog.Format(msgs.locale, "accountLogRepeat", map[string]any{"n": n, "from": from})
 }
+
+// AccountVersionsTitle says "Account Versions"
+// in the language the app shows.
+func AccountVersionsTitle() string { return In(i18n.Locale()).AccountVersionsTitle() }
+
+// AccountVersionsTitle says "Account Versions"
+// in the language of msgs.
+func (msgs Messages) AccountVersionsTitle() string {
+	return Catalog.Format(msgs.locale, "accountVersionsTitle", nil)
+}
+
+// AccountVersions says "Version History…"
+// in the language the app shows.
+func AccountVersions() string { return In(i18n.Locale()).AccountVersions() }
+
+// AccountVersions says "Version History…"
+// in the language of msgs.
+func (msgs Messages) AccountVersions() string {
+	return Catalog.Format(msgs.locale, "accountVersions", nil)
+}
+
+// AccountVersionsShort says "Versions"
+// in the language the app shows.
+func AccountVersionsShort() string { return In(i18n.Locale()).AccountVersionsShort() }
+
+// AccountVersionsShort says "Versions"
+// in the language of msgs.
+func (msgs Messages) AccountVersionsShort() string {
+	return Catalog.Format(msgs.locale, "accountVersionsShort", nil)
+}
+
+// AccountVersionsHint says "Each sync of the account is a version of its gist on GitHub, kept for good; this computer's own backups are listed wi…"
+// in the language the app shows.
+func AccountVersionsHint() string { return In(i18n.Locale()).AccountVersionsHint() }
+
+// AccountVersionsHint says "Each sync of the account is a version of its gist on GitHub, kept for good; this computer's own backups are listed wi…"
+// in the language of msgs.
+func (msgs Messages) AccountVersionsHint() string {
+	return Catalog.Format(msgs.locale, "accountVersionsHint", nil)
+}
+
+// BackupPreviewTotal says "{added} added, {removed} removed, {changed} changed"
+// in the language the app shows.
+func BackupPreviewTotal(added int, removed int, changed int) string {
+	return In(i18n.Locale()).BackupPreviewTotal(added, removed, changed)
+}
+
+// BackupPreviewTotal says "{added} added, {removed} removed, {changed} changed"
+// in the language of msgs.
+func (msgs Messages) BackupPreviewTotal(added int, removed int, changed int) string {
+	return Catalog.Format(msgs.locale, "backupPreviewTotal", map[string]any{"added": added, "removed": removed, "changed": changed})
+}
+
+// BackupPreviewLoses says "{n, plural, one {Restoring removes # item this computer has (listed under Removed). To keep what is here, use Add Mis…"
+// in the language the app shows.
+func BackupPreviewLoses(n int) string { return In(i18n.Locale()).BackupPreviewLoses(n) }
+
+// BackupPreviewLoses says "{n, plural, one {Restoring removes # item this computer has (listed under Removed). To keep what is here, use Add Mis…"
+// in the language of msgs.
+func (msgs Messages) BackupPreviewLoses(n int) string {
+	return Catalog.Format(msgs.locale, "backupPreviewLoses", map[string]any{"n": n})
+}
+
+// BackupPreviewSame says "This version is the same as this computer's data."
+// in the language the app shows.
+func BackupPreviewSame() string { return In(i18n.Locale()).BackupPreviewSame() }
+
+// BackupPreviewSame says "This version is the same as this computer's data."
+// in the language of msgs.
+func (msgs Messages) BackupPreviewSame() string {
+	return Catalog.Format(msgs.locale, "backupPreviewSame", nil)
+}
+
+// BackupSettingsDiff says "Settings"
+// in the language the app shows.
+func BackupSettingsDiff() string { return In(i18n.Locale()).BackupSettingsDiff() }
+
+// BackupSettingsDiff says "Settings"
+// in the language of msgs.
+func (msgs Messages) BackupSettingsDiff() string {
+	return Catalog.Format(msgs.locale, "backupSettingsDiff", nil)
+}
+
+// BackupDatabasesDiff says "Databases"
+// in the language the app shows.
+func BackupDatabasesDiff() string { return In(i18n.Locale()).BackupDatabasesDiff() }
+
+// BackupDatabasesDiff says "Databases"
+// in the language of msgs.
+func (msgs Messages) BackupDatabasesDiff() string {
+	return Catalog.Format(msgs.locale, "backupDatabasesDiff", nil)
+}
+
+// BackupKnownHostsDiff says "Trusted host keys"
+// in the language the app shows.
+func BackupKnownHostsDiff() string { return In(i18n.Locale()).BackupKnownHostsDiff() }
+
+// BackupKnownHostsDiff says "Trusted host keys"
+// in the language of msgs.
+func (msgs Messages) BackupKnownHostsDiff() string {
+	return Catalog.Format(msgs.locale, "backupKnownHostsDiff", nil)
+}
+
+// BackupHistoryDiff says "Command history"
+// in the language the app shows.
+func BackupHistoryDiff() string { return In(i18n.Locale()).BackupHistoryDiff() }
+
+// BackupHistoryDiff says "Command history"
+// in the language of msgs.
+func (msgs Messages) BackupHistoryDiff() string {
+	return Catalog.Format(msgs.locale, "backupHistoryDiff", nil)
+}
+
+// AccountLogAllButton says "Show All…"
+// in the language the app shows.
+func AccountLogAllButton() string { return In(i18n.Locale()).AccountLogAllButton() }
+
+// AccountLogAllButton says "Show All…"
+// in the language of msgs.
+func (msgs Messages) AccountLogAllButton() string {
+	return Catalog.Format(msgs.locale, "accountLogAllButton", nil)
+}
+
+// AccountLogTitle says "Account Activity"
+// in the language the app shows.
+func AccountLogTitle() string { return In(i18n.Locale()).AccountLogTitle() }
+
+// AccountLogTitle says "Account Activity"
+// in the language of msgs.
+func (msgs Messages) AccountLogTitle() string {
+	return Catalog.Format(msgs.locale, "accountLogTitle", nil)
+}
+
+// AccountLogShown says "{shown} of {all}"
+// in the language the app shows.
+func AccountLogShown(shown int, all int) string { return In(i18n.Locale()).AccountLogShown(shown, all) }
+
+// AccountLogShown says "{shown} of {all}"
+// in the language of msgs.
+func (msgs Messages) AccountLogShown(shown int, all int) string {
+	return Catalog.Format(msgs.locale, "accountLogShown", map[string]any{"shown": shown, "all": all})
+}
+
+// AccountLogClearConfirm says "Clear the whole log?"
+// in the language the app shows.
+func AccountLogClearConfirm() string { return In(i18n.Locale()).AccountLogClearConfirm() }
+
+// AccountLogClearConfirm says "Clear the whole log?"
+// in the language of msgs.
+func (msgs Messages) AccountLogClearConfirm() string {
+	return Catalog.Format(msgs.locale, "accountLogClearConfirm", nil)
+}
+
+// AccountLogChoose says "Choose an entry to see its steps."
+// in the language the app shows.
+func AccountLogChoose() string { return In(i18n.Locale()).AccountLogChoose() }
+
+// AccountLogChoose says "Choose an entry to see its steps."
+// in the language of msgs.
+func (msgs Messages) AccountLogChoose() string {
+	return Catalog.Format(msgs.locale, "accountLogChoose", nil)
+}
+
+// AccountLogColAction says "Action"
+// in the language the app shows.
+func AccountLogColAction() string { return In(i18n.Locale()).AccountLogColAction() }
+
+// AccountLogColAction says "Action"
+// in the language of msgs.
+func (msgs Messages) AccountLogColAction() string {
+	return Catalog.Format(msgs.locale, "accountLogColAction", nil)
+}
+
+// AccountLogColTrigger says "Trigger"
+// in the language the app shows.
+func AccountLogColTrigger() string { return In(i18n.Locale()).AccountLogColTrigger() }
+
+// AccountLogColTrigger says "Trigger"
+// in the language of msgs.
+func (msgs Messages) AccountLogColTrigger() string {
+	return Catalog.Format(msgs.locale, "accountLogColTrigger", nil)
+}
+
+// AccountLogRepeatShort says "Automatic ×{n}"
+// in the language the app shows.
+func AccountLogRepeatShort(n int) string { return In(i18n.Locale()).AccountLogRepeatShort(n) }
+
+// AccountLogRepeatShort says "Automatic ×{n}"
+// in the language of msgs.
+func (msgs Messages) AccountLogRepeatShort(n int) string {
+	return Catalog.Format(msgs.locale, "accountLogRepeatShort", map[string]any{"n": n})
+}

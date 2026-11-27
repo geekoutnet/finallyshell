@@ -7,7 +7,13 @@ box=fs-testbox
 repository=finallyshell-testbox
 base_image=$repository:debian12
 endpoint=127.0.0.1:2222
-ports='{"22/tcp":[{"HostIp":"127.0.0.1","HostPort":"2222"}],"443/tcp":[{"HostIp":"127.0.0.1","HostPort":"8443"}],"80/tcp":[{"HostIp":"127.0.0.1","HostPort":"8080"}]}'
+ssh_binding='[{"HostIp":"127.0.0.1","HostPort":"2222"}]'
+# The web ports, chosen as the box is made (up, reset): Windows reserves
+# ranges of ports for Hyper-V, which may hold the defaults.
+http_port=${TESTBOX_HTTP_PORT:-8080}
+https_port=${TESTBOX_HTTPS_PORT:-8443}
+[[ $http_port =~ ^[1-9][0-9]{0,4}$ && $https_port =~ ^[1-9][0-9]{0,4}$ ]] \
+    || { printf 'testbox: TESTBOX_HTTP_PORT and TESTBOX_HTTPS_PORT must be port numbers.\n' >&2; exit 1; }
 skill_dir=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 repo_dir=$(cd -- "$skill_dir/../../.." && pwd -P)
 env_file=${TESTBOX_ENV:-"$HOME/.finallyshell-testbox.env"}
@@ -53,8 +59,10 @@ docker_ready() {
 
 check_container() {
     local identity
-    identity=$(docker container inspect --format '{{.Config.Image}} {{.Config.Hostname}} {{json .HostConfig.PortBindings}}' "$box") || exit 1
-    [[ $identity == "$repository:"*" $box $ports" ]] || die "Refusing to manage an unexpected container named $box."
+    # The image, the name and the SSH port tell the box; its web ports are
+    # whichever it was made with.
+    identity=$(docker container inspect --format '{{.Config.Image}} {{.Config.Hostname}} {{json (index .HostConfig.PortBindings "22/tcp")}}' "$box") || exit 1
+    [[ $identity == "$repository:"*" $box $ssh_binding" ]] || die "Refusing to manage an unexpected container named $box."
 }
 
 container_exists() {
@@ -165,7 +173,8 @@ start_box() {
         docker run -d --name "$box" --hostname "$box" \
             --privileged --cgroupns=host -v /sys/fs/cgroup:/sys/fs/cgroup:rw \
             --tmpfs /run --tmpfs /run/lock \
-            -p "$endpoint:22" -p 127.0.0.1:8080:80 -p 127.0.0.1:8443:443 "$1" >/dev/null
+            -p "$endpoint:22" -p "127.0.0.1:$http_port:80" -p "127.0.0.1:$https_port:443" "$1" >/dev/null \
+            || die "Could not start the box. If a port is taken or reserved (on Windows: netsh interface ipv4 show excludedportrange protocol=tcp), run reset with TESTBOX_HTTP_PORT or TESTBOX_HTTPS_PORT set to free ports."
     fi
     wait_for_ssh
     ROOT_PW=$ROOT_PW TESTER_PW=$TESTER_PW docker exec -e ROOT_PW -e TESTER_PW -i "$box" sh -s < "$skill_dir/setup.sh"

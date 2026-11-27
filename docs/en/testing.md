@@ -17,7 +17,10 @@ Unit and in-process tests do not need it. Agents should also read the
 - Bash (Git Bash on Windows) and Python 3 to generate credentials on first
   use. Use the Go toolchain from `go.mod` to run the Go tests.
 - Local ports `2222`, `8080` and `8443` must be free unless the testbox
-  already owns them. `docker info` should succeed. On Windows `up` can
+  already owns them. Windows may reserve ranges of ports for Hyper-V
+  (`netsh interface ipv4 show excludedportrange protocol=tcp`): make the
+  box with other web ports, `TESTBOX_HTTP_PORT` and `TESTBOX_HTTPS_PORT`,
+  set for `up` or `reset`; the SSH port stays `2222`. `docker info` should succeed. On Windows `up` can
   launch Docker Desktop from its standard install path if needed.
 
 ## Quick start
@@ -54,7 +57,7 @@ to stdout: capture it as shown, do not run it on its own or with shell tracing.
   rsyslog, logrotate, archive tools, SQLite, jq and Git. Nginx and Fail2ban
   are installed but disabled; getty and logind are masked.
 - Host bindings are `127.0.0.1:2222` → SSH, `127.0.0.1:8080` → HTTP and
-  `127.0.0.1:8443` → HTTPS. The container is privileged so it can run
+  `127.0.0.1:8443` → HTTPS, or the web ports the box was made with. The container is privileged so it can run
   systemd and support nested Docker.
 - The coordinator's box already has Caddy 2.11.9 running. On a fresh box,
   run `.claude/skills/testbox/testbox.sh caddy` to install and enable it from

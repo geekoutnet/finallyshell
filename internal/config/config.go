@@ -256,6 +256,9 @@ type Settings struct {
 	// Sync is the Sync page of the options: where connections and
 	// settings are synced, if anywhere (sync.go).
 	Sync SyncSettings `json:"sync,omitzero"`
+	// Account is who signed in (Account window), and the account's own
+	// sync (account.go).
+	Account AccountSettings `json:"account,omitzero"`
 
 	// The Command bar page of the options (Terminal › Command bar), all
 	// on by default, so each is named for turning it off.

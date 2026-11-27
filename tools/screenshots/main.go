@@ -3,6 +3,10 @@
 //
 //	go run ./tools/screenshots
 //
+// or, with the frames of a run of the tests in a folder of its own,
+//
+//	FRAMES=dir go run ./tools/screenshots
+//
 // It runs the tests of internal/app with SHOT_DIR set, as they save the
 // frames they draw there, and copies the frames listed in shots into
 // docs/screenshots, cropped where a scene is a part of the window. The
@@ -61,6 +65,10 @@ var shots = []shot{
 	{from: "options-colors-%s", to: "terminal-colors", title: locales.Options},
 	{from: "options-background-%s", to: "terminal-background", title: locales.Options},
 	{from: "shortcuts-%s", to: "shortcuts", title: locales.Options},
+	{from: "account-login-%s", to: "account-login", title: locales.AccountSignInGitHub},
+	{from: "account-%s", to: "account", title: locales.AccountWindowTitle},
+	// Desktop mode, in the dark appearance: the project site shows it.
+	{from: "desktop-shell-dock-dark-%s", to: "desktop", title: locales.AppTitle},
 }
 
 // Some tests spell Chinese "zh" in their frames' names.
@@ -79,14 +87,22 @@ const (
 )
 
 func main() {
-	tmp, err := os.MkdirTemp("", "screenshots")
-	check(err)
-	defer os.RemoveAll(tmp)
+	// FRAMES names a folder where a run of the tests with SHOT_DIR saved
+	// the frames already, as when tests of other things fail on this
+	// system: the frames are taken from it, without running the tests,
+	// and a screenshot whose frame it lacks is kept as it is.
+	tmp := os.Getenv("FRAMES")
+	if tmp == "" {
+		var err error
+		tmp, err = os.MkdirTemp("", "screenshots")
+		check(err)
+		defer os.RemoveAll(tmp)
 
-	cmd := exec.Command("go", "test", "-count=1", "./internal/app")
-	cmd.Env = append(os.Environ(), "SHOT_DIR="+tmp)
-	cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
-	check(cmd.Run())
+		cmd := exec.Command("go", "test", "-count=1", "./internal/app")
+		cmd.Env = append(os.Environ(), "SHOT_DIR="+tmp)
+		cmd.Stdout, cmd.Stderr = os.Stdout, os.Stderr
+		check(cmd.Run())
+	}
 
 	out := filepath.Join("docs", "screenshots")
 	check(os.MkdirAll(out, 0o755))
@@ -101,6 +117,10 @@ func main() {
 			}
 			src := filepath.Join(tmp, fmt.Sprintf(s.from, name)+".png")
 			dst := filepath.Join(out, s.to+"-"+l.out+".png")
+			if _, err := os.Stat(src); os.Getenv("FRAMES") != "" && os.IsNotExist(err) {
+				fmt.Println(dst, "kept: no frame for it in FRAMES")
+				continue
+			}
 			check(copyShot(src, dst, s.title(), s.crop))
 			fmt.Println(dst)
 		}

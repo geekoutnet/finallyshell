@@ -24,6 +24,7 @@ func TestDesktopShellScreenshots(t *testing.T) {
 			t.Run(lang+"-"+mode, func(t *testing.T) {
 				a, p, _, s := desktopShellTestApp(t)
 				tt := ui.NewTester(func(c *ui.Context) { c.SetMenuPresentation(ui.PopoverMenus); a.View(c) }, 1280, 820)
+				tt.SetScale(2) // as the README's, which tools/screenshots frames
 				p.tt = tt
 				p.SetLocale(lang)
 				tt.SetDark(dark)

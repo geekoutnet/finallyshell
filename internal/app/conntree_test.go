@@ -53,7 +53,12 @@ func connPageApp(t *testing.T, lang string) (*App, *fakePlatform, *ui.Tester) {
 	// As New does, with the hosts it read.
 	a.connTree.tree.Open.Clear()
 	a.restoreLeftPanel()
-	tt := ui.NewTester(a.View, 1280, 820)
+	// The account's bar under the page: the window is taller by it, and
+	// the monitor's share smaller, so that the page has the room it had
+	// without it.
+	const h = 820
+	a.monitorPct = 100 - (h*(100-float32(defaultMonitorPct))/100+accountBarHeight)/(h+accountBarHeight)*100
+	tt := ui.NewTester(a.View, 1280, h+accountBarHeight)
 	tt.SetScale(2)
 	tt.SetLocale(lang)
 	p.tt = tt

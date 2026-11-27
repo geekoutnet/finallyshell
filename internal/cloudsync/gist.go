@@ -14,7 +14,8 @@ import (
 	"unicode/utf8"
 )
 
-// Gist keeps the file in a secret GitHub gist, as the file FileName.
+// Gist keeps the file in a secret GitHub gist, as the file FileName (or
+// File).
 //
 // A Gist is not safe for concurrent use: Get and Put set ID.
 type Gist struct {
@@ -29,6 +30,26 @@ type Gist struct {
 	Client *http.Client
 	// BaseURL is the GitHub API's URL, "" for "https://api.github.com".
 	BaseURL string
+	// File is the name of the file in the gist, "" for FileName; and
+	// Description the description of the gist Put creates, "" for the
+	// Sync page's. A different File keeps another sync's gist apart, as
+	// the account's is from the Sync page's.
+	File        string
+	Description string
+}
+
+func (g *Gist) file() string {
+	if g.File == "" {
+		return FileName
+	}
+	return g.File
+}
+
+func (g *Gist) description() string {
+	if g.Description == "" {
+		return gistDescription
+	}
+	return g.Description
 }
 
 // gistDescription is the description of the gists Put creates.
@@ -84,7 +105,7 @@ func (g *Gist) Get(ctx context.Context) ([]byte, Version, error) {
 	if err != nil {
 		return nil, Version{}, err
 	}
-	f := doc.Files[FileName]
+	f := doc.Files[g.file()]
 	if f == nil {
 		return nil, Version{}, ErrNotFound
 	}
@@ -123,7 +144,7 @@ func (g *Gist) Put(ctx context.Context, data []byte, prev *Version) (Version, er
 			return Version{}, ErrConflict
 		case err != nil:
 			return Version{}, err
-		case prev == nil && cur.Files[FileName] != nil:
+		case prev == nil && cur.Files[g.file()] != nil:
 			// The file was made since Get found none.
 			return Version{}, ErrConflict
 		case prev != nil && cur.version().Tag != prev.Tag:
@@ -131,7 +152,7 @@ func (g *Gist) Put(ctx context.Context, data []byte, prev *Version) (Version, er
 		}
 	}
 	doc, err := g.send(ctx, http.MethodPatch, g.base()+"/gists/"+url.PathEscape(g.ID), map[string]any{
-		"files": map[string]any{FileName: map[string]string{"content": string(data)}},
+		"files": map[string]any{g.file(): map[string]string{"content": string(data)}},
 	}, http.StatusOK)
 	if errors.Is(err, ErrNotFound) {
 		return Version{}, ErrConflict
@@ -145,9 +166,9 @@ func (g *Gist) Put(ctx context.Context, data []byte, prev *Version) (Version, er
 // create makes a secret gist with the file and sets ID to it.
 func (g *Gist) create(ctx context.Context, data []byte) (Version, error) {
 	doc, err := g.send(ctx, http.MethodPost, g.base()+"/gists", map[string]any{
-		"description": gistDescription,
+		"description": g.description(),
 		"public":      false,
-		"files":       map[string]any{FileName: map[string]string{"content": string(data)}},
+		"files":       map[string]any{g.file(): map[string]string{"content": string(data)}},
 	}, http.StatusCreated)
 	if err != nil {
 		return Version{}, err
@@ -190,7 +211,7 @@ func (g *Gist) find(ctx context.Context) (string, error) {
 			return "", fmt.Errorf("cloudsync: gist: reading the list of gists: %w", err)
 		}
 		for _, d := range gists {
-			if _, ok := d.Files[FileName]; !ok || d.ID == "" {
+			if _, ok := d.Files[g.file()]; !ok || d.ID == "" {
 				continue
 			}
 			at, _ := time.Parse(time.RFC3339, d.UpdatedAt)

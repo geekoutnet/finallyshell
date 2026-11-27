@@ -12,6 +12,7 @@ import (
 	"slices"
 	"time"
 
+	"finallyshell/internal/account"
 	"finallyshell/internal/cloudsync"
 	"finallyshell/internal/config"
 	"finallyshell/internal/importer"
@@ -314,8 +315,13 @@ type App struct {
 
 	// Sync (sync.go), and how it makes its remote: syncRemote, which
 	// tests replace.
-	sync        syncState
-	newRemote   func(config.SyncSettings, string) (cloudsync.Remote, error)
+	sync      syncState
+	newRemote func(config.SyncSettings, string) (cloudsync.Remote, error)
+	// The signed-in account and its own sync (account_sync.go), and how
+	// it finds the account's provider: account.Lookup, which tests
+	// replace.
+	account     accountState
+	newProvider func(string) account.Provider
 	telnetDial  func(context.Context, string, string) (net.Conn, error)
 	serialOpen  func(string, config.SerialConfig) (io.ReadWriteCloser, error)
 	serialPorts func() ([]string, error)
@@ -363,6 +369,7 @@ func New(plat Platform) *App {
 		importSources: allImportSources(),
 		home:          homeDir,
 		newRemote:     syncRemote,
+		newProvider:   account.Lookup,
 	}
 	a.hosts, _ = config.LoadHosts()
 	a.ensureTunnelManagerIDs()

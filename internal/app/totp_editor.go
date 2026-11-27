@@ -123,7 +123,7 @@ func (a *App) saveTOTPEdit(ed *connEditor, id string, secret totp.Secret, remove
 			ed.totpText, ed.totpChange = "", totpKeep
 			if a.editor == ed && a.windowOpen(WindowEditor) && (a.hosts.Host(id) != nil || ed.id == "") {
 				a.setTOTPStatus(id, secret, !remove, !remove, false)
-				a.sync.again = true
+				a.sync.again, a.account.sync.again = true, true
 				if a.saveEditorFields(ed, id) {
 					return
 				}

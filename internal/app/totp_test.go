@@ -196,7 +196,7 @@ func TestTOTPEditAndCopyOnlyFromCredentialStore(t *testing.T) {
 	if got := manager.Clipboard(); got != secret.Code(before) && got != secret.Code(time.Now()) {
 		t.Fatal("menu did not copy a current code")
 	}
-	application.applySyncedSecrets(nil, map[string]string{lockVerifierKey: "invalid verifier", hostSecretKey("nonexistent", secretTOTP): secret.Encode()})
+	application.applySyncedSecrets(nil, map[string]string{lockVerifierKey: "invalid verifier", hostSecretKey("nonexistent", secretTOTP): secret.Encode()}, &application.sync)
 	if !application.secrets.queue.idle() {
 		platform.until(t, "secret queue", application.secrets.queue.idle)
 	}

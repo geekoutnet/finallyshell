@@ -149,6 +149,17 @@ func (d *device) syncErr(t *testing.T) {
 	d.p.drain()
 }
 
+// choosePage syncs d's Sync page as chosen in the choice's window.
+func (d *device) choosePage(t *testing.T, choice string) {
+	t.Helper()
+	d.use(t)
+	d.a.chooseSync(d.a.pageSync(), choice, time.Now())
+	d.p.until(t, "the chosen sync", func() bool { return !d.a.sync.running })
+	if err := d.a.sync.err; err != nil {
+		t.Fatalf("the chosen sync: %v", err)
+	}
+}
+
 func (d *device) addHost(id, name string) *config.Host {
 	h := &config.Host{ID: id, Name: name, Addr: name + ".example", User: "root", Auth: config.AuthPassword}
 	d.a.hosts.Add(h)
@@ -255,10 +266,16 @@ func TestSyncWrongPassword(t *testing.T) {
 	if two.a.sync.err != nil {
 		t.Fatal(two.a.sync.err)
 	}
+	// Its base no longer opens with the new password: it asks, then
+	// merges, deleting nothing.
 	one.a.sync.password = "wrong"
-	one.sync(t)
+	one.syncErr(t)
+	if one.a.sync.choice == nil {
+		t.Fatalf("no choice; err %v", one.a.sync.err)
+	}
+	one.choosePage(t, choiceMerge)
 	if got := hostNames(one.a); !slices.Equal(got, []string{"mine", "web"}) {
-		t.Fatalf("after the replace: %v", got) // no base for the new password: nothing deleted
+		t.Fatalf("after the replace: %v", got)
 	}
 }
 
@@ -269,6 +286,7 @@ func TestSyncLocalChangeDuringSync(t *testing.T) {
 	one.addHost("h1", "web")
 	one.sync(t)
 	two := newDevice(t, r)
+	two.sync(t)
 	two.addHost("h2", "db")
 	two.use(t)
 	two.a.startSync(false, time.Now())
@@ -494,5 +512,48 @@ func TestSyncPasswordSavedDuringSync(t *testing.T) {
 	one.p.until(t, "the store", storeSettled(one.a, one.p))
 	if got := one.p.stored[key]; got != "mine" {
 		t.Fatalf("the other device has %q", got)
+	}
+}
+
+// The Sync page asks as the account's sync does: an old copy on a
+// computer that never synced there stops before anything changes, and
+// each choice does what it says.
+func TestSyncPageChoice(t *testing.T) {
+	for _, choice := range []string{choiceMerge, choiceRemote, choiceLocal} {
+		t.Run(choice, func(t *testing.T) {
+			r := &memRemote{}
+			busy := newDevice(t, r)
+			busy.addHost("h1", "web")
+			busy.addHost("h2", "db")
+			busy.sync(t)
+			busy.a.hosts.Host("h1").Name = "web-renamed"
+			busy.a.saveHosts(busy.a.hosts)
+			busy.sync(t)
+
+			old := newDevice(t, r)
+			old.addHost("h1", "web")
+			old.addHost("h9", "legacy")
+			writes := r.writes()
+			old.syncErr(t)
+			if old.a.sync.choice == nil || r.writes() != writes {
+				t.Fatalf("choice %v, writes %d", old.a.sync.choice, r.writes()-writes)
+			}
+			if !old.a.windowOpen(WindowSyncChoice) {
+				t.Fatal("the choice's window is not open")
+			}
+			old.choosePage(t, choice)
+			want := map[string][]string{
+				choiceMerge:  {"db", "legacy", "web-renamed"},
+				choiceRemote: {"db", "web-renamed"},
+				choiceLocal:  {"legacy", "web"},
+			}[choice]
+			if got := hostNames(old.a); !slices.Equal(got, want) {
+				t.Fatalf("this computer has %v, want %v", got, want)
+			}
+			busy.sync(t)
+			if got := hostNames(busy.a); !slices.Equal(got, want) {
+				t.Fatalf("the busy computer has %v, want %v", got, want)
+			}
+		})
 	}
 }

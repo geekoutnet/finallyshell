@@ -44,6 +44,11 @@ type SyncSettings struct {
 	S3Key         string `json:"s3Key,omitempty"`
 	S3AccessKeyID string `json:"s3AccessKeyId,omitempty"`
 
+	// Account is the signed-in account of the account's sync
+	// (SyncAccount), as "provider:user ID": never saved, as
+	// AccountSettings.SyncSettings makes those settings.
+	Account string `json:"-"`
+
 	// Passwords includes the saved passwords and key passphrases.
 	Passwords bool `json:"passwords,omitempty"`
 	// Auto syncs at start, after local changes and every Interval
@@ -97,6 +102,8 @@ func (s SyncSettings) Remote() string {
 		return "webdav " + s.WebDAVUser + " " + s.WebDAVURL
 	case SyncS3:
 		return "s3 " + s.S3Endpoint + " " + s.S3Bucket + " " + s.S3Key
+	case SyncAccount:
+		return "account " + s.Account + " " + s.GistID
 	}
 	return ""
 }
@@ -142,6 +149,7 @@ var (
 		"alertRules", // the alerts this device shows, while it runs
 		"desktop",    // its wallpaper is a file in this device's config folder
 		"sync",
+		"account", // who signed in here, and the account's sync
 		// Agreeing to download the location data, or to send the
 		// server's peers to an online service, is each device's own:
 		// the data is downloaded on each, over its own network, and a
@@ -225,24 +233,41 @@ type SyncState struct {
 	RestorePaused bool `json:"restorePaused,omitempty"`
 }
 
-func syncStatePath() string { return filepath.Join(Dir(), "sync-state.json") }
+// SyncStateName is the Sync page's state file.
+const SyncStateName = "sync-state.json"
 
 // LoadSyncState reads sync-state.json: zero when there is none.
-func LoadSyncState() SyncState {
+func LoadSyncState() SyncState { return LoadSyncStateFile(SyncStateName) }
+
+// SaveSyncState writes sync-state.json.
+func SaveSyncState(st SyncState) error { return SaveSyncStateFile(SyncStateName, st) }
+
+// LoadSyncStateFile reads the state file of a sync, by its name in the
+// config folder: zero when there is none.
+func LoadSyncStateFile(name string) SyncState {
 	var st SyncState
-	if data, err := os.ReadFile(syncStatePath()); err == nil {
+	if data, err := os.ReadFile(filepath.Join(Dir(), name)); err == nil {
 		json.Unmarshal(data, &st)
 	}
 	return st
 }
 
-// SaveSyncState writes sync-state.json.
-func SaveSyncState(st SyncState) error {
+// SaveSyncStateFile writes the state file of a sync.
+func SaveSyncStateFile(name string, st SyncState) error {
 	data, err := json.MarshalIndent(st, "", "  ")
 	if err != nil {
 		return err
 	}
-	return writeFileAtomic(syncStatePath(), append(data, '\n'))
+	return writeFileAtomic(filepath.Join(Dir(), name), append(data, '\n'))
+}
+
+// DeleteSyncStateFile removes the state file of a sync.
+func DeleteSyncStateFile(name string) error {
+	err := os.Remove(filepath.Join(Dir(), name))
+	if os.IsNotExist(err) {
+		return nil
+	}
+	return err
 }
 
 // HostsBeforeSyncName is the copy of hosts.json kept, next to it, before

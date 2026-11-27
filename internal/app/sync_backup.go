@@ -73,12 +73,25 @@ func (a *App) recordSync(reason, result string, res *cloudsync.Result, guard boo
 	}
 }
 
-func (a *App) loadSyncState() {
-	st := &a.sync
+func (a *App) loadSyncState() { a.loadSyncStateOn(a.pageSync()) }
+
+// loadSyncStateOn reads the state file of the sync t, once.
+func (a *App) loadSyncStateOn(t syncTarget) {
+	st := t.st
 	if !st.stateLoaded {
-		st.state, st.stateLoaded = config.LoadSyncState(), true
-		st.restorePaused = st.state.RestorePaused && st.state.Remote == a.settings.Sync.Remote()
+		st.state, st.stateLoaded = config.LoadSyncStateFile(t.stateFile), true
+		st.restorePaused = st.state.RestorePaused && st.state.Remote == t.settings().Remote()
 	}
+}
+
+// recordSyncOn records what a sync of t did: the Sync page's in the sync
+// log, the account's in the account's own log.
+func (a *App) recordSyncOn(t syncTarget, reason, result string, res *cloudsync.Result, guard bool) {
+	if t.account {
+		a.recordAccountSync(reason, result, res)
+		return
+	}
+	a.recordSync(reason, result, res, guard)
 }
 
 func (a *App) pauseRestoreUpload(remote string) error {

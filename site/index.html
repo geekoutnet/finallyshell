@@ -1,104 +1,247 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-Hans">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Finallyshell</title>
-<meta name="description" content="An SSH client with FinalShell's layout and vertical session tabs, written in Go. Terminal, SFTP files and server monitoring in one native window for macOS, Windows and Linux.">
-<meta property="og:title" content="Finallyshell">
-<meta property="og:description" content="An SSH client with FinalShell's layout and vertical session tabs, written in Go. Terminal, SFTP files and server monitoring in one native window for macOS, Windows and Linux.">
-<meta property="og:image" content="https://tooonychen.github.io/finallyshell/screenshots/main-en.png">
-<link rel="canonical" href="https://tooonychen.github.io/finallyshell/">
-<link rel="alternate" hreflang="en" href="https://tooonychen.github.io/finallyshell/">
-<link rel="alternate" hreflang="zh-Hans" href="https://tooonychen.github.io/finallyshell/zh-CN/">
+<title>Finallyshell：所有服务器，一个窗口</title>
+<meta name="description" content="布局和 FinalShell 一样、会话标签竖着排的 SSH 客户端。终端、文件、监控、Docker、网站、数据库和隧道都在同一个原生窗口里，支持 macOS、Windows 和 Linux。">
+<meta property="og:title" content="Finallyshell：所有服务器，一个窗口">
+<meta property="og:description" content="布局和 FinalShell 一样、会话标签竖着排的 SSH 客户端。终端、文件、监控、Docker、网站、数据库和隧道都在同一个原生窗口里。">
+<meta property="og:image" content="https://geekoutnet.github.io/finallyshell/screenshots/main-zh-CN.png">
+<meta name="theme-color" content="#eef1f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15181d" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://geekoutnet.github.io/finallyshell/">
+<link rel="alternate" hreflang="zh-Hans" href="https://geekoutnet.github.io/finallyshell/">
+<link rel="alternate" hreflang="en" href="https://geekoutnet.github.io/finallyshell/en/">
 <link rel="icon" type="image/png" href="icon.png">
 <link rel="stylesheet" href="style.css">
+<script src="site.js" defer></script>
 </head>
 <body>
-<div class="wrap">
-  <header class="top">
-    <a class="brand" href=""><img src="icon.png" alt="">Finallyshell</a>
-    <nav class="links">
-      <a href="#download">Download</a>
-      <a href="https://github.com/TooonyChen/finallyshell/blob/main/docs/en/features.md">Docs</a>
-      <a href="https://github.com/TooonyChen/finallyshell">GitHub</a>
-      <a href="zh-CN/" lang="zh-Hans">简体中文</a>
+<header class="top">
+  <div class="page">
+    <a class="brand" href="./"><img src="icon.png" alt="">Finallyshell</a>
+    <nav>
+      <a href="#sessions">功能</a>
+      <a href="https://github.com/geekoutnet/finallyshell/blob/dev/docs/zh-CN/features.md">文档</a>
+      <a href="https://github.com/geekoutnet/finallyshell">GitHub</a>
+      <a class="lang" href="en/" lang="en" hreflang="en">English</a>
+      <a class="get" href="#download">下载</a>
     </nav>
-  </header>
+  </div>
+</header>
 
-  <main>
-    <div class="hero">
-      <h1>Finallyshell</h1>
-      <p>An SSH client with FinalShell's layout and vertical session tabs. A native app written in Go, with no Java runtime to install.</p>
-      <div class="actions">
-        <a class="button primary" href="https://github.com/TooonyChen/finallyshell/releases/latest">Download from GitHub Releases</a>
-        <a class="button" href="https://github.com/TooonyChen/finallyshell">Source code</a>
-      </div>
-      <div class="platforms">macOS · Windows · Linux</div>
-      <div class="shot"><img src="screenshots/main-en.png" width="2672" height="1808" alt="Finallyshell's main window: server monitor, session list, terminal and file panel"></div>
+<main class="page">
+  <section class="hero">
+    <h1>所有服务器，<br>一个窗口。</h1>
+    <p class="lead">终端、文件、监控、Docker、网站和数据库放在同一个原生窗口里。布局和 FinalShell 一样，会话标签竖着排，开二十台也看得清。</p>
+    <div class="cta">
+      <a class="button primary" href="#download" data-get="win-setup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg> 免费下载</a>
+      <a class="button" href="#download">全部安装包</a>
+      <span class="note">支持 macOS、Windows 和 Linux，免费使用</span>
     </div>
-
-    <div class="notice">
-      <strong>Where the real Finallyshell is</strong>
-      This page and the <a href="https://github.com/TooonyChen/finallyshell">GitHub repository</a> are the project's only official places, and <a href="https://github.com/TooonyChen/finallyshell/releases">GitHub Releases</a> is the only official download. A site that offers downloads under the Finallyshell name is not affiliated with this project.
+    <div class="stage">
+      <img src="screenshots/main-zh-CN.png" width="2672" height="1808" alt="Finallyshell 主窗口：左上是服务器状态，左下是竖排的会话列表，右边是终端，终端下面是服务器上的文件">
     </div>
-
-    <section class="feature">
-      <div class="text">
-        <h2>Remote files next to the terminal</h2>
-        <p>Browse the server over SFTP under the terminal. Drag files in to upload, follow transfers as they run, and edit remote text files in the built-in editor.</p>
-      </div>
-      <div class="shot"><img src="screenshots/transfers-en.png" width="1552" height="1128" loading="lazy" alt="The file panel with a list of transfers"></div>
-    </section>
-
-    <section class="feature">
-      <div class="text">
-        <h2>See how the server is doing</h2>
-        <p>CPU, memory, network, disks and processes of a Linux server, shown beside the session and read over the same connection.</p>
-      </div>
-      <div class="shot"><img src="screenshots/system-info-en.png" width="1552" height="1128" loading="lazy" alt="The server monitor's system information"></div>
-    </section>
-
-    <section class="feature">
-      <div class="text">
-        <h2>Bring your hosts with you</h2>
-        <p>Import connections and folders from FinalShell, Xshell, SecureCRT and MobaXterm, the hosts in your <code>~/.ssh/config</code>, or a server list in a CSV or Excel file.</p>
-      </div>
-      <div class="shot"><img src="screenshots/import-finalshell-en.png" width="1832" height="1288" loading="lazy" alt="Importing connections from FinalShell"></div>
-    </section>
-
-    <section class="feature">
-      <div class="text">
-        <h2>Commands one click away</h2>
-        <p>Save the commands you type often as buttons, write a few lines in the command editor and send them, to one session or to several at once.</p>
-      </div>
-      <div class="shot"><img src="screenshots/quick-commands-en.png" width="2192" height="834" loading="lazy" alt="Quick commands under the terminal"></div>
-    </section>
-
-    <div class="download" id="download">
-      <h2>Download</h2>
-      <p>Every build is on <a href="https://github.com/TooonyChen/finallyshell/releases/latest">GitHub Releases</a>. The <a href="https://github.com/TooonyChen/finallyshell#install">install notes</a> cover the first launch on macOS and Windows and what Linux needs.</p>
-      <div class="table">
-        <table>
-          <tr><th>System</th><th>File</th></tr>
-          <tr><td>macOS (Apple silicon)</td><td><code>finallyshell-&lt;version&gt;-arm64.dmg</code></td></tr>
-          <tr><td>macOS (Intel)</td><td><code>finallyshell-&lt;version&gt;-amd64.dmg</code></td></tr>
-          <tr><td>Windows (x64)</td><td><code>finallyshell-setup-&lt;version&gt;-amd64.exe</code></td></tr>
-          <tr><td>Debian, Ubuntu</td><td><code>finallyshell_&lt;version&gt;_amd64.deb, _arm64.deb</code></td></tr>
-          <tr><td>Other Linux</td><td><code>finallyshell-&lt;version&gt;-linux-amd64.tar.gz, -arm64.tar.gz</code></td></tr>
-        </table>
-      </div>
+    <div class="facts">
+      <div><strong>SSH、Telnet、串口、远程桌面</strong>四种连接，跳板机和代理可以串起来</div>
+      <div><strong>服务器上不装任何东西</strong>监控和管理都通过同一个 SSH 连接完成</div>
+      <div><strong>密码不落地</strong>存在系统钥匙串里，同步前先在本机加密</div>
+      <div><strong>原生程序</strong>不需要 Java，打开就是熟悉的布局</div>
     </div>
-  </main>
+  </section>
 
-  <footer>
-    <div class="badges">
-      <a href="https://awesomemygo.dev/apps/finallyshell" target="_blank" rel="noopener noreferrer"><img src="https://awesomemygo.dev/badge.svg" alt="Listed on Awesome MyGo"></a>
-      <a href="https://trendshift.io/repositories/343771?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-343771" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/343771/daily?language=Go" alt="TooonyChen%2Ffinallyshell | Trendshift" width="250" height="55"/></a>
+  <div class="body">
+    <aside class="sessions" aria-label="功能">
+      <div class="title">会话 (9)</div>
+      <ol>
+        <li><a href="#sessions"><span class="dot"></span><span class="name">终端与会话</span><span class="host">分屏、快捷命令、批量执行</span></a></li>
+        <li><a href="#files"><span class="dot"></span><span class="name">文件与传输</span><span class="host">SFTP、编辑器、服务器间直传</span></a></li>
+        <li><a href="#monitor"><span class="dot"></span><span class="name">服务器监控</span><span class="host">CPU、内存、网络、进程</span></a></li>
+        <li><a href="#panels"><span class="dot"></span><span class="name">服务器管理</span><span class="host">Docker、网站、系统、数据库</span></a></li>
+        <li><a href="#tunnels"><span class="dot"></span><span class="name">隧道与代理</span><span class="host">转发、SOCKS5、内网穿透</span></a></li>
+        <li><a href="#desktop"><span class="dot"></span><span class="name">桌面模式</span><span class="host">多窗口、Dock、AI 助手</span></a></li>
+        <li><a href="#sync"><span class="dot"></span><span class="name">账户与同步</span><span class="host">GitHub 登录、多设备合并</span></a></li>
+        <li><a href="#import"><span class="dot"></span><span class="name">迁移</span><span class="host">FinalShell、Xshell 等导入</span></a></li>
+        <li><a href="#download"><span class="dot wait"></span><span class="name">下载</span><span class="host">macOS、Windows、Linux</span></a></li>
+      </ol>
+    </aside>
+
+    <div class="sections">
+      <section class="section" id="sessions">
+        <h2>会话竖着排，开多少台都不挤</h2>
+        <p>左上是服务器状态，下面是会话列表，右边是终端，终端下面是服务器上的文件。会话标签可以滚动、拖动排序，也能拆成单独的标签和分屏。</p>
+        <ul class="points">
+          <li>常用命令存成按钮，或者在命令编辑器里写几行一起发；一条命令可以同时发给多台服务器，结果汇总对比</li>
+          <li>错误、警告、IP 地址等关键词高亮，会话录制回放，<code>rz</code>、<code>sz</code> 直接传文件</li>
+          <li>GBK、Big5、Shift_JIS 等编码的服务器照常显示，退格键和删除键发送什么可以按主机设置</li>
+          <li>二次验证码自动填写，SSH 密钥一键生成和部署，支持 SSH Agent 和 X11 转发</li>
+        </ul>
+        <div class="shot"><img src="screenshots/quick-commands-zh-CN.png" width="2192" height="834" loading="lazy" alt="终端下方的快捷命令按钮和命令编辑器"></div>
+      </section>
+
+      <section class="section" id="files">
+        <h2>服务器上的文件就在终端下面</h2>
+        <p>文件面板跟着终端的当前目录走。拖进来就上传，成千上万个小文件自动打包压缩再传，两台服务器之间可以直接互传，不用先下载到本机。</p>
+        <ul class="points">
+          <li>内置代码编辑器：多标签、语法高亮、指令补全，保存前先看改了什么</li>
+          <li>压缩解压、修改权限、远程下载链接，删除先进回收站</li>
+          <li>没有 SFTP 的路由器可以一键装上</li>
+        </ul>
+        <div class="pair">
+          <div class="shot"><img src="screenshots/transfers-zh-CN.png" width="1552" height="1128" loading="lazy" alt="文件面板和传输列表"></div>
+          <div class="shot"><img src="screenshots/file-editor-zh-CN.png" width="2112" height="1568" loading="lazy" alt="编辑服务器上的部署脚本"></div>
+        </div>
+      </section>
+
+      <section class="section" id="monitor">
+        <h2>服务器状态一眼看清</h2>
+        <p>CPU、内存、交换区、网速、延迟、磁盘和进程就在会话旁边，走的是同一个连接。概览页把负载、端口、服务和容器放在一页里。</p>
+        <ul class="points">
+          <li>网络连接列表、按网卡的网速曲线、路由追踪和 IP 归属地</li>
+          <li>CPU、内存、磁盘超过阈值时提醒</li>
+          <li>一键清理缓存、整理内存碎片</li>
+        </ul>
+        <div class="shot narrow"><img src="screenshots/system-info-zh-CN.png" width="1552" height="1128" loading="lazy" alt="服务器的系统信息"></div>
+      </section>
+
+      <section class="section" id="panels">
+        <h2>常用的服务器面板，搬进了客户端</h2>
+        <p>宝塔、1Panel 里最常用的那部分，直接通过 SSH 完成。需要 root 时自动提权；重启服务、改防火墙这类操作，执行前都会写清楚会动什么。</p>
+        <div class="tabs">
+          <div role="tablist" aria-label="服务器管理">
+            <button role="tab" id="tab-docker" aria-controls="panel-docker" aria-selected="true">Docker</button>
+            <button role="tab" id="tab-sites" aria-controls="panel-sites" aria-selected="false" tabindex="-1">网站与证书</button>
+            <button role="tab" id="tab-system" aria-controls="panel-system" aria-selected="false" tabindex="-1">系统</button>
+            <button role="tab" id="tab-db" aria-controls="panel-db" aria-selected="false" tabindex="-1">数据库</button>
+            <button role="tab" id="tab-openwrt" aria-controls="panel-openwrt" aria-selected="false" tabindex="-1">OpenWrt</button>
+          </div>
+          <div role="tabpanel" id="panel-docker" aria-labelledby="tab-docker">
+            <h3>容器、镜像和编排</h3>
+            <p>新建和重建容器，看资源曲线，进容器浏览文件；拉取、构建、推送镜像；部署和编辑 compose 项目。</p>
+            <ul><li>容器批量启停和清理</li><li>网络和存储卷</li><li>磁盘占用、事件、镜像仓库</li><li>守护进程配置</li></ul>
+          </div>
+          <div role="tabpanel" id="panel-sites" aria-labelledby="tab-sites" hidden>
+            <h3>Nginx、Caddy 和证书</h3>
+            <p>站点表单和常用模板，配置检查失败自动恢复；Caddy 一键安装、更新和迁移；证书到期提醒。</p>
+            <ul><li>反向代理、静态站、PHP、SPA</li><li>Nginx 性能参数和日志</li><li>配置备份和还原</li><li>从 Nginx 迁移到 Caddy</li></ul>
+          </div>
+          <div role="tabpanel" id="panel-system" aria-labelledby="tab-system" hidden>
+            <h3>服务、日志和定时任务</h3>
+            <p>systemd 服务的启停和开机自启，按级别和时间筛选日志，定时任务立即运行。</p>
+            <ul><li>防火墙规则</li><li>安全检查</li><li>软件更新</li><li>磁盘分析</li></ul>
+          </div>
+          <div role="tabpanel" id="panel-db" aria-labelledby="tab-db" hidden>
+            <h3>MySQL、PostgreSQL 和 Redis</h3>
+            <p>经 SSH 连接服务器上的数据库，浏览表和数据，执行查询；密码只存在系统钥匙串里。</p>
+            <ul><li>MySQL 和 MariaDB</li><li>PostgreSQL</li><li>Redis 键值浏览</li></ul>
+          </div>
+          <div role="tabpanel" id="panel-openwrt" aria-labelledby="tab-openwrt" hidden>
+            <h3>路由器也能管</h3>
+            <p>自动识别 OpenWrt 和 ImmortalWrt，系统页换成路由器专用的内容。</p>
+            <ul><li>网络接口和 DHCP 租约</li><li>端口转发</li><li>procd 服务</li><li>opkg、apk 软件包</li></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="tunnels">
+        <h2>端口转发，不用再记 ssh -L</h2>
+        <p>本地、远程和动态转发都用表单建，可以在后台常驻、开机自启、断线自动重连。也能让服务器借用本机的网络，或者通过系统代理分流。</p>
+        <ul class="points">
+          <li>SOCKS5 和 HTTP 代理、反向代理、Unix socket，来源白名单和限速</li>
+          <li>21 个常用场景一键创建，<code>ssh -L/-R/-D</code> 命令直接导入</li>
+          <li>代理库统一管理代理，测试连通性、延迟和出口 IP</li>
+        </ul>
+        <div class="pair">
+          <div class="shot"><img src="screenshots/connection-tunnels-zh-CN.png" width="1472" height="1568" loading="lazy" alt="连接的隧道设置"></div>
+          <div class="shot"><img src="screenshots/connection-proxy-zh-CN.png" width="1472" height="1568" loading="lazy" alt="经过跳板机和代理连接"></div>
+        </div>
+      </section>
+
+      <section class="band section" id="desktop">
+        <h2>每台服务器都有自己的桌面</h2>
+        <p>打开桌面模式，服务器就像一台电脑：此电脑、文件管理、任务管理器、终端、浏览器和应用中心，窗口可以拖动、缩放和贴边。</p>
+        <ul class="points">
+          <li>AI 助手直接在服务器上执行命令：只读的自动运行，会改动的逐条确认，危险操作要手动输入确认</li>
+          <li>回收站、压缩解压、跨服务器复制粘贴</li>
+          <li>壁纸、图标文件夹和 Dock 都能自定义</li>
+        </ul>
+        <div class="shot"><img src="screenshots/desktop-zh-CN.png" width="2672" height="1808" loading="lazy" alt="服务器的桌面：文件窗口、终端窗口、系统状态和底部的 Dock"></div>
+      </section>
+
+      <section class="section" id="sync">
+        <h2>换一台电脑，连接都在</h2>
+        <p>用 GitHub 账号登录，连接和设置会自动同步到你自己的私密 Gist。多台电脑之间逐条合并改动；很久没用的电脑重新同步前，会先问你是合并、用云端的，还是以本机为准。</p>
+        <ul class="points">
+          <li>内容离开电脑前就已加密，默认用 GitHub 邮箱作同步密码，也可以换成自己的</li>
+          <li>保留历史版本，可以预览和还原；大批量删除前会暂停，等你确认</li>
+          <li>不用 GitHub 的话，也可以同步到坚果云、Nextcloud 等 WebDAV，或 S3 兼容存储</li>
+        </ul>
+        <div class="pair">
+          <div class="shot"><img src="screenshots/account-login-zh-CN.png" width="1112" height="1028" loading="lazy" alt="使用 GitHub 登录：要打开的地址和设备码"></div>
+          <div class="shot"><img src="screenshots/account-zh-CN.png" width="1392" height="1568" loading="lazy" alt="账户窗口：登录信息、同步密码和操作记录"></div>
+        </div>
+      </section>
+
+      <section class="section" id="import">
+        <h2>原来的服务器，直接带过来</h2>
+        <p>导入 FinalShell、Xshell、SecureCRT、MobaXterm 的连接和文件夹，<code>~/.ssh/config</code> 里的主机，或者 CSV、Excel 格式的服务器列表。</p>
+        <div class="shot narrow"><img src="screenshots/import-finalshell-zh-CN.png" width="1832" height="1288" loading="lazy" alt="从 FinalShell 导入连接"></div>
+      </section>
+
+      <section class="section download" id="download">
+        <h2>下载</h2>
+        <p class="release" data-version>最新版本在 <a href="https://github.com/geekoutnet/finallyshell/releases/latest">GitHub Releases</a>。</p>
+        <div class="systems">
+          <div class="system" data-os="windows">
+            <h3>Windows</h3>
+            <ul>
+              <li><a data-asset="win-setup" href="https://github.com/geekoutnet/finallyshell/releases/latest">安装程序 <span>.exe</span></a></li>
+              <li><a data-asset="win-zip" href="https://github.com/geekoutnet/finallyshell/releases/latest">免安装版 <span>.zip</span></a></li>
+            </ul>
+            <div class="how"><p>SmartScreen 提示没有签名时，点“更多信息”，再点“仍要运行”。之后程序会自己更新。</p></div>
+          </div>
+          <div class="system" data-os="macos">
+            <h3>macOS</h3>
+            <ul>
+              <li><a data-asset="mac-arm" href="https://github.com/geekoutnet/finallyshell/releases/latest">Apple 芯片 <span>.dmg</span></a></li>
+              <li><a data-asset="mac-intel" href="https://github.com/geekoutnet/finallyshell/releases/latest">Intel 芯片 <span>.dmg</span></a></li>
+            </ul>
+            <div class="how">
+              <p>还没有经过 Apple 公证。拖进“应用程序”后，在终端运行：</p>
+              <div class="cmd"><code>xattr -dr com.apple.quarantine /Applications/Finallyshell.app</code><button type="button">复制</button></div>
+              <p>或者在“系统设置 › 隐私与安全性”里点“仍要打开”。</p>
+            </div>
+          </div>
+          <div class="system" data-os="linux">
+            <h3>Linux</h3>
+            <ul>
+              <li><a data-asset="deb-amd64" href="https://github.com/geekoutnet/finallyshell/releases/latest">Debian、Ubuntu（x64） <span>.deb</span></a></li>
+              <li><a data-asset="deb-arm64" href="https://github.com/geekoutnet/finallyshell/releases/latest">Debian、Ubuntu（ARM64） <span>.deb</span></a></li>
+              <li><a data-asset="tar-amd64" href="https://github.com/geekoutnet/finallyshell/releases/latest">其他发行版（x64） <span>.tar.gz</span></a></li>
+              <li><a data-asset="tar-arm64" href="https://github.com/geekoutnet/finallyshell/releases/latest">其他发行版（ARM64） <span>.tar.gz</span></a></li>
+            </ul>
+            <div class="how"><p>压缩包解开后运行 <code>sh install.sh</code>，装到 <code>~/.local</code>。记住密码需要 GNOME Keyring、KWallet 等密钥环。</p></div>
+          </div>
+        </div>
+        <div class="build">
+          <h3>从源码构建</h3>
+          <p>需要 Go 1.27.3 或更新的版本。<code>go tool mygo dev</code> 运行程序，改了代码会自动重启。</p>
+          <div class="cmd"><code>git clone -b dev https://github.com/geekoutnet/finallyshell.git &amp;&amp; cd finallyshell &amp;&amp; go tool mygo dev</code><button type="button">复制</button></div>
+        </div>
+      </section>
     </div>
-    <p>Source-available under the <a href="https://github.com/TooonyChen/finallyshell/blob/main/LICENSE">PolyForm Noncommercial and PolyForm Internal Use licenses</a>.</p>
-    <p>Copyright © 2026 Tony Chen · <a href="https://github.com/TooonyChen/finallyshell">github.com/TooonyChen/finallyshell</a></p>
-  </footer>
-</div>
+  </div>
+</main>
+
+<footer>
+  <div class="page">
+    <a class="brand" href="./"><img src="icon.png" alt="">Finallyshell</a>
+    <a href="https://github.com/geekoutnet/finallyshell/blob/dev/docs/zh-CN/features.md">功能文档</a>
+    <a href="https://github.com/geekoutnet/finallyshell/releases">所有版本</a>
+    <a href="https://github.com/geekoutnet/finallyshell">GitHub</a>
+    <a href="en/" lang="en" hreflang="en">English</a>
+  </div>
+</footer>
 </body>
 </html>

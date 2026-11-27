@@ -3319,9 +3319,12 @@ with the window:
   own events. **Clear** empties it. The Sync page's log does not list the
   account's syncs, nor this one the Sync page's.
 
-GitHub's sign-in lasts 8 hours and renews itself with a refresh token,
-which lasts six months and is replaced at each renewal: the app renews it
-before a sync when it is about to expire. Another copy of the app may
+When GitHub's sign-in expires, it lasts 8 hours and renews itself with a
+refresh token, which lasts six months and is replaced at each renewal:
+the app renews it before a sync when it is about to expire. When the
+OAuth app has token expiration turned off, the sign-in lasts until it is
+revoked and nothing is renewed; a refresh token GitHub then refuses,
+its sign-in still working, is dropped and the sign-in kept. Another copy of the app may
 have renewed it first; the app then uses that one. If GitHub refuses the
 token, the app renews or checks it once and tries again. A sign-in that
 GitHub no longer accepts (revoked, or not used for six months) shows

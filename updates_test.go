@@ -33,7 +33,7 @@ func TestUpdatesConfig(t *testing.T) {
 		t.Fatal(err)
 	}
 	u := cfg.Updates
-	if u.PublicKey != "fwcqse2POLiSdWytl0BHeURrztxcDObwmos+4IlTqHQ=" || u.GitHub != "TooonyChen/finallyshell" {
+	if u.PublicKey != "fwcqse2POLiSdWytl0BHeURrztxcDObwmos+4IlTqHQ=" || u.GitHub != "geekoutnet/finallyshell" {
 		t.Errorf("updates %+v", u)
 	}
 	if u.PrivateKey != "" {

@@ -318,6 +318,22 @@ func WriteKeyPair(path string, private, public []byte, overwrite bool, stamp tim
 	return nil
 }
 
+// InstallPrivateKey writes a private key at path, readable by this user
+// only, as WriteKeyPair writes one; never over a file that is there,
+// which is os.ErrExist. Its folder is made, readable by this user only.
+func InstallPrivateKey(path string, contents []byte) error {
+	dir := filepath.Dir(path)
+	if err := os.MkdirAll(dir, 0o700); err != nil {
+		return err
+	}
+	staged, err := stageKey(dir, contents)
+	if err != nil {
+		return err
+	}
+	defer os.Remove(staged)
+	return os.Link(staged, path)
+}
+
 func stageKey(dir string, contents []byte) (string, error) {
 	file, err := os.CreateTemp(dir, ".ssh-key-*")
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"slices"
+	"strings"
 	"testing"
 )
 
@@ -93,5 +94,41 @@ func TestSyncChoiceNotNeeded(t *testing.T) {
 	syncOK(t, Request{Remote: r, Password: "pw", Local: &Payload{}, AskChoice: true})
 	if c := choiceOf(hosts(host("a", "A")), &Payload{}, nil); c != nil {
 		t.Fatalf("an empty remote asks: %+v", c)
+	}
+}
+
+// Lists merge as hosts do; a side an older build wrote, without them,
+// neither adds nor deletes any.
+func TestMergeLists(t *testing.T) {
+	list := func(ids ...string) []json.RawMessage {
+		var out []json.RawMessage
+		for _, id := range ids {
+			out = append(out, host(id, id))
+		}
+		return out
+	}
+	base := &Payload{Lists: map[string][]json.RawMessage{"a": list("1", "2")}}
+	local := &Payload{Lists: map[string][]json.RawMessage{"a": list("1", "2", "3"), "b": list("x")}}
+	remote := &Payload{Lists: map[string][]json.RawMessage{"a": list("2")}} // deleted 1
+	m, _ := Merge(base, local, remote)
+	if got := names(m.Lists["a"]); !slices.Equal(got, []string{"2=2", "3=3"}) {
+		t.Fatalf("a %v", got)
+	}
+	if got := names(m.Lists["b"]); !slices.Equal(got, []string{"x=x"}) {
+		t.Fatalf("b %v", got)
+	}
+	// An older build's remote, without lists: this device's stay.
+	m, _ = Merge(base, local, &Payload{})
+	if got := names(m.Lists["a"]); !slices.Equal(got, []string{"1=1", "2=2", "3=3"}) {
+		t.Fatalf("against an older build: %v", got)
+	}
+	if !Equal(&Payload{Lists: NewLists()}, &Payload{}) || Equal(local, base) {
+		t.Fatal("Equal")
+	}
+	// What an older build reads and writes back keeps them: the key is
+	// written even with none.
+	data, _ := json.Marshal(&Payload{Lists: NewLists()})
+	if !strings.Contains(string(data), `"lists":{}`) {
+		t.Fatalf("%s", data)
 	}
 }

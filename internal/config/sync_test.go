@@ -78,3 +78,28 @@ func TestSyncState(t *testing.T) {
 		t.Fatalf("got %+v", got)
 	}
 }
+
+// The desktop syncs, but a wallpaper image of this device's own stays
+// here: a built-in wallpaper or a color goes with the rest.
+func TestSyncedDesktop(t *testing.T) {
+	here := Settings{Desktop: &DesktopSettings{Wallpaper: "desktop-wallpaper-1.png", IconSize: "large"}}
+	synced := SyncedSettings(here)
+	if strings.Contains(string(synced["desktop"]), "wallpaper") || !strings.Contains(string(synced["desktop"]), "large") {
+		t.Fatalf("synced %s", synced["desktop"])
+	}
+	other := Settings{Desktop: &DesktopSettings{Wallpaper: "builtin:aurora", IconSize: "small"}}
+	got := WithSyncedSettings(other, synced)
+	if got.Desktop.IconSize != "large" || got.Desktop.Wallpaper != "" {
+		t.Fatalf("on another device: %+v", got.Desktop)
+	}
+	// Back here: the image stays, the rest follows.
+	back := WithSyncedSettings(here, SyncedSettings(Settings{Desktop: &DesktopSettings{IconSize: "small"}}))
+	if back.Desktop.Wallpaper != "desktop-wallpaper-1.png" || back.Desktop.IconSize != "small" {
+		t.Fatalf("here: %+v", back.Desktop)
+	}
+	// A built-in wallpaper chosen elsewhere replaces the image.
+	color := SyncedSettings(Settings{Desktop: &DesktopSettings{Wallpaper: "color:#223344"}})
+	if got := WithSyncedSettings(here, color); got.Desktop.Wallpaper != "color:#223344" {
+		t.Fatalf("a color chosen elsewhere: %q", got.Desktop.Wallpaper)
+	}
+}

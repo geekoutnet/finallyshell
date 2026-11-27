@@ -3,238 +3,215 @@
 </h1>
 
 <p align="center">
-  An SSH client with FinalShell's layout and vertical session tabs, written in Go.
+  布局和 FinalShell 一样、会话标签竖着排的 SSH 客户端，用 Go 编写。
 </p>
 
 <p align="center">
-  <a href="https://github.com/TooonyChen/finallyshell/releases/latest"><img src="https://img.shields.io/github/v/release/TooonyChen/finallyshell?label=release" alt="Latest release"></a>
-  <a href="https://github.com/TooonyChen/finallyshell/actions/workflows/ci.yml"><img src="https://github.com/TooonyChen/finallyshell/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="macOS, Windows, Linux">
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-PolyForm%20Noncommercial-blue" alt="License"></a>
-  <br>
-  <a href="https://awesomemygo.dev/apps/finallyshell"><img src="https://awesomemygo.dev/badge.svg" alt="Listed on Awesome MyGo"></a>
-  <br>
-  <a href="https://trendshift.io/repositories/343771?utm_source=trendshift-badge&amp;utm_medium=badge&amp;utm_campaign=badge-trendshift-343771" target="_blank" rel="noopener noreferrer"><img src="https://trendshift.io/api/badge/trendshift/repositories/343771/daily?language=Go" alt="TooonyChen%2Ffinallyshell | Trendshift" width="250" height="55"/></a>
+  <a href="https://github.com/geekoutnet/finallyshell/releases/latest"><img src="https://img.shields.io/github/v/release/geekoutnet/finallyshell?label=release" alt="最新版本"></a>
+  <a href="https://github.com/geekoutnet/finallyshell/actions/workflows/ci.yml"><img src="https://github.com/geekoutnet/finallyshell/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <img src="https://img.shields.io/badge/platform-macOS%20%7C%20Windows%20%7C%20Linux-lightgrey" alt="macOS、Windows、Linux">
 </p>
 
 <p align="center">
-  <b>English</b> · <a href="README.zh-CN.md">简体中文</a>
+  <b>简体中文</b> · <a href="README.en.md">English</a>
   <br>
-  <a href="#install">Install</a> · <a href="#features">Features</a> · <a href="#keyboard-shortcuts">Shortcuts</a> · <a href="docs/en/features.md">Full documentation</a>
+  <a href="#安装">安装</a> · <a href="#功能">功能</a> · <a href="#快捷键">快捷键</a> · <a href="docs/zh-CN/features.md">完整文档</a>
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/main-en.png" alt="Finallyshell's main window: server monitor, session list, terminal and file panel">
+  <img src="docs/screenshots/main-zh-CN.png" alt="Finallyshell 主窗口：服务器监控、会话列表、终端和文件面板">
 </p>
 
-If you have used FinalShell, you already know your way around: server stats at the top left, sessions under them, the terminal on the right and the remote files below it. Finallyshell keeps that layout and puts the session tabs in a vertical list you can scroll and drag to reorder.
+用过 FinalShell 的话，打开就会用：左上是服务器状态，下面是会话，右边是终端，终端下面是服务器上的文件。Finallyshell 保留了这个布局，把会话标签放进左下角的竖向列表，可以滚动，也可以拖动排序。
 
-It is a native app written in Go with the [MyGo](https://github.com/egoist/mygo) UI toolkit, so there's no Java runtime to install. The terminal is libghostty-vt, the terminal engine of [Ghostty](https://ghostty.org). Passwords go to the system's keychain, never to a file.
+它是用 Go 和 [MyGo](https://github.com/egoist/mygo) 界面库写的原生程序，不需要装 Java。终端用的是 [Ghostty](https://ghostty.org) 的终端引擎 libghostty-vt。密码存在系统的钥匙串里，不写进文件。
 
-> [!IMPORTANT]
-> The project's only official places are this repository and its site, [tooonychen.github.io/finallyshell](https://tooonychen.github.io/finallyshell/), and [Releases](https://github.com/TooonyChen/finallyshell/releases) here is the only official download. Any other site that offers downloads under the Finallyshell name is not affiliated with this project.
+## 安装
 
-## Install
+在 [Releases](https://github.com/geekoutnet/finallyshell/releases/latest) 下载最新版本：
 
-Download the latest build from [Releases](https://github.com/TooonyChen/finallyshell/releases/latest):
-
-| System | File |
+| 系统 | 文件 |
 |---|---|
-| macOS (Apple silicon) | `finallyshell-<version>-arm64.dmg` |
-| macOS (Intel) | `finallyshell-<version>-amd64.dmg` |
-| Windows (x64) | `finallyshell-setup-<version>-amd64.exe`, or the portable `.zip` |
-| Debian, Ubuntu (x64) | `finallyshell_<version>_amd64.deb` |
-| Other Linux (x64) | `finallyshell-<version>-linux-amd64.tar.gz`; `sh install.sh` installs it in `~/.local` |
-| Debian, Ubuntu (ARM64) | `finallyshell_<version>_arm64.deb` |
-| Other Linux (ARM64) | `finallyshell-<version>-linux-arm64.tar.gz`; `sh install.sh` installs it in `~/.local` |
+| macOS（Apple 芯片） | `finallyshell-<版本>-arm64.dmg` |
+| macOS（Intel 芯片） | `finallyshell-<版本>-amd64.dmg` |
+| Windows（x64） | 安装程序 `finallyshell-setup-<版本>-amd64.exe`，或免安装的 `.zip` |
+| Debian、Ubuntu（x64） | `finallyshell_<版本>_amd64.deb` |
+| 其他 Linux（x64） | `finallyshell-<版本>-linux-amd64.tar.gz`，运行 `sh install.sh` 装到 `~/.local` |
+| Debian、Ubuntu（ARM64） | `finallyshell_<版本>_arm64.deb` |
+| 其他 Linux（ARM64） | `finallyshell-<版本>-linux-arm64.tar.gz`，运行 `sh install.sh` 装到 `~/.local` |
 
-To try what's on main before it's released, every merge also publishes a preview build on the [Releases](https://github.com/TooonyChen/finallyshell/releases) page, marked Pre-release. Installed apps don't update to previews; download them by hand.
-
-The macOS app isn't notarized by Apple yet, so macOS blocks it the first time you open it. After dragging it to Applications, run:
+macOS 版还没有经过 Apple 公证，第一次打开会被拦下。拖进“应用程序”后运行：
 
 ```bash
 xattr -dr com.apple.quarantine /Applications/Finallyshell.app
 ```
 
-or open System Settings › Privacy & Security and click "Open Anyway". Windows SmartScreen may warn about the unsigned installer: click "More info", then "Run anyway".
+或者在“系统设置 › 隐私与安全性”里点“仍要打开”。Windows 的 SmartScreen 可能会提示安装程序没有签名，点“更多信息”，再点“仍要运行”。
 
-On Linux, the tray icon needs `libayatana-appindicator3`, and remembering passwords needs a Secret Service keyring (GNOME Keyring, KWallet, KeePassXC). Without them the app still works; it just keeps passwords in memory.
+Linux 上托盘图标需要 `libayatana-appindicator3`，记住密码需要 Secret Service 密钥环（GNOME Keyring、KWallet、KeePassXC 等）。没有的话程序照样能用，只是密码只留在内存里。
 
-After that, Finallyshell updates itself, except the `.deb`, which you update by installing the new one. Versions up to 0.2.0 can't: install a newer release by hand once.
+之后 Finallyshell 会自行更新；`.deb` 除外，装新的 `.deb` 就是更新。
 
-## Features
+## 功能
 
-### Connections
+### 连接
 
-Open the connection manager with <kbd>Cmd</kbd>+<kbd>O</kbd> on macOS or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd> elsewhere. Hosts live in a tree of folders, as in FinalShell: drag them between folders, search by name, address, user or notes, duplicate a host, or delete it to a "Show deleted" list from which it can be restored.
+macOS 上按 <kbd>Cmd</kbd>+<kbd>O</kbd>，其他系统按 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd> 打开连接管理器。和 FinalShell 一样，主机按文件夹组织成树：可以拖到别的文件夹，按名称、地址、用户名、备注搜索，复制连接；删除的连接先进“显示已删除”，还能恢复。
 
-The same tree stays in the main window too: the panel under the server stats switches between your sessions and Connections, where a double click opens a session and a green dot marks the hosts you have open. <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd> (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd>) switches between them.
+同一棵树也一直留在主窗口里：服务器状态下面的面板可以在会话和“连接”之间切换，在“连接”页双击就打开会话，已经打开的主机后面有绿点。<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd>（<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd>）在两页之间切换。
 
 <p align="center">
-  <img src="docs/screenshots/connections-en.png" width="560" alt="The Connections page in the main window's left panel: folders of hosts, a dot on those with a session open">
+  <img src="docs/screenshots/connections-zh-CN.png" width="560" alt="主窗口左侧面板的“连接”页：按文件夹排列的主机，打开了会话的主机后面有一个点">
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/connection-manager-en.png" width="720" alt="The connection manager with folders of hosts">
+  <img src="docs/screenshots/connection-manager-zh-CN.png" width="720" alt="连接管理器，主机按文件夹排列">
 </p>
 
-Each host can reach the server directly, through a SOCKS5 or HTTP proxy, or through a jump host (like `ssh -J`), and jump hosts can have proxies and jump hosts of their own. Port forwarding covers local (`-L`), remote (`-R`) and dynamic SOCKS5 (`-D`) tunnels, which start with the session and show their status, connections and traffic in the Tunnels tab.
+每个主机可以直接连接，也可以经过 SOCKS5、HTTP 代理或跳板机（相当于 `ssh -J`）连接，跳板机自己也可以再走代理或跳板机。端口转发支持本地（`-L`）、远程（`-R`）和动态 SOCKS5（`-D`）隧道，随会话启动，在“隧道”页显示状态、连接数和流量。
 
 <table>
   <tr>
-    <td><img src="docs/screenshots/connection-proxy-en.png" alt="Connecting through a jump host"></td>
-    <td><img src="docs/screenshots/connection-tunnels-en.png" alt="Local, remote and dynamic tunnels"></td>
+    <td><img src="docs/screenshots/connection-proxy-zh-CN.png" alt="经过跳板机连接"></td>
+    <td><img src="docs/screenshots/connection-tunnels-zh-CN.png" alt="本地、远程和动态隧道"></td>
   </tr>
 </table>
 
-Every new tab opens on quick connect: the hosts you connected to last, then the others, newest first, with a search box. Moving from another client? "Import" in the connection manager reads the connections and folders of FinalShell, Xshell, SecureCRT and MobaXterm, the hosts in your `~/.ssh/config`, or a server list in a CSV or Excel file. Passwords the other clients keep encrypted aren't imported; you're asked for each one the first time you connect. A server list's passwords go into the system keychain.
+每个新标签页都是快速连接：先列最近连接过的主机，再列其他主机，新加的在上面，可以搜索。从别的客户端搬过来的话，连接管理器里的“导入”能读出 FinalShell、Xshell、SecureCRT、MobaXterm 的连接和文件夹，`~/.ssh/config` 里的主机，或者 CSV、Excel 文件里的服务器列表。别的客户端加密存着的密码不导入，第一次连接时会问一次；服务器列表里的密码存进系统的密钥库。
 
 <table>
   <tr>
-    <td><img src="docs/screenshots/quick-connect-en.png" alt="Quick connect on a new tab"></td>
-    <td><img src="docs/screenshots/import-finalshell-en.png" alt="Importing connections from FinalShell"></td>
+    <td><img src="docs/screenshots/quick-connect-zh-CN.png" alt="新标签页上的快速连接"></td>
+    <td><img src="docs/screenshots/import-finalshell-zh-CN.png" alt="从 FinalShell 导入连接"></td>
   </tr>
 </table>
 
-Passwords and key passphrases are kept in macOS Keychain, Windows Credential Manager or the Linux Secret Service, never in `hosts.json`. Host keys are confirmed on the first connection and checked on every one after it.
+密码和私钥密码存在 macOS 钥匙串、Windows 凭据管理器或 Linux 的 Secret Service 里，从不写进 `hosts.json`。第一次连接时确认主机指纹，以后每次连接都会核对。
 
-### Server monitor
+### 服务器监控
 
-While a session is connected, the panel at the top left shows the server's uptime, load, CPU, memory and swap, the processes using the most memory, network speed, latency and disk space, refreshed every two seconds. "System info" shows the OS, kernel, CPU model, memory, IP addresses and disks, and copies them as text. The Processes tab lists every process, sortable and filterable, opens one to show its command line, working directory and environment, and sends signals or kills it after asking. The Network tab lists the ports processes listen on, who is connected to them and how much each moves, shows where the peers are once you agree to download ip2region's location data, and traces the route to one with NextTrace on the server. The monitor reads `/proc`, so it needs a Linux server.
-
-<p align="center">
-  <img src="docs/screenshots/system-info-en.png" width="560" alt="The system info popover">
-</p>
-
-### Files
-
-The file panel under the terminal browses the server over SFTP, and follows the shell when you `cd` in the terminal. Right-click a file, or a folder in the tree beside it, to rename or delete it or to create a file or folder. Drag files or folders from Finder or Explorer to upload them; download to your Downloads folder or anywhere else. Transfers run three at a time, show progress, speed and time left, and can be canceled and retried. A folder of many small files can also go as one archive, packed with tar and gzip as it streams. The count and overall progress also show on the Dock icon or taskbar button.
+会话连上后，左上角显示服务器的运行时间、负载、CPU、内存和交换、内存占用最多的进程、网速、延迟和磁盘，每两秒刷新一次。“系统信息”列出系统、内核、CPU 型号、内存、IP 地址和硬盘，可以一键复制成文本。“进程”页列出所有进程，可排序、可筛选，打开一个进程能看它的命令行、工作目录和环境变量，确认后发送信号或结束它。“网络”页列出进程监听的端口、谁连着它们、各自的流量，同意下载 ip2region 位置数据后显示对端的归属地，还能在服务器上用 NextTrace 追踪路由。监控读的是 `/proc`，所以只支持 Linux 服务器。
 
 <p align="center">
-  <img src="docs/screenshots/transfers-en.png" width="560" alt="The downloads popover with transfers in progress">
+  <img src="docs/screenshots/system-info-zh-CN.png" width="560" alt="系统信息弹出框">
 </p>
 
-Double-click a text file to edit it in place. The editor highlights over 30 languages and has find and replace, go to line, multiple cursors and folding. Saving is atomic where the server allows it, warns you when the file changed on the server since you opened it, and keeps the file's line endings and encoding, GBK and GB18030 included.
+### 文件
+
+终端下面的文件面板通过 SFTP 浏览服务器，在终端里 `cd` 时会跟着进入同一个目录。在文件或左边目录树的文件夹上右键，可以重命名、删除、新建文件和文件夹。把文件或文件夹从访达或资源管理器拖进来就是上传；下载可以存到“下载”文件夹，也可以自己选位置。传输同时跑三个，显示进度、速度和剩余时间，可以取消、重试；大量小文件的文件夹还可以打包传输，用 tar 和 gzip 边打包边传；Dock 图标或任务栏按钮上也显示数目和总进度。
 
 <p align="center">
-  <img src="docs/screenshots/file-editor-en.png" width="720" alt="Editing a remote shell script">
+  <img src="docs/screenshots/transfers-zh-CN.png" width="560" alt="下载列表里正在进行的传输">
 </p>
 
-Files and folders get icons from VS Code icon themes. Material Icon Theme and Seti are built in, themes you installed in VS Code, VSCodium, Cursor or Windsurf are found automatically, and any other can be installed from a `.vsix` file.
+双击文本文件直接在服务器上编辑。编辑器支持 30 多种语言的语法高亮、查找替换、跳转到行、多光标和折叠。服务器允许时原子保存；打开之后服务器上的文件被改过的话，保存前会提醒；换行符和编码保持原样，GBK、GB18030 也可以。
 
 <p align="center">
-  <img src="docs/screenshots/file-icon-themes-en.png" width="720" alt="Choosing a file icon theme">
+  <img src="docs/screenshots/file-editor-zh-CN.png" width="720" alt="编辑服务器上的脚本">
 </p>
 
-### Terminal
-
-Pick a font, size, line height and weight, with or without ligatures, any of the hundreds of color schemes Ghostty ships, and an optional background image. Changes apply to open terminals at once. The terminal also has find (<kbd>Cmd</kbd>+<kbd>F</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd>), full screen, copy on select, a choice of what right-click does, and links you can open with <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+click.
-
-Split a session's terminal into panes, as in Ghostty or Windows Terminal: <kbd>Cmd</kbd>+<kbd>D</kbd> (<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>=</kbd>) opens another shell on the same server beside the focused one, <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> (<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>-</kbd>) one under it, on the same connection, with no new login; the Split button at the end of the command bar has these in a menu, with zoom, equalize and close. Click a pane or use <kbd>Cmd</kbd>+<kbd>Option</kbd>+arrows (<kbd>Alt</kbd>+arrows) to move between them, drag the dividers, zoom one pane to fill the terminal, and close it with <kbd>Cmd</kbd>+<kbd>W</kbd> (<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>W</kbd>). The command bar and the Commands tab send to the focused pane, and the file panel follows its folder.
-
-Under the terminal is FinalShell's command bar: type a command and Enter sends it to the shell. <kbd>Tab</kbd> lists the server's folder for the path you are typing, in columns, or the commands on its PATH for the first word; <kbd>↑</kbd>, <kbd>Alt</kbd>+<kbd>H</kbd> or its History button lists the commands you sent to that host before, and those in its shell history, and <kbd>←</kbd> <kbd>→</kbd> pick one word out of a command. Don't need it? Turn it, or any part of it, off in Options › Terminal › Command bar.
-
-Commands you run often can be kept as buttons in the Commands tab, in groups of your own: a click sends one to the session, a command of several lines runs line by line, and one saved without Enter waits at the prompt for you to check it. Drag the buttons to arrange them, or open the tab in a tab of its own for a board of dozens. For lines not worth keeping, the command editor beside the buttons sends what you write, or just the lines you select, with <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>Enter</kbd>, and keeps the text across restarts.
+文件和文件夹的图标来自 VS Code 的图标主题。内置 Material Icon Theme 和 Seti，自动找到 VS Code、VSCodium、Cursor、Windsurf 里已经装的主题，其他主题可以从 `.vsix` 文件安装。
 
 <p align="center">
-  <img src="docs/screenshots/quick-commands-en.png" width="720" alt="Quick commands in groups, as buttons, and the command editor">
+  <img src="docs/screenshots/file-icon-themes-zh-CN.png" width="720" alt="选择文件图标主题">
 </p>
 
-Servers whose locale isn't UTF-8 work too: the terminal converts GBK, GB18030, Big5, Shift_JIS, EUC-JP, EUC-KR, ISO-8859-1 and Windows-1252, set once in Options or per host. What Backspace and Delete send can be changed the same way.
+### 终端
+
+可以选字体、字号、行高、粗细，开关连字，从 Ghostty 自带的几百个配色里挑一个，还可以加背景图片，改了立刻应用到所有打开的终端。另外还有查找（<kbd>Cmd</kbd>+<kbd>F</kbd> / <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd>）、全屏、选中即复制、自定义右键行为，<kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+单击打开链接。
+
+会话的终端可以分屏，和 Ghostty、Windows Terminal 一样：<kbd>Cmd</kbd>+<kbd>D</kbd>（<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>=</kbd>）在获得焦点的分屏旁边再开一个同一台服务器上的 shell，<kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>（<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>-</kbd>）在它下面开一个，用的是同一个连接，不用重新登录；命令输入框最右边的分屏按钮把这些放在一个菜单里，还有放大、平均分配和关闭。点一下分屏，或用 <kbd>Cmd</kbd>+<kbd>Option</kbd>+方向键（<kbd>Alt</kbd>+方向键）在分屏之间移动，拖动分隔条调整大小，放大一个分屏占满终端，用 <kbd>Cmd</kbd>+<kbd>W</kbd>（<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>W</kbd>）关闭它。命令输入框和“命令”页发给获得焦点的分屏，文件面板跟随它的目录。
+
+终端下面是 FinalShell 的命令输入框：输入命令，回车发给 shell。<kbd>Tab</kbd> 分多列列出正在输入的路径所在的服务器文件夹，在第一个词上则列出服务器 PATH 里的命令；<kbd>↑</kbd>、<kbd>Alt</kbd>+<kbd>H</kbd> 或“历史”按钮列出以前发给这台主机的命令，以及它的 shell 历史里的命令，<kbd>←</kbd> <kbd>→</kbd> 可以从一条命令里只取一个词。用不上的话，在“选项 › 终端 › 命令输入框”里关掉它，或者只关掉其中一部分。
+
+常用的命令可以存成“命令”页里的按钮，按你自己的分组放好：点一下就发给会话，多行命令逐行执行，不带回车保存的命令会停在提示符后面等你检查。按钮可以拖动排序，这一页也可以在单独的标签中打开，放下几十个命令。不值得保存的几行命令，可以写在按钮旁边的命令编辑器里，用 <kbd>Cmd</kbd>/<kbd>Ctrl</kbd>+<kbd>Enter</kbd> 发送全部或只发送选中的几行，文本重启后仍在。
+
+<p align="center">
+  <img src="docs/screenshots/quick-commands-zh-CN.png" width="720" alt="分组的快捷命令按钮和命令编辑器">
+</p>
+
+locale 不是 UTF-8 的服务器也能用：终端可以转换 GBK、GB18030、Big5、Shift_JIS、EUC-JP、EUC-KR、ISO-8859-1 和 Windows-1252，在“选项”里统一设置，也可以按主机单独设置。退格键和删除键发送什么也一样可以改。
 
 <table>
   <tr>
-    <td><img src="docs/screenshots/terminal-colors-en.png" alt="Color schemes with a live preview"></td>
-    <td><img src="docs/screenshots/terminal-background-en.png" alt="A background image under the terminal"></td>
+    <td><img src="docs/screenshots/terminal-colors-zh-CN.png" alt="配色和实时预览"></td>
+    <td><img src="docs/screenshots/terminal-background-zh-CN.png" alt="终端的背景图片"></td>
   </tr>
 </table>
 
-### And also
+### 其他
 
-- Need a shell on your own computer? The terminal button next to "+" opens a local terminal tab, with the same terminal, command bar and quick commands; Options › Terminal chooses its program (WSL, PowerShell, fish...).
-- Keys in Bitwarden, 1Password or `ssh-agent`? Choose "SSH agent" as a host's authentication and it logs in with the agent's keys, no key file on disk; Options › General sets the agent's address.
-- Running Claude Code, Codex, Gemini CLI or another coding agent? Its logo shows on the session tab while it runs, so tabs to the same server are easy to tell apart.
-- English and Simplified Chinese, following the system language or chosen in Options.
-- Light and dark appearance, following the system or chosen in Options.
-- Every shortcut can be changed. Keys the shell needs, such as <kbd>Ctrl</kbd>+<kbd>C</kbd> or <kbd>Ctrl</kbd>+<kbd>R</kbd>, are refused with an explanation.
-- Minimize to the tray or menu bar, and confirm before closing while sessions are connected.
-- Only one copy runs at a time: opening it again brings the running window forward.
-- Updates itself: it checks once a day, or when you ask, and installs a signed update in place.
-- Drag the dividers between panels to resize them; the sizes are remembered.
-- Optional sync of connections and settings between computers, through a GitHub gist, a WebDAV folder (Jianguoyun, Nextcloud...) or S3-compatible storage (Cloudflare R2, Backblaze B2...) of your own, encrypted on your computer with a password only you know. No account with us, no server, nothing to pay.
+- 想在自己电脑上开个 shell？“+”旁边的终端按钮打开一个本地终端标签，终端、命令输入框和快捷命令都和会话一样；运行什么程序（WSL、PowerShell、fish 等）在“选项 › 终端”里选。
+- 私钥放在 Bitwarden、1Password 或 `ssh-agent` 里？认证方法选“SSH Agent”，就用 agent 里的私钥登录，硬盘上不需要私钥文件；agent 的地址在“选项 › 常规”里设置。
+- 在运行 Claude Code、Codex、Gemini CLI 等编程智能体？运行期间会话标签上会显示它的图标，连到同一台服务器的几个标签一眼就能分清。
+- 中文和英文界面，默认跟随系统，也可以在“选项”里切换。
+- 浅色和深色外观，默认跟随系统，也可以在“选项”里切换。
+- 所有快捷键都能改。shell 要用的键（比如 <kbd>Ctrl</kbd>+<kbd>C</kbd>、<kbd>Ctrl</kbd>+<kbd>R</kbd>）不让占用，并说明原因。
+- 关闭时可以最小化到托盘（macOS 是菜单栏），有会话连着时关闭前先确认。
+- 同时只运行一个：再打开一次会把已经运行的窗口提到前面。
+- 自行更新：每天检查一次，也可以手动检查，原地安装签过名的更新。
+- 拖动面板之间的分隔条调整大小，下次启动还是这个大小。
+- 可选的多台电脑同步：连接和设置通过你自己的 GitHub gist、WebDAV 文件夹（坚果云、Nextcloud 等）或 S3 兼容存储（Cloudflare R2、Backblaze B2 等）同步，在本机用只有你知道的密码加密。不用注册账号，没有服务器，不用付费。
+- 也可以直接用 GitHub 登录：点左侧栏顶部的按钮，打开 GitHub 设备授权，地址和设备码都可以一键打开或复制，不用粘贴令牌。登录后就会自动同步，默认用 GitHub 邮箱作同步密码，不用再输入任何东西，也可以改成自定义密码。账户同步存在单独的私密 gist 里，与上面的同步互不影响。多台电脑之间会自动跟随密码修改和邮箱更换；一台很久没用的电脑重新同步前，会先让你选择合并、用云端覆盖还是以本机为准。每次同步的步骤都记录在操作记录里。
 
-[docs/en/features.md](docs/en/features.md) describes every feature in detail, and [docs/en/configuration.md](docs/en/configuration.md) the files the app keeps.
+<table>
+  <tr>
+    <td><img src="docs/screenshots/account-login-zh-CN.png" alt="使用 GitHub 登录：要打开的地址和要输入的设备码，都可以打开或复制"></td>
+    <td><img src="docs/screenshots/account-zh-CN.png" alt="账户窗口：登录信息、账户自己的同步，以及列出每次同步步骤的操作记录"></td>
+  </tr>
+</table>
 
-## Keyboard shortcuts
+每个功能的细节见 [docs/zh-CN/features.md](docs/zh-CN/features.md)，程序保存的文件见 [docs/zh-CN/configuration.md](docs/zh-CN/configuration.md)。
 
-The defaults follow FinalShell; the panes' follow Ghostty on macOS and Windows Terminal elsewhere. Change them in Options › Terminal › Shortcuts.
+## 快捷键
 
-| Action | macOS | Windows / Linux |
+默认和 FinalShell 一样，分屏的在 macOS 上和 Ghostty 一样、其他系统上和 Windows Terminal 一样，可以在“选项 › 终端 › 快捷键”里修改。
+
+| 操作 | macOS | Windows / Linux |
 |---|---|---|
-| Copy | <kbd>Cmd</kbd>+<kbd>C</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> |
-| Paste | <kbd>Cmd</kbd>+<kbd>V</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> |
-| Find in terminal | <kbd>Cmd</kbd>+<kbd>F</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> |
-| Full screen | <kbd>Cmd</kbd>+<kbd>Enter</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> |
-| Reconnect a disconnected session | <kbd>Enter</kbd> | <kbd>Enter</kbd> |
-| Previous tab | <kbd>Cmd</kbd>+<kbd>[</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Tab</kbd> |
-| Next tab | <kbd>Cmd</kbd>+<kbd>]</kbd> | <kbd>Ctrl</kbd>+<kbd>Tab</kbd> |
-| Close the focused pane, or the tab with one pane | <kbd>Cmd</kbd>+<kbd>W</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>W</kbd> |
-| Connection manager | <kbd>Cmd</kbd>+<kbd>O</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd> |
-| New tab | <kbd>Cmd</kbd>+<kbd>T</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> |
-| Go to tab 1 to 9 | <kbd>Cmd</kbd>+<kbd>1</kbd>…<kbd>9</kbd> | <kbd>Alt</kbd>+<kbd>1</kbd>…<kbd>9</kbd> |
-| Command bar, and back to the terminal | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> |
-| Sessions or connections in the left panel | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd> |
-| Show or hide the bottom panel | <kbd>Cmd</kbd>+<kbd>J</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>J</kbd> |
-| Split the pane right | <kbd>Cmd</kbd>+<kbd>D</kbd> | <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>=</kbd> |
-| Split the pane down | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> | <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>-</kbd> |
-| Zoom the focused pane, and back | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd> |
-| Focus the pane on that side | <kbd>Cmd</kbd>+<kbd>Option</kbd>+arrows | <kbd>Alt</kbd>+arrows |
+| 复制 | <kbd>Cmd</kbd>+<kbd>C</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> |
+| 粘贴 | <kbd>Cmd</kbd>+<kbd>V</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>V</kbd> |
+| 在终端里查找 | <kbd>Cmd</kbd>+<kbd>F</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd> |
+| 全屏 | <kbd>Cmd</kbd>+<kbd>Enter</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> |
+| 重新连接断开的会话 | <kbd>Enter</kbd> | <kbd>Enter</kbd> |
+| 上一个标签 | <kbd>Cmd</kbd>+<kbd>[</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Tab</kbd> |
+| 下一个标签 | <kbd>Cmd</kbd>+<kbd>]</kbd> | <kbd>Ctrl</kbd>+<kbd>Tab</kbd> |
+| 关闭获得焦点的分屏，只有一个分屏时关闭标签 | <kbd>Cmd</kbd>+<kbd>W</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>W</kbd> |
+| 连接管理器 | <kbd>Cmd</kbd>+<kbd>O</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>O</kbd> |
+| 新标签页 | <kbd>Cmd</kbd>+<kbd>T</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd> |
+| 切换到第 1 到 9 个标签 | <kbd>Cmd</kbd>+<kbd>1</kbd>…<kbd>9</kbd> | <kbd>Alt</kbd>+<kbd>1</kbd>…<kbd>9</kbd> |
+| 命令输入框，再按回到终端 | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> |
+| 左侧面板切换会话/连接 | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>E</kbd> |
+| 显示或隐藏底部面板 | <kbd>Cmd</kbd>+<kbd>J</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>J</kbd> |
+| 向右分屏 | <kbd>Cmd</kbd>+<kbd>D</kbd> | <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>=</kbd> |
+| 向下分屏 | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd> | <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>-</kbd> |
+| 放大获得焦点的分屏，或还原 | <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> | <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>X</kbd> |
+| 焦点移到那一边的分屏 | <kbd>Cmd</kbd>+<kbd>Option</kbd>+方向键 | <kbd>Alt</kbd>+方向键 |
 
 <p align="center">
-  <img src="docs/screenshots/shortcuts-en.png" width="720" alt="The shortcuts page in Options">
+  <img src="docs/screenshots/shortcuts-zh-CN.png" width="720" alt="选项里的快捷键页">
 </p>
 
-## FAQ
+## 常见问题
 
-**macOS says the app is damaged or can't be opened.** It isn't notarized yet. Run the `xattr` command under [Install](#install).
+**macOS 提示应用已损坏、无法打开。** 还没有公证，运行[安装](#安装)里的 `xattr` 命令。
 
-**Where are my hosts and passwords stored?** Hosts and settings are JSON files in your user config folder (`~/Library/Application Support/finallyshell` on macOS, `%AppData%\finallyshell` on Windows, `~/.config/finallyshell` on Linux). Passwords are in the system keychain under the service name `finallyshell`. See [docs/en/configuration.md](docs/en/configuration.md).
+**主机和密码存在哪里？** 主机和设置是用户配置目录里的 JSON 文件（macOS 是 `~/Library/Application Support/finallyshell`，Windows 是 `%AppData%\finallyshell`，Linux 是 `~/.config/finallyshell`）。密码在系统钥匙串里，服务名是 `finallyshell`。详见 [docs/zh-CN/configuration.md](docs/zh-CN/configuration.md)。
 
-**The monitor panel stays empty.** It reads `/proc` and works only with Linux servers. Some jump hosts refuse the extra channel it opens: turn off "Enable exec channel (server monitor)" for that host.
+**监控面板一直是空的。** 监控读 `/proc`，只支持 Linux 服务器。有些跳板机不允许它额外开的通道，可以在这个主机的设置里关掉“启用 exec 通道（服务器监控）”。
 
-**Does it support Telnet, RDP or serial ports?** No, only SSH and SFTP.
+**支持 Telnet、远程桌面或串口吗？** 支持。在连接编辑器里选择 Telnet、远程桌面（RDP，调用系统自带的远程桌面客户端，也可以走 SSH 隧道）或串口。
 
-## Build from source
+## 从源码构建
 
-You need Go 1.27.3 or later.
+需要 Go 1.27.3 或更新的版本。
 
 ```bash
-git clone https://github.com/TooonyChen/finallyshell.git
+git clone -b dev https://github.com/geekoutnet/finallyshell.git
 ```
 
 ```bash
 cd finallyshell && go tool mygo dev
 ```
 
-`go tool mygo dev` runs the app and restarts it when the code changes; `go tool mygo build` packages it in `build/<platform>/`. The first run downloads libghostty-vt into your user cache folder. [docs/en/development.md](docs/en/development.md) covers tests, releases and the code's layout.
-
-## Contributing
-
-Issues and pull requests are welcome. Every change starts as an issue that says how it will be solved; [CONTRIBUTING.md](CONTRIBUTING.md) has the details and the terms for contributions.
-
-## Acknowledgements
-
-Thanks to:
-
-- [FinalShell](https://www.hostbuf.com/), which kept me company from my first year of university to my first job, and which inspired this project.
-- The [V2EX](https://www.v2ex.com/) community.
-- The [LINUX DO](https://linux.do/) community.
-
-## License
-
-Finallyshell is source-available, not open source as the OSI defines it. You may use it under either of these licenses ([LICENSE](LICENSE) has the full text):
-
-- [PolyForm Noncommercial 1.0.0](https://polyformproject.org/licenses/noncommercial/1.0.0): any noncommercial use, including forking, changing and sharing it.
-- [PolyForm Internal Use 1.0.0](https://polyformproject.org/licenses/internal-use/1.0.0): use inside your own company, changes included, without distributing it. Using it to manage servers at work falls under this one.
-
-Selling it, bundling it in a paid product or distributing changed versions for commercial purposes needs a separate commercial license: open an issue to get in touch.
+`go tool mygo dev` 运行程序，改了代码自动重启；`go tool mygo build` 打包到 `build/<平台>/`。第一次运行会把 libghostty-vt 下载到用户缓存目录。测试、发布和代码结构见 [docs/zh-CN/development.md](docs/zh-CN/development.md)。

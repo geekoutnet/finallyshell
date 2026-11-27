@@ -1,6 +1,6 @@
 name: pages
 
-# Publishes the project site, https://tooonychen.github.io/finallyshell/,
+# Publishes the project site, https://geekoutnet.github.io/finallyshell/,
 # from site/ on main. The pages have no build step; the site shows the
 # README's screenshots and the app icon, copied in here so that there is
 # one copy of each in the repository.

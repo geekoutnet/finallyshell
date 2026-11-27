@@ -264,7 +264,7 @@ func (a *App) confirmLockReset(parent WindowKind) {
 	if !a.Locked() || state.busy || state.confirming {
 		return
 	}
-	if a.sync.running || a.sync.loading {
+	if a.syncBusy() || a.sync.loading || a.account.sync.loading {
 		state.message = locales.LockSyncBusy
 		return
 	}
@@ -283,7 +283,7 @@ func (a *App) confirmLockReset(parent WindowKind) {
 
 func (a *App) resetLock() {
 	state := &a.lock
-	if !a.Locked() || state.busy || a.sync.running || a.sync.loading {
+	if !a.Locked() || state.busy || a.syncBusy() || a.sync.loading || a.account.sync.loading {
 		return
 	}
 	state.busy, state.resetting, state.message = true, true, nil
@@ -291,6 +291,7 @@ func (a *App) resetLock() {
 	for _, provider := range []config.SyncProvider{config.SyncGist, config.SyncWebDAV, config.SyncS3} {
 		keys = append(keys, syncCredentialKey(provider))
 	}
+	keys = append(keys, a.accountSecretKeys()...)
 	for _, host := range a.hosts.Hosts {
 		for _, name := range hostSecretNames {
 			keys = append(keys, hostSecretKey(host.ID, name))
@@ -325,6 +326,7 @@ func (a *App) resetLock() {
 			a.pwOpen, a.pwText, a.pwNeed, a.pwThen, a.pwCancel, a.pwErr = false, "", nil, nil, nil, nil
 			a.sync.password, a.sync.credential = "", ""
 			a.sync.loaded = false
+			a.forgetAccountSecrets()
 			clear(a.totpStatus)
 			a.closeWindow(WindowEditor)
 			a.closeWindow(WindowOptions)

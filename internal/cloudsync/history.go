@@ -43,8 +43,11 @@ type Snapshot struct {
 	Note       string    `json:"-"`
 	Counts     Counts    `json:"counts"`
 	Counted    bool      `json:"counted,omitempty"`
-	Size       int64     `json:"-"`
-	Pinned     bool      `json:"-"`
+	// KeyHint is the kind of sync password the file is sealed with
+	// (KeyEmail, KeyCustom), "" for unknown.
+	KeyHint string `json:"keyHint,omitempty"`
+	Size    int64  `json:"-"`
+	Pinned  bool   `json:"-"`
 }
 
 type History interface {

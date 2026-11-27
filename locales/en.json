@@ -5505,5 +5505,375 @@
   "owSystemLog": "System log (logread)",
   "owKernelLog": "Kernel log (dmesg)",
   "owLogLines": "Lines",
-  "owName": "Name"
+  "owName": "Name",
+  "accountSignIn": "Sign In",
+  "accountSignInGitHub": "Sign in with GitHub",
+  "accountButtonSignedIn": "GitHub: {login} (signed in)",
+  "@accountButtonSignedIn": {
+    "placeholders": {
+      "login": {
+        "type": "String",
+        "example": "octocat"
+      }
+    }
+  },
+  "accountButtonExpired": "GitHub: {login} (sign-in expired)",
+  "@accountButtonExpired": {
+    "placeholders": {
+      "login": {
+        "type": "String",
+        "example": "octocat"
+      }
+    }
+  },
+  "accountWindowTitle": "Account",
+  "accountSignedOut": "Not signed in.",
+  "accountLoginHint": "Finallyshell asks GitHub only for access to your gists, for the account's sync, and to read your email address, to show which account is signed in. Your GitHub password is never typed here.",
+  "accountLoginStep1": "1. Open this page in your browser",
+  "accountLoginStep2": "2. Enter this code there and authorize",
+  "accountOpenPage": "Open",
+  "accountCopied": "Copied",
+  "accountOpenAndCopy": "Copy Code and Open GitHub",
+  "accountRequesting": "Getting a code from GitHub…",
+  "accountWaiting": "Waiting for you to authorize in the browser… ({time} left)",
+  "@accountWaiting": {
+    "placeholders": {
+      "time": {
+        "type": "String",
+        "example": "14:32"
+      }
+    }
+  },
+  "accountFinishing": "Authorized. Reading your account…",
+  "accountDenied": "The authorization was declined.",
+  "accountCodeExpired": "The code expired before it was entered.",
+  "accountLoginFailed": "Could not sign in: {error}",
+  "@accountLoginFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "connection refused"
+      }
+    }
+  },
+  "accountTryAgain": "Get a New Code",
+  "accountNoEmail": "No email address shared",
+  "accountSignedInGitHub": "GitHub · Signed in",
+  "accountExpiredBadge": "GitHub · Sign-in expired",
+  "accountExpiredHint": "GitHub no longer accepts this sign-in: it was revoked, or not used for months. Sign in again to keep syncing; nothing is lost.",
+  "accountSignInAgain": "Sign In Again",
+  "accountManage": "Manage access on GitHub",
+  "accountProfile": "Profile",
+  "accountSignOut": "Sign Out",
+  "accountSignOutConfirm": "Sign out of {login}? Its token and sync password are removed from this computer. The connections here and the gist on GitHub are kept.",
+  "@accountSignOutConfirm": {
+    "placeholders": {
+      "login": {
+        "type": "String",
+        "example": "octocat"
+      }
+    }
+  },
+  "accountSyncTitle": "Account Sync",
+  "accountSyncIntro": "Separate from Options › Sync: kept in a secret gist of its own in your GitHub account ({file}), with its own sync password, state and log, and encrypted on this computer before it leaves.",
+  "@accountSyncIntro": {
+    "placeholders": {
+      "file": {
+        "type": "String",
+        "example": "finallyshell-account.json"
+      }
+    }
+  },
+  "accountSyncPasswordHint": "Type the same password on each computer that signs in to this account. It cannot be recovered.",
+  "accountRenewing": "Renewing the sign-in…",
+  "accountRenewFailed": "Could not renew the sign-in: {error}",
+  "@accountRenewFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "timeout"
+      }
+    }
+  },
+  "accountViewGist": "Gist on GitHub",
+  "accountRevisions": "Versions on GitHub",
+  "accountLog": "Activity",
+  "accountLogEmpty": "Nothing yet.",
+  "accountLogClear": "Clear",
+  "accountLogDevice": "On {device}",
+  "@accountLogDevice": {
+    "placeholders": {
+      "device": {
+        "type": "String",
+        "example": "my-laptop"
+      }
+    }
+  },
+  "accountActSignIn": "Signed in as {login}",
+  "@accountActSignIn": {
+    "placeholders": {
+      "login": {
+        "type": "String",
+        "example": "octocat"
+      }
+    }
+  },
+  "accountActSignOut": "Signed out of {login}",
+  "@accountActSignOut": {
+    "placeholders": {
+      "login": {
+        "type": "String",
+        "example": "octocat"
+      }
+    }
+  },
+  "accountActRefresh": "Renewed the sign-in",
+  "accountActExpired": "The sign-in expired",
+  "accountActSync": "Sync",
+  "accountActReplace": "Replaced the gist with this computer's data",
+  "accountReasonAuto": "Automatic",
+  "accountReasonManual": "Manual",
+  "accountReasonRestore": "Kept the server's",
+  "accountResultOk": "Done",
+  "accountResultFailed": "Failed",
+  "accountResultPaused": "Paused",
+  "accountResultWarning": "Done with a warning",
+  "accountStepRefresh": "Renewed the sign-in",
+  "accountStepRead": "Read the gist",
+  "accountStepCreate": "Created the gist (first sync)",
+  "accountStepMerge": "Merged with this computer's data",
+  "accountStepUpload": "Uploaded the result",
+  "accountStepBackup": "Backed up this computer's data",
+  "accountStepApply": "Applied the changes here",
+  "accountStepUpToDate": "Already up to date",
+  "accountCounts": "{where}: {added} added, {removed} removed, {changed} changed",
+  "@accountCounts": {
+    "placeholders": {
+      "where": {
+        "type": "String",
+        "example": "Local"
+      },
+      "added": {
+        "type": "int"
+      },
+      "removed": {
+        "type": "int"
+      },
+      "changed": {
+        "type": "int"
+      }
+    }
+  },
+  "accountSignInBar": "Sign in with GitHub to sync",
+  "accountExpiredShort": "Sign-in expired",
+  "accountNoPassword": "No sync password",
+  "accountGuardShort": "Waiting for your OK",
+  "accountSyncFailed": "Sync failed",
+  "accountSyncedAgo": "Synced {ago}",
+  "@accountSyncedAgo": {
+    "placeholders": {
+      "ago": {
+        "type": "String",
+        "example": "2 minutes ago"
+      }
+    }
+  },
+  "accountNotSyncedYet": "Not synced yet",
+  "accountAgoNow": "just now",
+  "accountAgoMinutes": "{n, plural, one {# minute ago} other {# minutes ago}}",
+  "@accountAgoMinutes": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "accountAgoHours": "{n, plural, one {# hour ago} other {# hours ago}}",
+  "@accountAgoHours": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "accountAgoDays": "{n, plural, one {# day ago} other {# days ago}}",
+  "@accountAgoDays": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "accountAutoOff": "Automatic sync off",
+  "accountAutoEvery": "Automatic, every {minutes} min",
+  "@accountAutoEvery": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "accountWithPasswords": "saved passwords included",
+  "accountSettingsButton": "Account & Sync Settings…",
+  "accountShowEmail": "Show",
+  "accountHideEmail": "Hide",
+  "accountPasswordEmail": "Sync password: your GitHub email (default)",
+  "accountPasswordCustom": "Sync password: your own",
+  "accountPasswordEmailHint": "Signing in is all it takes: every computer that signs in to this account uses the same email address and syncs on its own. An email address is no secret, though: set a password of your own to keep the gist's contents safe should its link leak.",
+  "accountPasswordRisk": "Saved server passwords are included, encrypted with your email address: anyone who has the gist's link and knows your email can read them. Set a password of your own.",
+  "accountChangePassword": "Change Sync Password…",
+  "accountUseEmail": "Use My GitHub Email",
+  "accountNewPassword": "New password",
+  "accountConfirmPassword": "Confirm",
+  "accountPasswordMismatch": "The two passwords differ.",
+  "accountPasswordSave": "Change and Re-encrypt",
+  "accountPasswordChangeHint": "The gist's current data is encrypted again with the new password; its older versions on GitHub keep the old one. Other computers ask for the new password at their next sync.",
+  "accountPasswordChanging": "Re-encrypting the gist…",
+  "accountPasswordChanged": "Sync password changed.",
+  "accountPasswordChangeFailed": "Could not change the sync password: {error}",
+  "@accountPasswordChangeFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String",
+        "example": "timeout"
+      }
+    }
+  },
+  "accountWrongPassword": "The gist is encrypted with another password, changed on another computer perhaps. Type the current sync password:",
+  "accountSetPassword": "Set a sync password to start syncing:",
+  "accountUsePassword": "Use This Password",
+  "accountDefaultSync": "Use the default sync settings",
+  "accountDefaultSyncHint": "Automatic, saved passwords included, checking every {minutes} minutes: changes here go up a minute after they are made, and each check brings others' down, merged item by item. Turn it off to choose.",
+  "@accountDefaultSyncHint": {
+    "placeholders": {
+      "minutes": {
+        "type": "int"
+      }
+    }
+  },
+  "accountActPassword": "Changed the sync password",
+  "accountStepReseal": "Re-encrypted the gist with the new password",
+  "accountChoiceTitle": "Choose How to Sync",
+  "accountChoiceFirst": "This computer is syncing this account for the first time, and its connections differ from the cloud's. Nothing tells which is newer: choose how to combine them. Nothing has changed yet on either side.",
+  "accountChoiceStale": "This computer has not synced for {days} days, and its connections differ from the cloud's: its copy may be the old one. Choose how to combine them. Nothing has changed yet on either side.",
+  "@accountChoiceStale": {
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
+  "accountChoiceHere": "This computer",
+  "accountChoiceCloud": "Cloud",
+  "accountChoiceCount": "{n, plural, one {# connection} other {# connections}}",
+  "@accountChoiceCount": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "accountChoiceRemoteBy": "Updated by {device}, {time}",
+  "@accountChoiceRemoteBy": {
+    "placeholders": {
+      "device": {
+        "type": "String",
+        "example": "office-pc"
+      },
+      "time": {
+        "type": "String",
+        "example": "2026-11-27 14:02"
+      }
+    }
+  },
+  "accountChoiceDiff": "Only here: {local} · Only in the cloud: {remote} · Different on each side: {differ} · Alike: {same}",
+  "@accountChoiceDiff": {
+    "placeholders": {
+      "local": {
+        "type": "int"
+      },
+      "remote": {
+        "type": "int"
+      },
+      "differ": {
+        "type": "int"
+      },
+      "same": {
+        "type": "int"
+      }
+    }
+  },
+  "accountChoiceMergeTitle": "Merge both (recommended)",
+  "accountChoiceMergeDetail": "Keeps every connection of both sides, {n} in all; where a connection differs, the cloud's version is kept, as it is likely the newer. Settings and quick commands merge the same way.",
+  "@accountChoiceMergeDetail": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "accountChoiceRemoteTitle": "Use the cloud's on this computer",
+  "accountChoiceRemoteDetail": "This computer gets the cloud's {n} connections; the {local} only here are removed. Its data is backed up first: Backups & versions restores it.",
+  "@accountChoiceRemoteDetail": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "local": {
+        "type": "int"
+      }
+    }
+  },
+  "accountChoiceLocalTitle": "Use this computer's in the cloud",
+  "accountChoiceLocalDetail": "The cloud gets this computer's {n} connections; the {remote} only there are removed from it, and from other computers at their next sync. The cloud's data stays in the gist's versions on GitHub.",
+  "@accountChoiceLocalDetail": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      },
+      "remote": {
+        "type": "int"
+      }
+    }
+  },
+  "accountChoiceLater": "Later",
+  "accountChoiceConfirm": "Sync",
+  "accountChoiceLocalConfirm": "Replace the Cloud",
+  "accountChoiceShort": "Choose how to sync",
+  "accountChooseButton": "Choose How to Sync…",
+  "accountChoiceLogged": "Connections differ: {local} here, {remote} in the cloud. Waiting for a choice.",
+  "@accountChoiceLogged": {
+    "placeholders": {
+      "local": {
+        "type": "int"
+      },
+      "remote": {
+        "type": "int"
+      }
+    }
+  },
+  "accountActChoice": "Chose how to sync",
+  "accountChoiceMerge": "Merged",
+  "accountChoiceRemote": "Cloud's kept",
+  "accountChoiceLocal": "This computer's kept",
+  "accountNeedPassword": "Sync password needed",
+  "accountEnterPassword": "Enter the Sync Password…",
+  "accountPasswordNeededCustom": "The sync password was changed to a custom one on {device}, {time}. Type it here; this computer remembers it.",
+  "@accountPasswordNeededCustom": {
+    "placeholders": {
+      "device": {
+        "type": "String",
+        "example": "office-pc"
+      },
+      "time": {
+        "type": "String",
+        "example": "2026-11-27 14:02"
+      }
+    }
+  },
+  "accountPasswordNeededEmail": "The cloud's data uses a GitHub email address as its sync password, but none of your account's addresses opens it: the primary address may have changed. Type the address used then, or the password.",
+  "accountActPasswordAuto": "Followed the sync password of another computer",
+  "accountStepAutoPassword": "The cloud now uses your GitHub email as the sync password, changed on another computer: this one uses it too",
+  "accountCurrentPassword": "Sync password in use",
+  "accountActEmailChanged": "Your GitHub primary email changed: re-encrypted with the new one"
 }

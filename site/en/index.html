@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Finallyshell: every server, one window</title>
+<meta name="description" content="An SSH client with FinalShell's layout and vertical session tabs. Terminals, files, monitoring, Docker, sites, databases and tunnels in one native window, on macOS, Windows and Linux.">
+<meta property="og:title" content="Finallyshell: every server, one window">
+<meta property="og:description" content="An SSH client with FinalShell's layout and vertical session tabs. Terminals, files, monitoring, Docker, sites, databases and tunnels in one native window.">
+<meta property="og:image" content="https://geekoutnet.github.io/finallyshell/screenshots/main-en.png">
+<meta name="theme-color" content="#eef1f5" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#15181d" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://geekoutnet.github.io/finallyshell/en/">
+<link rel="alternate" hreflang="zh-Hans" href="https://geekoutnet.github.io/finallyshell/">
+<link rel="alternate" hreflang="en" href="https://geekoutnet.github.io/finallyshell/en/">
+<link rel="icon" type="image/png" href="../icon.png">
+<link rel="stylesheet" href="../style.css">
+<script src="../site.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="page">
+    <a class="brand" href="./"><img src="../icon.png" alt="">Finallyshell</a>
+    <nav>
+      <a href="#sessions">Features</a>
+      <a href="https://github.com/geekoutnet/finallyshell/blob/dev/docs/en/features.md">Docs</a>
+      <a href="https://github.com/geekoutnet/finallyshell">GitHub</a>
+      <a class="lang" href="../" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>
+      <a class="get" href="#download">Download</a>
+    </nav>
+  </div>
+</header>
+
+<main class="page">
+  <section class="hero">
+    <h1>Every server,<br>one window.</h1>
+    <p class="lead">Terminals, files, monitoring, Docker, sites and databases in one native window. FinalShell's layout with the session tabs stacked down the side, so twenty servers still read at a glance.</p>
+    <div class="cta">
+      <a class="button primary" href="#download" data-get="win-setup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg> Download free</a>
+      <a class="button" href="#download">All downloads</a>
+      <span class="note">For macOS, Windows and Linux, free to use</span>
+    </div>
+    <div class="stage">
+      <img src="../screenshots/main-en.png" width="2672" height="1808" alt="Finallyshell's main window: the server's status at the top left, the vertical session list under it, the terminal on the right and the server's files below it">
+    </div>
+    <div class="facts">
+      <div><strong>SSH, Telnet, serial, Remote Desktop</strong>Four kinds of connection, chained through jump hosts and proxies</div>
+      <div><strong>Nothing installed on the server</strong>Monitoring and management go over the same SSH connection</div>
+      <div><strong>Passwords stay yours</strong>In the system's keychain, encrypted here before any sync</div>
+      <div><strong>A native app</strong>No Java, and the layout you already know</div>
+    </div>
+  </section>
+
+  <div class="body">
+    <aside class="sessions" aria-label="Features">
+      <div class="title">Sessions (9)</div>
+      <ol>
+        <li><a href="#sessions"><span class="dot"></span><span class="name">Terminals</span><span class="host">Splits, quick commands, many hosts</span></a></li>
+        <li><a href="#files"><span class="dot"></span><span class="name">Files</span><span class="host">SFTP, editor, server to server</span></a></li>
+        <li><a href="#monitor"><span class="dot"></span><span class="name">Monitoring</span><span class="host">CPU, memory, network, processes</span></a></li>
+        <li><a href="#panels"><span class="dot"></span><span class="name">Server panels</span><span class="host">Docker, sites, system, databases</span></a></li>
+        <li><a href="#tunnels"><span class="dot"></span><span class="name">Tunnels &amp; proxies</span><span class="host">Forwards, SOCKS5, exposing ports</span></a></li>
+        <li><a href="#desktop"><span class="dot"></span><span class="name">Desktop mode</span><span class="host">Windows, dock, AI assistant</span></a></li>
+        <li><a href="#sync"><span class="dot"></span><span class="name">Account &amp; sync</span><span class="host">GitHub sign-in, many computers</span></a></li>
+        <li><a href="#import"><span class="dot"></span><span class="name">Moving in</span><span class="host">FinalShell, Xshell and more</span></a></li>
+        <li><a href="#download"><span class="dot wait"></span><span class="name">Download</span><span class="host">macOS, Windows, Linux</span></a></li>
+      </ol>
+    </aside>
+
+    <div class="sections">
+      <section class="section" id="sessions">
+        <h2>Sessions stacked down the side, however many you open</h2>
+        <p>The server's status at the top left, the sessions under it, the terminal on the right and the server's files below. The session list scrolls and reorders by dragging; a session also opens in a tab of its own or a split.</p>
+        <ul class="points">
+          <li>Save commands as buttons, or write a few lines in the command editor and send them; send one command to many servers and compare what came back</li>
+          <li>Errors, warnings and addresses highlighted, sessions recorded and replayed, files sent with <code>rz</code> and <code>sz</code></li>
+          <li>Servers in GBK, Big5 or Shift_JIS show right, and Backspace and Delete send what each host expects</li>
+          <li>Two-factor codes typed for you, SSH keys made and deployed in a click, SSH agent and X11 forwarding</li>
+        </ul>
+        <div class="shot"><img src="../screenshots/quick-commands-en.png" width="2192" height="834" loading="lazy" alt="Quick command buttons and the command editor under the terminal"></div>
+      </section>
+
+      <section class="section" id="files">
+        <h2>The server's files, right under the terminal</h2>
+        <p>The file panel follows the terminal's folder. Drop files in to upload them; thousands of small files go packed and compressed; two servers send to each other directly, nothing through your computer.</p>
+        <ul class="points">
+          <li>A code editor built in: tabs, highlighting, completion, and what changed shown before saving</li>
+          <li>Archives, permissions, downloads from a link on the server, and a trash before deleting</li>
+          <li>Routers without SFTP get it installed in a click</li>
+        </ul>
+        <div class="pair">
+          <div class="shot"><img src="../screenshots/transfers-en.png" width="1552" height="1128" loading="lazy" alt="The file panel and the transfers"></div>
+          <div class="shot"><img src="../screenshots/file-editor-en.png" width="2112" height="1568" loading="lazy" alt="Editing a deploy script on the server"></div>
+        </div>
+      </section>
+
+      <section class="section" id="monitor">
+        <h2>How the server is doing, at a glance</h2>
+        <p>CPU, memory, swap, traffic, latency, disks and processes beside the session, over the same connection. The Overview tab puts load, ports, services and containers on one page.</p>
+        <ul class="points">
+          <li>Connections, traffic by network interface, trace route and IP locations</li>
+          <li>Alerts when CPU, memory or a disk crosses its limit</li>
+          <li>Drop the caches and compact memory in a click</li>
+        </ul>
+        <div class="shot narrow"><img src="../screenshots/system-info-en.png" width="1552" height="1128" loading="lazy" alt="The server's system information"></div>
+      </section>
+
+      <section class="section" id="panels">
+        <h2>The server panels you use most, in the client</h2>
+        <p>The parts of BT Panel and 1Panel used every day, done over SSH. Root comes by itself when it is needed, and restarting a service or changing the firewall says what it will touch before it runs.</p>
+        <div class="tabs">
+          <div role="tablist" aria-label="Server panels">
+            <button role="tab" id="tab-docker" aria-controls="panel-docker" aria-selected="true">Docker</button>
+            <button role="tab" id="tab-sites" aria-controls="panel-sites" aria-selected="false" tabindex="-1">Sites &amp; certificates</button>
+            <button role="tab" id="tab-system" aria-controls="panel-system" aria-selected="false" tabindex="-1">System</button>
+            <button role="tab" id="tab-db" aria-controls="panel-db" aria-selected="false" tabindex="-1">Databases</button>
+            <button role="tab" id="tab-openwrt" aria-controls="panel-openwrt" aria-selected="false" tabindex="-1">OpenWrt</button>
+          </div>
+          <div role="tabpanel" id="panel-docker" aria-labelledby="tab-docker">
+            <h3>Containers, images and compose</h3>
+            <p>Create and recreate containers, watch their resources, browse their files; pull, build and push images; deploy and edit compose projects.</p>
+            <ul><li>Start, stop and prune in bulk</li><li>Networks and volumes</li><li>Disk usage, events, registries</li><li>The daemon's settings</li></ul>
+          </div>
+          <div role="tabpanel" id="panel-sites" aria-labelledby="tab-sites" hidden>
+            <h3>Nginx, Caddy and certificates</h3>
+            <p>Site forms and templates, with a failed config check rolled back; Caddy installed, updated and migrated in a click; certificates before they expire.</p>
+            <ul><li>Reverse proxies, static sites, PHP, SPAs</li><li>Nginx tuning and logs</li><li>Config backups and restores</li><li>From Nginx to Caddy</li></ul>
+          </div>
+          <div role="tabpanel" id="panel-system" aria-labelledby="tab-system" hidden>
+            <h3>Services, logs and cron</h3>
+            <p>Start, stop and enable systemd services, filter logs by level and time, run a cron job now.</p>
+            <ul><li>Firewall rules</li><li>Security checks</li><li>Package updates</li><li>Disk analysis</li></ul>
+          </div>
+          <div role="tabpanel" id="panel-db" aria-labelledby="tab-db" hidden>
+            <h3>MySQL, PostgreSQL and Redis</h3>
+            <p>Reach the server's databases over SSH, browse tables and data, run queries; passwords only in the system's keychain.</p>
+            <ul><li>MySQL and MariaDB</li><li>PostgreSQL</li><li>Redis keys</li></ul>
+          </div>
+          <div role="tabpanel" id="panel-openwrt" aria-labelledby="tab-openwrt" hidden>
+            <h3>Routers too</h3>
+            <p>OpenWrt and ImmortalWrt are recognized, and the System tab turns into a router's.</p>
+            <ul><li>Interfaces and DHCP leases</li><li>Port forwards</li><li>procd services</li><li>opkg and apk packages</li></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="tunnels">
+        <h2>Port forwards, without remembering ssh -L</h2>
+        <p>Local, remote and dynamic forwards are forms. They stay up in the background, start with the app and reconnect by themselves. A server can borrow this computer's network, and the system proxy can split traffic.</p>
+        <ul class="points">
+          <li>SOCKS5 and HTTP proxies, reverse proxies, Unix sockets, allow lists and rate limits</li>
+          <li>21 common setups in a click, and <code>ssh -L/-R/-D</code> commands imported as they are</li>
+          <li>A proxy library, each proxy tested for reach, latency and exit IP</li>
+        </ul>
+        <div class="pair">
+          <div class="shot"><img src="../screenshots/connection-tunnels-en.png" width="1472" height="1568" loading="lazy" alt="A connection's tunnels"></div>
+          <div class="shot"><img src="../screenshots/connection-proxy-en.png" width="1472" height="1568" loading="lazy" alt="Connecting through a jump host and a proxy"></div>
+        </div>
+      </section>
+
+      <section class="band section" id="desktop">
+        <h2>Every server gets a desktop</h2>
+        <p>Turn on desktop mode and the server works like a computer: This PC, a file manager, a task manager, terminals, a browser and an app center, in windows you drag, resize and snap.</p>
+        <ul class="points">
+          <li>An AI assistant runs commands on the server: read-only ones by themselves, changes one by one after you confirm, dangerous ones only once you type it out</li>
+          <li>A trash, archives, and copy and paste between servers</li>
+          <li>Your own wallpaper, icon folders and dock</li>
+        </ul>
+        <div class="shot"><img src="../screenshots/desktop-en.png" width="2672" height="1808" loading="lazy" alt="A server's desktop: file windows, a terminal, the server's status and the dock"></div>
+      </section>
+
+      <section class="section" id="sync">
+        <h2>A new computer, and your connections are there</h2>
+        <p>Sign in with GitHub and the connections and settings sync to a secret gist of your own. Computers merge each other's changes item by item; one not used for long asks first whether to merge, take the cloud's or keep its own.</p>
+        <ul class="points">
+          <li>Encrypted before it leaves the computer, with your GitHub email address as the sync password, or one of your own</li>
+          <li>Versions kept, previewed and restored; a sync that would delete many waits for your OK</li>
+          <li>Without GitHub: a WebDAV folder (Nextcloud, Jianguoyun) or S3-compatible storage</li>
+        </ul>
+        <div class="pair">
+          <div class="shot"><img src="../screenshots/account-login-en.png" width="1112" height="1028" loading="lazy" alt="Signing in with GitHub: the page to open and the code"></div>
+          <div class="shot"><img src="../screenshots/account-en.png" width="1392" height="1568" loading="lazy" alt="The account window: who signed in, the sync password and the activity"></div>
+        </div>
+      </section>
+
+      <section class="section" id="import">
+        <h2>Bring your servers with you</h2>
+        <p>Import connections and folders from FinalShell, Xshell, SecureCRT and MobaXterm, the hosts of <code>~/.ssh/config</code>, or a server list in CSV or Excel.</p>
+        <div class="shot narrow"><img src="../screenshots/import-finalshell-en.png" width="1832" height="1288" loading="lazy" alt="Importing connections from FinalShell"></div>
+      </section>
+
+      <section class="section download" id="download">
+        <h2>Download</h2>
+        <p class="release" data-version>The latest release is on <a href="https://github.com/geekoutnet/finallyshell/releases/latest">GitHub Releases</a>.</p>
+        <div class="systems">
+          <div class="system" data-os="windows">
+            <h3>Windows</h3>
+            <ul>
+              <li><a data-asset="win-setup" href="https://github.com/geekoutnet/finallyshell/releases/latest">Installer <span>.exe</span></a></li>
+              <li><a data-asset="win-zip" href="https://github.com/geekoutnet/finallyshell/releases/latest">Portable <span>.zip</span></a></li>
+            </ul>
+            <div class="how"><p>When SmartScreen says the installer is unsigned, choose More info, then Run anyway. The app updates itself after that.</p></div>
+          </div>
+          <div class="system" data-os="macos">
+            <h3>macOS</h3>
+            <ul>
+              <li><a data-asset="mac-arm" href="https://github.com/geekoutnet/finallyshell/releases/latest">Apple silicon <span>.dmg</span></a></li>
+              <li><a data-asset="mac-intel" href="https://github.com/geekoutnet/finallyshell/releases/latest">Intel <span>.dmg</span></a></li>
+            </ul>
+            <div class="how">
+              <p>It is not notarized yet. After dragging it to Applications, run in Terminal:</p>
+              <div class="cmd"><code>xattr -dr com.apple.quarantine /Applications/Finallyshell.app</code><button type="button">Copy</button></div>
+              <p>or choose Open Anyway in System Settings › Privacy &amp; Security.</p>
+            </div>
+          </div>
+          <div class="system" data-os="linux">
+            <h3>Linux</h3>
+            <ul>
+              <li><a data-asset="deb-amd64" href="https://github.com/geekoutnet/finallyshell/releases/latest">Debian, Ubuntu (x64) <span>.deb</span></a></li>
+              <li><a data-asset="deb-arm64" href="https://github.com/geekoutnet/finallyshell/releases/latest">Debian, Ubuntu (ARM64) <span>.deb</span></a></li>
+              <li><a data-asset="tar-amd64" href="https://github.com/geekoutnet/finallyshell/releases/latest">Other distributions (x64) <span>.tar.gz</span></a></li>
+              <li><a data-asset="tar-arm64" href="https://github.com/geekoutnet/finallyshell/releases/latest">Other distributions (ARM64) <span>.tar.gz</span></a></li>
+            </ul>
+            <div class="how"><p>Unpack the archive and run <code>sh install.sh</code> to install it in <code>~/.local</code>. Remembering passwords needs a keyring such as GNOME Keyring or KWallet.</p></div>
+          </div>
+        </div>
+        <div class="build">
+          <h3>Build from source</h3>
+          <p>With Go 1.27.3 or newer. <code>go tool mygo dev</code> runs the app and restarts it as the code changes.</p>
+          <div class="cmd"><code>git clone -b dev https://github.com/geekoutnet/finallyshell.git &amp;&amp; cd finallyshell &amp;&amp; go tool mygo dev</code><button type="button">Copy</button></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="page">
+    <a class="brand" href="./"><img src="../icon.png" alt="">Finallyshell</a>
+    <a href="https://github.com/geekoutnet/finallyshell/blob/dev/docs/en/features.md">Features</a>
+    <a href="https://github.com/geekoutnet/finallyshell/releases">All releases</a>
+    <a href="https://github.com/geekoutnet/finallyshell">GitHub</a>
+    <a href="../" lang="zh-Hans" hreflang="zh-Hans">简体中文</a>
+  </div>
+</footer>
+</body>
+</html>

@@ -72,7 +72,7 @@ Work is issue-driven; the `issue-workflow` skill
 - Docs: behavior goes in `features.md`, files and settings keys in
   `configuration.md`, building and the code in `development.md`, each in
   `docs/en/` and `docs/zh-CN/`: change both languages together, keeping
-  the same headings in the same order. `README.md` and `README.zh-CN.md`
-  show the headline features and must say the same thing; when a scene
-  they show changes, run `go run ./tools/screenshots` and commit
-  `docs/screenshots/`.
+  the same headings in the same order. `README.md` (Chinese, the
+  default) and `README.en.md` show the headline features and must say
+  the same thing; when a scene they show changes, run
+  `go run ./tools/screenshots` and commit `docs/screenshots/`.

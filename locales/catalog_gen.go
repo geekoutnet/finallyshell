@@ -44673,3 +44673,1335 @@ func OwName() string { return In(i18n.Locale()).OwName() }
 func (msgs Messages) OwName() string {
 	return Catalog.Format(msgs.locale, "owName", nil)
 }
+
+// AccountSignIn says "Sign In"
+// in the language the app shows.
+func AccountSignIn() string { return In(i18n.Locale()).AccountSignIn() }
+
+// AccountSignIn says "Sign In"
+// in the language of msgs.
+func (msgs Messages) AccountSignIn() string {
+	return Catalog.Format(msgs.locale, "accountSignIn", nil)
+}
+
+// AccountSignInGitHub says "Sign in with GitHub"
+// in the language the app shows.
+func AccountSignInGitHub() string { return In(i18n.Locale()).AccountSignInGitHub() }
+
+// AccountSignInGitHub says "Sign in with GitHub"
+// in the language of msgs.
+func (msgs Messages) AccountSignInGitHub() string {
+	return Catalog.Format(msgs.locale, "accountSignInGitHub", nil)
+}
+
+// AccountButtonSignedIn says "GitHub: {login} (signed in)"
+// in the language the app shows.
+func AccountButtonSignedIn(login string) string {
+	return In(i18n.Locale()).AccountButtonSignedIn(login)
+}
+
+// AccountButtonSignedIn says "GitHub: {login} (signed in)"
+// in the language of msgs.
+func (msgs Messages) AccountButtonSignedIn(login string) string {
+	return Catalog.Format(msgs.locale, "accountButtonSignedIn", map[string]any{"login": login})
+}
+
+// AccountButtonExpired says "GitHub: {login} (sign-in expired)"
+// in the language the app shows.
+func AccountButtonExpired(login string) string { return In(i18n.Locale()).AccountButtonExpired(login) }
+
+// AccountButtonExpired says "GitHub: {login} (sign-in expired)"
+// in the language of msgs.
+func (msgs Messages) AccountButtonExpired(login string) string {
+	return Catalog.Format(msgs.locale, "accountButtonExpired", map[string]any{"login": login})
+}
+
+// AccountWindowTitle says "Account"
+// in the language the app shows.
+func AccountWindowTitle() string { return In(i18n.Locale()).AccountWindowTitle() }
+
+// AccountWindowTitle says "Account"
+// in the language of msgs.
+func (msgs Messages) AccountWindowTitle() string {
+	return Catalog.Format(msgs.locale, "accountWindowTitle", nil)
+}
+
+// AccountSignedOut says "Not signed in."
+// in the language the app shows.
+func AccountSignedOut() string { return In(i18n.Locale()).AccountSignedOut() }
+
+// AccountSignedOut says "Not signed in."
+// in the language of msgs.
+func (msgs Messages) AccountSignedOut() string {
+	return Catalog.Format(msgs.locale, "accountSignedOut", nil)
+}
+
+// AccountLoginHint says "Finallyshell asks GitHub only for access to your gists, for the account's sync, and to read your email address, to sh…"
+// in the language the app shows.
+func AccountLoginHint() string { return In(i18n.Locale()).AccountLoginHint() }
+
+// AccountLoginHint says "Finallyshell asks GitHub only for access to your gists, for the account's sync, and to read your email address, to sh…"
+// in the language of msgs.
+func (msgs Messages) AccountLoginHint() string {
+	return Catalog.Format(msgs.locale, "accountLoginHint", nil)
+}
+
+// AccountLoginStep1 says "1. Open this page in your browser"
+// in the language the app shows.
+func AccountLoginStep1() string { return In(i18n.Locale()).AccountLoginStep1() }
+
+// AccountLoginStep1 says "1. Open this page in your browser"
+// in the language of msgs.
+func (msgs Messages) AccountLoginStep1() string {
+	return Catalog.Format(msgs.locale, "accountLoginStep1", nil)
+}
+
+// AccountLoginStep2 says "2. Enter this code there and authorize"
+// in the language the app shows.
+func AccountLoginStep2() string { return In(i18n.Locale()).AccountLoginStep2() }
+
+// AccountLoginStep2 says "2. Enter this code there and authorize"
+// in the language of msgs.
+func (msgs Messages) AccountLoginStep2() string {
+	return Catalog.Format(msgs.locale, "accountLoginStep2", nil)
+}
+
+// AccountOpenPage says "Open"
+// in the language the app shows.
+func AccountOpenPage() string { return In(i18n.Locale()).AccountOpenPage() }
+
+// AccountOpenPage says "Open"
+// in the language of msgs.
+func (msgs Messages) AccountOpenPage() string {
+	return Catalog.Format(msgs.locale, "accountOpenPage", nil)
+}
+
+// AccountCopied says "Copied"
+// in the language the app shows.
+func AccountCopied() string { return In(i18n.Locale()).AccountCopied() }
+
+// AccountCopied says "Copied"
+// in the language of msgs.
+func (msgs Messages) AccountCopied() string {
+	return Catalog.Format(msgs.locale, "accountCopied", nil)
+}
+
+// AccountOpenAndCopy says "Copy Code and Open GitHub"
+// in the language the app shows.
+func AccountOpenAndCopy() string { return In(i18n.Locale()).AccountOpenAndCopy() }
+
+// AccountOpenAndCopy says "Copy Code and Open GitHub"
+// in the language of msgs.
+func (msgs Messages) AccountOpenAndCopy() string {
+	return Catalog.Format(msgs.locale, "accountOpenAndCopy", nil)
+}
+
+// AccountRequesting says "Getting a code from GitHub…"
+// in the language the app shows.
+func AccountRequesting() string { return In(i18n.Locale()).AccountRequesting() }
+
+// AccountRequesting says "Getting a code from GitHub…"
+// in the language of msgs.
+func (msgs Messages) AccountRequesting() string {
+	return Catalog.Format(msgs.locale, "accountRequesting", nil)
+}
+
+// AccountWaiting says "Waiting for you to authorize in the browser… ({time} left)"
+// in the language the app shows.
+func AccountWaiting(time_ string) string { return In(i18n.Locale()).AccountWaiting(time_) }
+
+// AccountWaiting says "Waiting for you to authorize in the browser… ({time} left)"
+// in the language of msgs.
+func (msgs Messages) AccountWaiting(time_ string) string {
+	return Catalog.Format(msgs.locale, "accountWaiting", map[string]any{"time": time_})
+}
+
+// AccountFinishing says "Authorized. Reading your account…"
+// in the language the app shows.
+func AccountFinishing() string { return In(i18n.Locale()).AccountFinishing() }
+
+// AccountFinishing says "Authorized. Reading your account…"
+// in the language of msgs.
+func (msgs Messages) AccountFinishing() string {
+	return Catalog.Format(msgs.locale, "accountFinishing", nil)
+}
+
+// AccountDenied says "The authorization was declined."
+// in the language the app shows.
+func AccountDenied() string { return In(i18n.Locale()).AccountDenied() }
+
+// AccountDenied says "The authorization was declined."
+// in the language of msgs.
+func (msgs Messages) AccountDenied() string {
+	return Catalog.Format(msgs.locale, "accountDenied", nil)
+}
+
+// AccountCodeExpired says "The code expired before it was entered."
+// in the language the app shows.
+func AccountCodeExpired() string { return In(i18n.Locale()).AccountCodeExpired() }
+
+// AccountCodeExpired says "The code expired before it was entered."
+// in the language of msgs.
+func (msgs Messages) AccountCodeExpired() string {
+	return Catalog.Format(msgs.locale, "accountCodeExpired", nil)
+}
+
+// AccountLoginFailed says "Could not sign in: {error}"
+// in the language the app shows.
+func AccountLoginFailed(error string) string { return In(i18n.Locale()).AccountLoginFailed(error) }
+
+// AccountLoginFailed says "Could not sign in: {error}"
+// in the language of msgs.
+func (msgs Messages) AccountLoginFailed(error string) string {
+	return Catalog.Format(msgs.locale, "accountLoginFailed", map[string]any{"error": error})
+}
+
+// AccountTryAgain says "Get a New Code"
+// in the language the app shows.
+func AccountTryAgain() string { return In(i18n.Locale()).AccountTryAgain() }
+
+// AccountTryAgain says "Get a New Code"
+// in the language of msgs.
+func (msgs Messages) AccountTryAgain() string {
+	return Catalog.Format(msgs.locale, "accountTryAgain", nil)
+}
+
+// AccountNoEmail says "No email address shared"
+// in the language the app shows.
+func AccountNoEmail() string { return In(i18n.Locale()).AccountNoEmail() }
+
+// AccountNoEmail says "No email address shared"
+// in the language of msgs.
+func (msgs Messages) AccountNoEmail() string {
+	return Catalog.Format(msgs.locale, "accountNoEmail", nil)
+}
+
+// AccountSignedInGitHub says "GitHub · Signed in"
+// in the language the app shows.
+func AccountSignedInGitHub() string { return In(i18n.Locale()).AccountSignedInGitHub() }
+
+// AccountSignedInGitHub says "GitHub · Signed in"
+// in the language of msgs.
+func (msgs Messages) AccountSignedInGitHub() string {
+	return Catalog.Format(msgs.locale, "accountSignedInGitHub", nil)
+}
+
+// AccountExpiredBadge says "GitHub · Sign-in expired"
+// in the language the app shows.
+func AccountExpiredBadge() string { return In(i18n.Locale()).AccountExpiredBadge() }
+
+// AccountExpiredBadge says "GitHub · Sign-in expired"
+// in the language of msgs.
+func (msgs Messages) AccountExpiredBadge() string {
+	return Catalog.Format(msgs.locale, "accountExpiredBadge", nil)
+}
+
+// AccountExpiredHint says "GitHub no longer accepts this sign-in: it was revoked, or not used for months. Sign in again to keep syncing; nothing…"
+// in the language the app shows.
+func AccountExpiredHint() string { return In(i18n.Locale()).AccountExpiredHint() }
+
+// AccountExpiredHint says "GitHub no longer accepts this sign-in: it was revoked, or not used for months. Sign in again to keep syncing; nothing…"
+// in the language of msgs.
+func (msgs Messages) AccountExpiredHint() string {
+	return Catalog.Format(msgs.locale, "accountExpiredHint", nil)
+}
+
+// AccountSignInAgain says "Sign In Again"
+// in the language the app shows.
+func AccountSignInAgain() string { return In(i18n.Locale()).AccountSignInAgain() }
+
+// AccountSignInAgain says "Sign In Again"
+// in the language of msgs.
+func (msgs Messages) AccountSignInAgain() string {
+	return Catalog.Format(msgs.locale, "accountSignInAgain", nil)
+}
+
+// AccountManage says "Manage access on GitHub"
+// in the language the app shows.
+func AccountManage() string { return In(i18n.Locale()).AccountManage() }
+
+// AccountManage says "Manage access on GitHub"
+// in the language of msgs.
+func (msgs Messages) AccountManage() string {
+	return Catalog.Format(msgs.locale, "accountManage", nil)
+}
+
+// AccountProfile says "Profile"
+// in the language the app shows.
+func AccountProfile() string { return In(i18n.Locale()).AccountProfile() }
+
+// AccountProfile says "Profile"
+// in the language of msgs.
+func (msgs Messages) AccountProfile() string {
+	return Catalog.Format(msgs.locale, "accountProfile", nil)
+}
+
+// AccountSignOut says "Sign Out"
+// in the language the app shows.
+func AccountSignOut() string { return In(i18n.Locale()).AccountSignOut() }
+
+// AccountSignOut says "Sign Out"
+// in the language of msgs.
+func (msgs Messages) AccountSignOut() string {
+	return Catalog.Format(msgs.locale, "accountSignOut", nil)
+}
+
+// AccountSignOutConfirm says "Sign out of {login}? Its token and sync password are removed from this computer. The connections here and the gist on…"
+// in the language the app shows.
+func AccountSignOutConfirm(login string) string {
+	return In(i18n.Locale()).AccountSignOutConfirm(login)
+}
+
+// AccountSignOutConfirm says "Sign out of {login}? Its token and sync password are removed from this computer. The connections here and the gist on…"
+// in the language of msgs.
+func (msgs Messages) AccountSignOutConfirm(login string) string {
+	return Catalog.Format(msgs.locale, "accountSignOutConfirm", map[string]any{"login": login})
+}
+
+// AccountSyncTitle says "Account Sync"
+// in the language the app shows.
+func AccountSyncTitle() string { return In(i18n.Locale()).AccountSyncTitle() }
+
+// AccountSyncTitle says "Account Sync"
+// in the language of msgs.
+func (msgs Messages) AccountSyncTitle() string {
+	return Catalog.Format(msgs.locale, "accountSyncTitle", nil)
+}
+
+// AccountSyncIntro says "Separate from Options › Sync: kept in a secret gist of its own in your GitHub account ({file}), with its own sync p…"
+// in the language the app shows.
+func AccountSyncIntro(file string) string { return In(i18n.Locale()).AccountSyncIntro(file) }
+
+// AccountSyncIntro says "Separate from Options › Sync: kept in a secret gist of its own in your GitHub account ({file}), with its own sync p…"
+// in the language of msgs.
+func (msgs Messages) AccountSyncIntro(file string) string {
+	return Catalog.Format(msgs.locale, "accountSyncIntro", map[string]any{"file": file})
+}
+
+// AccountSyncPasswordHint says "Type the same password on each computer that signs in to this account. It cannot be recovered."
+// in the language the app shows.
+func AccountSyncPasswordHint() string { return In(i18n.Locale()).AccountSyncPasswordHint() }
+
+// AccountSyncPasswordHint says "Type the same password on each computer that signs in to this account. It cannot be recovered."
+// in the language of msgs.
+func (msgs Messages) AccountSyncPasswordHint() string {
+	return Catalog.Format(msgs.locale, "accountSyncPasswordHint", nil)
+}
+
+// AccountRenewing says "Renewing the sign-in…"
+// in the language the app shows.
+func AccountRenewing() string { return In(i18n.Locale()).AccountRenewing() }
+
+// AccountRenewing says "Renewing the sign-in…"
+// in the language of msgs.
+func (msgs Messages) AccountRenewing() string {
+	return Catalog.Format(msgs.locale, "accountRenewing", nil)
+}
+
+// AccountRenewFailed says "Could not renew the sign-in: {error}"
+// in the language the app shows.
+func AccountRenewFailed(error string) string { return In(i18n.Locale()).AccountRenewFailed(error) }
+
+// AccountRenewFailed says "Could not renew the sign-in: {error}"
+// in the language of msgs.
+func (msgs Messages) AccountRenewFailed(error string) string {
+	return Catalog.Format(msgs.locale, "accountRenewFailed", map[string]any{"error": error})
+}
+
+// AccountViewGist says "Gist on GitHub"
+// in the language the app shows.
+func AccountViewGist() string { return In(i18n.Locale()).AccountViewGist() }
+
+// AccountViewGist says "Gist on GitHub"
+// in the language of msgs.
+func (msgs Messages) AccountViewGist() string {
+	return Catalog.Format(msgs.locale, "accountViewGist", nil)
+}
+
+// AccountRevisions says "Versions on GitHub"
+// in the language the app shows.
+func AccountRevisions() string { return In(i18n.Locale()).AccountRevisions() }
+
+// AccountRevisions says "Versions on GitHub"
+// in the language of msgs.
+func (msgs Messages) AccountRevisions() string {
+	return Catalog.Format(msgs.locale, "accountRevisions", nil)
+}
+
+// AccountLog says "Activity"
+// in the language the app shows.
+func AccountLog() string { return In(i18n.Locale()).AccountLog() }
+
+// AccountLog says "Activity"
+// in the language of msgs.
+func (msgs Messages) AccountLog() string {
+	return Catalog.Format(msgs.locale, "accountLog", nil)
+}
+
+// AccountLogEmpty says "Nothing yet."
+// in the language the app shows.
+func AccountLogEmpty() string { return In(i18n.Locale()).AccountLogEmpty() }
+
+// AccountLogEmpty says "Nothing yet."
+// in the language of msgs.
+func (msgs Messages) AccountLogEmpty() string {
+	return Catalog.Format(msgs.locale, "accountLogEmpty", nil)
+}
+
+// AccountLogClear says "Clear"
+// in the language the app shows.
+func AccountLogClear() string { return In(i18n.Locale()).AccountLogClear() }
+
+// AccountLogClear says "Clear"
+// in the language of msgs.
+func (msgs Messages) AccountLogClear() string {
+	return Catalog.Format(msgs.locale, "accountLogClear", nil)
+}
+
+// AccountLogDevice says "On {device}"
+// in the language the app shows.
+func AccountLogDevice(device string) string { return In(i18n.Locale()).AccountLogDevice(device) }
+
+// AccountLogDevice says "On {device}"
+// in the language of msgs.
+func (msgs Messages) AccountLogDevice(device string) string {
+	return Catalog.Format(msgs.locale, "accountLogDevice", map[string]any{"device": device})
+}
+
+// AccountActSignIn says "Signed in as {login}"
+// in the language the app shows.
+func AccountActSignIn(login string) string { return In(i18n.Locale()).AccountActSignIn(login) }
+
+// AccountActSignIn says "Signed in as {login}"
+// in the language of msgs.
+func (msgs Messages) AccountActSignIn(login string) string {
+	return Catalog.Format(msgs.locale, "accountActSignIn", map[string]any{"login": login})
+}
+
+// AccountActSignOut says "Signed out of {login}"
+// in the language the app shows.
+func AccountActSignOut(login string) string { return In(i18n.Locale()).AccountActSignOut(login) }
+
+// AccountActSignOut says "Signed out of {login}"
+// in the language of msgs.
+func (msgs Messages) AccountActSignOut(login string) string {
+	return Catalog.Format(msgs.locale, "accountActSignOut", map[string]any{"login": login})
+}
+
+// AccountActRefresh says "Renewed the sign-in"
+// in the language the app shows.
+func AccountActRefresh() string { return In(i18n.Locale()).AccountActRefresh() }
+
+// AccountActRefresh says "Renewed the sign-in"
+// in the language of msgs.
+func (msgs Messages) AccountActRefresh() string {
+	return Catalog.Format(msgs.locale, "accountActRefresh", nil)
+}
+
+// AccountActExpired says "The sign-in expired"
+// in the language the app shows.
+func AccountActExpired() string { return In(i18n.Locale()).AccountActExpired() }
+
+// AccountActExpired says "The sign-in expired"
+// in the language of msgs.
+func (msgs Messages) AccountActExpired() string {
+	return Catalog.Format(msgs.locale, "accountActExpired", nil)
+}
+
+// AccountActSync says "Sync"
+// in the language the app shows.
+func AccountActSync() string { return In(i18n.Locale()).AccountActSync() }
+
+// AccountActSync says "Sync"
+// in the language of msgs.
+func (msgs Messages) AccountActSync() string {
+	return Catalog.Format(msgs.locale, "accountActSync", nil)
+}
+
+// AccountActReplace says "Replaced the gist with this computer's data"
+// in the language the app shows.
+func AccountActReplace() string { return In(i18n.Locale()).AccountActReplace() }
+
+// AccountActReplace says "Replaced the gist with this computer's data"
+// in the language of msgs.
+func (msgs Messages) AccountActReplace() string {
+	return Catalog.Format(msgs.locale, "accountActReplace", nil)
+}
+
+// AccountReasonAuto says "Automatic"
+// in the language the app shows.
+func AccountReasonAuto() string { return In(i18n.Locale()).AccountReasonAuto() }
+
+// AccountReasonAuto says "Automatic"
+// in the language of msgs.
+func (msgs Messages) AccountReasonAuto() string {
+	return Catalog.Format(msgs.locale, "accountReasonAuto", nil)
+}
+
+// AccountReasonManual says "Manual"
+// in the language the app shows.
+func AccountReasonManual() string { return In(i18n.Locale()).AccountReasonManual() }
+
+// AccountReasonManual says "Manual"
+// in the language of msgs.
+func (msgs Messages) AccountReasonManual() string {
+	return Catalog.Format(msgs.locale, "accountReasonManual", nil)
+}
+
+// AccountReasonRestore says "Kept the server's"
+// in the language the app shows.
+func AccountReasonRestore() string { return In(i18n.Locale()).AccountReasonRestore() }
+
+// AccountReasonRestore says "Kept the server's"
+// in the language of msgs.
+func (msgs Messages) AccountReasonRestore() string {
+	return Catalog.Format(msgs.locale, "accountReasonRestore", nil)
+}
+
+// AccountResultOk says "Done"
+// in the language the app shows.
+func AccountResultOk() string { return In(i18n.Locale()).AccountResultOk() }
+
+// AccountResultOk says "Done"
+// in the language of msgs.
+func (msgs Messages) AccountResultOk() string {
+	return Catalog.Format(msgs.locale, "accountResultOk", nil)
+}
+
+// AccountResultFailed says "Failed"
+// in the language the app shows.
+func AccountResultFailed() string { return In(i18n.Locale()).AccountResultFailed() }
+
+// AccountResultFailed says "Failed"
+// in the language of msgs.
+func (msgs Messages) AccountResultFailed() string {
+	return Catalog.Format(msgs.locale, "accountResultFailed", nil)
+}
+
+// AccountResultPaused says "Paused"
+// in the language the app shows.
+func AccountResultPaused() string { return In(i18n.Locale()).AccountResultPaused() }
+
+// AccountResultPaused says "Paused"
+// in the language of msgs.
+func (msgs Messages) AccountResultPaused() string {
+	return Catalog.Format(msgs.locale, "accountResultPaused", nil)
+}
+
+// AccountResultWarning says "Done with a warning"
+// in the language the app shows.
+func AccountResultWarning() string { return In(i18n.Locale()).AccountResultWarning() }
+
+// AccountResultWarning says "Done with a warning"
+// in the language of msgs.
+func (msgs Messages) AccountResultWarning() string {
+	return Catalog.Format(msgs.locale, "accountResultWarning", nil)
+}
+
+// AccountStepRefresh says "Renewed the sign-in"
+// in the language the app shows.
+func AccountStepRefresh() string { return In(i18n.Locale()).AccountStepRefresh() }
+
+// AccountStepRefresh says "Renewed the sign-in"
+// in the language of msgs.
+func (msgs Messages) AccountStepRefresh() string {
+	return Catalog.Format(msgs.locale, "accountStepRefresh", nil)
+}
+
+// AccountStepRead says "Read the gist"
+// in the language the app shows.
+func AccountStepRead() string { return In(i18n.Locale()).AccountStepRead() }
+
+// AccountStepRead says "Read the gist"
+// in the language of msgs.
+func (msgs Messages) AccountStepRead() string {
+	return Catalog.Format(msgs.locale, "accountStepRead", nil)
+}
+
+// AccountStepCreate says "Created the gist (first sync)"
+// in the language the app shows.
+func AccountStepCreate() string { return In(i18n.Locale()).AccountStepCreate() }
+
+// AccountStepCreate says "Created the gist (first sync)"
+// in the language of msgs.
+func (msgs Messages) AccountStepCreate() string {
+	return Catalog.Format(msgs.locale, "accountStepCreate", nil)
+}
+
+// AccountStepMerge says "Merged with this computer's data"
+// in the language the app shows.
+func AccountStepMerge() string { return In(i18n.Locale()).AccountStepMerge() }
+
+// AccountStepMerge says "Merged with this computer's data"
+// in the language of msgs.
+func (msgs Messages) AccountStepMerge() string {
+	return Catalog.Format(msgs.locale, "accountStepMerge", nil)
+}
+
+// AccountStepUpload says "Uploaded the result"
+// in the language the app shows.
+func AccountStepUpload() string { return In(i18n.Locale()).AccountStepUpload() }
+
+// AccountStepUpload says "Uploaded the result"
+// in the language of msgs.
+func (msgs Messages) AccountStepUpload() string {
+	return Catalog.Format(msgs.locale, "accountStepUpload", nil)
+}
+
+// AccountStepBackup says "Backed up this computer's data"
+// in the language the app shows.
+func AccountStepBackup() string { return In(i18n.Locale()).AccountStepBackup() }
+
+// AccountStepBackup says "Backed up this computer's data"
+// in the language of msgs.
+func (msgs Messages) AccountStepBackup() string {
+	return Catalog.Format(msgs.locale, "accountStepBackup", nil)
+}
+
+// AccountStepApply says "Applied the changes here"
+// in the language the app shows.
+func AccountStepApply() string { return In(i18n.Locale()).AccountStepApply() }
+
+// AccountStepApply says "Applied the changes here"
+// in the language of msgs.
+func (msgs Messages) AccountStepApply() string {
+	return Catalog.Format(msgs.locale, "accountStepApply", nil)
+}
+
+// AccountStepUpToDate says "Already up to date"
+// in the language the app shows.
+func AccountStepUpToDate() string { return In(i18n.Locale()).AccountStepUpToDate() }
+
+// AccountStepUpToDate says "Already up to date"
+// in the language of msgs.
+func (msgs Messages) AccountStepUpToDate() string {
+	return Catalog.Format(msgs.locale, "accountStepUpToDate", nil)
+}
+
+// AccountCounts says "{where}: {added} added, {removed} removed, {changed} changed"
+// in the language the app shows.
+func AccountCounts(where string, added int, removed int, changed int) string {
+	return In(i18n.Locale()).AccountCounts(where, added, removed, changed)
+}
+
+// AccountCounts says "{where}: {added} added, {removed} removed, {changed} changed"
+// in the language of msgs.
+func (msgs Messages) AccountCounts(where string, added int, removed int, changed int) string {
+	return Catalog.Format(msgs.locale, "accountCounts", map[string]any{"where": where, "added": added, "removed": removed, "changed": changed})
+}
+
+// AccountSignInBar says "Sign in with GitHub to sync"
+// in the language the app shows.
+func AccountSignInBar() string { return In(i18n.Locale()).AccountSignInBar() }
+
+// AccountSignInBar says "Sign in with GitHub to sync"
+// in the language of msgs.
+func (msgs Messages) AccountSignInBar() string {
+	return Catalog.Format(msgs.locale, "accountSignInBar", nil)
+}
+
+// AccountExpiredShort says "Sign-in expired"
+// in the language the app shows.
+func AccountExpiredShort() string { return In(i18n.Locale()).AccountExpiredShort() }
+
+// AccountExpiredShort says "Sign-in expired"
+// in the language of msgs.
+func (msgs Messages) AccountExpiredShort() string {
+	return Catalog.Format(msgs.locale, "accountExpiredShort", nil)
+}
+
+// AccountNoPassword says "No sync password"
+// in the language the app shows.
+func AccountNoPassword() string { return In(i18n.Locale()).AccountNoPassword() }
+
+// AccountNoPassword says "No sync password"
+// in the language of msgs.
+func (msgs Messages) AccountNoPassword() string {
+	return Catalog.Format(msgs.locale, "accountNoPassword", nil)
+}
+
+// AccountGuardShort says "Waiting for your OK"
+// in the language the app shows.
+func AccountGuardShort() string { return In(i18n.Locale()).AccountGuardShort() }
+
+// AccountGuardShort says "Waiting for your OK"
+// in the language of msgs.
+func (msgs Messages) AccountGuardShort() string {
+	return Catalog.Format(msgs.locale, "accountGuardShort", nil)
+}
+
+// AccountSyncFailed says "Sync failed"
+// in the language the app shows.
+func AccountSyncFailed() string { return In(i18n.Locale()).AccountSyncFailed() }
+
+// AccountSyncFailed says "Sync failed"
+// in the language of msgs.
+func (msgs Messages) AccountSyncFailed() string {
+	return Catalog.Format(msgs.locale, "accountSyncFailed", nil)
+}
+
+// AccountSyncedAgo says "Synced {ago}"
+// in the language the app shows.
+func AccountSyncedAgo(ago string) string { return In(i18n.Locale()).AccountSyncedAgo(ago) }
+
+// AccountSyncedAgo says "Synced {ago}"
+// in the language of msgs.
+func (msgs Messages) AccountSyncedAgo(ago string) string {
+	return Catalog.Format(msgs.locale, "accountSyncedAgo", map[string]any{"ago": ago})
+}
+
+// AccountNotSyncedYet says "Not synced yet"
+// in the language the app shows.
+func AccountNotSyncedYet() string { return In(i18n.Locale()).AccountNotSyncedYet() }
+
+// AccountNotSyncedYet says "Not synced yet"
+// in the language of msgs.
+func (msgs Messages) AccountNotSyncedYet() string {
+	return Catalog.Format(msgs.locale, "accountNotSyncedYet", nil)
+}
+
+// AccountAgoNow says "just now"
+// in the language the app shows.
+func AccountAgoNow() string { return In(i18n.Locale()).AccountAgoNow() }
+
+// AccountAgoNow says "just now"
+// in the language of msgs.
+func (msgs Messages) AccountAgoNow() string {
+	return Catalog.Format(msgs.locale, "accountAgoNow", nil)
+}
+
+// AccountAgoMinutes says "{n, plural, one {# minute ago} other {# minutes ago}}"
+// in the language the app shows.
+func AccountAgoMinutes(n int) string { return In(i18n.Locale()).AccountAgoMinutes(n) }
+
+// AccountAgoMinutes says "{n, plural, one {# minute ago} other {# minutes ago}}"
+// in the language of msgs.
+func (msgs Messages) AccountAgoMinutes(n int) string {
+	return Catalog.Format(msgs.locale, "accountAgoMinutes", map[string]any{"n": n})
+}
+
+// AccountAgoHours says "{n, plural, one {# hour ago} other {# hours ago}}"
+// in the language the app shows.
+func AccountAgoHours(n int) string { return In(i18n.Locale()).AccountAgoHours(n) }
+
+// AccountAgoHours says "{n, plural, one {# hour ago} other {# hours ago}}"
+// in the language of msgs.
+func (msgs Messages) AccountAgoHours(n int) string {
+	return Catalog.Format(msgs.locale, "accountAgoHours", map[string]any{"n": n})
+}
+
+// AccountAgoDays says "{n, plural, one {# day ago} other {# days ago}}"
+// in the language the app shows.
+func AccountAgoDays(n int) string { return In(i18n.Locale()).AccountAgoDays(n) }
+
+// AccountAgoDays says "{n, plural, one {# day ago} other {# days ago}}"
+// in the language of msgs.
+func (msgs Messages) AccountAgoDays(n int) string {
+	return Catalog.Format(msgs.locale, "accountAgoDays", map[string]any{"n": n})
+}
+
+// AccountAutoOff says "Automatic sync off"
+// in the language the app shows.
+func AccountAutoOff() string { return In(i18n.Locale()).AccountAutoOff() }
+
+// AccountAutoOff says "Automatic sync off"
+// in the language of msgs.
+func (msgs Messages) AccountAutoOff() string {
+	return Catalog.Format(msgs.locale, "accountAutoOff", nil)
+}
+
+// AccountAutoEvery says "Automatic, every {minutes} min"
+// in the language the app shows.
+func AccountAutoEvery(minutes int) string { return In(i18n.Locale()).AccountAutoEvery(minutes) }
+
+// AccountAutoEvery says "Automatic, every {minutes} min"
+// in the language of msgs.
+func (msgs Messages) AccountAutoEvery(minutes int) string {
+	return Catalog.Format(msgs.locale, "accountAutoEvery", map[string]any{"minutes": minutes})
+}
+
+// AccountWithPasswords says "saved passwords included"
+// in the language the app shows.
+func AccountWithPasswords() string { return In(i18n.Locale()).AccountWithPasswords() }
+
+// AccountWithPasswords says "saved passwords included"
+// in the language of msgs.
+func (msgs Messages) AccountWithPasswords() string {
+	return Catalog.Format(msgs.locale, "accountWithPasswords", nil)
+}
+
+// AccountSettingsButton says "Account & Sync Settings…"
+// in the language the app shows.
+func AccountSettingsButton() string { return In(i18n.Locale()).AccountSettingsButton() }
+
+// AccountSettingsButton says "Account & Sync Settings…"
+// in the language of msgs.
+func (msgs Messages) AccountSettingsButton() string {
+	return Catalog.Format(msgs.locale, "accountSettingsButton", nil)
+}
+
+// AccountShowEmail says "Show"
+// in the language the app shows.
+func AccountShowEmail() string { return In(i18n.Locale()).AccountShowEmail() }
+
+// AccountShowEmail says "Show"
+// in the language of msgs.
+func (msgs Messages) AccountShowEmail() string {
+	return Catalog.Format(msgs.locale, "accountShowEmail", nil)
+}
+
+// AccountHideEmail says "Hide"
+// in the language the app shows.
+func AccountHideEmail() string { return In(i18n.Locale()).AccountHideEmail() }
+
+// AccountHideEmail says "Hide"
+// in the language of msgs.
+func (msgs Messages) AccountHideEmail() string {
+	return Catalog.Format(msgs.locale, "accountHideEmail", nil)
+}
+
+// AccountPasswordEmail says "Sync password: your GitHub email (default)"
+// in the language the app shows.
+func AccountPasswordEmail() string { return In(i18n.Locale()).AccountPasswordEmail() }
+
+// AccountPasswordEmail says "Sync password: your GitHub email (default)"
+// in the language of msgs.
+func (msgs Messages) AccountPasswordEmail() string {
+	return Catalog.Format(msgs.locale, "accountPasswordEmail", nil)
+}
+
+// AccountPasswordCustom says "Sync password: your own"
+// in the language the app shows.
+func AccountPasswordCustom() string { return In(i18n.Locale()).AccountPasswordCustom() }
+
+// AccountPasswordCustom says "Sync password: your own"
+// in the language of msgs.
+func (msgs Messages) AccountPasswordCustom() string {
+	return Catalog.Format(msgs.locale, "accountPasswordCustom", nil)
+}
+
+// AccountPasswordEmailHint says "Signing in is all it takes: every computer that signs in to this account uses the same email address and syncs on its…"
+// in the language the app shows.
+func AccountPasswordEmailHint() string { return In(i18n.Locale()).AccountPasswordEmailHint() }
+
+// AccountPasswordEmailHint says "Signing in is all it takes: every computer that signs in to this account uses the same email address and syncs on its…"
+// in the language of msgs.
+func (msgs Messages) AccountPasswordEmailHint() string {
+	return Catalog.Format(msgs.locale, "accountPasswordEmailHint", nil)
+}
+
+// AccountPasswordRisk says "Saved server passwords are included, encrypted with your email address: anyone who has the gist's link and knows your…"
+// in the language the app shows.
+func AccountPasswordRisk() string { return In(i18n.Locale()).AccountPasswordRisk() }
+
+// AccountPasswordRisk says "Saved server passwords are included, encrypted with your email address: anyone who has the gist's link and knows your…"
+// in the language of msgs.
+func (msgs Messages) AccountPasswordRisk() string {
+	return Catalog.Format(msgs.locale, "accountPasswordRisk", nil)
+}
+
+// AccountChangePassword says "Change Sync Password…"
+// in the language the app shows.
+func AccountChangePassword() string { return In(i18n.Locale()).AccountChangePassword() }
+
+// AccountChangePassword says "Change Sync Password…"
+// in the language of msgs.
+func (msgs Messages) AccountChangePassword() string {
+	return Catalog.Format(msgs.locale, "accountChangePassword", nil)
+}
+
+// AccountUseEmail says "Use My GitHub Email"
+// in the language the app shows.
+func AccountUseEmail() string { return In(i18n.Locale()).AccountUseEmail() }
+
+// AccountUseEmail says "Use My GitHub Email"
+// in the language of msgs.
+func (msgs Messages) AccountUseEmail() string {
+	return Catalog.Format(msgs.locale, "accountUseEmail", nil)
+}
+
+// AccountNewPassword says "New password"
+// in the language the app shows.
+func AccountNewPassword() string { return In(i18n.Locale()).AccountNewPassword() }
+
+// AccountNewPassword says "New password"
+// in the language of msgs.
+func (msgs Messages) AccountNewPassword() string {
+	return Catalog.Format(msgs.locale, "accountNewPassword", nil)
+}
+
+// AccountConfirmPassword says "Confirm"
+// in the language the app shows.
+func AccountConfirmPassword() string { return In(i18n.Locale()).AccountConfirmPassword() }
+
+// AccountConfirmPassword says "Confirm"
+// in the language of msgs.
+func (msgs Messages) AccountConfirmPassword() string {
+	return Catalog.Format(msgs.locale, "accountConfirmPassword", nil)
+}
+
+// AccountPasswordMismatch says "The two passwords differ."
+// in the language the app shows.
+func AccountPasswordMismatch() string { return In(i18n.Locale()).AccountPasswordMismatch() }
+
+// AccountPasswordMismatch says "The two passwords differ."
+// in the language of msgs.
+func (msgs Messages) AccountPasswordMismatch() string {
+	return Catalog.Format(msgs.locale, "accountPasswordMismatch", nil)
+}
+
+// AccountPasswordSave says "Change and Re-encrypt"
+// in the language the app shows.
+func AccountPasswordSave() string { return In(i18n.Locale()).AccountPasswordSave() }
+
+// AccountPasswordSave says "Change and Re-encrypt"
+// in the language of msgs.
+func (msgs Messages) AccountPasswordSave() string {
+	return Catalog.Format(msgs.locale, "accountPasswordSave", nil)
+}
+
+// AccountPasswordChangeHint says "The gist's current data is encrypted again with the new password; its older versions on GitHub keep the old one. Othe…"
+// in the language the app shows.
+func AccountPasswordChangeHint() string { return In(i18n.Locale()).AccountPasswordChangeHint() }
+
+// AccountPasswordChangeHint says "The gist's current data is encrypted again with the new password; its older versions on GitHub keep the old one. Othe…"
+// in the language of msgs.
+func (msgs Messages) AccountPasswordChangeHint() string {
+	return Catalog.Format(msgs.locale, "accountPasswordChangeHint", nil)
+}
+
+// AccountPasswordChanging says "Re-encrypting the gist…"
+// in the language the app shows.
+func AccountPasswordChanging() string { return In(i18n.Locale()).AccountPasswordChanging() }
+
+// AccountPasswordChanging says "Re-encrypting the gist…"
+// in the language of msgs.
+func (msgs Messages) AccountPasswordChanging() string {
+	return Catalog.Format(msgs.locale, "accountPasswordChanging", nil)
+}
+
+// AccountPasswordChanged says "Sync password changed."
+// in the language the app shows.
+func AccountPasswordChanged() string { return In(i18n.Locale()).AccountPasswordChanged() }
+
+// AccountPasswordChanged says "Sync password changed."
+// in the language of msgs.
+func (msgs Messages) AccountPasswordChanged() string {
+	return Catalog.Format(msgs.locale, "accountPasswordChanged", nil)
+}
+
+// AccountPasswordChangeFailed says "Could not change the sync password: {error}"
+// in the language the app shows.
+func AccountPasswordChangeFailed(error string) string {
+	return In(i18n.Locale()).AccountPasswordChangeFailed(error)
+}
+
+// AccountPasswordChangeFailed says "Could not change the sync password: {error}"
+// in the language of msgs.
+func (msgs Messages) AccountPasswordChangeFailed(error string) string {
+	return Catalog.Format(msgs.locale, "accountPasswordChangeFailed", map[string]any{"error": error})
+}
+
+// AccountWrongPassword says "The gist is encrypted with another password, changed on another computer perhaps. Type the current sync password:"
+// in the language the app shows.
+func AccountWrongPassword() string { return In(i18n.Locale()).AccountWrongPassword() }
+
+// AccountWrongPassword says "The gist is encrypted with another password, changed on another computer perhaps. Type the current sync password:"
+// in the language of msgs.
+func (msgs Messages) AccountWrongPassword() string {
+	return Catalog.Format(msgs.locale, "accountWrongPassword", nil)
+}
+
+// AccountSetPassword says "Set a sync password to start syncing:"
+// in the language the app shows.
+func AccountSetPassword() string { return In(i18n.Locale()).AccountSetPassword() }
+
+// AccountSetPassword says "Set a sync password to start syncing:"
+// in the language of msgs.
+func (msgs Messages) AccountSetPassword() string {
+	return Catalog.Format(msgs.locale, "accountSetPassword", nil)
+}
+
+// AccountUsePassword says "Use This Password"
+// in the language the app shows.
+func AccountUsePassword() string { return In(i18n.Locale()).AccountUsePassword() }
+
+// AccountUsePassword says "Use This Password"
+// in the language of msgs.
+func (msgs Messages) AccountUsePassword() string {
+	return Catalog.Format(msgs.locale, "accountUsePassword", nil)
+}
+
+// AccountDefaultSync says "Use the default sync settings"
+// in the language the app shows.
+func AccountDefaultSync() string { return In(i18n.Locale()).AccountDefaultSync() }
+
+// AccountDefaultSync says "Use the default sync settings"
+// in the language of msgs.
+func (msgs Messages) AccountDefaultSync() string {
+	return Catalog.Format(msgs.locale, "accountDefaultSync", nil)
+}
+
+// AccountDefaultSyncHint says "Automatic, saved passwords included, checking every {minutes} minutes: changes here go up a minute after they are mad…"
+// in the language the app shows.
+func AccountDefaultSyncHint(minutes int) string {
+	return In(i18n.Locale()).AccountDefaultSyncHint(minutes)
+}
+
+// AccountDefaultSyncHint says "Automatic, saved passwords included, checking every {minutes} minutes: changes here go up a minute after they are mad…"
+// in the language of msgs.
+func (msgs Messages) AccountDefaultSyncHint(minutes int) string {
+	return Catalog.Format(msgs.locale, "accountDefaultSyncHint", map[string]any{"minutes": minutes})
+}
+
+// AccountActPassword says "Changed the sync password"
+// in the language the app shows.
+func AccountActPassword() string { return In(i18n.Locale()).AccountActPassword() }
+
+// AccountActPassword says "Changed the sync password"
+// in the language of msgs.
+func (msgs Messages) AccountActPassword() string {
+	return Catalog.Format(msgs.locale, "accountActPassword", nil)
+}
+
+// AccountStepReseal says "Re-encrypted the gist with the new password"
+// in the language the app shows.
+func AccountStepReseal() string { return In(i18n.Locale()).AccountStepReseal() }
+
+// AccountStepReseal says "Re-encrypted the gist with the new password"
+// in the language of msgs.
+func (msgs Messages) AccountStepReseal() string {
+	return Catalog.Format(msgs.locale, "accountStepReseal", nil)
+}
+
+// AccountChoiceTitle says "Choose How to Sync"
+// in the language the app shows.
+func AccountChoiceTitle() string { return In(i18n.Locale()).AccountChoiceTitle() }
+
+// AccountChoiceTitle says "Choose How to Sync"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceTitle() string {
+	return Catalog.Format(msgs.locale, "accountChoiceTitle", nil)
+}
+
+// AccountChoiceFirst says "This computer is syncing this account for the first time, and its connections differ from the cloud's. Nothing tells …"
+// in the language the app shows.
+func AccountChoiceFirst() string { return In(i18n.Locale()).AccountChoiceFirst() }
+
+// AccountChoiceFirst says "This computer is syncing this account for the first time, and its connections differ from the cloud's. Nothing tells …"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceFirst() string {
+	return Catalog.Format(msgs.locale, "accountChoiceFirst", nil)
+}
+
+// AccountChoiceStale says "This computer has not synced for {days} days, and its connections differ from the cloud's: its copy may be the old on…"
+// in the language the app shows.
+func AccountChoiceStale(days int) string { return In(i18n.Locale()).AccountChoiceStale(days) }
+
+// AccountChoiceStale says "This computer has not synced for {days} days, and its connections differ from the cloud's: its copy may be the old on…"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceStale(days int) string {
+	return Catalog.Format(msgs.locale, "accountChoiceStale", map[string]any{"days": days})
+}
+
+// AccountChoiceHere says "This computer"
+// in the language the app shows.
+func AccountChoiceHere() string { return In(i18n.Locale()).AccountChoiceHere() }
+
+// AccountChoiceHere says "This computer"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceHere() string {
+	return Catalog.Format(msgs.locale, "accountChoiceHere", nil)
+}
+
+// AccountChoiceCloud says "Cloud"
+// in the language the app shows.
+func AccountChoiceCloud() string { return In(i18n.Locale()).AccountChoiceCloud() }
+
+// AccountChoiceCloud says "Cloud"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceCloud() string {
+	return Catalog.Format(msgs.locale, "accountChoiceCloud", nil)
+}
+
+// AccountChoiceCount says "{n, plural, one {# connection} other {# connections}}"
+// in the language the app shows.
+func AccountChoiceCount(n int) string { return In(i18n.Locale()).AccountChoiceCount(n) }
+
+// AccountChoiceCount says "{n, plural, one {# connection} other {# connections}}"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceCount(n int) string {
+	return Catalog.Format(msgs.locale, "accountChoiceCount", map[string]any{"n": n})
+}
+
+// AccountChoiceRemoteBy says "Updated by {device}, {time}"
+// in the language the app shows.
+func AccountChoiceRemoteBy(device string, time_ string) string {
+	return In(i18n.Locale()).AccountChoiceRemoteBy(device, time_)
+}
+
+// AccountChoiceRemoteBy says "Updated by {device}, {time}"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceRemoteBy(device string, time_ string) string {
+	return Catalog.Format(msgs.locale, "accountChoiceRemoteBy", map[string]any{"device": device, "time": time_})
+}
+
+// AccountChoiceDiff says "Only here: {local} · Only in the cloud: {remote} · Different on each side: {differ} · Alike: {same}"
+// in the language the app shows.
+func AccountChoiceDiff(local int, remote int, differ int, same int) string {
+	return In(i18n.Locale()).AccountChoiceDiff(local, remote, differ, same)
+}
+
+// AccountChoiceDiff says "Only here: {local} · Only in the cloud: {remote} · Different on each side: {differ} · Alike: {same}"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceDiff(local int, remote int, differ int, same int) string {
+	return Catalog.Format(msgs.locale, "accountChoiceDiff", map[string]any{"local": local, "remote": remote, "differ": differ, "same": same})
+}
+
+// AccountChoiceMergeTitle says "Merge both (recommended)"
+// in the language the app shows.
+func AccountChoiceMergeTitle() string { return In(i18n.Locale()).AccountChoiceMergeTitle() }
+
+// AccountChoiceMergeTitle says "Merge both (recommended)"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceMergeTitle() string {
+	return Catalog.Format(msgs.locale, "accountChoiceMergeTitle", nil)
+}
+
+// AccountChoiceMergeDetail says "Keeps every connection of both sides, {n} in all; where a connection differs, the cloud's version is kept, as it is l…"
+// in the language the app shows.
+func AccountChoiceMergeDetail(n int) string { return In(i18n.Locale()).AccountChoiceMergeDetail(n) }
+
+// AccountChoiceMergeDetail says "Keeps every connection of both sides, {n} in all; where a connection differs, the cloud's version is kept, as it is l…"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceMergeDetail(n int) string {
+	return Catalog.Format(msgs.locale, "accountChoiceMergeDetail", map[string]any{"n": n})
+}
+
+// AccountChoiceRemoteTitle says "Use the cloud's on this computer"
+// in the language the app shows.
+func AccountChoiceRemoteTitle() string { return In(i18n.Locale()).AccountChoiceRemoteTitle() }
+
+// AccountChoiceRemoteTitle says "Use the cloud's on this computer"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceRemoteTitle() string {
+	return Catalog.Format(msgs.locale, "accountChoiceRemoteTitle", nil)
+}
+
+// AccountChoiceRemoteDetail says "This computer gets the cloud's {n} connections; the {local} only here are removed. Its data is backed up first: Backu…"
+// in the language the app shows.
+func AccountChoiceRemoteDetail(n int, local int) string {
+	return In(i18n.Locale()).AccountChoiceRemoteDetail(n, local)
+}
+
+// AccountChoiceRemoteDetail says "This computer gets the cloud's {n} connections; the {local} only here are removed. Its data is backed up first: Backu…"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceRemoteDetail(n int, local int) string {
+	return Catalog.Format(msgs.locale, "accountChoiceRemoteDetail", map[string]any{"n": n, "local": local})
+}
+
+// AccountChoiceLocalTitle says "Use this computer's in the cloud"
+// in the language the app shows.
+func AccountChoiceLocalTitle() string { return In(i18n.Locale()).AccountChoiceLocalTitle() }
+
+// AccountChoiceLocalTitle says "Use this computer's in the cloud"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceLocalTitle() string {
+	return Catalog.Format(msgs.locale, "accountChoiceLocalTitle", nil)
+}
+
+// AccountChoiceLocalDetail says "The cloud gets this computer's {n} connections; the {remote} only there are removed from it, and from other computers…"
+// in the language the app shows.
+func AccountChoiceLocalDetail(n int, remote int) string {
+	return In(i18n.Locale()).AccountChoiceLocalDetail(n, remote)
+}
+
+// AccountChoiceLocalDetail says "The cloud gets this computer's {n} connections; the {remote} only there are removed from it, and from other computers…"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceLocalDetail(n int, remote int) string {
+	return Catalog.Format(msgs.locale, "accountChoiceLocalDetail", map[string]any{"n": n, "remote": remote})
+}
+
+// AccountChoiceLater says "Later"
+// in the language the app shows.
+func AccountChoiceLater() string { return In(i18n.Locale()).AccountChoiceLater() }
+
+// AccountChoiceLater says "Later"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceLater() string {
+	return Catalog.Format(msgs.locale, "accountChoiceLater", nil)
+}
+
+// AccountChoiceConfirm says "Sync"
+// in the language the app shows.
+func AccountChoiceConfirm() string { return In(i18n.Locale()).AccountChoiceConfirm() }
+
+// AccountChoiceConfirm says "Sync"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceConfirm() string {
+	return Catalog.Format(msgs.locale, "accountChoiceConfirm", nil)
+}
+
+// AccountChoiceLocalConfirm says "Replace the Cloud"
+// in the language the app shows.
+func AccountChoiceLocalConfirm() string { return In(i18n.Locale()).AccountChoiceLocalConfirm() }
+
+// AccountChoiceLocalConfirm says "Replace the Cloud"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceLocalConfirm() string {
+	return Catalog.Format(msgs.locale, "accountChoiceLocalConfirm", nil)
+}
+
+// AccountChoiceShort says "Choose how to sync"
+// in the language the app shows.
+func AccountChoiceShort() string { return In(i18n.Locale()).AccountChoiceShort() }
+
+// AccountChoiceShort says "Choose how to sync"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceShort() string {
+	return Catalog.Format(msgs.locale, "accountChoiceShort", nil)
+}
+
+// AccountChooseButton says "Choose How to Sync…"
+// in the language the app shows.
+func AccountChooseButton() string { return In(i18n.Locale()).AccountChooseButton() }
+
+// AccountChooseButton says "Choose How to Sync…"
+// in the language of msgs.
+func (msgs Messages) AccountChooseButton() string {
+	return Catalog.Format(msgs.locale, "accountChooseButton", nil)
+}
+
+// AccountChoiceLogged says "Connections differ: {local} here, {remote} in the cloud. Waiting for a choice."
+// in the language the app shows.
+func AccountChoiceLogged(local int, remote int) string {
+	return In(i18n.Locale()).AccountChoiceLogged(local, remote)
+}
+
+// AccountChoiceLogged says "Connections differ: {local} here, {remote} in the cloud. Waiting for a choice."
+// in the language of msgs.
+func (msgs Messages) AccountChoiceLogged(local int, remote int) string {
+	return Catalog.Format(msgs.locale, "accountChoiceLogged", map[string]any{"local": local, "remote": remote})
+}
+
+// AccountActChoice says "Chose how to sync"
+// in the language the app shows.
+func AccountActChoice() string { return In(i18n.Locale()).AccountActChoice() }
+
+// AccountActChoice says "Chose how to sync"
+// in the language of msgs.
+func (msgs Messages) AccountActChoice() string {
+	return Catalog.Format(msgs.locale, "accountActChoice", nil)
+}
+
+// AccountChoiceMerge says "Merged"
+// in the language the app shows.
+func AccountChoiceMerge() string { return In(i18n.Locale()).AccountChoiceMerge() }
+
+// AccountChoiceMerge says "Merged"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceMerge() string {
+	return Catalog.Format(msgs.locale, "accountChoiceMerge", nil)
+}
+
+// AccountChoiceRemote says "Cloud's kept"
+// in the language the app shows.
+func AccountChoiceRemote() string { return In(i18n.Locale()).AccountChoiceRemote() }
+
+// AccountChoiceRemote says "Cloud's kept"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceRemote() string {
+	return Catalog.Format(msgs.locale, "accountChoiceRemote", nil)
+}
+
+// AccountChoiceLocal says "This computer's kept"
+// in the language the app shows.
+func AccountChoiceLocal() string { return In(i18n.Locale()).AccountChoiceLocal() }
+
+// AccountChoiceLocal says "This computer's kept"
+// in the language of msgs.
+func (msgs Messages) AccountChoiceLocal() string {
+	return Catalog.Format(msgs.locale, "accountChoiceLocal", nil)
+}
+
+// AccountNeedPassword says "Sync password needed"
+// in the language the app shows.
+func AccountNeedPassword() string { return In(i18n.Locale()).AccountNeedPassword() }
+
+// AccountNeedPassword says "Sync password needed"
+// in the language of msgs.
+func (msgs Messages) AccountNeedPassword() string {
+	return Catalog.Format(msgs.locale, "accountNeedPassword", nil)
+}
+
+// AccountEnterPassword says "Enter the Sync Password…"
+// in the language the app shows.
+func AccountEnterPassword() string { return In(i18n.Locale()).AccountEnterPassword() }
+
+// AccountEnterPassword says "Enter the Sync Password…"
+// in the language of msgs.
+func (msgs Messages) AccountEnterPassword() string {
+	return Catalog.Format(msgs.locale, "accountEnterPassword", nil)
+}
+
+// AccountPasswordNeededCustom says "The sync password was changed to a custom one on {device}, {time}. Type it here; this computer remembers it."
+// in the language the app shows.
+func AccountPasswordNeededCustom(device string, time_ string) string {
+	return In(i18n.Locale()).AccountPasswordNeededCustom(device, time_)
+}
+
+// AccountPasswordNeededCustom says "The sync password was changed to a custom one on {device}, {time}. Type it here; this computer remembers it."
+// in the language of msgs.
+func (msgs Messages) AccountPasswordNeededCustom(device string, time_ string) string {
+	return Catalog.Format(msgs.locale, "accountPasswordNeededCustom", map[string]any{"device": device, "time": time_})
+}
+
+// AccountPasswordNeededEmail says "The cloud's data uses a GitHub email address as its sync password, but none of your account's addresses opens it: the…"
+// in the language the app shows.
+func AccountPasswordNeededEmail() string { return In(i18n.Locale()).AccountPasswordNeededEmail() }
+
+// AccountPasswordNeededEmail says "The cloud's data uses a GitHub email address as its sync password, but none of your account's addresses opens it: the…"
+// in the language of msgs.
+func (msgs Messages) AccountPasswordNeededEmail() string {
+	return Catalog.Format(msgs.locale, "accountPasswordNeededEmail", nil)
+}
+
+// AccountActPasswordAuto says "Followed the sync password of another computer"
+// in the language the app shows.
+func AccountActPasswordAuto() string { return In(i18n.Locale()).AccountActPasswordAuto() }
+
+// AccountActPasswordAuto says "Followed the sync password of another computer"
+// in the language of msgs.
+func (msgs Messages) AccountActPasswordAuto() string {
+	return Catalog.Format(msgs.locale, "accountActPasswordAuto", nil)
+}
+
+// AccountStepAutoPassword says "The cloud now uses your GitHub email as the sync password, changed on another computer: this one uses it too"
+// in the language the app shows.
+func AccountStepAutoPassword() string { return In(i18n.Locale()).AccountStepAutoPassword() }
+
+// AccountStepAutoPassword says "The cloud now uses your GitHub email as the sync password, changed on another computer: this one uses it too"
+// in the language of msgs.
+func (msgs Messages) AccountStepAutoPassword() string {
+	return Catalog.Format(msgs.locale, "accountStepAutoPassword", nil)
+}
+
+// AccountCurrentPassword says "Sync password in use"
+// in the language the app shows.
+func AccountCurrentPassword() string { return In(i18n.Locale()).AccountCurrentPassword() }
+
+// AccountCurrentPassword says "Sync password in use"
+// in the language of msgs.
+func (msgs Messages) AccountCurrentPassword() string {
+	return Catalog.Format(msgs.locale, "accountCurrentPassword", nil)
+}
+
+// AccountActEmailChanged says "Your GitHub primary email changed: re-encrypted with the new one"
+// in the language the app shows.
+func AccountActEmailChanged() string { return In(i18n.Locale()).AccountActEmailChanged() }
+
+// AccountActEmailChanged says "Your GitHub primary email changed: re-encrypted with the new one"
+// in the language of msgs.
+func (msgs Messages) AccountActEmailChanged() string {
+	return Catalog.Format(msgs.locale, "accountActEmailChanged", nil)
+}

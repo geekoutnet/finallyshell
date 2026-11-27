@@ -98,7 +98,7 @@ func (g *Gist) GetVersion(ctx context.Context, id string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	file := doc.Files[FileName]
+	file := doc.Files[g.file()]
 	if file == nil {
 		return nil, ErrNotFound
 	}

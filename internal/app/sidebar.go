@@ -214,36 +214,43 @@ func diskTable(c *ui.Context, disks []monitor.Disk) {
 func (a *App) sessionPanel(c *ui.Context) {
 	ui.Column(c).Fill().BorderWidth(1, 0, 0, 0).BorderColor(colors.frame).Children(func() {
 		a.leftPanelHeader(c)
-		if a.left.page == leftConnections {
-			a.connectionPage(c)
-			return
+		ui.Column(c).Grow(1).MinHeight(0).Children(func() { a.leftPanelPage(c) })
+		a.accountBar(c)
+	})
+}
+
+// leftPanelPage is the left panel's page under its header: the sessions,
+// or the Connections page.
+func (a *App) leftPanelPage(c *ui.Context) {
+	if a.left.page == leftConnections {
+		a.connectionPage(c)
+		return
+	}
+	// No Key: with one, the list follows the chosen session by it, and
+	// chooses none once that session is gone, even though a.active
+	// already holds the neighbor closeSession picked, which is on the
+	// same row. a.active is the app's: closeSession and moveSessions
+	// keep it on the right row.
+	a.sessList.Selected = &a.active
+	a.sessList.Label = func(i int) string { return listLabel(a.sessions[i]) }
+	a.sessList.Reorder = a.moveSessions
+	// A row asks to close its session, which closes once the list is
+	// built: closing it in the row would leave the rows after it to
+	// build with fewer sessions than the list was given.
+	var closing *Session
+	ui.List(c, &a.sessList, len(a.sessions), func(i int) {
+		if a.sessionRow(c, a.sessions[i], i == a.active, a.sessionGuideOf(i)) {
+			closing = a.sessions[i]
 		}
-		// No Key: with one, the list follows the chosen session by it, and
-		// chooses none once that session is gone, even though a.active
-		// already holds the neighbor closeSession picked, which is on the
-		// same row. a.active is the app's: closeSession and moveSessions
-		// keep it on the right row.
-		a.sessList.Selected = &a.active
-		a.sessList.Label = func(i int) string { return listLabel(a.sessions[i]) }
-		a.sessList.Reorder = a.moveSessions
-		// A row asks to close its session, which closes once the list is
-		// built: closing it in the row would leave the rows after it to
-		// build with fewer sessions than the list was given.
-		var closing *Session
-		ui.List(c, &a.sessList, len(a.sessions), func(i int) {
-			if a.sessionRow(c, a.sessions[i], i == a.active, a.sessionGuideOf(i)) {
-				closing = a.sessions[i]
-			}
-		}).Grow(1).Padding(0, 4, 4, 4).Children(func() {
-			if len(a.sessions) == 0 {
-				widgets.Muted(c, locales.NoSessions()).Padding(8, 10)
-			}
-		})
-		a.renameKey(c)
-		if closing != nil {
-			a.requestCloseSession(closing)
+	}).Grow(1).Padding(0, 4, 4, 4).Children(func() {
+		if len(a.sessions) == 0 {
+			widgets.Muted(c, locales.NoSessions()).Padding(8, 10)
 		}
 	})
+	a.renameKey(c)
+	if closing != nil {
+		a.requestCloseSession(closing)
+	}
 }
 
 // sessionCount is the number of sessions, local terminals included, new

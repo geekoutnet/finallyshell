@@ -645,12 +645,23 @@ func (a *App) versionConfirm(c *ui.Context, st *versionsState) {
 	}
 }
 
-func (a *App) openSyncGuard() {
-	if a.sync.guard == nil {
+func (a *App) openSyncGuard() { a.openSyncGuardOn(a.pageSync()) }
+
+// guardWindow is the window of the deletion guard of the sync t.
+func guardWindow(t syncTarget) WindowKind {
+	if t.account {
+		return WindowAccountGuard
+	}
+	return WindowSyncGuard
+}
+
+// openSyncGuardOn opens the deletion guard of the sync t.
+func (a *App) openSyncGuardOn(t syncTarget) {
+	if t.st.guard == nil {
 		return
 	}
 	height := 145
-	for _, impact := range []cloudsync.DeleteImpact{a.sync.guard.Server, a.sync.guard.Local} {
+	for _, impact := range []cloudsync.DeleteImpact{t.st.guard.Server, t.st.guard.Local} {
 		if impact.Risky() {
 			height += 35
 			if impact.PermanentRemoved != 0 {
@@ -661,14 +672,16 @@ func (a *App) openSyncGuard() {
 			}
 		}
 	}
-	a.openWindow(WindowSpec{Kind: WindowSyncGuard, Title: locales.BackupGuardTitle, Width: 740, Height: height, MinWidth: 665, MinHeight: height}, a.syncGuardView)
+	kind := guardWindow(t)
+	a.openWindow(WindowSpec{Kind: kind, Title: locales.BackupGuardTitle, Width: 740, Height: height, MinWidth: 665, MinHeight: height}, func(c *ui.Context) { a.syncGuardView(c, t) })
 }
 
-func (a *App) syncGuardView(c *ui.Context) {
-	guard := a.sync.guard
+func (a *App) syncGuardView(c *ui.Context, t syncTarget) {
+	guard := t.st.guard
 	if guard == nil {
 		return
 	}
+	kind := guardWindow(t)
 	ui.Column(c).Fill().Gap(12).Padding(18).Children(func() {
 		ui.Text(c, locales.BackupGuardTitle()).Bold().FontSize(16).TextColor(theme.Danger)
 		if guard.Server.Risky() {
@@ -680,23 +693,25 @@ func (a *App) syncGuardView(c *ui.Context) {
 		widgets.Muted(c, locales.BackupGuardWait())
 		ui.Spacer(c)
 		ui.Row(c).Gap(8).Children(func() {
-			if ui.PrimaryButton(c, locales.BackupReview()).Clicked() {
-				a.closeWindow(WindowSyncGuard)
+			// The account's versions are the gist's revisions, on GitHub:
+			// its guard has no Review.
+			if !t.account && ui.PrimaryButton(c, locales.BackupReview()).Clicked() {
+				a.closeWindow(kind)
 				a.openVersions(WindowMain)
 			}
-			if ui.Button(c, locales.BackupKeepServer()).Disabled(guard.ServerVersion == "" || !a.syncReady()).Clicked() {
-				a.closeWindow(WindowSyncGuard)
-				a.startSyncWith(syncOptions{keepServer: true, expectedServer: guard.ServerVersion, reason: cloudsync.ReasonRestore, priorGuard: guard}, c.Now())
+			if ui.Button(c, locales.BackupKeepServer()).Disabled(guard.ServerVersion == "" || !a.syncReadyOn(t)).Clicked() {
+				a.closeWindow(kind)
+				a.startSyncOn(t, syncOptions{keepServer: true, expectedServer: guard.ServerVersion, reason: cloudsync.ReasonRestore, priorGuard: guard}, c.Now())
 			}
-			if ui.Button(c, locales.BackupContinue()).Disabled(!a.syncReady()).Clicked() {
-				options := a.sync.guardRun
+			if ui.Button(c, locales.BackupContinue()).Disabled(!a.syncReadyOn(t)).Clicked() {
+				options := t.st.guardRun
 				options.approval = guard.Approval
 				options.priorGuard = guard
-				a.closeWindow(WindowSyncGuard)
-				a.startSyncWith(options, c.Now())
+				a.closeWindow(kind)
+				a.startSyncOn(t, options, c.Now())
 			}
 			if ui.Button(c, locales.Cancel()).Clicked() {
-				a.closeWindow(WindowSyncGuard)
+				a.closeWindow(kind)
 			}
 		})
 	})
@@ -716,7 +731,7 @@ func (a *App) guardImpactView(c *ui.Context, source string, impact cloudsync.Del
 
 func (a *App) restoreVersion(st *versionsState) {
 	preview := st.preview
-	if preview == nil || a.sync.running || st.busy {
+	if preview == nil || a.syncBusy() || st.busy {
 		return
 	}
 	settings, password, credential := a.settings.Sync, a.sync.password, a.sync.credential
@@ -800,7 +815,7 @@ func (a *App) restoreVersion(st *versionsState) {
 						current.Secrets[key] = value
 					}
 				}
-				a.applySyncedSecrets(secrets, current.Secrets)
+				a.applySyncedSecrets(secrets, current.Secrets, &a.sync)
 			}
 			go func() {
 				ctx, cancel := context.WithTimeout(context.Background(), syncTimeout)

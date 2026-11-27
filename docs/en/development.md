@@ -85,7 +85,7 @@ SHOT_DIR=/tmp/shots go test ./internal/app
 
 ## Screenshots
 
-The screenshots in `README.md` and `README.zh-CN.md` live in
+The screenshots in `README.md` (Chinese) and `README.en.md` live in
 `docs/screenshots/`, one per language (`-en.png`, `-zh-CN.png`).
 Regenerate them with:
 
@@ -105,10 +105,13 @@ editor) come from the existing tests of those windows.
 
 ## Website
 
-The project site, <https://tooonychen.github.io/finallyshell/>, is the
-static pages in `site/`: `index.html` in English, `zh-CN/index.html` in
-Simplified Chinese and one `style.css`, with no build step and no
-scripts. It shows the screenshots of `docs/screenshots/` and
+The project site, <https://geekoutnet.github.io/finallyshell/>, is the
+static pages in `site/`: `index.html` in Simplified Chinese, the
+default, `en/index.html` in English, one `style.css` and one `site.js`,
+with no build step. The script only adds to pages that work without it:
+the visitor's system on the download button, the latest release's files
+and sizes from GitHub's API, the session list following the section in
+view, the server panels' tabs and the copy buttons. It shows the screenshots of `docs/screenshots/` and
 `resources/icon.png`; `site/build.sh` copies them next to the pages. To
 look at it:
 
@@ -396,7 +399,8 @@ tools/release/       release tools: the next version and its notes from CHANGELO
 tools/screenshots/   regenerates the README screenshots in docs/screenshots/ from the internal/app tests
 internal/
   config/            reading and writing hosts and folders (hosts.json) and settings, the background image copy, the config directory; proxy.go is the proxy settings and the jump host chain (finding loops); tunnels.go is the tunnel settings; keys.go is what Backspace and Delete send; sync.go is the Sync page's settings, which settings are synced, sync-state.json and the copy of hosts.json before a sync; history.go is the command bar's history files and reading bash's and zsh's history files; quickcommands.go is the Commands tab's quickcommands.json; cmdeditor.go is the command editor's commandeditor.txt; localshell.go splits the local terminal program (localShell) into words
-  cloudsync/         sync through the user's own storage: crypto.go encrypts the file (Argon2id, AES-256-GCM), merge.go merges three ways, sync.go reads, merges and writes it (retrying on a conflict); gist.go, webdav.go and s3.go are the services (s3.go signs with SigV4 by hand), remotehttp.go their shared HTTP code
+  account/          signing in with a third-party account through the OAuth device flow: account.go is the Provider interface, the Token and Profile, Wait (polling) and MaskEmail; github.go is GitHub's (the device code, the token, its renewal without a client secret, the user and the primary address)
+  cloudsync/         sync through the user's own storage: crypto.go encrypts the file (Argon2id, AES-256-GCM), merge.go merges three ways, sync.go reads, merges and writes it (retrying on a conflict); choice.go is the question a sync that may hold an old copy asks, password.go the key hint and the alternative passwords, reencrypt.go changing the password; gist.go, webdav.go and s3.go are the services (s3.go signs with SigV4 by hand), remotehttp.go their shared HTTP code
   importer/          reads other clients' connections: importer.go is the list of sources (readers), the entries and problems they read, the text decoder (UTF-8, UTF-16, GB18030), finding duplicates and importing by folder; finalshell.go finds FinalShell's folder and reads the connections and folders in conn; xshell.go finds Xshell's Sessions folder and reads its .xsh files and .xts exports; securecrt.go finds SecureCRT's config folder and reads the .ini files of its Sessions folder; mobaxterm.go finds MobaXterm.ini and reads its bookmark sections, and .mxtsessions and .moba exports; sshconfig.go reads OpenSSH's ~/.ssh/config (Host blocks and patterns, Include, ProxyJump); table.go reads a server list in a CSV file, or the first sheet of an .xlsx with xlsx.go, a reader of its own (archive/zip and encoding/xml, with limits against zip bombs); testdata has made-up samples
   sshx/              SSH connection, authentication, known_hosts, the Conn the terminal uses; proxy.go connects through SOCKS5, SOCKS4/4a, HTTP and HTTPS CONNECT, and jump hosts; forward.go is port forwarding (-L/-R/-D) and the SOCKS5 server
   termenc/           converting a terminal's connection between the server's encoding (GBK, Big5, ...) and the UTF-8 the terminal reads
@@ -471,6 +475,10 @@ internal/
     proxy.go         connecting through proxies and jump hosts: dial options, the passwords to ask for before connecting, translating each hop's errors
     sync.go          syncing: the payload of hosts and settings, reading the saved passwords on the secret queue, automatic sync from the main window's frames, applying what a sync brought (merging again what changed meanwhile)
     options_sync.go  the Sync page of the options
+    account_sync.go  the account: its token and sync password in the credential store, renewing the token (reading the stored one first), signing in and out, the expired sign-in, the account's log; its sync is sync.go's driver run on the account's syncTarget
+    account_view.go  the sign-in window of the device flow, the account window (who signed in, the sync password, the account's sync, the activity log)
+    account_footer.go  the account's bar at the bottom of the left panel and its card
+    sync_choice.go   the choice of a sync that may hold an old copy (first, base no longer opening, stale): its window, for the Sync page's sync and the account's
     secrets.go       remembering passwords: credential store keys, the background read/write queue, "Remember password", the password prompt, passwords on permanent delete and duplicate
     closing.go       what closing the main window and quitting do: hiding to the tray, asking first
     windows.go       child windows: opening, focusing and closing by kind, redrawing every window

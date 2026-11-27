@@ -63,7 +63,7 @@ SHOT_DIR=/tmp/shots go test ./internal/app
 
 ## 截图
 
-`README.md` 和 `README.zh-CN.md` 里的截图在 `docs/screenshots/`，每种语言一份（`-en.png`、`-zh-CN.png`）。重新生成它们：
+`README.md`（中文）和 `README.en.md`（英文） 里的截图在 `docs/screenshots/`，每种语言一份（`-en.png`、`-zh-CN.png`）。重新生成它们：
 
 ```sh
 go run ./tools/screenshots
@@ -73,7 +73,7 @@ go run ./tools/screenshots
 
 ## 网站
 
-项目网站 <https://tooonychen.github.io/finallyshell/> 是 `site/` 里的静态页面：英文的 `index.html`、简体中文的 `zh-CN/index.html` 和一份 `style.css`，没有构建步骤，也没有脚本。它用的是 `docs/screenshots/` 里的截图和 `resources/icon.png`，由 `site/build.sh` 复制到页面旁边。本地查看：
+项目网站 <https://geekoutnet.github.io/finallyshell/> 是 `site/` 里的静态页面：默认的简体中文 `index.html`、英文的 `en/index.html`，以及一份 `style.css` 和一份 `site.js`，没有构建步骤。脚本只在页面原有功能之上做增强，没有它页面照样能用：下载按钮按访问者的系统显示，从 GitHub API 读取最新版本的安装包和大小，左侧会话列表跟随当前章节，切换服务器管理的标签，以及复制按钮。它用的是 `docs/screenshots/` 里的截图和 `resources/icon.png`，由 `site/build.sh` 复制到页面旁边。本地查看：
 
 ```sh
 sh site/build.sh && python3 -m http.server -d _site
@@ -189,7 +189,8 @@ tools/release/       发布用的工具：从 CHANGELOG.md 读出下一个版本
 tools/screenshots/   从 internal/app 的测试重新生成 docs/screenshots/ 里的 README 截图
 internal/
   config/            主机和文件夹（hosts.json）、设置的读写，背景图片的副本，配置目录；proxy.go 是代理设置和跳板机链（找循环）；tunnels.go 是隧道设置；keys.go 是退格键和删除键发送什么；sync.go 是“同步”页的设置、哪些设置要同步、sync-state.json 和同步前 hosts.json 的副本；history.go 是命令输入框的历史文件，以及读取 bash 和 zsh 的历史文件；quickcommands.go 是“命令”页的 quickcommands.json；cmdeditor.go 是命令编辑器的 commandeditor.txt；localshell.go 把本地终端程序（localShell）分成参数
-  cloudsync/         通过用户自己的存储同步：crypto.go 加密文件（Argon2id、AES-256-GCM），merge.go 做三方合并，sync.go 读取、合并、写回（冲突时重试）；gist.go、webdav.go、s3.go 是各个服务（s3.go 手写 SigV4 签名），remotehttp.go 是它们共用的 HTTP 代码
+  account/          通过 OAuth 设备授权流程登录第三方账号：account.go 是 Provider 接口、Token 和 Profile、Wait（轮询）和 MaskEmail；github.go 是 GitHub 的实现（设备码、令牌、无需 client secret 的续期、用户信息和主邮箱）
+  cloudsync/         通过用户自己的存储同步：crypto.go 加密文件（Argon2id、AES-256-GCM），merge.go 做三方合并，sync.go 读取、合并、写回（冲突时重试）；choice.go 是可能保存着旧数据时的询问，password.go 是密码类型标注和备选密码，reencrypt.go 用于修改密码；gist.go、webdav.go、s3.go 是各个服务（s3.go 手写 SigV4 签名），remotehttp.go 是它们共用的 HTTP 代码
   importer/          读其他客户端的连接：importer.go 是来源列表（readers）、读出的连接和问题、文本解码（UTF-8、UTF-16、GB18030）、判重、按文件夹导入；finalshell.go 找 FinalShell 的目录、读 conn 里的连接和文件夹；xshell.go 找 Xshell 的 Sessions 文件夹、读 .xsh 会话文件和 .xts 导出文件；securecrt.go 找 SecureCRT 的配置目录、读它 Sessions 文件夹里的 .ini 文件；mobaxterm.go 找 MobaXterm.ini、读里面的书签段，以及 .mxtsessions 和 .moba 导出文件；sshconfig.go 读 OpenSSH 的 ~/.ssh/config（Host 块和通配模式、Include、ProxyJump）；table.go 读 CSV 文件或 .xlsx 第一个工作表里的服务器列表，.xlsx 由自己写的 xlsx.go 读（archive/zip 和 encoding/xml，有防 zip 炸弹的限制）；testdata 是编造的样例
   sshx/              SSH 连接、认证、known_hosts、给终端用的 Conn；proxy.go 是经过 SOCKS5、SOCKS4/4a、HTTP 和 HTTPS CONNECT 和跳板机连接；forward.go 是端口转发（-L/-R/-D）和 SOCKS5 服务端
   termenc/           终端的连接在服务器的编码（GBK、Big5……）和终端读的 UTF-8 之间转换
@@ -264,6 +265,10 @@ internal/
     proxy.go         经过代理和跳板机连接：拨号用的选项、连接前要问的密码、各跳错误的翻译
     sync.go          同步：主机和设置组成的数据，在密码队列上读取已保存的密码，由主窗口的帧驱动自动同步，应用同步带回的结果（同步期间的改动再合并一次）
     options_sync.go  选项里的“同步”页
+    account_sync.go  账户：令牌和同步密码存在系统凭据库，令牌续期（先读凭据库里的），登录和退出登录，登录失效，账户的操作记录；账户同步就是 sync.go 的同步驱动在账户的 syncTarget 上运行
+    account_view.go  设备授权登录窗口、账户窗口（登录信息、同步密码、账户同步、操作记录）
+    account_footer.go  左侧栏底部的账户状态条和账户卡片
+    sync_choice.go   可能保存着旧数据的同步（首次同步、基准解不开、长时间未同步）的选择窗口，“同步”页和账户同步共用
     secrets.go       记住密码：凭据存储的键、后台读写队列、“记住密码”、密码框、彻底删除和复制连接时的密码
     closing.go       关闭主窗口、退出时做什么：隐藏到托盘、先确认
     windows.go       子窗口：按种类打开/聚焦/关闭，重绘所有窗口

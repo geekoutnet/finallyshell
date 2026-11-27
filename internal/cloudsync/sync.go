@@ -43,6 +43,30 @@ type Request struct {
 	KeepServer     bool
 	StrictBase     bool
 	ExpectedServer string
+	// AskChoice: a sync with no base to merge with (none, or one that no
+	// longer opens, as after another device changed the sync password),
+	// or with Stale set (this device has not synced for long), may hold
+	// an old copy: it returns a *Choice, writing nothing, when this
+	// device has connections the remote lacks or has otherwise, for the
+	// user to choose; and otherwise merges keeping the remote's version
+	// where both sides differ. PreferRemote merges so always
+	// (MergePreferRemote), as the user chose.
+	AskChoice    bool
+	Stale        bool
+	PreferRemote bool
+	// KeyHint, written in the file's plaintext header, says which kind of
+	// password Password is (KeyEmail, KeyCustom); "" for none.
+	KeyHint string
+	// AltPasswords are tried, in order, when Password does not open the
+	// remote file: one that does is the sync's password from then on,
+	// for writing too, and Result.Password says so. The base still opens
+	// with Password, as this device sealed it.
+	AltPasswords []string
+	// BasePassword is the password Base is sealed with, when it is not
+	// Password: this device changed its password since it last synced.
+	BasePassword string
+
+	switched bool // an alternative opened the remote file: Password is it
 }
 
 // Result is what a sync did.
@@ -61,7 +85,11 @@ type Result struct {
 	Conflicts int
 	// RemoteDevice is the device that wrote the file this one read, ""
 	// when it wrote none.
-	RemoteDevice              string
+	RemoteDevice string
+	// Password is the one of Request.AltPasswords that opened the remote
+	// file, and sealed what this sync wrote and Envelope; "" when it was
+	// Request.Password.
+	Password                  string
 	HistoryError              error
 	LocalImpact, ServerImpact Changes
 }
@@ -98,12 +126,20 @@ func Sync(ctx context.Context, req Request) (*Result, error) {
 }
 
 func syncOnce(ctx context.Context, req Request, local *Payload, now func() time.Time) (*Result, error) {
+	res, err := syncWith(ctx, &req, local, now)
+	if res != nil && req.switched {
+		res.Password = req.Password
+	}
+	return res, err
+}
+
+func syncWith(ctx context.Context, req *Request, local *Payload, now func() time.Time) (*Result, error) {
 	data, v, err := req.Remote.Get(ctx)
 	if errors.Is(err, ErrNotFound) {
 		if req.KeepServer {
 			return nil, err
 		}
-		res, err := upload(ctx, req, local, nil, nil, nil, now)
+		res, err := upload(ctx, *req, local, nil, nil, nil, now)
 		if res != nil {
 			res.Created = true
 			res.ServerImpact = Compare(nil, local)
@@ -113,16 +149,23 @@ func syncOnce(ctx context.Context, req Request, local *Payload, now func() time.
 	if err != nil {
 		return nil, err
 	}
-	remote, err := openPayload(req.Password, data)
+	remote, password, err := openRemote(*req, data)
 	if err != nil {
 		return nil, err
+	}
+	basePassword := req.Password
+	if req.BasePassword != "" {
+		basePassword = req.BasePassword
+	}
+	if password != req.Password {
+		req.Password, req.switched = password, true // seals what is written
 	}
 	if req.KeepServer {
 		if req.ExpectedServer != "" && req.ExpectedServer != serverVersion(data) {
 			return nil, ErrConflict
 		}
 		if req.ExpectedServer == "" {
-			if err := guardDeletion(req, local, nil, remote, data); err != nil {
+			if err := guardDeletion(*req, local, nil, remote, data); err != nil {
 				return nil, err
 			}
 		}
@@ -133,17 +176,28 @@ func syncOnce(ctx context.Context, req Request, local *Payload, now func() time.
 	}
 	var base *Payload
 	if req.Base != nil {
-		base, _ = openPayload(req.Password, req.Base) // none if it no longer opens
+		base, _ = openPayload(basePassword, req.Base) // none if it no longer opens
 		if base != nil && !req.BaseSecrets {
 			base.Secrets = nil
 		}
+	}
+	prefer := req.PreferRemote
+	if req.AskChoice && (base == nil || req.Stale) {
+		if c := choiceOf(local, remote, data); c != nil {
+			return nil, c
+		}
+		prefer = true
 	}
 	if !req.Secrets {
 		local = local.Clone()
 		local.Secrets = remote.Secrets
 	}
-	merged, conflicts := Merge(base, local, remote)
-	if err := guardDeletion(req, local, remote, merged, data); err != nil {
+	merge := Merge
+	if prefer {
+		merge = MergePreferRemote
+	}
+	merged, conflicts := merge(base, local, remote)
+	if err := guardDeletion(*req, local, remote, merged, data); err != nil {
 		return nil, err
 	}
 	if Equal(merged, remote) && !req.ManualVersion {
@@ -152,7 +206,7 @@ func syncOnce(ctx context.Context, req Request, local *Payload, now func() time.
 			Conflicts: conflicts, RemoteDevice: remote.Device, LocalImpact: Compare(local, remote),
 		}, nil
 	}
-	res, err := upload(ctx, req, merged, remote, data, &v, now)
+	res, err := upload(ctx, *req, merged, remote, data, &v, now)
 	if res != nil {
 		res.Changed = !Equal(merged, local)
 		res.Conflicts = conflicts
@@ -214,7 +268,7 @@ func upload(ctx context.Context, req Request, p, previous *Payload, prevData []b
 	if err != nil {
 		return nil, err
 	}
-	meta := Snapshot{At: out.UpdatedAt, Device: req.Device, AppVersion: req.AppVersion, Reason: req.Reason, Counts: out.Counts(), Counted: true}
+	meta := Snapshot{At: out.UpdatedAt, Device: req.Device, AppVersion: req.AppVersion, Reason: req.Reason, Counts: out.Counts(), Counted: true, KeyHint: req.KeyHint}
 	env, err = attachSnapshot(env, meta)
 	if err != nil {
 		return nil, err

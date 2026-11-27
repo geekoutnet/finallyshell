@@ -293,6 +293,37 @@ func TestGistNotFoundCreates(t *testing.T) {
 	}
 }
 
+// TestGistOwnFile: a Gist with its own File finds, reads and creates
+// only the gist of that file, apart from the Sync page's.
+func TestGistOwnFile(t *testing.T) {
+	f := newFakeGitHub(t)
+	f.add("page", "2026-01-02T00:00:00Z", FileName, `{"page":1}`)
+	g := f.remote()
+	g.File, g.Description = "account.json", "Account sync"
+	ctx := context.Background()
+	if _, _, err := g.Get(ctx); !errors.Is(err, ErrNotFound) {
+		t.Fatalf("Get with only the Sync page's gist: %v, want ErrNotFound", err)
+	}
+	if _, err := g.Put(ctx, []byte(`{"account":1}`), nil); err != nil {
+		t.Fatal(err)
+	}
+	if g.ID == "page" {
+		t.Fatal("Put wrote to the Sync page's gist")
+	}
+	f.mu.Lock()
+	created := f.gists[g.ID].files["account.json"]
+	f.mu.Unlock()
+	if created != `{"account":1}` || f.file("page") != `{"page":1}` {
+		t.Fatalf("account gist %q, Sync page's %q", created, f.file("page"))
+	}
+	again := f.remote()
+	again.File = "account.json"
+	data, _, err := again.Get(ctx)
+	if err != nil || string(data) != `{"account":1}` || again.ID != g.ID {
+		t.Fatalf("Get found %q %s %v", again.ID, data, err)
+	}
+}
+
 func TestGistAuth(t *testing.T) {
 	f := newFakeGitHub(t)
 	g := f.remote()

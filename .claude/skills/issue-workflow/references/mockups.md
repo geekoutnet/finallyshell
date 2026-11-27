@@ -77,7 +77,7 @@ while it costs nothing to change.
   who can see the repository:
 
   ```markdown
-  ![Command editor](https://github.com/TooonyChen/finallyshell/blob/chore/mockups/160/command-editor-mockup.png?raw=true)
+  ![Command editor](https://github.com/geekoutnet/finallyshell/blob/chore/mockups/160/command-editor-mockup.png?raw=true)
   ```
 
   GitHub's own attachment upload (drag and drop) works only in a

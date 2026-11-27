@@ -38,6 +38,9 @@ func (a *App) syncPage(c *ui.Context) {
 			if a.sync.guard != nil && ui.Button(c, locales.BackupReviewDeletion()).Clicked() {
 				a.openSyncGuard()
 			}
+			if a.sync.choice != nil && ui.Button(c, locales.AccountChooseButton()).Clicked() {
+				a.openSyncChoice(a.pageSync())
+			}
 		})
 	})
 	if s.Provider != config.SyncOff {
@@ -50,8 +53,9 @@ func (a *App) syncPage(c *ui.Context) {
 			if choiceSelect(c, locales.SyncService(), &p, syncProviders, nil) {
 				a.changeSettings(func() { a.settings.Sync.Provider = p })
 				a.sync.err, a.sync.done, a.sync.confirmReplace = nil, nil, false
-				a.sync.guard, a.sync.restorePaused = nil, false
+				a.sync.guard, a.sync.restorePaused, a.sync.choice = nil, false, nil
 				a.closeWindow(WindowSyncGuard)
+				a.closeWindow(WindowSyncChoice)
 			}
 		})
 		if s.Provider == config.SyncOff {
@@ -124,14 +128,14 @@ func (a *App) syncPage(c *ui.Context) {
 	ui.Column(c).Gap(8).Padding(12, 0, 0, 0).Children(func() {
 		ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
 			ready := a.syncReady()
-			if ui.PrimaryButton(c, locales.SyncNow()).Disabled(!ready || a.sync.running || a.sync.restorePaused).Clicked() {
+			if ui.PrimaryButton(c, locales.SyncNow()).Disabled(!ready || a.syncBusy() || a.sync.restorePaused).Clicked() {
 				a.startSync(false, c.Now())
 			}
 			a.syncStatus(c, ready)
 		})
 		if !a.sync.confirmReplace {
 			ui.Row(c).Children(func() {
-				if ui.Button(c, locales.SyncReplaceRemote()).Disabled(!a.syncReady() || a.sync.running).Clicked() {
+				if ui.Button(c, locales.SyncReplaceRemote()).Disabled(!a.syncReady() || a.syncBusy()).Clicked() {
 					a.sync.confirmReplace = true
 				}
 			})
@@ -189,12 +193,16 @@ func (a *App) retentionField(c *ui.Context, label string, current, low, high int
 }
 
 // syncStatus says what sync is doing, did last, or lacks.
-func (a *App) syncStatus(c *ui.Context, ready bool) {
-	st := &a.sync
+func (a *App) syncStatus(c *ui.Context, ready bool) { a.syncStatusOf(c, &a.sync, ready) }
+
+// syncStatusOf is syncStatus of the sync whose state is st.
+func (a *App) syncStatusOf(c *ui.Context, st *syncState, ready bool) {
 	text, color := "", theme.TextMuted
 	switch {
 	case st.running:
 		text = locales.SyncRunning()
+	case st.choice != nil:
+		text, color = locales.AccountChoiceShort(), theme.Warning
 	case st.guard != nil:
 		text, color = locales.BackupGuardTitle(), theme.Danger
 	case st.restorePaused:
@@ -206,16 +214,15 @@ func (a *App) syncStatus(c *ui.Context, ready bool) {
 	case !ready && st.loaded:
 		text = locales.SyncIncomplete()
 	case st.done != nil || !st.state.At.IsZero():
-		text = a.syncDoneText()
+		text = syncDoneText(st)
 	}
 	if text != "" {
 		ui.Text(c, text).TextColor(color).FontSize(12).Grow(1).MinWidth(0)
 	}
 }
 
-// syncDoneText is what the last sync did, and when.
-func (a *App) syncDoneText() string {
-	st := &a.sync
+// syncDoneText is what the last sync of st did, and when.
+func syncDoneText(st *syncState) string {
 	at := st.state.At.Local().Format("2006-01-02 15:04")
 	var parts []string
 	if r := st.done; r != nil {

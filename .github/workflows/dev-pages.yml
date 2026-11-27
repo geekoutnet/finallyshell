@@ -1,0 +1,50 @@
+name: dev-pages
+
+# Publishes the project site, https://geekoutnet.github.io/finallyshell/,
+# from site/ on dev, the fork's own branch. It exists on dev only, as
+# dev-build does: main mirrors the upstream, whose pages workflow is
+# disabled in this repository's Actions settings so that syncing main
+# never publishes the upstream's site over this one.
+#
+# The pages have no build step; site/build.sh copies the README's
+# screenshots and the app icon next to them. Needs Settings › Pages ›
+# Source set to "GitHub Actions", and dev allowed to deploy to the
+# github-pages environment.
+on:
+  push:
+    branches: [dev]
+    paths:
+      - "site/**"
+      - "docs/screenshots/**"
+      - "resources/icon.png"
+      - ".github/workflows/dev-pages.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# One deployment at a time; a running one finishes.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/dev'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+      - name: assemble
+        run: sh site/build.sh _site
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

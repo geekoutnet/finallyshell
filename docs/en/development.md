@@ -119,9 +119,11 @@ look at it:
 sh site/build.sh && python3 -m http.server -d _site
 ```
 
-The `pages` workflow publishes it on every push to main that changes the
-pages, the screenshots or the icon. Keep the two pages saying the same
-thing, and what they say about official sources the same as the READMEs.
+The `dev-pages` workflow publishes it on every push to dev that changes
+the pages, the screenshots or the icon (the upstream's `pages` workflow,
+on main, is disabled in the repository's Actions settings, so that
+syncing main never publishes the upstream's site). Keep the two pages
+saying the same thing.
 
 ## Releasing
 

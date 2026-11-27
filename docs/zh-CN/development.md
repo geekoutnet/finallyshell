@@ -79,7 +79,7 @@ go run ./tools/screenshots
 sh site/build.sh && python3 -m http.server -d _site
 ```
 
-每次推送到 main 且改动了页面、截图或图标时，`pages` 工作流会发布它。两个页面的内容要一致，关于官方渠道的说法要和 README 一致。
+每次推送到 dev 且改动了页面、截图或图标时，`dev-pages` 工作流会发布它。上游在 main 上的 `pages` 工作流已在仓库的 Actions 设置里停用，这样同步 main 时不会把上游的网站发布出去。两个页面的内容要一致。
 
 ## 发布
 

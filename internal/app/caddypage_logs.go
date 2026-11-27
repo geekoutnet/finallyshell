@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"finallyshell/internal/monitor"
+	"finallyshell/internal/widgets"
 	"finallyshell/locales"
 	"github.com/egoist/mygo/ui"
 	"golang.org/x/crypto/ssh"
@@ -139,7 +140,13 @@ func (a *App) caddyLogsSection(c *ui.Context, s *Session) {
 		)
 	}
 	viewer.list.CellMenu = func(menu *ui.Menu, row, _ int) { logMenu(menu, row) }
-	if page.structured {
+	// Columns for an access log alone: the service's log, Caddy's own
+	// messages, would crowd the first column, a line each.
+	columns := page.structured && caddyHasAccess(rows)
+	if page.structured && !columns && len(rows) > 0 {
+		widgets.Muted(c, locales.CpanelColumnsNone()).FontSize(12).Padding(0, 8).MaxWidthPercent(100)
+	}
+	if columns {
 		caddyLogTable(c, &viewer.list, rows, a.opsNarrow())
 	} else {
 		ui.List(c, &viewer.list, len(rows), func(index int) {
@@ -222,6 +229,20 @@ func caddyParseAccess(text string) (caddyAccessLine, bool) {
 	return line, true
 }
 
+// caddyHasAccess reports whether rows hold access log entries: Caddy's
+// JSON, with a request and a status. The newest few hundred tell.
+func caddyHasAccess(rows []systemLogLine) bool {
+	for i := len(rows) - 1; i >= max(0, len(rows)-300); i-- {
+		if text := rows[i].text; strings.Contains(text, `"status"`) {
+			if _, ok := caddyParseAccess(text); ok {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+// caddyLogColor is the color of a line of the log.
 func caddyLogColor(text string, status int) ui.Color {
 	if status >= 500 || systemLogLevel(text, nil) == 3 {
 		return theme.Danger
@@ -266,7 +287,8 @@ func caddyLogTable(c *ui.Context, list *ui.ListState, rows []systemLogLine, narr
 		}
 		value, color := "", theme.Text
 		if line.Status == 0 {
-			if col == 0 {
+			// Another line among the entries: in the URI's wide column.
+			if order[col] == 4 {
 				value, color = text, caddyLogColor(text, 0)
 			}
 		} else {

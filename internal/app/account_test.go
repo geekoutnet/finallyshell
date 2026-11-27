@@ -420,7 +420,8 @@ func TestAccountRevokedSignInExpires(t *testing.T) {
 	d := newAccountDevice(t, prov, &memRemote{}, map[string]cloudsync.Remote{"github:42": &memRemote{}})
 	d.signIn(t, "pw")
 	d.a.settings.Account.GistID, d.a.settings.Account.Interval = "g1", 30
-	prov.set(func() { prov.refreshErr = account.ErrRevoked })
+	// Revoked: neither the refresh token nor the access token works.
+	prov.set(func() { prov.refreshErr, prov.profileErr = account.ErrRevoked, account.ErrRevoked })
 	d.use(t)
 	d.a.syncAccountNow(false, time.Now())
 	d.p.until(t, "the renewal", func() bool { return !d.a.account.renewing })
@@ -435,7 +436,7 @@ func TestAccountRevokedSignInExpires(t *testing.T) {
 		t.Fatalf("log %v", got)
 	}
 
-	prov.set(func() { prov.refreshErr = nil; prov.expiresIn = 0 })
+	prov.set(func() { prov.refreshErr, prov.profileErr = nil, nil; prov.expiresIn = 0 })
 	d.signIn(t, "")
 	s := d.a.settings.Account
 	if s.Expired || s.GistID != "g1" || s.Interval != 30 || !d.a.accountReady() {
@@ -466,6 +467,43 @@ func TestAccountRefusedTokenChecked(t *testing.T) {
 	events, _ := config.ReadAccountLog()
 	if events[1].Error != locales.SyncErrAuth() {
 		t.Fatalf("error %q", events[1].Error)
+	}
+}
+
+// The OAuth app stops making tokens expire: a renewal gives one that does
+// not, and one renewed no more goes on; a refused refresh token, its
+// access token still working, goes on too, as one that does not expire.
+func TestAccountTokenModes(t *testing.T) {
+	prov := newFakeProvider()
+	prov.expiresIn = 2 * time.Minute
+	d := newAccountDevice(t, prov, &memRemote{}, map[string]cloudsync.Remote{"github:42": &memRemote{}})
+	d.signIn(t, "pw")
+	prov.set(func() { prov.expiresIn = 0 }) // opted out
+	d.syncAccount(t)
+	tok := d.a.account.token
+	if prov.renewals() != 1 || tok.Refresh != "" || !tok.Expires.IsZero() || d.a.account.sync.err != nil {
+		t.Fatalf("renewals %d, token %+v, err %v", prov.renewals(), tok, d.a.account.sync.err)
+	}
+	d.syncAccount(t)
+	if prov.renewals() != 1 {
+		t.Fatal("a token that does not expire was renewed")
+	}
+
+	// A refresh token refused while the access token still works.
+	prov2 := newFakeProvider()
+	prov2.expiresIn = 2 * time.Minute
+	d2 := newAccountDevice(t, prov2, &memRemote{}, map[string]cloudsync.Remote{"github:42": &memRemote{}})
+	d2.signIn(t, "pw")
+	prov2.set(func() { prov2.refreshErr = account.ErrRevoked })
+	d2.syncAccount(t)
+	if d2.a.settings.Account.Expired || d2.a.account.sync.err != nil {
+		t.Fatalf("expired %v, err %v", d2.a.settings.Account.Expired, d2.a.account.sync.err)
+	}
+	if tok := d2.a.account.token; tok.Refresh != "" || !tok.Expires.IsZero() || tok.Access == "" {
+		t.Fatalf("token %+v", tok)
+	}
+	if !hasAccountEvent(t, config.AccountRefresh, "no-expiry") {
+		t.Fatalf("log %v", accountActions(t))
 	}
 }
 

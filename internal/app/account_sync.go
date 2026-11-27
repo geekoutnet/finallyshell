@@ -499,10 +499,35 @@ func (a *App) renewAccount() {
 							finish(reason)
 							return
 						}
-						if same() {
-							a.markAccountExpired()
+						if !same() {
+							finish("")
+							return
 						}
-						finish("")
+						// The app's tokens may have stopped expiring (the OAuth
+						// app opted out), its refresh token then refused: an
+						// access token that still works goes on, as one that
+						// does not expire.
+						go func() {
+							ctx, cancel := context.WithTimeout(context.Background(), accountTimeout)
+							defer cancel()
+							_, perr := p.Profile(ctx, old)
+							a.post(func() {
+								if !same() {
+									finish("")
+									return
+								}
+								if perr != nil {
+									a.markAccountExpired()
+									finish("")
+									return
+								}
+								kept := account.Token{Access: old.Access, Scope: old.Scope}
+								a.useAccountToken(kept)
+								a.saveAccountToken(s.Provider, kept)
+								a.logAccount(config.AccountEvent{Action: config.AccountRefresh, Reason: "no-expiry", Result: "ok"})
+								finish(reason)
+							})
+						}()
 					})
 				default:
 					ac.renewErr = err

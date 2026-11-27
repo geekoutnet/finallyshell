@@ -46,12 +46,16 @@ func (p *fakeSystem) questions() []Confirmation {
 func (p *fakeSystem) Quit() { p.quits++ }
 
 // The options window's tree shows every page, in both languages; the
-// pages still to come say so.
+// pages still to come say so. The Account page shows only while an
+// account is signed in (TestAccountOptionsPage).
 func TestOptionsPages(t *testing.T) {
 	a, p := testApp(t)
 	a.openOptions()
 	tt := p.show(t, WindowOptions)
 	for _, pg := range optionPages {
+		if pg.id == pageAccount {
+			continue
+		}
 		if !tt.HasText(pg.title()) {
 			t.Errorf("no entry %q; texts %q", pg.title(), tt.Texts())
 		}

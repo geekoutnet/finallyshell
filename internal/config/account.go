@@ -108,6 +108,12 @@ type AccountEvent struct {
 	Local     [3]int   `json:"local"`
 	Server    [3]int   `json:"server"`
 	Conflicts int      `json:"conflicts,omitempty"`
+
+	// Repeat is how many more times the same thing happened since Since,
+	// At the last: automatic syncs that found nothing to do are one
+	// event, not one every interval (AppendAccountEventCoalesced).
+	Repeat int       `json:"repeat,omitempty"`
+	Since  time.Time `json:"since,omitzero"`
 }
 
 // The actions of AccountEvent.
@@ -166,14 +172,28 @@ func readAccountLog() ([]AccountEvent, error) {
 
 // AppendAccountEvent adds an event to account-log.json, which keeps the
 // last 200.
-func AppendAccountEvent(event AccountEvent) error {
+func AppendAccountEvent(event AccountEvent) error { return AppendAccountEventCoalesced(event, nil) }
+
+// AppendAccountEventCoalesced is AppendAccountEvent, but when same says
+// the log's last event is the same as this one, that event counts it
+// instead (Repeat, Since), its time this one's.
+func AppendAccountEventCoalesced(event AccountEvent, same func(last AccountEvent) bool) error {
 	accountLogMu.Lock()
 	defer accountLogMu.Unlock()
 	events, err := readAccountLog()
 	if err != nil {
 		events = nil // a damaged log starts again
 	}
-	events = append(events, event)
+	if n := len(events); n > 0 && same != nil && same(events[n-1]) {
+		last := &events[n-1]
+		if last.Since.IsZero() {
+			last.Since = last.At
+		}
+		last.At = event.At
+		last.Repeat++
+	} else {
+		events = append(events, event)
+	}
 	data, err := json.MarshalIndent(events[max(0, len(events)-accountLogLimit):], "", "  ")
 	if err != nil {
 		return err

@@ -654,13 +654,26 @@ func (a *App) signOut() error {
 
 // logAccount adds an event to the account's log, of the signed-in
 // account and this device.
-func (a *App) logAccount(e config.AccountEvent) {
+func (a *App) logAccount(e config.AccountEvent) { a.writeAccountEvent(e, nil) }
+
+// writeAccountEvent is logAccount, counting the event in the last one
+// when same says it is the same.
+func (a *App) writeAccountEvent(e config.AccountEvent, same func(config.AccountEvent) bool) {
 	s := a.settings.Account
 	e.At, e.Provider, e.Login, e.Device = time.Now().UTC(), s.Provider, s.Login, deviceName()
-	if err := config.AppendAccountEvent(e); err != nil {
+	if err := config.AppendAccountEventCoalesced(e, same); err != nil {
 		a.account.view.logErr = err
 	}
 	a.account.view.events = nil // read again when shown
+}
+
+// quietSync says whether e is an automatic sync that found nothing to do:
+// the log counts those in one event rather than one every interval.
+func quietSync(e config.AccountEvent) bool {
+	n := len(e.Steps)
+	return e.Action == config.AccountSync && e.Reason == cloudsync.ReasonAuto && e.Result == "ok" &&
+		n > 0 && e.Steps[n-1] == config.StepUpToDate && !slices.Contains(e.Steps, config.StepRefresh) &&
+		e.Conflicts == 0 && e.Error == ""
 }
 
 // recordAccountSync logs what a sync of the account did, step by step,
@@ -707,7 +720,14 @@ func (a *App) recordAccountSync(reason, result string, res *cloudsync.Result) {
 	if c := ac.sync.choice; c != nil && result == "paused" {
 		e.Error = locales.AccountChoiceLogged(c.Local, c.Remote)
 	}
-	a.logAccount(e)
+	if quietSync(e) {
+		device, login := deviceName(), a.settings.Account.Login
+		a.writeAccountEvent(e, func(last config.AccountEvent) bool {
+			return quietSync(last) && last.Device == device && last.Login == login
+		})
+	} else {
+		a.logAccount(e)
+	}
 	switch {
 	case result == "failed" && errors.Is(ac.sync.err, cloudsync.ErrAuth):
 		a.checkAccountAfterAuthError()

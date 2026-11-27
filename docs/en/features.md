@@ -3255,7 +3255,8 @@ expired code.
 
 Signed in, the bar shows the account (its initial, with a dot: green
 synced, blue syncing, orange waiting for you, red failed or the sign-in
-expired), GitHub's mark and how the sync stands (**Synced · 2 minutes
+expired), its display name (the user name when it has none), GitHub's
+mark and how the sync stands (**Synced · 2 minutes
 ago**). Clicking it opens the account's card: the name, `@user`, the
 primary email address with most of its name hidden (**Show** shows it
 whole), **GitHub · Signed in**, the sync's state and settings, **Sync
@@ -3268,7 +3269,9 @@ apart from [Sync](#sync): a secret gist of its own
 can be on, and never run at the same moment. The merge is the same, the
 question of [a computer that may hold an old copy](#sync) included.
 
-**Account & Sync Settings…** opens the **Account** window:
+**Account & Sync Settings…** opens the **Account** window; while an
+account is signed in, **Options › Account** shows the same, kept in step
+with the window:
 
 - **Sync password.** By default it is the account's GitHub email address,
   so that every computer signing in to the account syncs with nothing to
@@ -3308,8 +3311,13 @@ question of [a computer that may hold an old copy](#sync) included.
   steps (renew the sign-in, read the gist, create it on the first sync,
   merge, upload, back up this computer's data, apply the changes), what
   it added, removed and changed here and on the server, the conflicts,
-  the computer, and the error. **Clear** empties it. The Sync page's log
-  does not list the account's syncs, nor this one the Sync page's.
+  the computer, and the error. Automatic syncs that find nothing to do
+  are one entry, counting them (**12 checks, nothing to do, since
+  19:10**), so that they don't crowd out the rest. The entries are grouped
+  by day, the latest 30 shown first and more on request, and a filter
+  keeps **Changes**, **Problems** (failed or paused) or the **Account**'s
+  own events. **Clear** empties it. The Sync page's log does not list the
+  account's syncs, nor this one the Sync page's.
 
 GitHub's sign-in lasts 8 hours and renews itself with a refresh token,
 which lasts six months and is replaced at each renewal: the app renews it

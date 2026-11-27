@@ -4557,5 +4557,15 @@
   "accountActPasswordAuto": "自动跟随其他设备的同步密码",
   "accountStepAutoPassword": "其他设备已把同步密码改回 GitHub 邮箱，本机已自动切换",
   "accountCurrentPassword": "当前同步密码",
-  "accountActEmailChanged": "GitHub 主邮箱已更换，已自动用新邮箱重新加密"
+  "accountActEmailChanged": "GitHub 主邮箱已更换，已自动用新邮箱重新加密",
+  "accountLogCount": "共 {n} 条",
+  "accountLogAll": "全部",
+  "accountLogChanges": "有改动",
+  "accountLogProblems": "失败与暂停",
+  "accountLogAccount": "账户操作",
+  "accountLogToday": "今天",
+  "accountLogYesterday": "昨天",
+  "accountLogMore": "显示更早的记录（还有 {n} 条）",
+  "accountLogNone": "没有符合条件的记录。",
+  "accountLogRepeat": "{n} 次检查都已是最新（自 {from} 起）"
 }

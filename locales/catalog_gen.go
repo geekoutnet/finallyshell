@@ -27110,6 +27110,16 @@ func (msgs Messages) DesktopAIRunLogged() string {
 	return Catalog.Format(msgs.locale, "desktopAIRunLogged", nil)
 }
 
+// CpanelColumnsNone says "No access log entries here (Caddy's JSON format): shown as text."
+// in the language the app shows.
+func CpanelColumnsNone() string { return In(i18n.Locale()).CpanelColumnsNone() }
+
+// CpanelColumnsNone says "No access log entries here (Caddy's JSON format): shown as text."
+// in the language of msgs.
+func (msgs Messages) CpanelColumnsNone() string {
+	return Catalog.Format(msgs.locale, "cpanelColumnsNone", nil)
+}
+
 // AiGuardRuleConfirm says "Matches your rule {rule}: runs only once you allow it"
 // in the language the app shows.
 func AiGuardRuleConfirm(rule string) string { return In(i18n.Locale()).AiGuardRuleConfirm(rule) }

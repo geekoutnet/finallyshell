@@ -2384,7 +2384,7 @@ Browse the main config and its imports, and open them together in the code edito
 
 ### Caddy tab › Certificates and logs
 
-The certificate list includes the issuer, key type, location and time remaining; less than seven days is red, and less than 30 days is amber. Caddy renews its managed certificates automatically. Copy the public local CA certificate or download it when its file is available via SFTP. The log viewer follows the service journal, container logs, or a detected access log file. Pause, clear, filter with text or a regular expression, or inspect JSON access logs in columns and view individual entries in full.
+The certificate list includes the issuer, key type, location and time remaining; less than seven days is red, and less than 30 days is amber. Caddy renews its managed certificates automatically. Copy the public local CA certificate or download it when its file is available via SFTP. The log viewer follows the service journal, container logs, or a detected access log file. Pause, clear, filter with text or a regular expression, or inspect JSON access logs in columns and view individual entries in full; a log without access entries, as the service journal, stays text across the whole width, with a note why.
 
 ### Caddy tab › Install, update and migrate
 

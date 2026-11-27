@@ -2689,6 +2689,7 @@
   "desktopAIRunConfirm": "运行命令",
   "desktopAITargetChanged": "目标终端已切换或断开，未发送任何内容。",
   "desktopAIRunLogged": "经确认后向终端发送了 AI 建议的命令",
+  "cpanelColumnsNone": "这里没有访问日志（Caddy 的 JSON 格式），按普通文本显示。",
   "aiGuardRuleConfirm": "命中你的规则 {rule}：需要你确认后才会执行",
   "aiGuardCutConfirm": "这条命令可能断开当前 SSH 连接。确认有办法重新连上后，输入 RUN 执行。",
   "aiGuardRules": "需要手动确认的命令",

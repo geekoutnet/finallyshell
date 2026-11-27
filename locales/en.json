@@ -3297,6 +3297,7 @@
   "desktopAIRunConfirm": "Run command",
   "desktopAITargetChanged": "The target terminal changed or disconnected. Nothing was sent.",
   "desktopAIRunLogged": "Submitted an AI-suggested command to the terminal after confirmation",
+  "cpanelColumnsNone": "No access log entries here (Caddy's JSON format): shown as text.",
   "aiGuardRuleConfirm": "Matches your rule {rule}: runs only once you allow it",
   "aiGuardCutConfirm": "This command may cut the SSH connection. Type RUN to run it if you are sure there is a way back in.",
   "aiGuardRules": "Commands to confirm",

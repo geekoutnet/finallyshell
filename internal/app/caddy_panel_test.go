@@ -411,6 +411,13 @@ func TestCaddyPanelLogAndCertificateHelpers(t *testing.T) {
 	if !ok || line.Status != 200 || line.Request.IP != "192.0.2.42" || line.Timestamp != 1700000000.125 || line.Size != 1024 {
 		t.Fatalf("JSON log: %+v %v", line, ok)
 	}
+	// The service's own log is shown as text, not crowded into columns;
+	// an access log keeps them.
+	service := []systemLogLine{{text: "2026-11-26T19:50:43-0500 r-server caddy[812]: {\"level\":\"info\",\"msg\":\"serving initial configuration\"}"},
+		{text: "2026-11-26T20:20:43-0500 r-server systemd[1]: Reloaded caddy.service."}}
+	if caddyHasAccess(service) || !caddyHasAccess(append(service, systemLogLine{text: caddyPanelAccessLog})) {
+		t.Fatal("the access log is not told apart from the service's")
+	}
 	var page serverLogsPage
 	page.append([]string{caddyPanelAccessLog, "WARN: interrupted"})
 	page.filter, page.regex = `(?i)^warn`, true

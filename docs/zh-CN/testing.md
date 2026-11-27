@@ -10,7 +10,7 @@
 
 - 本机需要能运行特权容器、支持 cgroup 的 Linux Docker 引擎。Windows 和 macOS 可用 Docker Desktop，Linux 可用 Docker Engine。
 - 使用 Bash；Windows 上用 Git Bash。首次生成凭据需要 Python 3，运行 Go 测试则需要 `go.mod` 中指定的工具链。
-- 本机的 `2222`、`8080` 和 `8443` 端口必须空闲，或已由测试箱占用。确认 `docker info` 能正常返回。在 Windows 上，如果 Docker Desktop 安装在默认位置，`up` 可以在需要时启动它。
+- 本机的 `2222`、`8080` 和 `8443` 端口必须空闲，或已由测试箱占用。Windows 可能会为 Hyper-V 保留一些端口段（用 `netsh interface ipv4 show excludedportrange protocol=tcp` 查看），这时在 `up` 或 `reset` 时用 `TESTBOX_HTTP_PORT` 和 `TESTBOX_HTTPS_PORT` 换用其他网页端口；SSH 端口始终是 `2222`。确认 `docker info` 能正常返回。在 Windows 上，如果 Docker Desktop 安装在默认位置，`up` 可以在需要时启动它。
 
 ## 快速开始
 
@@ -36,7 +36,7 @@
 
 - `fs-testbox` 使用 Debian 12 镜像 `finallyshell-testbox:debian12`，由 systemd 担任一号进程，并运行 OpenSSH。`root` 可用密码登录，`tester` 属于 `sudo` 组，提权时仍须输入自己的密码。
 - 镜像内置网络和进程工具、Python、UFW、cron、rsyslog、logrotate、归档工具、SQLite、jq 和 Git。Nginx 和 Fail2ban 已安装但不默认启动；getty 和 logind 已屏蔽。
-- 宿主机只在回环地址上开放端口：`127.0.0.1:2222` 对应 SSH，`127.0.0.1:8080` 对应 HTTP，`127.0.0.1:8443` 对应 HTTPS。容器以特权模式运行，支持 systemd 和嵌套 Docker。
+- 宿主机只在回环地址上开放端口：`127.0.0.1:2222` 对应 SSH，`127.0.0.1:8080` 对应 HTTP，`127.0.0.1:8443` 对应 HTTPS（或创建测试箱时指定的网页端口）。容器以特权模式运行，支持 systemd 和嵌套 Docker。
 - 现有测试箱已经运行 Caddy 2.11.9。新建测试箱后，可用 `.claude/skills/testbox/testbox.sh caddy` 从官方 Cloudsmith 稳定版软件源安装并启用 Caddy，同时在 `/etc/caddy` 写入站点示例，覆盖静态文件、配置导入、内部 TLS、反向代理、单页应用回退、基本认证和重定向。
 
 ## 安全规则

@@ -15,7 +15,10 @@ password login, and a `tester` account whose `sudo` prompts for its password.
 The container is privileged, uses the host cgroup namespace and a writable
 `/sys/fs/cgroup` mount, and has tmpfs mounts for `/run` and `/run/lock`. Its
 published ports are **loopback only**: SSH `127.0.0.1:2222`, HTTP
-`127.0.0.1:8080`, HTTPS `127.0.0.1:8443`.
+`127.0.0.1:8080`, HTTPS `127.0.0.1:8443`. When Windows reserves a web port
+for Hyper-V (`netsh interface ipv4 show excludedportrange protocol=tcp`),
+make the box with others: `TESTBOX_HTTP_PORT=… TESTBOX_HTTPS_PORT=… testbox.sh
+reset`; the other commands find the box by its image, name and SSH port.
 
 ## Rules
 

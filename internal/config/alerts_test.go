@@ -22,7 +22,8 @@ func TestAlertSettingsRoundTrip(t *testing.T) {
 	if err != nil || strings.Contains(string(data), "alertRules") {
 		t.Fatalf("empty rules should be omitted: %s (%v)", data, err)
 	}
-	if _, synced := SyncedSettings(settings)["alertRules"]; synced {
-		t.Fatal("alert rules should not sync")
+	// The rules are the user's, on every device.
+	if _, synced := SyncedSettings(settings)["alertRules"]; !synced {
+		t.Fatal("alert rules should sync")
 	}
 }

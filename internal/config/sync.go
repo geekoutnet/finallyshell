@@ -126,6 +126,9 @@ var (
 		"fileIconTheme", // only the themes every copy has: see portable
 		"noFollowTerminalDir", "archiveTransfers", "noAgentIcons",
 		"noCommandBar", "noCommandBarPaths", "noCommandBarHistory", "noCommandBarCommands", "noServerHistory",
+		"terminalHighlight", // the keywords highlighted, a preference of the user's
+		"alertRules",        // the limits alerts watch, by host
+		"desktop",           // but a wallpaper image of this device's own: see deviceDesktop
 	}
 	localSettings = []string{
 		"tunnelManager",
@@ -145,9 +148,7 @@ var (
 		"sshAgent",       // this device's agent, a socket or pipe of its own
 		"x11Display",
 		"downloadDir", "askDownloadDir",
-		"terminalHighlight", "terminalRecording",
-		"alertRules", // the alerts this device shows, while it runs
-		"desktop",    // its wallpaper is a file in this device's config folder
+		"terminalRecording", // its folder is this device's
 		"sync",
 		"account", // who signed in here, and the account's sync
 		// Agreeing to download the location data, or to send the
@@ -173,6 +174,30 @@ func portable(key string, v json.RawMessage) bool {
 	return name == "" || name == "minimal" || strings.HasPrefix(name, "bundled:")
 }
 
+// deviceWallpaper says whether a desktop wallpaper is an image copied
+// into this device's config folder, which other devices lack: a built-in
+// one or a color is the same everywhere.
+func deviceWallpaper(w string) bool {
+	return w != "" && !strings.HasPrefix(w, "builtin:") && !strings.HasPrefix(w, "color:")
+}
+
+// deviceDesktop is the desktop setting v without a wallpaper image of
+// this device's own, which stays here.
+func deviceDesktop(v json.RawMessage) json.RawMessage {
+	var m map[string]json.RawMessage
+	if json.Unmarshal(v, &m) != nil {
+		return v
+	}
+	var w string
+	json.Unmarshal(m["wallpaper"], &w)
+	if !deviceWallpaper(w) {
+		return v
+	}
+	delete(m, "wallpaper")
+	out, _ := json.Marshal(m)
+	return out
+}
+
 // SyncedSettings are the settings of s that are synced, by key. A
 // setting at its default has no key, as in settings.json.
 func SyncedSettings(s Settings) map[string]json.RawMessage {
@@ -180,6 +205,9 @@ func SyncedSettings(s Settings) map[string]json.RawMessage {
 	out := map[string]json.RawMessage{}
 	for _, k := range syncedSettings {
 		if v, ok := all[k]; ok && portable(k, v) {
+			if k == "desktop" {
+				v = deviceDesktop(v)
+			}
 			out[k] = v
 		}
 	}
@@ -204,6 +232,20 @@ func WithSyncedSettings(s Settings, synced map[string]json.RawMessage) Settings 
 	var out Settings
 	if err := json.Unmarshal(data, &out); err != nil {
 		return s
+	}
+	// A wallpaper image of this device's own stays, unless the synced
+	// desktop chose another wallpaper of its own.
+	if s.Desktop != nil && deviceWallpaper(s.Desktop.Wallpaper) {
+		var synced struct {
+			Wallpaper *string `json:"wallpaper"`
+		}
+		json.Unmarshal(all["desktop"], &synced)
+		if synced.Wallpaper == nil {
+			if out.Desktop == nil {
+				out.Desktop = &DesktopSettings{}
+			}
+			out.Desktop.Wallpaper = s.Desktop.Wallpaper
+		}
 	}
 	return out
 }

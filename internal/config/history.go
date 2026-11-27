@@ -113,6 +113,21 @@ func writeHistory(hostID string, list []string) error {
 	return nil
 }
 
+// SetHistory replaces a host's history, the oldest command first, as a
+// sync brings it; none deletes it.
+func SetHistory(hostID string, list []string) error {
+	historyMu.Lock()
+	defer historyMu.Unlock()
+	if len(list) == 0 {
+		err := os.Remove(historyPath(hostID))
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return err
+	}
+	return writeHistory(hostID, list)
+}
+
 // DeleteHistory deletes a host's history, as the host is deleted for
 // good. A host without one is no error.
 func DeleteHistory(hostID string) error {

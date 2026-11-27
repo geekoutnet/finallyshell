@@ -269,7 +269,9 @@ func (a *App) keepSyncSecret(key, v string) {
 // and hosts, each without the time it last connected, which stays on this
 // device, and the settings that are synced.
 func (a *App) localPayload() *cloudsync.Payload {
-	return backupPayload(a.hosts, a.settings, a.quick())
+	p := backupPayload(a.hosts, a.settings, a.quick())
+	p.Lists = a.syncLists()
+	return p
 }
 
 func backupPayload(hosts *config.Store, settings config.Settings, quick *config.QuickCommands) *cloudsync.Payload {
@@ -287,6 +289,7 @@ func backupPayload(hosts *config.Store, settings config.Settings, quick *config.
 	for _, h := range hosts.Hosts {
 		c := h.Clone()
 		c.LastConnectedAt = time.Time{}
+		c.KeyPath = portableKeyPath(c.KeyPath) // the same on every device
 		if b, err := json.Marshal(c); err == nil {
 			p.Hosts = append(p.Hosts, b)
 		}
@@ -322,6 +325,7 @@ func (a *App) syncSecretKeys() []string {
 			keys = append(keys, libSecretKey(p.ID))
 		}
 	}
+	keys = append(keys, a.extraSecretKeys()...)
 	return keys
 }
 
@@ -467,7 +471,7 @@ func (a *App) readSyncSecrets(enabled bool, run func(map[string]string)) {
 		secrets := map[string]string{}
 		var failed error
 		for _, k := range keys {
-			v, ok, err := a.plat.SecretGet(k)
+			v, ok, err := a.secretGet(k)
 			if err != nil {
 				failed = err
 				break
@@ -725,7 +729,7 @@ func (a *App) applyPayload(p *cloudsync.Payload) error {
 		}
 		a.quickUI.store = quick
 	}
-	return nil
+	return a.applySyncLists(p.Lists)
 }
 
 // sameList says whether two lists hold the same objects in any order.
@@ -750,7 +754,7 @@ func (a *App) applySyncedSecrets(before, after map[string]string, st *syncState)
 	}
 	var changes []change
 	for k, v := range after {
-		if !allowed[k] {
+		if !a.syncKeyAllowed(allowed, k) {
 			continue
 		}
 		if from, had := before[k]; !had || from != v {
@@ -772,7 +776,7 @@ func (a *App) applySyncedSecrets(before, after map[string]string, st *syncState)
 		var applied []change
 		kept, storeErr := false, error(nil)
 		for _, ch := range changes {
-			cur, ok, err := a.plat.SecretGet(ch.key)
+			cur, ok, err := a.secretGet(ch.key)
 			if err != nil {
 				storeErr = err
 				break
@@ -782,9 +786,9 @@ func (a *App) applySyncedSecrets(before, after map[string]string, st *syncState)
 				continue
 			}
 			if ch.del {
-				err = a.plat.SecretDelete(ch.key)
+				err = a.secretSet(ch.key, "", true)
 			} else {
-				err = a.plat.SecretSet(ch.key, ch.to)
+				err = a.secretSet(ch.key, ch.to, false)
 			}
 			if err != nil {
 				storeErr = err

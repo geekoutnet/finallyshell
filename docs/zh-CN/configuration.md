@@ -227,7 +227,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 
 ### 终端数据流设置
 
-- `terminalHighlight`：本机可选设置对象，含 `disabled`、`useCustom` 和 `rules`。未开启 `useCustom` 时用内置规则。每条自定义规则含 `pattern`、`regex`、`caseSensitive`、`color`、`bold`、`underline` 以及可选的 `host` 主机 ID；`host` 为空时应用于所有主机。
+- `terminalHighlight`：可选设置对象，会同步，含 `disabled`、`useCustom` 和 `rules`。未开启 `useCustom` 时用内置规则。每条自定义规则含 `pattern`、`regex`、`caseSensitive`、`color`、`bold`、`underline` 以及可选的 `host` 主机 ID；`host` 为空时应用于所有主机。
 - `terminalRecording`：本机可选设置对象，含 `automatic`、`text`、`folder` 和 `limitMiB`。自动录制和纯文本日志默认关闭。默认保存在配置目录下的 `recordings/`，单个文件默认 64 MiB 轮转，可设为 1–512 MiB。
 - `.cast` 和可选的 `.txt` 文件保存在对应主机的子目录中。文件名以本地日期和时间开头（`yyyy-mm-dd_HH-MM-SS`），后续分段加序号，不覆盖已有文件。保存终端数据流设置前会将现有设置备份为 `settings.json.bak-<yyyymmddHHMMSS>`。
 
@@ -241,7 +241,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 
 ### 告警规则
 
-- `alertRules`：可选对象，以 SSH 主机 ID 为键。空键 `""` 保存所有 SSH 主机的默认规则。按主机设置的对象整体覆盖默认规则；`{}` 会关闭该主机的全部告警。规则中的 `unreachable`、`services` 为开关；`cpu`、`memory`、`disk` 为百分比阈值，`0` 表示关闭；`cpuMinutes` 为 1–60 分钟（默认 1 分钟）；`loadPerCore` 是在线 CPU 核心数的倍数，`0` 表示关闭。该设置仅存于本机，告警历史不会写入磁盘。
+- `alertRules`：可选对象，以 SSH 主机 ID 为键。空键 `""` 保存所有 SSH 主机的默认规则。按主机设置的对象整体覆盖默认规则；`{}` 会关闭该主机的全部告警。规则中的 `unreachable`、`services` 为开关；`cpu`、`memory`、`disk` 为百分比阈值，`0` 表示关闭；`cpuMinutes` 为 1–60 分钟（默认 1 分钟）；`loadPerCore` 是在线 CPU 核心数的倍数，`0` 表示关闭。该设置会同步；告警历史不会写入磁盘。
 
 ### 网站与证书文件
 
@@ -249,7 +249,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 
 ### 桌面模式
 
-`desktop` 留在本机。`wallpaper` 为空时用默认壁纸，`builtin:<id>` 表示内置壁纸，
+`desktop` 会同步，但复制到本机配置目录里的 `wallpaper` 壁纸图片留在本机。`wallpaper` 为空时用默认壁纸，`builtin:<id>` 表示内置壁纸，
 `color:#rrggbb` 表示纯色，也可以是复制到配置目录中的 `desktop-wallpaper-*` 图片的
 文件名。`singleClick`、`stackWindows`、`coverDock`、`hideServerInfo`（收起桌面右侧的服务器信息）、`iconSize`（`small`、空值对应中等，
 或 `large`）和 `pinned` 控制桌面行为。省略 `pinned` 使用默认应用，空数组不保留可选固定项。
@@ -305,7 +305,7 @@ Caddy 页不添加主机或应用设置。它使用远程服务器上检测到�
 | `historyAllDays`、`historyDailyDays`、`historyWeeklyWeeks`、`historyMax` | WebDAV 和 S3 的版本保留时间与目标上限。 | 7 天、30 天、26 周、200 份。 |
 | `localBackupCount`、`localBackupDays` | 本机备份的数量和保存天数上限。 | 50 份、90 天。 |
 
-`settings.json` 的每个键要么同步，要么留在各自的电脑上，两个列表是 `internal/config/sync.go` 里的 `syncedSettings` 和 `localSettings`。留在本机的有：`sidebarWidth`、`monitorPercent`、`terminalPercent`、`treeWidth`、`procListPercent`、`procFieldsPercent`、`netListPercent`、`monitorHidden`、`bottomPanelHidden`、`sidebarHidden`、`bottomPanelSide`、`rightPanelWidth`、`monitorSide`、`rightMonitorPercent`、`commandEditorShown`、`commandEditorWidth`、`commandEditorPercent`、`commandEditorNoEnter`、`commandEditorClear`、`termBackground`、`localShell`、`sshAgent`、`x11Display`、`downloadDir`、`askDownloadDir`、`sync`、`account`、`geoLocations`、`geoLocationsV6`、`geoOnline`、`leftPanelPage`、`connectionTreeExpanded` 和 `managerTreeExpanded`（左侧面板显示哪一页、展开了哪些文件夹，是这台电脑上窗口留下的样子，和窗格大小一样），以及从 VSIX 安装或在编辑器扩展里找到的 `fileIconTheme`。
+`settings.json` 的每个键要么同步，要么留在各自的电脑上，两个列表是 `internal/config/sync.go` 里的 `syncedSettings` 和 `localSettings`。留在本机的有：`sidebarWidth`、`monitorPercent`、`terminalPercent`、`treeWidth`、`procListPercent`、`procFieldsPercent`、`netListPercent`、`monitorHidden`、`bottomPanelHidden`、`sidebarHidden`、`bottomPanelSide`、`rightPanelWidth`、`monitorSide`、`rightMonitorPercent`、`commandEditorShown`、`commandEditorWidth`、`commandEditorPercent`、`commandEditorNoEnter`、`commandEditorClear`、`termBackground`、`localShell`、`sshAgent`、`x11Display`、`downloadDir`、`askDownloadDir`、`terminalRecording`、`tunnelManager`、`lockEnabled`、`lockIdleMinutes`、`lockOnMinimize`、`sync`、`account`、`geoLocations`、`geoLocationsV6`、`geoOnline`、`leftPanelPage`、`connectionTreeExpanded` 和 `managerTreeExpanded`（左侧面板显示哪一页、展开了哪些文件夹，是这台电脑上窗口留下的样子，和窗格大小一样），以及从 VSIX 安装或在编辑器扩展里找到的 `fileIconTheme`。
 
 同步和备份数据与 `hosts.json` 放在一起：
 

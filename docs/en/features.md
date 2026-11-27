@@ -3142,18 +3142,37 @@ What is synced:
 - Folders and connections, deleted ones included (so a delete reaches the
   other computers), but not each host's last connection time, which keeps
   the recent list of each computer its own.
-- Saved quick commands and their groups. The command editor draft and
-  command history stay on this device.
+- Saved quick commands and their groups, and each host's command history
+  (its latest 500 commands, and the local terminals'), merged command by
+  command; older commands a computer keeps stay there. The command editor
+  draft stays on this device.
+- The Database tab's connections, and the trusted host keys
+  (`known_hosts`), merged line by line: a key one computer trusts reaches
+  the others, and none is removed.
 - Settings that mean the same on another computer: language, appearance,
   the General, Mouse, Shortcuts and Terminal pages, the font, the color
-  scheme, the background's fit and opacity, and the file icon theme when
-  it is one every copy has (Material, Seti or minimal). Pane sizes, the
-  download folder, the background image itself and icon themes installed
-  from a VSIX stay on each computer.
+  scheme, the background's fit and opacity, the AI assistant's settings
+  (its key with the passwords), the highlighted keywords, the alert
+  limits, desktop mode's settings and icons, and the file icon theme when
+  it is one every copy has (Material, Seti or minimal).
 - With "Include saved passwords" checked, off by default, the passwords and
-  key passphrases of the hosts that remember theirs. A computer that has it
-  off keeps the passwords already in the file as they are. Private key
-  files are not synced; hosts keep their key's path.
+  key passphrases of the hosts that remember theirs, the AI assistant's
+  API key, the databases', tunnels' and Remote Desktop gateways'
+  passwords, and the private key files of the hosts that log in with one
+  under `~/.ssh`: their path syncs as `~/.ssh/<name>`, which each computer
+  reads in its own home, and a key a computer lacks is written there,
+  readable by its user only. A computer's own key by the same name is
+  never replaced, and a sync never deletes a key file. A computer that has
+  it off keeps the passwords already in the file as they are.
+
+Each computer keeps its own: pane sizes and the window's layout, the
+download folder, the background image and a desktop wallpaper image
+(built-in wallpapers and colors sync), icon themes installed from a VSIX,
+the local terminal's program, the SSH agent and X11 display, the
+recordings' folder, the app lock and its password, the tunnels started
+with the app here, IP location data, the AI assistant's conversations,
+the last connection times, and the Sync page and the account
+themselves.
 
 Each sync merges three ways: this computer's data, the file's, and the
 data both had after the last sync, kept in `sync-state.json`, still

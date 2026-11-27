@@ -314,7 +314,7 @@ Details of each option are in [features.md](features.md): see
 
 ### Terminal stream settings
 
-- `terminalHighlight`: this device's optional object with `disabled`, `useCustom` and `rules`. Without `useCustom`, built-in rules apply. A custom rule has `pattern`, `regex`, `caseSensitive`, `color`, `bold`, `underline` and an optional `host` ID; an empty host applies to all hosts.
+- `terminalHighlight`: an optional object, synced, with `disabled`, `useCustom` and `rules`. Without `useCustom`, built-in rules apply. A custom rule has `pattern`, `regex`, `caseSensitive`, `color`, `bold`, `underline` and an optional `host` ID; an empty host applies to all hosts.
 - `terminalRecording`: this device's optional object with `automatic`, `text`, `folder` and `limitMiB`. Automatic recording and text logs default to off. The default folder is `recordings/` under the config directory, and the default rotation limit is 64 MiB per file (range 1–512 MiB).
 - `.cast` files and optional `.txt` companions are created in a host-specific subfolder. Their names start with the local date and time (`yyyy-mm-dd_HH-MM-SS`); extra parts get a numbered suffix. New parts never replace existing files. Terminal stream settings save a `settings.json.bak-<yyyymmddHHMMSS>` copy before replacing existing settings.
 
@@ -329,7 +329,7 @@ an existing `settings.json` as `settings.json.bak-<yyyymmddHHMMSS>`.
 
 ### Alert rules
 
-- `alertRules`: optional object keyed by SSH host ID. The empty key `""` holds defaults for all SSH hosts. A host's object replaces the defaults; `{}` disables all alerts for that host. In a rule object `unreachable` and `services` are booleans, `cpu`, `memory` and `disk` are percentage thresholds (0 disables the threshold), `cpuMinutes` is 1–60 (defaults to 1), and `loadPerCore` is a multiplier of the online CPU core count (0 disables it). This setting is local to the device and alert history is not written to disk.
+- `alertRules`: optional object keyed by SSH host ID. The empty key `""` holds defaults for all SSH hosts. A host's object replaces the defaults; `{}` disables all alerts for that host. In a rule object `unreachable` and `services` are booleans, `cpu`, `memory` and `disk` are percentage thresholds (0 disables the threshold), `cpuMinutes` is 1–60 (defaults to 1), and `loadPerCore` is a multiplier of the online CPU core count (0 disables it). This setting syncs; alert history is not written to disk.
 
 ### Website and certificate files
 
@@ -337,7 +337,8 @@ The Websites section adds no host or application settings. It reads Nginx config
 
 ### Desktop mode
 
-`desktop` is local to this device. `wallpaper` is empty for the default,
+`desktop` syncs, except a `wallpaper` image copied into this device's
+config folder, which stays here. `wallpaper` is empty for the default,
 `builtin:<id>` for a built-in, `color:#rrggbb` for a solid color, or the
 basename of a `desktop-wallpaper-*` image copied into the config directory.
 `singleClick`, `stackWindows`, `coverDock`, `hideServerInfo` (folds the
@@ -411,7 +412,7 @@ local: `sidebarWidth`, `monitorPercent`, `terminalPercent`, `treeWidth`,
 `monitorSide`, `rightMonitorPercent`, `commandEditorShown`,
 `commandEditorWidth`, `commandEditorPercent`, `commandEditorNoEnter`,
 `commandEditorClear`, `codeEditorFontSize`, `termBackground`, `localShell`, `sshAgent`, `x11Display`, `downloadDir`,
-`askDownloadDir`, `sync`, `account`,
+`askDownloadDir`, `terminalRecording`, `tunnelManager`, `lockEnabled`, `lockIdleMinutes`, `lockOnMinimize`, `sync`, `account`,
 `geoLocations`, `geoLocationsV6`, `geoOnline`, `leftPanelPage`,
 `connectionTreeExpanded` and `managerTreeExpanded` (the left panel's page and the folders open are
 where this computer's window was left, as the pane sizes are), and a

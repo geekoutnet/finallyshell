@@ -38,7 +38,31 @@ type Payload struct {
 	// Secrets are saved passwords and passphrases, by their key in the
 	// system's credential store: only from devices that include them.
 	Secrets map[string]string `json:"secrets,omitempty"`
+	// Lists are the rest of what syncs, by name (the List* constants):
+	// lists of objects with an "id", merged as Hosts are. A build that
+	// syncs them always writes the key, {} for none (NewLists); a build
+	// that does not writes none, which reads as nil: its payload says
+	// nothing of them, so merging it changes none, as with Proxies. A
+	// list missing from a map that is there is empty.
+	Lists map[string][]json.RawMessage `json:"lists"`
 }
+
+// The lists of Payload.Lists.
+const (
+	// ListDatabases are the Database tab's connections, as
+	// {"id": "<host ID>/<connection ID>", "host": ..., "profile": {...}}.
+	ListDatabases = "databases"
+	// ListKnownHosts are the trusted host keys, {"id": "<line>"}, a line
+	// of known_hosts each.
+	ListKnownHosts = "knownHosts"
+	// ListHistoryPrefix starts the name of a host's command history,
+	// ListHistoryPrefix + host ID, {"id": "<hash>", "cmd": "..."} each,
+	// oldest first.
+	ListHistoryPrefix = "history/"
+)
+
+// NewLists is Lists of a build that syncs them, with none in them.
+func NewLists() map[string][]json.RawMessage { return map[string][]json.RawMessage{} }
 
 type QuickCommands struct {
 	Groups   []json.RawMessage `json:"groups"`
@@ -56,6 +80,12 @@ func (p *Payload) Clone() *Payload {
 	}
 	c.Settings = maps.Clone(p.Settings)
 	c.Secrets = maps.Clone(p.Secrets)
+	if p.Lists != nil {
+		c.Lists = make(map[string][]json.RawMessage, len(p.Lists))
+		for k, v := range p.Lists {
+			c.Lists[k] = slices.Clone(v)
+		}
+	}
 	return &c
 }
 
@@ -64,12 +94,62 @@ func (p *Payload) Clone() *Payload {
 // count.
 func Equal(a, b *Payload) bool {
 	return sameItems(a.Folders, b.Folders) && sameItems(a.Hosts, b.Hosts) && sameItems(a.Proxies, b.Proxies) && equalQuick(a.Quick, b.Quick) &&
-		maps.EqualFunc(a.Settings, b.Settings, sameJSON) && maps.Equal(a.Secrets, b.Secrets)
+		maps.EqualFunc(a.Settings, b.Settings, sameJSON) && maps.Equal(a.Secrets, b.Secrets) && equalLists(a.Lists, b.Lists)
+}
+
+// equalLists says whether two Lists hold the same lists: nil is no
+// lists, an empty list none.
+func equalLists(a, b map[string][]json.RawMessage) bool {
+	for k, v := range a {
+		if len(v) > 0 && !sameItems(v, b[k]) {
+			return false
+		}
+	}
+	for k, v := range b {
+		if len(v) > 0 && len(a[k]) == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+// mergeLists merges Lists as Merge merges Proxies: a side without them
+// (nil) is taken to have the base's, so that it neither adds nor deletes.
+func mergeLists(base, local, remote map[string][]json.RawMessage) (map[string][]json.RawMessage, int) {
+	if local == nil && remote == nil {
+		return base, 0
+	}
+	if local == nil {
+		local = base
+	}
+	if remote == nil {
+		remote = base
+	}
+	keys := map[string]bool{}
+	for _, m := range []map[string][]json.RawMessage{base, local, remote} {
+		for k := range m {
+			keys[k] = true
+		}
+	}
+	out, conflicts := NewLists(), 0
+	for k := range keys {
+		merged, n := mergeItems(base[k], local[k], remote[k])
+		conflicts += n
+		if len(merged) > 0 {
+			out[k] = merged
+		}
+	}
+	return out, conflicts
 }
 
 // NewProxies is the proxy library of a build that has one, and none in
 // it: the key is written, unlike a build without the library's.
 func NewProxies() []json.RawMessage { return []json.RawMessage{} }
+
+// AddOnlySecretPrefix starts the keys of the secrets a merge never
+// deletes: private key files, which a device may lack, or have another
+// of by the same name, without deleting the others'.
+const AddOnlySecretPrefix = "sshkey/"
 
 // ProxySecretPrefix starts the keys of the library's proxies' passwords
 // among the secrets: "proxy/<id>/password".
@@ -141,8 +221,21 @@ func Merge(base, local, remote *Payload) (merged *Payload, conflicts int) {
 	conflicts += n
 	m.Settings, n = mergeMap(base.Settings, local.Settings, remote.Settings, sameJSON)
 	conflicts += n
+	m.Lists, n = mergeLists(base.Lists, local.Lists, remote.Lists)
+	conflicts += n
 	m.Secrets, n = mergeMap(base.Secrets, localSecrets, remoteSecrets, func(a, b string) bool { return a == b })
 	conflicts += n
+	// Files are only ever added: a device without one deletes none.
+	for _, side := range []map[string]string{localSecrets, remoteSecrets} {
+		for k, v := range side {
+			if _, ok := m.Secrets[k]; !ok && strings.HasPrefix(k, AddOnlySecretPrefix) {
+				if m.Secrets == nil {
+					m.Secrets = map[string]string{}
+				}
+				m.Secrets[k] = v
+			}
+		}
+	}
 	if len(m.Secrets) == 0 {
 		m.Secrets = nil
 	}

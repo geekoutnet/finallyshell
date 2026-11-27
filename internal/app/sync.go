@@ -17,6 +17,7 @@ import (
 	"encoding/json"
 	"errors"
 	"os"
+	"slices"
 	"strings"
 	"time"
 
@@ -424,7 +425,7 @@ func (a *App) startSyncOn(t syncTarget, options syncOptions, now time.Time) {
 		ManualVersion: options.manualVersion, ExpectedServer: options.expectedServer,
 	}
 	if st.state.Remote == s.Remote() {
-		req.Base, req.BaseSecrets = st.state.Base, st.state.Secrets
+		req.Base, req.BaseSecrets, req.HeldKeyFiles = st.state.Base, st.state.Secrets, st.state.KeyFiles
 	}
 	req.AllowDeletion = options.allowDeletion
 	choiceRequest(&req, st.state, options, now)
@@ -593,7 +594,7 @@ func (a *App) syncDone(res *cloudsync.Result, err error, run syncRun) {
 			failApply(err)
 			return
 		}
-		if err := a.applyPayload(merged); err != nil {
+		if err := a.applyPayloadFrom(merged, run.snapshot); err != nil {
 			failApply(err)
 			return
 		}
@@ -604,7 +605,7 @@ func (a *App) syncDone(res *cloudsync.Result, err error, run syncRun) {
 	st.err, st.done = nil, res
 	nextState := config.SyncState{
 		Remote: s.Remote(), Base: res.Envelope, At: time.Now(), Device: res.RemoteDevice,
-		Secrets: run.secrets != nil,
+		Secrets: run.secrets != nil, KeyFiles: keyFilesOf(run.secrets),
 	}
 	if res.Uploaded {
 		nextState.Device = deviceName()
@@ -639,8 +640,17 @@ func (a *App) syncDone(res *cloudsync.Result, err error, run syncRun) {
 // applyPayload makes this device's folders, hosts and synced settings
 // those of p. Hosts keep the time they last connected here, and their
 // Host values, which sessions point at. hosts.json is copied first.
-func (a *App) applyPayload(p *cloudsync.Payload) error {
+func (a *App) applyPayload(p *cloudsync.Payload) error { return a.applyPayloadFrom(p, nil) }
+
+// applyPayloadFrom is applyPayload of a payload merged from before, this
+// device's as the sync started (nil: as it is now): what changed between
+// them is applied to the trusted host keys, so that one trusted during
+// the sync stays.
+func (a *App) applyPayloadFrom(p, before *cloudsync.Payload) error {
 	local := a.localPayload()
+	if before == nil {
+		before = local
+	}
 	// A payload with no library (a backup older than it) leaves this
 	// device's as it is.
 	proxies := a.hosts.Proxies
@@ -729,7 +739,7 @@ func (a *App) applyPayload(p *cloudsync.Payload) error {
 		}
 		a.quickUI.store = quick
 	}
-	return a.applySyncLists(p.Lists)
+	return a.applySyncLists(p.Lists, before.Lists)
 }
 
 // sameList says whether two lists hold the same objects in any order.
@@ -752,9 +762,20 @@ func (a *App) applySyncedSecrets(before, after map[string]string, st *syncState)
 		key, from, to string
 		hadFrom, del  bool
 	}
+	// A key file is installed only where it is the one by its name: of
+	// two devices' keys by one name, this device cannot tell its own.
+	names := map[string]int{}
+	for k := range after {
+		if name, _, ok := sshKeyOf(k); ok {
+			names[name]++
+		}
+	}
 	var changes []change
 	for k, v := range after {
 		if !a.syncKeyAllowed(allowed, k) {
+			continue
+		}
+		if name, _, ok := sshKeyOf(k); ok && names[name] > 1 {
 			continue
 		}
 		if from, had := before[k]; !had || from != v {
@@ -774,6 +795,7 @@ func (a *App) applySyncedSecrets(before, after map[string]string, st *syncState)
 	}
 	a.secrets.queue.do(func() {
 		var applied []change
+		var installed []string // key files this device has now
 		kept, storeErr := false, error(nil)
 		for _, ch := range changes {
 			cur, ok, err := a.secretGet(ch.key)
@@ -795,9 +817,15 @@ func (a *App) applySyncedSecrets(before, after map[string]string, st *syncState)
 				break
 			}
 			applied = append(applied, ch)
+			if _, _, file := sshKeyOf(ch.key); file && !ch.del {
+				if _, ok, _ := a.secretGet(ch.key); ok {
+					installed = append(installed, ch.key)
+				}
+			}
 		}
 		a.post(func() {
 			a.noteStore(storeErr)
+			a.holdKeyFiles(st, installed)
 			for _, ch := range applied {
 				if id, ok := totpIDFromKey(ch.key); ok {
 					delete(a.totpStatus, id)
@@ -809,6 +837,25 @@ func (a *App) applySyncedSecrets(before, after map[string]string, st *syncState)
 			}
 		})
 	})
+}
+
+// holdKeyFiles adds the key files the sync st just installed to those
+// its state says this device has (config.SyncState.KeyFiles), so that its
+// next sync takes one deleted elsewhere since for deleted, not new here.
+func (a *App) holdKeyFiles(st *syncState, keys []string) {
+	if len(keys) == 0 {
+		return
+	}
+	for _, t := range []syncTarget{a.pageSync(), a.accountSync()} {
+		if t.st != st || st.state.Base == nil {
+			continue
+		}
+		next := st.state
+		next.KeyFiles = slices.Compact(slices.Sorted(slices.Values(append(slices.Clone(next.KeyFiles), keys...))))
+		if config.SaveSyncStateFile(t.stateFile, next) == nil {
+			st.state = next
+		}
+	}
 }
 
 // rememberSynced keeps, or forgets, for this run the secret the store

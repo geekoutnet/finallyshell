@@ -5,6 +5,9 @@ package sshx
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io"
@@ -35,6 +38,86 @@ var (
 type HostKeyChangedError struct {
 	Fingerprint string
 	File        string
+	// Host is the host as known_hosts names it, and Line the record of
+	// the key the server now has: TrustHostKey writes it.
+	Host, Line string
+}
+
+// TrustHostKey replaces every record of e.Host in e.File with the key the
+// server now has, as when the server was reinstalled: the user checked
+// the new key.
+func TrustHostKey(e *HostKeyChangedError) error {
+	if e.Host == "" || e.Line == "" {
+		return errors.New("no new host key")
+	}
+	return UpdateKnownHosts(e.File, func(data []byte) ([]byte, bool) {
+		var out []string
+		for _, line := range strings.Split(strings.ReplaceAll(string(data), "\r\n", "\n"), "\n") {
+			if strings.TrimSpace(line) == "" || lineNamesHost(line, e.Host) {
+				continue
+			}
+			out = append(out, line)
+		}
+		out = append(out, e.Line)
+		return []byte(strings.Join(out, "\n") + "\n"), true
+	})
+}
+
+// UpdateKnownHosts changes the known_hosts file at path by edit, which is
+// given its content and says whether it changed it, while no connection
+// adds a key to it; the file is replaced at once.
+func UpdateKnownHosts(path string, edit func(data []byte) ([]byte, bool)) error {
+	knownHostsMu.Lock()
+	defer knownHostsMu.Unlock()
+	data, err := os.ReadFile(path)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	next, changed := edit(data)
+	if !changed {
+		return nil
+	}
+	tmp := path + ".tmp"
+	if err := os.WriteFile(tmp, next, 0o600); err != nil {
+		return err
+	}
+	if err := os.Rename(tmp, path); err != nil {
+		os.Remove(tmp)
+		return err
+	}
+	return nil
+}
+
+// lineNamesHost says whether a known_hosts line is a key of host: it names
+// host in its list or, hashed, by its hash. Comments and marked lines
+// (@revoked, @cert-authority) are not keys of a host.
+func lineNamesHost(line, host string) bool {
+	fields := strings.Fields(line)
+	if len(fields) < 3 || strings.HasPrefix(fields[0], "#") || strings.HasPrefix(fields[0], "@") {
+		return false
+	}
+	for _, name := range strings.Split(fields[0], ",") {
+		if name == host || hashedMatches(name, host) {
+			return true
+		}
+	}
+	return false
+}
+
+// hashedMatches says whether a hashed known_hosts name, |1|salt|hash, is
+// host's.
+func hashedMatches(hashed, host string) bool {
+	parts := strings.Split(hashed, "|")
+	if len(parts) != 4 || parts[1] != "1" {
+		return false
+	}
+	salt, err := base64.StdEncoding.DecodeString(parts[2])
+	if err != nil {
+		return false
+	}
+	mac := hmac.New(sha1.New, salt)
+	mac.Write([]byte(host))
+	return base64.StdEncoding.EncodeToString(mac.Sum(nil)) == parts[3]
 }
 
 func (e *HostKeyChangedError) Error() string {
@@ -116,7 +199,9 @@ func hostKeyCallback(opts Options) (ssh.HostKeyCallback, error) {
 			return err
 		}
 		if len(keyErr.Want) > 0 {
-			return &HostKeyChangedError{Fingerprint: ssh.FingerprintSHA256(key), File: path}
+			host := knownhosts.Normalize(hostname)
+			return &HostKeyChangedError{Fingerprint: ssh.FingerprintSHA256(key), File: path,
+				Host: host, Line: knownhosts.Line([]string{host}, key)}
 		}
 		if opts.AskHostKey == nil {
 			return ErrHostKeyRejected

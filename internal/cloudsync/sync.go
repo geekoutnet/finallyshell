@@ -27,6 +27,10 @@ type Request struct {
 	// never this device's, and are not compared with: otherwise each one
 	// it lacks would count as deleted here.
 	BaseSecrets bool
+	// HeldKeyFiles are the keys of the private key files this device had
+	// at the sync that made Base (KeyFilePrefix): with Secrets, Local's
+	// are its files now, and only what changed between counts.
+	HeldKeyFiles []string
 	// Force replaces the remote file with Local, without reading or
 	// merging it: for a new sync password, or to start over.
 	Force bool
@@ -191,6 +195,9 @@ func syncWith(ctx context.Context, req *Request, local *Payload, now func() time
 	if !req.Secrets {
 		local = local.Clone()
 		local.Secrets = remote.Secrets
+	} else if base != nil && req.BaseSecrets {
+		local = local.Clone()
+		local.Secrets = keyFileSecrets(local.Secrets, base.Secrets, req.HeldKeyFiles)
 	}
 	merge := Merge
 	if prefer {

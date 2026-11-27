@@ -1,6 +1,9 @@
 package app
 
 import (
+	"errors"
+
+	"finallyshell/internal/sshx"
 	"finallyshell/locales"
 
 	"github.com/egoist/mygo/ui"
@@ -70,8 +73,35 @@ func (a *App) statusBanner(c *ui.Context, s *Session) {
 		if s.status != statusConnecting && isAgentError(s.err) && ui.Button(c, locales.AgentSettings()).Clicked() {
 			a.openAgentSettings()
 		}
+		var changed *sshx.HostKeyChangedError
+		if s.status != statusConnecting && errors.As(s.err, &changed) && changed.Line != "" && ui.Button(c, locales.HostKeyTrustNew()).Clicked() {
+			a.trustNewHostKey(s, changed)
+		}
 		if s.status != statusConnecting && ui.Button(c, locales.Reconnect()).Clicked() {
 			a.reconnect(s)
 		}
 	})
+}
+
+// trustNewHostKey asks whether to trust the key a host now has, its
+// fingerprint shown, as after the server was reinstalled; if so it
+// replaces the host's old keys in known_hosts and connects again.
+func (a *App) trustNewHostKey(s *Session, changed *sshx.HostKeyChangedError) {
+	question := Confirmation{Title: locales.HostKeyTrustTitle(), Message: locales.HostKeyTrustMessage(changed.Host),
+		Detail: locales.HostKeyTrustDetail(changed.Fingerprint), OK: locales.HostKeyTrustOK(), Cancel: locales.Cancel(), RequireExplicit: true}
+	go func() {
+		if !a.plat.Confirm(question) {
+			return
+		}
+		err := sshx.TrustHostKey(changed)
+		a.post(func() {
+			if err != nil {
+				s.err = err
+				return
+			}
+			if s.status != statusConnecting && s.status != statusConnected {
+				a.reconnect(s)
+			}
+		})
+	}()
 }

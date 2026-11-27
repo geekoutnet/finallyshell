@@ -427,9 +427,12 @@ Sync and backup data next to `hosts.json`:
   this computer's saved passwords (`secrets`): when it did not, the next
   sync does not compare passwords with the base, so turning "Include
   saved passwords" on later receives the passwords rather than deleting
-  them. Deleting the file makes the next sync keep what either side has,
-  as a first sync does. `restorePaused` blocks automatic sync after an
-  incomplete restore.
+  them. `keyFiles` are the private key files this computer had then (by
+  name and content hash): the next sync takes one it no longer has for
+  deleted here, and one it still has that the sync no longer has for
+  deleted elsewhere, not new. Deleting the file makes the next sync keep
+  what either side has, as a first sync does. `restorePaused` blocks
+  automatic sync after an incomplete restore.
 - `hosts.before-sync.json`: `hosts.json` as it was before the last sync
   that changed it.
 - `backups/`: timestamped directories with `hosts.json`, `settings.json`,

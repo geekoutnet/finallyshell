@@ -9,8 +9,13 @@ package app
 //
 // A private key travels by its path under ~/.ssh, the same on every
 // device: a host's key path is synced as "~/.ssh/<name>", which the
-// connection expands to each device's home. A key file that is there is
-// never replaced nor deleted by a sync.
+// connection expands to each device's home. A device says only what
+// changed in its own key files (cloudsync.KeyFilePrefix): one it adds is
+// added, one it deletes or replaces is deleted everywhere. A key file
+// that is there is never replaced nor deleted by a sync.
+//
+// Nothing here is only ever added: what is deleted on one device is
+// deleted on the others, as with the connections.
 
 import (
 	"bufio"
@@ -36,8 +41,21 @@ const historySyncLimit = 500
 // sshKeySecretPrefix starts the payload's key of a private key file:
 // sshKeySecretPrefix + its path under ~/.ssh, with forward slashes, "#"
 // and the start of its content's SHA-256, so that devices with another
-// key by the same name each keep theirs (cloudsync.AddOnlySecretPrefix).
-const sshKeySecretPrefix = cloudsync.AddOnlySecretPrefix
+// key by the same name each keep theirs (cloudsync.KeyFilePrefix).
+const sshKeySecretPrefix = cloudsync.KeyFilePrefix
+
+// keyFilesOf are the keys of the private key files among a sync's
+// secrets, sorted: the files this device had (SyncState.KeyFiles).
+func keyFilesOf(secrets map[string]string) []string {
+	var keys []string
+	for k := range secrets {
+		if strings.HasPrefix(k, sshKeySecretPrefix) {
+			keys = append(keys, k)
+		}
+	}
+	slices.Sort(keys)
+	return keys
+}
 
 // sshKeySecret is the payload's key of the private key file name, with
 // content data.
@@ -198,10 +216,12 @@ func (a *App) syncLists() map[string][]json.RawMessage {
 	return lists
 }
 
-// applySyncLists makes this device's databases, trusted host keys and
-// command histories those of lists; nil (an older build's payload) leaves
-// them.
-func (a *App) applySyncLists(lists map[string][]json.RawMessage) error {
+// applySyncLists makes this device's databases and command histories
+// those of lists, and changes its trusted host keys as lists changed them
+// from before, this device's when the sync started: a key deleted on
+// another device is deleted here, and one trusted here during the sync
+// stays. nil lists (an older build's payload) leave them all.
+func (a *App) applySyncLists(lists, before map[string][]json.RawMessage) error {
 	if lists == nil {
 		return nil
 	}
@@ -224,32 +244,9 @@ func (a *App) applySyncLists(lists map[string][]json.RawMessage) error {
 			a.db.profiles = next
 		}
 	}
-	// The trusted host keys: what this device trusts stays, as a key a
-	// sync dropped is still the server's.
-	if keys := lists[cloudsync.ListKnownHosts]; len(keys) > 0 {
-		data, _ := os.ReadFile(knownHostsPath())
-		have := map[string]bool{}
-		for _, line := range strings.Split(string(data), "\n") {
-			have[strings.TrimSpace(line)] = true
-		}
-		var add bytes.Buffer
-		for _, raw := range keys {
-			var v struct {
-				ID string `json:"id"`
-			}
-			if json.Unmarshal(raw, &v) == nil && v.ID != "" && !have[v.ID] && !strings.ContainsAny(v.ID, "\r\n") {
-				add.WriteString(v.ID + "\n")
-				have[v.ID] = true
-			}
-		}
-		if add.Len() > 0 {
-			if len(data) > 0 && !bytes.HasSuffix(data, []byte("\n")) {
-				data = append(data, '\n')
-			}
-			if err := writeFileAtomic(knownHostsPath(), append(data, add.Bytes()...)); err != nil {
-				errs = append(errs, err)
-			}
-		}
+	// The trusted host keys.
+	if err := applyKnownHosts(knownHostLines(lists[cloudsync.ListKnownHosts]), knownHostLines(before[cloudsync.ListKnownHosts])); err != nil {
+		errs = append(errs, err)
 	}
 	// The command histories: the synced latest commands, after the older
 	// ones only this device keeps.
@@ -287,6 +284,61 @@ func (a *App) applySyncLists(lists map[string][]json.RawMessage) error {
 		}
 	}
 	return errors.Join(errs...)
+}
+
+// knownHostLines are the lines of a list of trusted host keys.
+func knownHostLines(items []json.RawMessage) map[string]bool {
+	lines := map[string]bool{}
+	for _, raw := range items {
+		var v struct {
+			ID string `json:"id"`
+		}
+		if json.Unmarshal(raw, &v) == nil && v.ID != "" && !strings.ContainsAny(v.ID, "\r\n") {
+			lines[v.ID] = true
+		}
+	}
+	return lines
+}
+
+// applyKnownHosts changes known_hosts as the sync changed its lines from
+// before to after: those it added are added, those it deleted deleted.
+// The others, comments and the lines trusted since the sync started,
+// stay as they are.
+func applyKnownHosts(after, before map[string]bool) error {
+	return sshx.UpdateKnownHosts(knownHostsPath(), func(data []byte) ([]byte, bool) {
+		return knownHostsChanged(data, after, before)
+	})
+}
+
+// knownHostsChanged is applyKnownHosts' change of known_hosts' content
+// data, and whether there is one.
+func knownHostsChanged(data []byte, after, before map[string]bool) ([]byte, bool) {
+	var out []string
+	have, changed := map[string]bool{}, false
+	for _, line := range strings.Split(strings.ReplaceAll(string(data), "\r\n", "\n"), "\n") {
+		trimmed := strings.TrimSpace(line)
+		if trimmed == "" {
+			continue
+		}
+		if before[trimmed] && !after[trimmed] {
+			changed = true
+			continue
+		}
+		have[trimmed] = true
+		out = append(out, line)
+	}
+	added := make([]string, 0)
+	for line := range after {
+		if !before[line] && !have[line] {
+			added = append(added, line)
+		}
+	}
+	slices.Sort(added)
+	if len(added) == 0 && !changed {
+		return nil, false
+	}
+	out = append(out, added...)
+	return []byte(strings.Join(out, "\n") + "\n"), true
 }
 
 // sameJSONValue says whether a and b marshal the same.

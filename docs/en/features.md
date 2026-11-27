@@ -221,6 +221,9 @@ Options › General; 0 turns keepalives off.
 On the first connection to a host, a dialog shows the host key
 fingerprint. Once trusted, it is written to `finallyshell/known_hosts` in
 the config directory. A connection whose host key has changed is refused.
+When the server was reinstalled or its keys changed, **Trust new key** on
+the error asks again with the new fingerprint, then replaces the host's
+old keys in `known_hosts` and connects again.
 
 ### Bottom panel in a tab of its own
 
@@ -3148,7 +3151,9 @@ What is synced:
   draft stays on this device.
 - The Database tab's connections, and the trusted host keys
   (`known_hosts`), merged line by line: a key one computer trusts reaches
-  the others, and none is removed.
+  the others, and one it deletes or replaces, as after trusting a
+  reinstalled server's new key, is deleted on the others too. Comments
+  stay.
 - Settings that mean the same on another computer: language, appearance,
   the General, Mouse, Shortcuts and Terminal pages, the font, the color
   scheme, the background's fit and opacity, the AI assistant's settings
@@ -3161,9 +3166,12 @@ What is synced:
   passwords, and the private key files of the hosts that log in with one
   under `~/.ssh`: their path syncs as `~/.ssh/<name>`, which each computer
   reads in its own home, and a key a computer lacks is written there,
-  readable by its user only. A computer's own key by the same name is
-  never replaced, and a sync never deletes a key file. A computer that has
-  it off keeps the passwords already in the file as they are.
+  readable by its user only. A key a computer replaces or deletes leaves
+  the sync, and is not added back by one that still has it. A key file
+  that is there is never replaced nor deleted: a computer's own key by
+  the same name stays, and where two computers have different keys by
+  one name, neither is written to a third. A computer that has it off
+  keeps the passwords already in the file as they are.
 
 Each computer keeps its own: pane sizes and the window's layout, the
 download folder, the background image and a desktop wallpaper image

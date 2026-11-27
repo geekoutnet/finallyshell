@@ -418,7 +418,9 @@ func TestAIJobsOnServer(t *testing.T) {
 		t.Fatalf("cancelled: %v", err)
 	}
 	time.Sleep(time.Second)
-	if _, out, _, _, _ := run("ps -eo args | grep -c '[f]inallyshell-ai-test-'; true", time.Minute); strings.TrimSpace(out) != "0" {
+	// Every process's command line, from /proc: BusyBox's ps has no -o.
+	alive := `for f in /proc/[0-9]*/cmdline; do tr '\0' ' ' <"$f"; echo; done 2>/dev/null | grep -c '[f]inallyshell-ai-test-'; true`
+	if _, out, _, _, _ := run(alive, time.Minute); strings.TrimSpace(out) != "0" {
 		t.Fatalf("stopped commands still run: %q", out)
 	}
 	_, out, _, err, _ := run("seq 1 200000", time.Minute)

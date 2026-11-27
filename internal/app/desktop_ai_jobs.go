@@ -16,8 +16,8 @@ import (
 
 // The agent's commands run as jobs on the server, as BT Panel's agent
 // runs them: each in a folder of its own under /tmp/finallyshell-ai-<uid>
-// (mode 700, the user's own), detached from the SSH channel (setsid and
-// nohup), its output and exit code written to files there. The channel
+// (mode 700, the user's own), detached from the SSH channel (setsid, and
+// ignoring hangups), its output and exit code written to files there. The channel
 // that starts it waits up to aiJobSync for the end; a command still
 // running then goes on in the background while the app looks at its
 // state every aiJobPoll, on a short channel each time, until it ends or
@@ -81,7 +81,7 @@ mkdir -m 700 "$d" || exit 1
 cat >"$d/cmd"
 i=sh; command -v bash >/dev/null 2>&1 && i=bash
 s=; command -v setsid >/dev/null 2>&1 && s=setsid
-$s nohup sh -c '"$2" "$1/cmd" >"$1/out" 2>&1 </dev/null; echo $? >"$1/rc.t"; mv "$1/rc.t" "$1/rc"' sh "$d" "$i" >/dev/null 2>&1 </dev/null &
+$s sh -c 'trap "" HUP; "$2" "$1/cmd" >"$1/out" 2>&1 </dev/null; echo $? >"$1/rc.t"; mv "$1/rc.t" "$1/rc"' sh "$d" "$i" >/dev/null 2>&1 </dev/null &
 echo $! >"$d/pid"
 end=$(( $(date +%%s) + %d ))
 while [ ! -f "$d/rc" ] && [ "$(date +%%s)" -lt "$end" ]; do sleep 0.2 2>/dev/null || sleep 1; done

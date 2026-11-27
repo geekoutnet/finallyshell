@@ -66,6 +66,7 @@ supported. [configuration.md](configuration.md) covers the files on disk;
   - [Terminal › Command bar](#terminal--command-bar)
   - [Network monitor](#network-monitor)
   - [Sync](#sync)
+- [Account](#account)
 - [App lock](#app-lock)
 - [Keyboard shortcuts](#keyboard-shortcuts)
 - [Layout and split dividers](#layout-and-split-dividers)
@@ -3170,6 +3171,23 @@ brought, and synced next; a password saved meanwhile is kept, not
 replaced by the one the sync brought. When the service or its fields
 change during a sync, what it brought is dropped.
 
+A computer that may hold an old copy asks before it merges: one syncing
+with the service for the first time, one whose last sync's file no longer
+opens (another computer changed the sync password), and one that has not
+synced for 30 days. When its connections differ from the file's (some
+only here, or set otherwise), the sync stops before anything changes on
+either side, the status says **Choose how to sync**, and **Choose How to
+Sync** shows both sides, with how many connections are only here, only
+in the file, different and alike, and three choices: **Merge both**
+(recommended) keeps every connection of both sides and, where one
+differs, the file's version, likely the newer; **Use the cloud's on this
+computer** replaces this computer's, backed up first; **Use this
+computer's in the cloud** replaces the file's, other computers following
+at their next sync, its old content kept in the service's versions.
+Automatic sync waits for the choice; **Later** leaves it for now. Such a
+computer with nothing of its own merges without asking, keeping the
+file's version of what differs.
+
 "Sync Now" syncs at once. "Sync automatically" syncs at start, a minute
 after changes here (they are looked for once a minute) and every 5, 15
 (the default), 30 or 60 minutes for changes made elsewhere. After an error
@@ -3220,6 +3238,88 @@ The **Sync log** tab shows the latest 100 sync events.
   Deleted and folder subtrees containing more than 10 live connections.
   Review versions, restore from the server copy, or approve the deletion.
   Automatic sync never confirms the deletion for you.
+
+## Account
+
+The bar at the bottom of the left panel is the account's. Signed out, it
+reads **Sign in with GitHub to sync** and opens **Sign in with GitHub**,
+which uses GitHub's device flow: the window shows the address to open
+(`https://github.com/login/device`) and an eight-character code, each
+with **Open** and **Copy**, and **Copy Code and Open GitHub** does both.
+Enter the code on GitHub and authorize Finallyshell; the window waits,
+showing the code's time left (15 minutes), and closes once you have. No
+token is typed or pasted, and Finallyshell never sees the GitHub
+password. It asks only for gists (for the account's sync) and to read
+the email addresses. **Get a New Code** starts again after a declined or
+expired code.
+
+Signed in, the bar shows the account (its initial, with a dot: green
+synced, blue syncing, orange waiting for you, red failed or the sign-in
+expired), GitHub's mark and how the sync stands (**Synced · 2 minutes
+ago**). Clicking it opens the account's card: the name, `@user`, the
+primary email address with most of its name hidden (**Show** shows it
+whole), **GitHub · Signed in**, the sync's state and settings, **Sync
+Now**, **Account & Sync Settings…**, **Activity** and **Sign Out** (which
+asks first, and keeps the connections here and the gist on GitHub).
+
+Signing in is all it takes. The account syncs on its own, completely
+apart from [Sync](#sync): a secret gist of its own
+(`finallyshell-account.json`), its own sync password, state and log; both
+can be on, and never run at the same moment. The merge is the same, the
+question of [a computer that may hold an old copy](#sync) included.
+
+**Account & Sync Settings…** opens the **Account** window:
+
+- **Sync password.** By default it is the account's GitHub email address,
+  so that every computer signing in to the account syncs with nothing to
+  type. An email address is no secret, though: with saved passwords
+  included, the window says so, as anyone with the gist's link who knows
+  the address could read them. **Sync password in use** shows it, hidden
+  until **Show**, and **Copy** copies it. **Change Sync Password…**
+  encrypts the gist's current data again with a new password (its older
+  versions on GitHub keep the old one), keeping the last sync's data as
+  the base of the next merge; **Use My GitHub Email** goes back.
+- **Computers with different passwords.** The gist's header says which
+  kind of password it is sealed with, never the password. A computer
+  whose password no longer opens it tries the account's verified email
+  addresses, and uses the one that does, as when another computer went
+  back to the email address. When none does, it asks: after a password
+  of your own set on another computer, it names that computer and when;
+  typed once, it is remembered.
+- **A changed email address.** A computer that has synced keeps the
+  password it has. Signed in, the app reads the profile at start and
+  every 6 hours; when the primary address changed and the account syncs
+  with its email address, it encrypts the gist again with the new one in
+  the background, and logs it. Computers signing in then use the new
+  address; others follow by themselves, the new address being among
+  those they try.
+- **Use the default sync settings** (on): automatic, saved passwords
+  included, checking every 15 minutes: changes here go up a minute after
+  they are made, and each check brings the others' down, merged item by
+  item. Turned off, **Include saved passwords**, **Sync automatically**
+  and its interval are the account's own, apart from the Sync page's.
+- **Sync Now**, **Replace the Remote with This Computer's Data…**, and
+  **Gist on GitHub** and **Versions on GitHub**, which open the gist and
+  its revisions.
+- **Activity**: the account's log, newest first: each sign-in, sign-out,
+  renewal, expired sign-in, password change (yours, one followed from
+  another computer, or a new email address), choice, and each sync,
+  automatic, manual or chosen, with its result. Click a sync to see its
+  steps (renew the sign-in, read the gist, create it on the first sync,
+  merge, upload, back up this computer's data, apply the changes), what
+  it added, removed and changed here and on the server, the conflicts,
+  the computer, and the error. **Clear** empties it. The Sync page's log
+  does not list the account's syncs, nor this one the Sync page's.
+
+GitHub's sign-in lasts 8 hours and renews itself with a refresh token,
+which lasts six months and is replaced at each renewal: the app renews it
+before a sync when it is about to expire. Another copy of the app may
+have renewed it first; the app then uses that one. If GitHub refuses the
+token, the app renews or checks it once and tries again. A sign-in that
+GitHub no longer accepts (revoked, or not used for six months) shows
+**Sign-in expired**; **Sign In Again** with the same account keeps its gist
+and settings. Signing in with another account starts that account's own
+gist.
 
 ## App lock
 

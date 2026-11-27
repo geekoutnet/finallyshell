@@ -41,6 +41,8 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `icon-themes/` | 从 VSIX 文件安装的文件图标主题，存成 `<发布者>.<名称>.vsix`。 |
 | `sync-state.json` | 上次同步的状态（见[同步](#同步)）。 |
 | `hosts.before-sync.json` | 上次改动了它的同步之前的 `hosts.json`。 |
+| `account-sync-state.json` | 账户上次同步的状态（见[账户](#账户)）。 |
+| `account-log.json` | 账户的操作记录（见[账户](#账户)）。 |
 | `history/<主机 ID>.txt` | 命令输入框按主机保存的历史，本地终端的历史是 `history/local.txt`（见[命令历史](#命令历史)）。 |
 | `quickcommands.json` | 命令页的快捷命令（见 [quickcommands.json](#quickcommandsjson)）。 |
 | `quickcommands.json.broken-<日期-时间>` | 读不出来的 `quickcommands.json` 的副本。 |
@@ -303,7 +305,7 @@ Caddy 页不添加主机或应用设置。它使用远程服务器上检测到�
 | `historyAllDays`、`historyDailyDays`、`historyWeeklyWeeks`、`historyMax` | WebDAV 和 S3 的版本保留时间与目标上限。 | 7 天、30 天、26 周、200 份。 |
 | `localBackupCount`、`localBackupDays` | 本机备份的数量和保存天数上限。 | 50 份、90 天。 |
 
-`settings.json` 的每个键要么同步，要么留在各自的电脑上，两个列表是 `internal/config/sync.go` 里的 `syncedSettings` 和 `localSettings`。留在本机的有：`sidebarWidth`、`monitorPercent`、`terminalPercent`、`treeWidth`、`procListPercent`、`procFieldsPercent`、`netListPercent`、`monitorHidden`、`bottomPanelHidden`、`sidebarHidden`、`bottomPanelSide`、`rightPanelWidth`、`monitorSide`、`rightMonitorPercent`、`commandEditorShown`、`commandEditorWidth`、`commandEditorPercent`、`commandEditorNoEnter`、`commandEditorClear`、`termBackground`、`localShell`、`sshAgent`、`x11Display`、`downloadDir`、`askDownloadDir`、`sync`、`geoLocations`、`geoLocationsV6`、`geoOnline`、`leftPanelPage`、`connectionTreeExpanded` 和 `managerTreeExpanded`（左侧面板显示哪一页、展开了哪些文件夹，是这台电脑上窗口留下的样子，和窗格大小一样），以及从 VSIX 安装或在编辑器扩展里找到的 `fileIconTheme`。
+`settings.json` 的每个键要么同步，要么留在各自的电脑上，两个列表是 `internal/config/sync.go` 里的 `syncedSettings` 和 `localSettings`。留在本机的有：`sidebarWidth`、`monitorPercent`、`terminalPercent`、`treeWidth`、`procListPercent`、`procFieldsPercent`、`netListPercent`、`monitorHidden`、`bottomPanelHidden`、`sidebarHidden`、`bottomPanelSide`、`rightPanelWidth`、`monitorSide`、`rightMonitorPercent`、`commandEditorShown`、`commandEditorWidth`、`commandEditorPercent`、`commandEditorNoEnter`、`commandEditorClear`、`termBackground`、`localShell`、`sshAgent`、`x11Display`、`downloadDir`、`askDownloadDir`、`sync`、`account`、`geoLocations`、`geoLocationsV6`、`geoOnline`、`leftPanelPage`、`connectionTreeExpanded` 和 `managerTreeExpanded`（左侧面板显示哪一页、展开了哪些文件夹，是这台电脑上窗口留下的样子，和窗格大小一样），以及从 VSIX 安装或在编辑器扩展里找到的 `fileIconTheme`。
 
 同步和备份数据与 `hosts.json` 放在一起：
 
@@ -316,6 +318,26 @@ Caddy 页不添加主机或应用设置。它使用远程服务器上检测到�
 服务上的文件 `finallyshell-sync.json` 是 JSON：`{"app": "finallyshell", "format": 1, "kdf": "argon2id", "salt": ..., "t": 3, "m": 65536, "p": 4, "cipher": "aes-256-gcm", "nonce": ..., "data": ...}`，二进制字段是 base64。新版写入可选的明文 `snapshot` 元数据，旧版仍可打开主文件。`data` 解密后是 `{"schema": 1, "device": ..., "updatedAt": ..., "folders": [...], "hosts": [...], "quickCommands": {...}, "settings": {...}, "secrets": {...}}`：folders 和 hosts 就是 `hosts.json` 里的，settings 是 `settings.json` 里同步的键，secrets 是已保存的密码，按它们在凭据存储里的键存放。
 
 WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使用同名键前缀，并给自定义的主文件键分配独立子前缀。版本名为 `<UTC 时间>-<设备>-<sha8>.json`，固定标记在其后加 `.pin`。Gist 使用主文件的原生修订历史。
+
+## 账户
+
+已登录的账户（见[账户](features.md#账户)）和它自己的同步保存在 `settings.json` 的 `account` 对象里，从未登录过时没有这个键。它只留在本机，不同步。
+
+| 键 | 含义 | 默认值（缺省时） |
+|---|---|---|
+| `provider` | 登录用的服务：`github`。 | 未登录。 |
+| `userId`、`login`、`name`、`email`、`url` | GitHub 的用户 ID、用户名、显示名、主邮箱和用户主页，每 6 小时重新读取一次。 | 无。 |
+| `emails` | 账户所有已验证的邮箱，每行一个。当前同步密码打不开 Gist 时，会逐个尝试它们。 | 无。 |
+| `customPassword` | 同步密码是用户自己设置的（而不是邮箱）时为 `true`。 | 使用邮箱。 |
+| `customSync` | 为 `true` 时使用 `passwords`、`auto`、`interval`；否则使用默认同步设置：自动同步、每 15 分钟、包含已保存的密码。 | 默认设置。 |
+| `expired` | GitHub 不再接受这次登录时为 `true`。 | 登录有效。 |
+| `gistId` | 账户的 Gist，由首次同步找到或创建。 | 查找或新建。 |
+| `passwords`、`auto`、`interval` | 与“同步”页的同名键相同，`customSync` 为 `true` 时生效。 | 默认设置的值。 |
+
+- `account-sync-state.json`：账户的 `sync-state.json`，字段相同。它的 `remote` 带有账户标识（`account github:<用户 ID> <Gist ID>`），所以换了账户后不会拿它当合并基准。
+- `account-log.json`：最近 200 条账户记录，字段有：`at`、`provider`、`login`、`device`、`action`（`sign-in`、`sign-out`、`refresh`、`expired`、`sync`、`replace`、`password`、`choice`）、`reason`（`auto`、`manual`、`restore`；修改密码时为 `auto` 或 `email-changed`；选择同步方式时为 `merge`、`remote` 或 `local`）、`result`（`ok`、`failed`、`paused`、`history-warning`）、`error`、`steps`（`refresh`、`read`、`create`、`merge`、`upload`、`backup`、`apply`、`uptodate`、`reseal`、`autopassword`）、`local` 和 `server`（新增、删除、修改的数量）以及 `conflicts`。不包含密码，也不包含项目名称。
+
+账户的 Gist 里存放 `finallyshell-account.json`，格式与 `finallyshell-sync.json` 相同（见[同步](#同步)），用账户的同步密码加密，历史版本就是这个 Gist 的修订记录。它的明文 `snapshot` 头里有 `keyHint`，表示用的是哪种密码（`email` 或 `custom`），从不记录密码本身。应用通过 client ID 为 `account.GitHubClientID`（`internal/account/github.go`）的 OAuth 应用登录，使用设备授权流程，不需要 client secret，申请 `gist` 和 `user:email` 两项权限。
 
 ## 命令历史
 
@@ -367,7 +389,7 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 ```json
 "updates": {
   "publicKey": "fwcqse2POLiSdWytl0BHeURrztxcDObwmos+4IlTqHQ=",
-  "github": "TooonyChen/finallyshell"
+  "github": "geekoutnet/finallyshell"
 }
 ```
 
@@ -387,6 +409,8 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 - `host/<主机 ID>/privilege/<端点哈希>`：提权弹窗中保存的方式（`sudo` 或 `su`）和密码。端点哈希由 SSH 用户名、地址和端口确定，与主机 ID 一起限定适用范围。它独立于登录的 **记住密码** 设置，不参与同步或备份；删除连接后仍可在系统凭据存储中手动移除。
 - `sync/password`：同步密码（见[同步](features.md#同步)）；
 - `sync/<服务>/credential`：同步服务（`gist`、`webdav` 或 `s3`）的令牌、密码或私有访问密钥；
+- `account/<服务>/token`：已登录账户的令牌，格式为 JSON，包括访问令牌、刷新令牌和它们各自的到期时间（见[账户](features.md#账户)）；
+- `account/<服务>/<用户 ID>/sync-password`：账户的同步密码，本机登录过的每个账户各存一份；
 - `app/lock/verifier`：带随机盐的 Argon2id 验证数据（3 次迭代、64 MiB、4 路并行）。不保存应用锁密码本身，验证数据也不参与同步。重置能删除已登记及当前主机的提权凭据；已移除主机或旧端点的历史提权凭据可能需要在系统凭据库手动删除。
 
 “记住密码”按主机设置，适用于登录和代理凭据。提权弹窗有独立的 **记住** 选项。

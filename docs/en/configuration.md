@@ -48,6 +48,8 @@ instead.
 | `icon-themes/` | File icon themes installed from VSIX files, as `<publisher>.<name>.vsix`. |
 | `sync-state.json` | What the last sync synced (see [Sync](#sync)). |
 | `hosts.before-sync.json` | `hosts.json` as it was before the last sync that changed it. |
+| `account-sync-state.json` | What the account's last sync synced (see [Account](#account)). |
+| `account-log.json` | The account's activity log (see [Account](#account)). |
 | `history/<host ID>.txt` | The command bar's history of each host, and `history/local.txt` of local terminals (see [Command history](#command-history)). |
 | `quickcommands.json` | The Commands tab's quick commands (see [quickcommands.json](#quickcommandsjson)). |
 | `quickcommands.json.broken-<date-time>` | A copy of a `quickcommands.json` that could not be read. |
@@ -409,7 +411,7 @@ local: `sidebarWidth`, `monitorPercent`, `terminalPercent`, `treeWidth`,
 `monitorSide`, `rightMonitorPercent`, `commandEditorShown`,
 `commandEditorWidth`, `commandEditorPercent`, `commandEditorNoEnter`,
 `commandEditorClear`, `codeEditorFontSize`, `termBackground`, `localShell`, `sshAgent`, `x11Display`, `downloadDir`,
-`askDownloadDir`, `sync`,
+`askDownloadDir`, `sync`, `account`,
 `geoLocations`, `geoLocationsV6`, `geoOnline`, `leftPanelPage`,
 `connectionTreeExpanded` and `managerTreeExpanded` (the left panel's page and the folders open are
 where this computer's window was left, as the pane sizes are), and a
@@ -450,6 +452,46 @@ WebDAV stores snapshots in `finallyshell-sync-history/`, beside the main
 file. S3 uses the same prefix and isolates custom main keys in their own
 subprefix. Names are `<UTC time>-<device>-<sha8>.json`; pin markers add
 `.pin` to that name. Gist uses native revisions of the same file.
+
+## Account
+
+The signed-in account (see [Account](features.md#account)) and its own
+sync are the `account` object of `settings.json`, missing while no one
+has signed in. It stays on this computer.
+
+| Key | Meaning | Default (when missing) |
+|---|---|---|
+| `provider` | The service signed in with: `github`. | Signed out. |
+| `userId`, `login`, `name`, `email`, `url` | GitHub's ID of the user, the user name, the display name, the primary email address and the user's page, read again every 6 hours. | None. |
+| `emails` | The account's verified addresses, one a line, tried as the sync password when the one in use no longer opens the gist. | None. |
+| `customPassword` | `true` when the sync password is one the user set, not an email address. | The email address. |
+| `customSync` | `true` uses `passwords`, `auto` and `interval`; otherwise the default sync: automatic, every 15 minutes, saved passwords included. | The default. |
+| `expired` | `true` when GitHub no longer accepts the sign-in. | Working. |
+| `gistId` | The account's gist, found or created by its first sync. | Find or create one. |
+| `passwords`, `auto`, `interval` | As those of the Sync page, with `customSync`. | The default's. |
+
+- `account-sync-state.json`: the account's `sync-state.json`, the same
+  fields; its `remote` names the account (`account github:<user ID> <gist
+  ID>`), so another account's sync never uses it as a base.
+- `account-log.json`: the last 200 account events: `at`, `provider`,
+  `login`, `device`, `action` (`sign-in`, `sign-out`, `refresh`,
+  `expired`, `sync`, `replace`, `password`, `choice`), `reason` (`auto`,
+  `manual`, `restore`; of a password change `auto` or `email-changed`; of
+  a choice `merge`, `remote` or `local`),
+  `result` (`ok`, `failed`, `paused`, `history-warning`), `error`, `steps`
+  (`refresh`, `read`, `create`, `merge`, `upload`, `backup`, `apply`,
+  `uptodate`, `reseal`, `autopassword`), `local` and `server` (added,
+  removed, changed) and
+  `conflicts`. No passwords and no item names.
+
+The account's gist holds `finallyshell-account.json`, in the format of
+`finallyshell-sync.json` (see [Sync](#sync)), encrypted with the account's
+sync password. Its versions are the gist's revisions. Its plaintext
+`snapshot` header has `keyHint`, the kind of password it is sealed with
+(`email` or `custom`), never the password. The app signs in
+through the OAuth app whose client ID is `account.GitHubClientID`
+(`internal/account/github.go`), with the device flow and no client
+secret, asking for the `gist` and `user:email` scopes.
 
 ## Command history
 
@@ -535,7 +577,7 @@ the key they must be signed with.
 ```json
 "updates": {
   "publicKey": "fwcqse2POLiSdWytl0BHeURrztxcDObwmos+4IlTqHQ=",
-  "github": "TooonyChen/finallyshell"
+  "github": "geekoutnet/finallyshell"
 }
 ```
 
@@ -575,6 +617,11 @@ same entries, as they share `hosts.json`. The keys are:
 - `sync/password`: the sync password (see [Sync](features.md#sync));
 - `sync/<service>/credential`: the token, password or secret access key of
   the sync service (`gist`, `webdav` or `s3`);
+- `account/<provider>/token`: the signed-in account's token, as JSON: the
+  access token, the refresh token and when each expires (see
+  [Account](features.md#account));
+- `account/<provider>/<user ID>/sync-password`: the account's sync
+  password, of each account signed in on this computer;
 - `app/lock/verifier`: a randomly salted Argon2id verifier (3 passes,
   64 MiB, 4 lanes). The lock password itself is never stored, and the
   verifier never syncs. Reset can delete indexed privilege entries and

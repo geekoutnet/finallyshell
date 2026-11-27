@@ -61,9 +61,10 @@ type accountView struct {
 	// copied.
 	showPassword bool
 	pwCopiedAt   time.Time
-	// logFilter is the log's filter (accountLogFilters), logShown how
-	// many of its rows show.
-	logFilter, logShown      int
+	// logFilter is the log's filter (accountLogFilters); logList and
+	// logRow the log window's table and its chosen row.
+	logFilter, logRow        int
+	logList                  ui.ListState
 	cardOpen, cardConfirmOut bool
 	showEmail                bool
 	// The sync password's form: open, the new password typed twice, the
@@ -481,6 +482,9 @@ func (a *App) accountSyncSection(c *ui.Context, s config.AccountSettings) {
 		}
 		if !v.confirmForce {
 			ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
+				if ui.Button(c, locales.AccountVersions()).Clicked() {
+					a.openVersionsOn(t, WindowMain)
+				}
 				if ui.Button(c, locales.SyncReplaceRemote()).Disabled(!ready || a.syncBusy()).Clicked() {
 					v.confirmForce = true
 				}
@@ -645,31 +649,14 @@ func (a *App) accountPasswordSection(c *ui.Context, s config.AccountSettings, op
 	})
 }
 
-// accountLogSection is the account's log, newest first: each sync with
-// the steps it went through, each sign-in, sign-out and renewal. Quiet
-// automatic syncs are one row (config.AccountEvent.Repeat). A filter
-// keeps the changes, the problems or the account's own events; the rows
-// are grouped by day, the latest accountLogPage shown, more on request.
+// accountLogSection is the account's latest events, in the account
+// window and Options › Account: the whole log is a window of its own
+// (accountLogWindow), so that a long one never stretches the page.
 func (a *App) accountLogSection(c *ui.Context) {
 	v := &a.account.view
-	if v.events == nil {
-		events, err := config.ReadAccountLog()
-		v.events, v.logErr = make([]config.AccountEvent, 0, len(events)), err
-		for i := len(events) - 1; i >= 0; i-- {
-			v.events = append(v.events, events[i])
-		}
-	}
+	a.loadAccountLog()
 	if v.open == nil {
 		v.open = map[time.Time]bool{}
-	}
-	if v.logShown == 0 {
-		v.logShown = accountLogPage
-	}
-	var shown []config.AccountEvent
-	for _, e := range v.events {
-		if accountLogFilters[v.logFilter].keep(e) {
-			shown = append(shown, e)
-		}
 	}
 	ui.Column(c).Gap(8).Children(func() {
 		ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
@@ -678,18 +665,8 @@ func (a *App) accountLogSection(c *ui.Context) {
 				widgets.Muted(c, locales.AccountLogCount(len(v.events))).FontSize(12)
 			}
 			ui.Spacer(c)
-			if len(v.events) > 0 && !v.confirmClear && ui.Button(c, locales.AccountLogClear()).Clicked() {
-				v.confirmClear = true
-			}
-			if v.confirmClear {
-				if ui.Button(c, locales.AccountLogClear()).Clicked() {
-					v.confirmClear = false
-					v.logErr = config.ClearAccountLog()
-					v.events = nil
-				}
-				if ui.Button(c, locales.Cancel()).Clicked() {
-					v.confirmClear = false
-				}
+			if len(v.events) > 0 && ui.Button(c, locales.AccountLogAllButton()).Clicked() {
+				a.openAccountLog()
 			}
 		})
 		if v.logErr != nil {
@@ -699,41 +676,205 @@ func (a *App) accountLogSection(c *ui.Context) {
 			widgets.Muted(c, locales.AccountLogEmpty()).FontSize(12)
 			return
 		}
-		labels := make([]string, len(accountLogFilters))
-		for i, f := range accountLogFilters {
-			labels[i] = f.label()
-		}
-		if logFilterSwitch(c, &v.logFilter, labels).Changed() {
-			v.logShown = accountLogPage
-		}
-		if len(shown) == 0 {
-			widgets.Muted(c, locales.AccountLogNone()).FontSize(12).Padding(6, 0)
-			return
-		}
-		now := c.Now()
-		day := ""
-		for i, e := range shown {
-			if i == v.logShown {
+		for i, e := range v.events {
+			if i == accountLogRecent {
 				break
 			}
-			if d := accountLogDay(now, e.At); d != day {
-				day = d
-				widgets.Muted(c, d).FontSize(12).Bold().Padding(6, 2, 0, 2)
-			}
 			a.accountEventRow(c, e)
-		}
-		if rest := len(shown) - v.logShown; rest > 0 {
-			ui.Row(c).Justify(ui.Center).Children(func() {
-				if ui.Button(c, locales.AccountLogMore(rest)).Clicked() {
-					v.logShown += accountLogPage * 2
-				}
-			})
 		}
 	})
 }
 
-// accountLogPage is how many rows the log shows at first.
-const accountLogPage = 30
+// accountLogRecent is how many events the account's page shows.
+const accountLogRecent = 5
+
+// loadAccountLog reads the account's log, newest first, once until it
+// changes (logAccount), automatic syncs with nothing to do in a row as
+// one event, those of builds that wrote each on its own too.
+func (a *App) loadAccountLog() {
+	v := &a.account.view
+	if v.events != nil {
+		return
+	}
+	events, err := config.ReadAccountLog()
+	v.logErr = err
+	v.events = make([]config.AccountEvent, 0, len(events))
+	for i := len(events) - 1; i >= 0; i-- {
+		e := events[i]
+		if n := len(v.events); n > 0 && quietSync(e) {
+			last := &v.events[n-1] // the newer
+			if quietSync(*last) && last.Device == e.Device && last.Login == e.Login {
+				since := e.Since
+				if since.IsZero() {
+					since = e.At
+				}
+				last.Since = since
+				last.Repeat += e.Repeat + 1
+				continue
+			}
+		}
+		v.events = append(v.events, e)
+	}
+}
+
+// openAccountLog opens the account's whole log, a table.
+func (a *App) openAccountLog() {
+	v := &a.account.view
+	v.logRow = -1
+	a.openWindow(WindowSpec{
+		Kind: WindowAccountLog, Title: locales.AccountLogTitle,
+		Width: 980, Height: 620, MinWidth: 760, MinHeight: 420,
+		Closed: func() { v.confirmClear = false },
+	}, a.accountLogWindow)
+}
+
+// WindowAccountLog is the account's log.
+const WindowAccountLog WindowKind = "account-log"
+
+// accountLogWindow is the account's log as a table: filtered, the newest
+// first, the chosen event's steps under it.
+func (a *App) accountLogWindow(c *ui.Context) {
+	v := &a.account.view
+	a.loadAccountLog()
+	var shown []config.AccountEvent
+	for _, e := range v.events {
+		if accountLogFilters[v.logFilter].keep(e) {
+			shown = append(shown, e)
+		}
+	}
+	ui.Column(c).Fill().Gap(10).Padding(14).Children(func() {
+		ui.Row(c).Gap(10).AlignItems(ui.Center).Children(func() {
+			labels := make([]string, len(accountLogFilters))
+			for i, f := range accountLogFilters {
+				labels[i] = f.label()
+			}
+			if logFilterSwitch(c, &v.logFilter, labels).Changed() {
+				v.logRow = -1
+			}
+			widgets.Muted(c, locales.AccountLogShown(len(shown), len(v.events))).FontSize(12)
+			ui.Spacer(c)
+			if !v.confirmClear {
+				if ui.Button(c, locales.AccountLogClear()).Disabled(len(v.events) == 0).Clicked() {
+					v.confirmClear = true
+				}
+				return
+			}
+			widgets.Muted(c, locales.AccountLogClearConfirm()).FontSize(12)
+			if ui.Button(c, locales.AccountLogClear()).Clicked() {
+				v.confirmClear = false
+				v.logErr = config.ClearAccountLog()
+				v.events, v.logRow = nil, -1
+			}
+			if ui.Button(c, locales.Cancel()).Clicked() {
+				v.confirmClear = false
+			}
+		})
+		if v.logErr != nil {
+			ui.Text(c, v.logErr.Error()).TextColor(theme.Danger).FontSize(12)
+		}
+		if len(shown) == 0 {
+			ui.Column(c).Grow(1).AlignItems(ui.Center).Justify(ui.Center).Children(func() {
+				widgets.Muted(c, locales.AccountLogNone())
+			})
+			return
+		}
+		cols := []ui.TableColumn{
+			{Title: locales.BackupTime(), Width: 150}, {Title: locales.AccountLogColAction(), MinWidth: 180},
+			{Title: locales.AccountLogColTrigger(), Width: 150}, {Title: locales.BackupLogResult(), Width: 96},
+			{Title: locales.BackupLocal(), Width: 104}, {Title: locales.BackupServer(), Width: 104},
+			{Title: locales.BackupDevice(), MinWidth: 110},
+		}
+		if v.logRow >= len(shown) {
+			v.logRow = -1
+		}
+		v.logList.Selected = &v.logRow
+		v.logList.Label = func(row int) string {
+			return shown[row].At.Local().Format("2006-01-02 15:04:05") + " " + accountActionText(shown[row])
+		}
+		ui.Table(c, &v.logList, cols, len(shown), func(row, col int) {
+			e := shown[row]
+			color := theme.Text
+			if row == v.logRow {
+				color = theme.AccentText
+			}
+			text := accountLogCell(e, col)
+			cell := ui.Text(c, text).SingleLine().MinWidth(0).Tooltip(text)
+			switch {
+			case row == v.logRow:
+				cell.TextColor(color)
+			case col == 3:
+				cell.TextColor(accountResultColor(e.Result))
+			case col == 2 && e.Repeat > 0:
+				cell.TextColor(theme.TextMuted)
+			}
+		}).Label(locales.AccountLog()).Grow(1).MinHeight(160).Border(1, theme.Border).Radius(4)
+		if v.logRow < 0 {
+			widgets.Muted(c, locales.AccountLogChoose()).FontSize(12)
+			return
+		}
+		e := shown[v.logRow]
+		ui.Scroll(c).FillWidth().Height(150).Children(func() {
+			ui.Column(c).Gap(4).Padding(8, 10).Radius(6).Border(1, theme.Border).Children(func() {
+				ui.Row(c).Gap(8).AlignItems(ui.Center).Children(func() {
+					widgets.StatusDot(c, accountResultColor(e.Result))
+					ui.Text(c, accountActionText(e)).Bold().FontSize(13)
+					widgets.Muted(c, e.At.Local().Format("2006-01-02 15:04:05")).FontSize(12)
+				})
+				a.accountEventDetails(c, e)
+			})
+		})
+	})
+}
+
+// accountLogCell is the text of a column of the log's table.
+func accountLogCell(e config.AccountEvent, col int) string {
+	counts := func(n [3]int) string {
+		if n == [3]int{} {
+			return "—"
+		}
+		return fmt.Sprintf("+%d −%d ~%d", n[0], n[1], n[2])
+	}
+	sync := e.Action == config.AccountSync || e.Action == config.AccountReplace
+	switch col {
+	case 0:
+		return e.At.Local().Format("2006-01-02 15:04:05")
+	case 1:
+		return accountActionText(e)
+	case 2:
+		if e.Repeat > 0 {
+			return locales.AccountLogRepeatShort(e.Repeat + 1)
+		}
+		if r := accountReasonText(e.Reason); r != "" {
+			return r
+		}
+	case 3:
+		return accountResultText(e.Result)
+	case 4:
+		if sync {
+			return counts(e.Local)
+		}
+	case 5:
+		if sync {
+			return counts(e.Server)
+		}
+	case 6:
+		if e.Device != "" {
+			return e.Device
+		}
+	}
+	return "—"
+}
+
+// accountResultColor is the color of an event's result.
+func accountResultColor(result string) ui.Color {
+	switch result {
+	case "failed":
+		return theme.Danger
+	case "paused", "history-warning":
+		return theme.Warning
+	}
+	return theme.Success
+}
 
 // accountLogFilters are the log's filters, in the order of its switch.
 var accountLogFilters = []struct {
@@ -855,25 +996,32 @@ func (a *App) accountEventRow(c *ui.Context, e config.AccountEvent) {
 		if !open {
 			return
 		}
-		ui.Column(c).Gap(4).PaddingStart(16).Children(func() {
-			for i, step := range e.Steps {
-				widgets.Muted(c, fmt.Sprintf("%d. %s", i+1, accountStepText(step))).FontSize(12)
-			}
-			if e.Action == config.AccountSync || e.Action == config.AccountReplace {
-				widgets.Muted(c, locales.AccountCounts(locales.BackupLocal(), e.Local[0], e.Local[1], e.Local[2])).FontSize(12)
-				widgets.Muted(c, locales.AccountCounts(locales.BackupServer(), e.Server[0], e.Server[1], e.Server[2])).FontSize(12)
-				if e.Conflicts > 0 {
-					widgets.Muted(c, locales.SyncConflicts(e.Conflicts)).FontSize(12)
-				}
-			}
-			if e.Device != "" {
-				widgets.Muted(c, locales.AccountLogDevice(e.Device)).FontSize(12)
-			}
-			if e.Error != "" {
-				ui.Text(c, e.Error).TextColor(theme.Danger).FontSize(12)
-			}
-		})
+		ui.Column(c).Gap(4).PaddingStart(16).Children(func() { a.accountEventDetails(c, e) })
 	})
+}
+
+// accountEventDetails is what an event did: a sync's steps and what it
+// changed, the device, the error.
+func (a *App) accountEventDetails(c *ui.Context, e config.AccountEvent) {
+	for i, step := range e.Steps {
+		widgets.Muted(c, fmt.Sprintf("%d. %s", i+1, accountStepText(step))).FontSize(12)
+	}
+	if e.Action == config.AccountSync || e.Action == config.AccountReplace {
+		widgets.Muted(c, locales.AccountCounts(locales.BackupLocal(), e.Local[0], e.Local[1], e.Local[2])).FontSize(12)
+		widgets.Muted(c, locales.AccountCounts(locales.BackupServer(), e.Server[0], e.Server[1], e.Server[2])).FontSize(12)
+		if e.Conflicts > 0 {
+			widgets.Muted(c, locales.SyncConflicts(e.Conflicts)).FontSize(12)
+		}
+	}
+	if e.Device != "" {
+		widgets.Muted(c, locales.AccountLogDevice(e.Device)).FontSize(12)
+	}
+	if e.Error != "" {
+		ui.Text(c, e.Error).TextColor(theme.Danger).FontSize(12)
+	}
+	if e.Repeat > 0 {
+		widgets.Muted(c, locales.AccountLogRepeat(e.Repeat+1, e.Since.Local().Format("01-02 15:04"))).FontSize(12)
+	}
 }
 
 func accountActionText(e config.AccountEvent) string {

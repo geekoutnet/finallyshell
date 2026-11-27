@@ -95,13 +95,19 @@ func (a *App) recordSyncOn(t syncTarget, reason, result string, res *cloudsync.R
 }
 
 func (a *App) pauseRestoreUpload(remote string) error {
-	a.loadSyncState()
-	st := &a.sync
+	return a.pauseRestoreUploadOn(a.pageSync(), remote)
+}
+
+// pauseRestoreUploadOn keeps that a restore of the sync t has not reached
+// its remote yet: automatic sync waits, as the remote would undo it.
+func (a *App) pauseRestoreUploadOn(t syncTarget, remote string) error {
+	a.loadSyncStateOn(t)
+	st := t.st
 	if st.state.Remote != remote {
 		st.state = config.SyncState{Remote: remote}
 	}
 	st.restorePaused, st.state.RestorePaused = true, true
-	return config.SaveSyncState(st.state)
+	return config.SaveSyncStateFile(t.stateFile, st.state)
 }
 
 func changeCounts(changes cloudsync.Changes) (count [3]int) {

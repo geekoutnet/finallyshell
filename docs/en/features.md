@@ -3323,6 +3323,17 @@ with the window:
 - **Sync Now**, **Replace the Remote with This Computer's Data…**, and
   **Gist on GitHub** and **Versions on GitHub**, which open the gist and
   its revisions.
+- **Version History…** (also **Versions** on the account's card) opens
+  **Account Versions**: each sync of the account, a revision of its gist,
+  beside this computer's own backups, as in [Backups &
+  versions](#backups--versions). **Preview** compares a version with this
+  computer's data: connections, folders, quick commands, settings,
+  proxies, databases, trusted host keys and command histories, each added,
+  removed and changed, and warns when restoring would remove something
+  this computer has. **Restore** backs this computer's data up first,
+  then makes it the version's, here and on the gist; **Add missing items**
+  adds only what this computer lacks, removing nothing. The deletion
+  guard's **Review** opens it too.
 - **Activity**: the account's log, newest first: each sign-in, sign-out,
   renewal, expired sign-in, password change (yours, one followed from
   another computer, or a new email address), choice, and each sync,
@@ -3332,10 +3343,12 @@ with the window:
   it added, removed and changed here and on the server, the conflicts,
   the computer, and the error. Automatic syncs that find nothing to do
   are one entry, counting them (**12 checks, nothing to do, since
-  19:10**), so that they don't crowd out the rest. The entries are grouped
-  by day, the latest 30 shown first and more on request, and a filter
-  keeps **Changes**, **Problems** (failed or paused) or the **Account**'s
-  own events. **Clear** empties it. The Sync page's log does not list the
+  19:10**), so that they don't crowd out the rest, those an older version
+  logged one by one too. The window shows the latest 5; **Show All…** opens
+  **Account Activity**, the whole log as a table (time, action, trigger,
+  result, what changed here and on the server, the computer), filtered to
+  **Changes**, **Problems** (failed or paused) or the **Account**'s own
+  events, the chosen entry's steps under it. **Clear** empties it. The Sync page's log does not list the
   account's syncs, nor this one the Sync page's.
 
 When GitHub's sign-in expires, it lasts 8 hours and renews itself with a

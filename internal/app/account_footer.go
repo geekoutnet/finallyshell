@@ -249,10 +249,14 @@ func (a *App) accountCard(c *ui.Context, now time.Time) {
 			})
 			return
 		}
-		ui.Row(c).AlignItems(ui.Center).Children(func() {
+		ui.Row(c).Gap(16).AlignItems(ui.Center).Children(func() {
 			if linkButton(c, locales.AccountLog(), theme.Text).Clicked() {
 				v.cardOpen = false
 				a.openAccountWindow()
+			}
+			if linkButton(c, locales.AccountVersionsShort(), theme.Text).Clicked() {
+				v.cardOpen = false
+				a.openVersionsOn(a.accountSync(), WindowMain)
 			}
 			ui.Spacer(c)
 			if linkButton(c, locales.AccountSignOut(), theme.Danger).Disabled(ac.sync.running).Clicked() {

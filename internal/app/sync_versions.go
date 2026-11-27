@@ -13,6 +13,7 @@ import (
 
 	"finallyshell/internal/cloudsync"
 	"finallyshell/internal/config"
+	"finallyshell/internal/icons"
 	"finallyshell/internal/widgets"
 	"finallyshell/locales"
 
@@ -47,22 +48,66 @@ type versionsState struct {
 	message                      func() string
 	remoteKey                    string
 	source                       int
+	// t is the sync whose versions these are: the Sync page's, or the
+	// account's (openVersionsOn).
+	t syncTarget
 }
 
-func (a *App) openVersions(parent WindowKind) {
-	if a.windowOpen(WindowBackups) {
-		a.plat.FocusWindow(WindowBackups)
+// WindowAccountBackups is the account's versions window.
+const WindowAccountBackups WindowKind = "account-backups"
+
+// versionsWindow is the versions window of the sync t.
+func versionsWindow(t syncTarget) WindowKind {
+	if t.account {
+		return WindowAccountBackups
+	}
+	return WindowBackups
+}
+
+// nativeRevisions says whether the sync t keeps its versions as a gist's
+// revisions, which cannot be pinned nor deleted.
+func nativeRevisions(t syncTarget) bool {
+	p := t.settings().Provider
+	return p == config.SyncGist || p == config.SyncAccount
+}
+
+func (a *App) openVersions(parent WindowKind) { a.openVersionsOn(a.pageSync(), parent) }
+
+// openVersionsOn opens the versions window of the sync t: its server
+// versions beside this device's backups, each to preview against this
+// device's data, restore or merge.
+func (a *App) openVersionsOn(t syncTarget, parent WindowKind) {
+	kind := versionsWindow(t)
+	if a.windowOpen(kind) {
+		a.plat.FocusWindow(kind)
 		return
 	}
-	st := &versionsState{row: -1}
-	a.sync.backups = st
-	a.openWindow(WindowSpec{Kind: WindowBackups, Title: locales.BackupsTitle, Parent: parent,
-		Width: 1000, Height: 520, MinWidth: 920, MinHeight: 440,
-		Closed: func() { a.sync.backups = nil },
+	st := &versionsState{row: -1, t: t}
+	t.st.backups = st
+	title := locales.BackupsTitle
+	if t.account {
+		title = locales.AccountVersionsTitle
+	}
+	a.openWindow(WindowSpec{Kind: kind, Title: title, Parent: parent,
+		Width: 1000, Height: 620, MinWidth: 920, MinHeight: 480,
+		Closed: func() { t.st.backups = nil },
 	}, func(c *ui.Context) { a.versionsView(c, st) })
-	a.loadSyncSecrets()
-	a.loadSyncState()
+	if t.account {
+		a.loadAccount()
+	} else {
+		a.loadSyncSecrets()
+	}
+	a.loadSyncStateOn(t)
 	a.refreshVersions(st)
+}
+
+// versionsLog is the sync log the versions window shows: the Sync
+// page's; the account's is in its own window.
+func (a *App) versionsLog(st *versionsState) ([]config.SyncEvent, error) {
+	if st.t.account {
+		return nil, nil
+	}
+	return config.ReadSyncLog()
 }
 
 func (a *App) refreshVersions(st *versionsState) {
@@ -72,19 +117,19 @@ func (a *App) refreshVersions(st *versionsState) {
 	}
 	st.listing, st.listErr = true, nil
 	local, diskErr := config.ListBackups()
-	st.events, st.err = config.ReadSyncLog()
-	key := a.settings.Sync.Remote()
+	st.events, st.err = a.versionsLog(st)
+	key := st.t.settings().Remote()
 	var remote cloudsync.Remote
 	var setupErr error
-	if a.syncReady() {
-		remote, setupErr = a.newRemote(a.settings.Sync, a.sync.credential)
+	if a.syncReadyOn(st.t) {
+		remote, setupErr = a.newRemote(st.t.settings(), st.t.st.credential)
 	}
 	apply := func(server []cloudsync.Snapshot, err error) {
 		st.listing = false
-		if a.sync.backups != st {
+		if st.t.st.backups != st {
 			return
 		}
-		if a.settings.Sync.Remote() != key {
+		if st.t.settings().Remote() != key {
 			st.selected, st.preview, st.row = versionEntry{}, nil, -1
 			a.refreshVersions(st)
 			return
@@ -146,7 +191,7 @@ func (a *App) selectVersion(st *versionsState, entry versionEntry, password stri
 		return
 	}
 	if password == "" {
-		password = a.sync.password
+		password = st.t.st.password
 	}
 	a.versionRemoteTask(st, func(ctx context.Context, remote cloudsync.Remote) (func(), error) {
 		data, err := remote.GetVersion(ctx, entry.ID)
@@ -177,12 +222,12 @@ func (a *App) selectVersion(st *versionsState, entry versionEntry, password stri
 }
 
 func (a *App) versionRemoteTask(st *versionsState, work func(context.Context, cloudsync.Remote) (func(), error)) {
-	key := a.settings.Sync.Remote()
-	if !a.syncReady() || st.remoteKey != key {
+	key := st.t.settings().Remote()
+	if !a.syncReadyOn(st.t) || st.remoteKey != key {
 		st.err = cloudsync.ErrConflict
 		return
 	}
-	remote, err := a.newRemote(a.settings.Sync, a.sync.credential)
+	remote, err := a.newRemote(st.t.settings(), st.t.st.credential)
 	if err != nil {
 		st.err = err
 		return
@@ -194,10 +239,10 @@ func (a *App) versionRemoteTask(st *versionsState, work func(context.Context, cl
 		apply, err := work(ctx, remote)
 		a.post(func() {
 			st.busy = false
-			if a.sync.backups != st {
+			if st.t.st.backups != st {
 				return
 			}
-			if a.settings.Sync.Remote() != key {
+			if st.t.settings().Remote() != key {
 				err, apply = cloudsync.ErrConflict, nil
 			}
 			st.err = err
@@ -249,8 +294,8 @@ func (a *App) manualBackup(st *versionsState, now time.Time) {
 	st.note = ""
 	st.message = locales.BackupSaved
 	a.refreshVersions(st)
-	if a.sync.guard == nil && !a.sync.restorePaused && !a.sync.running && a.syncReady() {
-		a.startSyncWith(syncOptions{reason: cloudsync.ReasonManual, note: note, manualVersion: true}, now)
+	if t := st.t; t.st.guard == nil && t.st.choice == nil && !t.st.restorePaused && !a.syncBusy() && a.syncReadyOn(t) {
+		a.startSyncOn(t, syncOptions{reason: cloudsync.ReasonManual, note: note, manualVersion: true}, now)
 	}
 }
 
@@ -274,7 +319,7 @@ func (a *App) mergeVersion(st *versionsState) {
 		st.err = err
 		return
 	}
-	st.message, a.sync.nextCheck = locales.BackupMerged, time.Time{}
+	st.message, st.t.st.nextCheck = locales.BackupMerged, time.Time{}
 	a.refreshVersions(st)
 	a.redraw()
 }
@@ -293,7 +338,7 @@ func (a *App) exportVersion(st *versionsState) {
 	st.busy = true
 	title := locales.BackupExport()
 	go func() {
-		path, err := a.plat.SaveFile(WindowBackups, title, "finallyshell-backup.json", "JSON", []string{"json"})
+		path, err := a.plat.SaveFile(versionsWindow(st.t), title, "finallyshell-backup.json", "JSON", []string{"json"})
 		if err == nil && path != "" {
 			file, openErr := os.OpenFile(path, os.O_CREATE|os.O_TRUNC|os.O_WRONLY, 0600)
 			err = openErr
@@ -317,7 +362,7 @@ func (a *App) versionsView(c *ui.Context, st *versionsState) {
 			if ui.Button(c, locales.BackupVersions()).Clicked() {
 				st.log = false
 			}
-			if ui.Button(c, locales.BackupLog()).Clicked() {
+			if !st.t.account && ui.Button(c, locales.BackupLog()).Clicked() {
 				st.log = true
 				st.events, st.err = config.ReadSyncLog()
 			}
@@ -341,9 +386,12 @@ func (a *App) versionsView(c *ui.Context, st *versionsState) {
 				st.confirm, st.note = "manual", ""
 			}
 		})
-		if a.settings.Sync.Provider == config.SyncGist {
+		if st.t.account {
+			widgets.Muted(c, locales.AccountVersionsHint()).FontSize(12)
+		} else if nativeRevisions(st.t) {
 			widgets.Muted(c, locales.BackupGistLimit()).FontSize(12)
-		} else if a.settings.Sync.Provider != config.SyncOff && !a.syncReady() {
+		}
+		if st.t.settings().Provider != config.SyncOff && !a.syncReadyOn(st.t) {
 			widgets.Muted(c, locales.BackupServerUnavailable()).FontSize(12)
 		}
 		if st.log {
@@ -436,10 +484,10 @@ func (st *versionsState) visibleVersions() []versionEntry {
 
 func (a *App) versionActions(c *ui.Context, st *versionsState) {
 	if st.preview != nil {
-		if ui.PrimaryButton(c, locales.BackupRestore()).Disabled(st.busy || a.sync.running).Clicked() {
+		if ui.PrimaryButton(c, locales.BackupRestore()).Disabled(st.busy || a.syncBusy()).Clicked() {
 			st.confirm = "restore"
 		}
-		if ui.Button(c, locales.BackupMerge()).Disabled(st.busy || a.sync.running).Clicked() {
+		if ui.Button(c, locales.BackupMerge()).Disabled(st.busy || a.syncBusy()).Clicked() {
 			a.mergeVersion(st)
 		}
 		if ui.Button(c, locales.BackupExport()).Disabled(st.busy).Clicked() {
@@ -447,7 +495,7 @@ func (a *App) versionActions(c *ui.Context, st *versionsState) {
 		}
 	}
 	ui.Spacer(c)
-	if !st.selected.remote || a.settings.Sync.Provider != config.SyncGist {
+	if !st.selected.remote || !nativeRevisions(st.t) {
 		pin := locales.BackupPin()
 		if st.selected.Pinned {
 			pin = locales.BackupUnpin()
@@ -463,24 +511,69 @@ func (a *App) versionActions(c *ui.Context, st *versionsState) {
 
 func (a *App) versionPreviewView(c *ui.Context, preview *versionPreview) {
 	changes := cloudsync.Compare(a.localPayload(), preview.payload)
+	added, removed, changed := changes.Total()
 	ui.Column(c).Gap(7).Padding(10, 0, 0, 0).BorderWidth(1, 0, 0, 0).BorderColor(theme.Border).Children(func() {
 		ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
 			ui.Text(c, locales.BackupPreviewTitle()).Bold()
+			widgets.Muted(c, locales.BackupPreviewTotal(added, removed, changed)).FontSize(12).Shrink(0)
 			if preview.entry.Note != "" {
 				widgets.Muted(c, preview.entry.Note).SingleLine().MinWidth(0)
 			}
 		})
-		ui.Scroll(c).FillWidth().Height(175).Children(func() {
+		if removed > 0 {
+			ui.Row(c).Gap(6).AlignItems(ui.Start).Padding(6, 8).Radius(4).Background(colors.warningBanner).Children(func() {
+				ui.Icon(c, icons.Get("triangle-alert")).FontSize(13).TextColor(theme.Warning).Shrink(0)
+				ui.Text(c, locales.BackupPreviewLoses(removed)).FontSize(12).TextColor(colors.warningText).Grow(1).MinWidth(0)
+			})
+		}
+		if added+removed+changed == 0 {
+			widgets.Muted(c, locales.BackupPreviewSame()).FontSize(12)
+			return
+		}
+		ui.Scroll(c).FillWidth().Height(200).Children(func() {
 			ui.Column(c).FillWidth().Gap(5).Children(func() {
-				a.versionDiffGroup(c, locales.BackupConnections(), changes.Hosts)
-				a.versionDiffGroup(c, locales.BackupFolders(), changes.Folders)
-				a.versionDiffGroup(c, locales.BackupCommands(), changes.Commands)
-				if len(changes.Groups.Added)+len(changes.Groups.Removed)+len(changes.Groups.Changed) != 0 {
-					a.versionDiffGroup(c, locales.BackupCommandGroups(), changes.Groups)
+				for _, g := range []struct {
+					name    string
+					changes cloudsync.ChangeNames
+					always  bool
+				}{
+					{locales.BackupConnections(), changes.Hosts, true},
+					{locales.BackupFolders(), changes.Folders, true},
+					{locales.BackupCommands(), changes.Commands, true},
+					{locales.BackupCommandGroups(), changes.Groups, false},
+					{locales.BackupSettingsDiff(), changes.Settings, false},
+					{locales.ProxyMgrTitle(), changes.Proxies, false},
+					{locales.BackupDatabasesDiff(), changes.Databases, false},
+					{locales.BackupKnownHostsDiff(), changes.KnownHosts, false},
+					{locales.BackupHistoryDiff(), a.historyNames(changes.History), false},
+				} {
+					if g.always || len(g.changes.Added)+len(g.changes.Removed)+len(g.changes.Changed) != 0 {
+						a.versionDiffGroup(c, g.name, g.changes)
+					}
 				}
 			})
 		})
 	})
+}
+
+// historyNames are the hosts of command histories, by their name rather
+// than their ID.
+func (a *App) historyNames(changes cloudsync.ChangeNames) cloudsync.ChangeNames {
+	name := func(ids []string) []string {
+		out := make([]string, 0, len(ids))
+		for _, id := range ids {
+			switch h := a.hosts.Host(id); {
+			case id == localHistoryID:
+				out = append(out, locales.LocalTerminal())
+			case h != nil && h.Name != "":
+				out = append(out, h.Name)
+			default:
+				out = append(out, id)
+			}
+		}
+		return out
+	}
+	return cloudsync.ChangeNames{Added: name(changes.Added), Removed: name(changes.Removed), Changed: name(changes.Changed)}
 }
 
 func (a *App) versionDiffGroup(c *ui.Context, name string, changes cloudsync.ChangeNames) {
@@ -615,7 +708,12 @@ func (a *App) versionConfirm(c *ui.Context, st *versionsState) {
 				confirm = func() { a.manualBackup(st, c.Now()) }
 			case "restore":
 				title, description = locales.BackupRestore(), locales.BackupRestoreConfirm()
-				if a.settings.Sync.Provider != config.SyncOff && !a.syncReady() && st.preview != nil && st.preview.local != nil {
+				if st.preview != nil {
+					if _, removed, _ := cloudsync.Compare(a.localPayload(), st.preview.payload).Total(); removed > 0 {
+						description += "\n\n" + locales.BackupPreviewLoses(removed)
+					}
+				}
+				if st.t.settings().Provider != config.SyncOff && !a.syncReadyOn(st.t) && st.preview != nil && st.preview.local != nil {
 					description = locales.BackupRestoreOfflineConfirm()
 				}
 				confirm = func() { a.restoreVersion(st) }
@@ -693,11 +791,9 @@ func (a *App) syncGuardView(c *ui.Context, t syncTarget) {
 		widgets.Muted(c, locales.BackupGuardWait())
 		ui.Spacer(c)
 		ui.Row(c).Gap(8).Children(func() {
-			// The account's versions are the gist's revisions, on GitHub:
-			// its guard has no Review.
-			if !t.account && ui.PrimaryButton(c, locales.BackupReview()).Clicked() {
+			if ui.PrimaryButton(c, locales.BackupReview()).Clicked() {
 				a.closeWindow(kind)
-				a.openVersions(WindowMain)
+				a.openVersionsOn(t, WindowMain)
 			}
 			if ui.Button(c, locales.BackupKeepServer()).Disabled(guard.ServerVersion == "" || !a.syncReadyOn(t)).Clicked() {
 				a.closeWindow(kind)
@@ -734,13 +830,14 @@ func (a *App) restoreVersion(st *versionsState) {
 	if preview == nil || a.syncBusy() || st.busy {
 		return
 	}
-	settings, password, credential := a.settings.Sync, a.sync.password, a.sync.credential
+	t := st.t
+	settings, password, credential := t.settings(), t.st.password, t.st.credential
 	if preview.entry.remote && st.remoteKey != settings.Remote() {
 		st.err = cloudsync.ErrConflict
 		return
 	}
 	var remote cloudsync.Remote
-	if a.syncReady() {
+	if a.syncReadyOn(t) {
 		var err error
 		remote, err = a.newRemote(settings, credential)
 		if err != nil && preview.local == nil {
@@ -752,11 +849,11 @@ func (a *App) restoreVersion(st *versionsState) {
 		}
 	}
 	before, beforeSettings := a.localPayload(), a.settings
-	st.busy, st.err, a.sync.running = true, nil, true
+	st.busy, st.err, t.st.running = true, nil, true
 	finish := func(err error) {
-		st.busy, st.err, a.sync.running = false, err, false
+		st.busy, st.err, t.st.running = false, err, false
 		if err != nil {
-			a.recordSync(cloudsync.ReasonRestore, "failed", nil, false)
+			a.recordSyncOn(t, cloudsync.ReasonRestore, "failed", nil, false)
 		}
 	}
 	a.readSyncSecrets(settings.Passwords, func(secrets map[string]string) {
@@ -765,7 +862,7 @@ func (a *App) restoreVersion(st *versionsState) {
 				finish(err)
 				return
 			}
-			if !cloudsync.Equal(before, a.localPayload()) || !reflect.DeepEqual(a.settings, beforeSettings) || a.sync.password != password || a.sync.credential != credential {
+			if !cloudsync.Equal(before, a.localPayload()) || !reflect.DeepEqual(a.settings, beforeSettings) || t.st.password != password || t.st.credential != credential {
 				finish(cloudsync.ErrConflict)
 				return
 			}
@@ -774,7 +871,7 @@ func (a *App) restoreVersion(st *versionsState) {
 				return
 			}
 			if settings.Provider != config.SyncOff {
-				if err := a.pauseRestoreUpload(settings.Remote()); err != nil {
+				if err := a.pauseRestoreUploadOn(t, settings.Remote()); err != nil {
 					finish(err)
 					return
 				}
@@ -788,8 +885,9 @@ func (a *App) restoreVersion(st *versionsState) {
 				finish(err)
 				return
 			}
-			a.sync.guard = nil
-			a.closeWindow(WindowSyncGuard)
+			t.st.guard, t.st.choice = nil, nil
+			a.closeWindow(guardWindow(t))
+			a.closeWindow(choiceWindow(t))
 			if remote == nil {
 				finish(nil)
 				result := "ok"
@@ -798,7 +896,7 @@ func (a *App) restoreVersion(st *versionsState) {
 					result = "failed"
 					st.message = locales.BackupRestoreLocalOnly
 				}
-				a.recordSync(cloudsync.ReasonRestore, result, &cloudsync.Result{LocalImpact: cloudsync.Compare(before, a.localPayload())}, false)
+				a.recordSyncOn(t, cloudsync.ReasonRestore, result, &cloudsync.Result{LocalImpact: cloudsync.Compare(before, a.localPayload())}, false)
 				a.refreshVersions(st)
 				return
 			}
@@ -806,6 +904,10 @@ func (a *App) restoreVersion(st *versionsState) {
 			req := cloudsync.Request{Remote: remote, Local: current, Base: base, Force: true, StrictBase: true,
 				Password: password, Device: deviceName(), AppVersion: mygo.App.Version(), Reason: cloudsync.ReasonRestore,
 				Retention: settings.RemoteRetention(), AllowDeletion: true, Secrets: secrets != nil}
+			if t.account {
+				a.accountPasswordRequest(&req)
+				req.AltPasswords = nil // restoring seals with this device's password
+			}
 			if secrets != nil {
 				current.Secrets = map[string]string{}
 				for _, key := range a.syncSecretKeys() {
@@ -815,19 +917,19 @@ func (a *App) restoreVersion(st *versionsState) {
 						current.Secrets[key] = value
 					}
 				}
-				a.applySyncedSecrets(secrets, current.Secrets, &a.sync)
+				a.applySyncedSecrets(secrets, current.Secrets, t.st)
 			}
 			go func() {
 				ctx, cancel := context.WithTimeout(context.Background(), syncTimeout)
 				defer cancel()
 				res, err := cloudsync.Sync(ctx, req)
-				run := syncRun{start: settings, snapshot: current, options: syncOptions{reason: cloudsync.ReasonRestore}}
+				run := syncRun{start: settings, snapshot: current, options: syncOptions{reason: cloudsync.ReasonRestore}, target: t, password: password}
 				if gist, ok := remote.(*cloudsync.Gist); ok {
 					run.gistID = gist.ID
 				}
 				a.post(func() {
 					st.busy = false
-					if a.settings.Sync.Remote() != settings.Remote() {
+					if st.t.settings().Remote() != settings.Remote() {
 						finish(cloudsync.ErrConflict)
 						return
 					}
@@ -840,8 +942,8 @@ func (a *App) restoreVersion(st *versionsState) {
 					res.LocalImpact = cloudsync.Compare(before, current)
 					st.message = locales.BackupRestored
 					a.syncDone(res, nil, run)
-					if a.sync.err != nil {
-						st.err = a.sync.err
+					if t.st.err != nil {
+						st.err = t.st.err
 					}
 				})
 			}()

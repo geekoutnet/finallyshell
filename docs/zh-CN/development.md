@@ -40,6 +40,19 @@ go test ./...
 
 SSH 联机集成测试和需要 Linux 服务器的手工验证，都使用 [Docker 测试箱](testing.md)。不要在真实服务器或生产服务器上运行会修改服务器的测试。不需要真实服务的用例可使用进程内的 SSH 测试服务（`internal/sshtest`）。
 
+### 证书签发
+
+SSL 证书应用的签发测试连接的是 Let's Encrypt 的测试 CA Pebble 和它的验证测试服务器，从不连接真正的 Let's Encrypt。`tools/pebble-test.sh` 在 Linux 容器（Docker）里运行这些测试，Pebble 在 5002 端口检查 HTTP 验证，通过测试服务器检查 DNS 验证：
+
+```sh
+tools/pebble-test.sh             # internal/certs 的全部 Issue 测试，带 -race
+tools/pebble-test.sh -run DNS -v
+```
+
+不在容器里时这些测试会跳过；它们从 `PEBBLE_DIRECTORY` 读取 CA 地址，从 `CHALLTESTSRV` 读取测试服务器，从 `CHALLTESTSRV_DNS` 读取它的 DNS。HTTP 验证的服务器端用测试箱上的 `TestCertHTTPLive` 测试（见[测试](testing.md)）。
+
+签发用到了 Go 标准库之外的三个模块：`github.com/go-acme/lego/v4`（MIT），提供 ACME 客户端和各 DNS 服务商的接口，会引入这些服务商的 SDK；`software.sslmate.com/src/go-pkcs12`（BSD-3-Clause），用于 PFX 文件；`github.com/pavlo-v-chernykh/keystore-go/v4`（MIT），用于 JKS 文件。只引入 `internal/certs/dns.go` 里列出的 DNS 服务商，因为每个 SDK 都会增大应用体积；新增服务商就是在 `DNSProviders` 里加一项，并写上它 NS 的结尾。
+
 ## 提交前的检查
 
 CI（`.github/workflows/ci.yml`）对每个 pull request 跑这些检查：
@@ -189,6 +202,7 @@ tools/release/       发布用的工具：从 CHANGELOG.md 读出下一个版本
 tools/screenshots/   从 internal/app 的测试重新生成 docs/screenshots/ 里的 README 截图
 internal/
   config/            主机和文件夹（hosts.json）、设置的读写，背景图片的副本，配置目录；proxy.go 是代理设置和跳板机链（找循环）；tunnels.go 是隧道设置；keys.go 是退格键和删除键发送什么；sync.go 是“同步”页的设置、哪些设置要同步、sync-state.json 和同步前 hosts.json 的副本；history.go 是命令输入框的历史文件，以及读取 bash 和 zsh 的历史文件；quickcommands.go 是“命令”页的 quickcommands.json；cmdeditor.go 是命令编辑器的 commandeditor.txt；localshell.go 把本地终端程序（localShell）分成参数
+  certs/             SSL 证书应用里与界面无关的部分：certs.go 是 Bundle（私钥和证书链，以及 PEM 格式）、NormalizeDomains 和密钥类型；selfsigned.go 是 SelfSigned；store.go 是存在配置目录里的证书 Store（meta.json、fullchain.pem、privkey.pem，权限 600）和 PFX、JKS 的密码；export.go 是 Nginx、Apache、IIS（PFX，用 go-pkcs12 的 Modern2023）和 Tomcat（JKS，用 keystore-go）几种格式的 ZIP；issue.go 是 Issuer，通过 lego 申请 Let's Encrypt 证书（每个 CA 保存一个 ACME 账户、Progress 进度、经由 HTTP 客户端和等待 DNS 记录时的取消），以及 ManualDNS，即手动添加的 TXT 记录；dns.go 是 DNS 服务商（Cloudflare、阿里云、腾讯云 DNSPod、华为云：各自的字段和 lego provider），以及根据 NS 判断域名托管商的 HostedBy 和 Nameservers
   account/          通过 OAuth 设备授权流程登录第三方账号：account.go 是 Provider 接口、Token 和 Profile、Wait（轮询）和 MaskEmail；github.go 是 GitHub 的实现（设备码、令牌、无需 client secret 的续期、用户信息和主邮箱）
   cloudsync/         通过用户自己的存储同步：crypto.go 加密文件（Argon2id、AES-256-GCM），merge.go 做三方合并，sync.go 读取、合并、写回（冲突时重试）；choice.go 是可能保存着旧数据时的询问，password.go 是密码类型标注和备选密码，reencrypt.go 用于修改密码；gist.go、webdav.go、s3.go 是各个服务（s3.go 手写 SigV4 签名），remotehttp.go 是它们共用的 HTTP 代码
   importer/          读其他客户端的连接：importer.go 是来源列表（readers）、读出的连接和问题、文本解码（UTF-8、UTF-16、GB18030）、判重、按文件夹导入；finalshell.go 找 FinalShell 的目录、读 conn 里的连接和文件夹；xshell.go 找 Xshell 的 Sessions 文件夹、读 .xsh 会话文件和 .xts 导出文件；securecrt.go 找 SecureCRT 的配置目录、读它 Sessions 文件夹里的 .ini 文件；mobaxterm.go 找 MobaXterm.ini、读里面的书签段，以及 .mxtsessions 和 .moba 导出文件；sshconfig.go 读 OpenSSH 的 ~/.ssh/config（Host 块和通配模式、Include、ProxyJump）；table.go 读 CSV 文件或 .xlsx 第一个工作表里的服务器列表，.xlsx 由自己写的 xlsx.go 读（archive/zip 和 encoding/xml，有防 zip 炸弹的限制）；testdata 是编造的样例
@@ -269,6 +283,7 @@ internal/
     account_view.go  设备授权登录窗口、账户窗口（登录信息、同步密码、账户同步、操作记录）
     account_footer.go  左侧栏底部的账户状态条和账户卡片
     sync_choice.go   可能保存着旧数据的同步（首次同步、基准解不开、长时间未同步）的选择窗口，“同步”页和账户同步共用
+    certs_http.go    让当前连接的服务器响应 SSL 证书应用的 HTTP 验证：先看 80 端口被谁占用，再用探测文件依次尝试各种方式（网站目录、80 端口空闲时应用自己的临时服务、Caddy 临时路由、80 端口透明分流、防火墙临时放行 80 端口，后两种需用户同意），用完撤销
     secrets.go       记住密码：凭据存储的键、后台读写队列、“记住密码”、密码框、彻底删除和复制连接时的密码
     closing.go       关闭主窗口、退出时做什么：隐藏到托盘、先确认
     windows.go       子窗口：按种类打开/聚焦/关闭，重绘所有窗口

@@ -51,6 +51,32 @@ and manual flows that need a Linux server. Never run mutating tests against
 a real or production server. Tests that do not need real services can use
 the in-process SSH fixture (`internal/sshtest`).
 
+### Certificate issuance
+
+The SSL certificates app's tests of issuing certificates run against
+Pebble, Let's Encrypt's test CA, and its challenge test server, never
+against Let's Encrypt itself. `tools/pebble-test.sh` runs them in a Linux
+container (Docker), where Pebble checks HTTP challenges on port 5002 and
+DNS challenges through the test server:
+
+```sh
+tools/pebble-test.sh             # every Issue test of internal/certs, with -race
+tools/pebble-test.sh -run DNS -v
+```
+
+Without the container the tests skip; they read the CA from
+`PEBBLE_DIRECTORY`, the test server from `CHALLTESTSRV` and its DNS from
+`CHALLTESTSRV_DNS`. The server side of HTTP challenges is tested on the
+test machine with `TestCertHTTPLive` (see [Testing](testing.md)).
+
+Issuing uses three modules besides Go's: `github.com/go-acme/lego/v4`
+(MIT), the ACME client and the DNS providers' APIs, which pull in those
+providers' SDKs; `software.sslmate.com/src/go-pkcs12` (BSD-3-Clause) for
+PFX files; and `github.com/pavlo-v-chernykh/keystore-go/v4` (MIT) for JKS
+files. Only the DNS providers in `internal/certs/dns.go` are imported, as
+each SDK adds to the app's size; adding one is adding an entry to
+`DNSProviders`, with the endings of its name servers.
+
 ## Checks before a commit
 
 These are the checks CI runs (`.github/workflows/ci.yml`) on every pull
@@ -401,6 +427,7 @@ tools/release/       release tools: the next version and its notes from CHANGELO
 tools/screenshots/   regenerates the README screenshots in docs/screenshots/ from the internal/app tests
 internal/
   config/            reading and writing hosts and folders (hosts.json) and settings, the background image copy, the config directory; proxy.go is the proxy settings and the jump host chain (finding loops); tunnels.go is the tunnel settings; keys.go is what Backspace and Delete send; sync.go is the Sync page's settings, which settings are synced, sync-state.json and the copy of hosts.json before a sync; history.go is the command bar's history files and reading bash's and zsh's history files; quickcommands.go is the Commands tab's quickcommands.json; cmdeditor.go is the command editor's commandeditor.txt; localshell.go splits the local terminal program (localShell) into words
+  certs/             the SSL certificates app's certificates, apart from the UI: certs.go is the Bundle (key and chain, as PEM), NormalizeDomains and key types; selfsigned.go is SelfSigned; store.go is the Store of certificates in the config folder (meta.json, fullchain.pem, privkey.pem, mode 600) and the PFX and JKS password; export.go is the ZIP of the Nginx, Apache, IIS (PFX, go-pkcs12's Modern2023) and Tomcat (JKS, keystore-go) formats; issue.go is the Issuer, which gets Let's Encrypt certificates through lego (the ACME account kept per CA, Progress steps, cancelling through the HTTP client and the wait for a DNS record) and ManualDNS, the TXT records added by hand; dns.go is the DNS providers (Cloudflare, Alibaba Cloud, Tencent Cloud DNSPod, Huawei Cloud: their fields and lego providers), HostedBy and Nameservers, which tell a domain's provider from its name servers
   account/          signing in with a third-party account through the OAuth device flow: account.go is the Provider interface, the Token and Profile, Wait (polling) and MaskEmail; github.go is GitHub's (the device code, the token, its renewal without a client secret, the user and the primary address)
   cloudsync/         sync through the user's own storage: crypto.go encrypts the file (Argon2id, AES-256-GCM), merge.go merges three ways, sync.go reads, merges and writes it (retrying on a conflict); choice.go is the question a sync that may hold an old copy asks, password.go the key hint and the alternative passwords, reencrypt.go changing the password; gist.go, webdav.go and s3.go are the services (s3.go signs with SigV4 by hand), remotehttp.go their shared HTTP code
   importer/          reads other clients' connections: importer.go is the list of sources (readers), the entries and problems they read, the text decoder (UTF-8, UTF-16, GB18030), finding duplicates and importing by folder; finalshell.go finds FinalShell's folder and reads the connections and folders in conn; xshell.go finds Xshell's Sessions folder and reads its .xsh files and .xts exports; securecrt.go finds SecureCRT's config folder and reads the .ini files of its Sessions folder; mobaxterm.go finds MobaXterm.ini and reads its bookmark sections, and .mxtsessions and .moba exports; sshconfig.go reads OpenSSH's ~/.ssh/config (Host blocks and patterns, Include, ProxyJump); table.go reads a server list in a CSV file, or the first sheet of an .xlsx with xlsx.go, a reader of its own (archive/zip and encoding/xml, with limits against zip bombs); testdata has made-up samples
@@ -481,6 +508,7 @@ internal/
     account_view.go  the sign-in window of the device flow, the account window (who signed in, the sync password, the account's sync, the activity log)
     account_footer.go  the account's bar at the bottom of the left panel and its card
     sync_choice.go   the choice of a sync that may hold an old copy (first, base no longer opening, stale): its window, for the Sync page's sync and the account's
+    certs_http.go    the connected server answering the SSL certificates app's HTTP challenges: what holds port 80, then a probe file through each way in turn (a site's document root, the app's own responder on a free port 80, a temporary Caddy route, a transparent split of port 80 or port 80 opened in the firewall, the last two once the user agrees), and undoing it afterwards
     secrets.go       remembering passwords: credential store keys, the background read/write queue, "Remember password", the password prompt, passwords on permanent delete and duplicate
     closing.go       what closing the main window and quitting do: hiding to the tray, asking first
     windows.go       child windows: opening, focusing and closing by kind, redrawing every window

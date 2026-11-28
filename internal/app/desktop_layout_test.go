@@ -164,6 +164,20 @@ func TestDesktopFlattenAndOrganize(t *testing.T) {
 	if folder, _ := iconIn(a, s, string(appTerminal)); folder != "" {
 		t.Fatal("the terminal left the desktop")
 	}
+	// Tidied up after showing them all, the desktop reads as the default
+	// one: its apps first, then the folders.
+	d.shell.folder = ""
+	g := desktopMakeGrid(d.area, "")
+	cells := map[string][2]int{}
+	for _, cell := range g.layout(s, a.desktopHost(s), a.desktopHostIcons(s, a.desktopHost(s))) {
+		cells[cell.icon.App] = [2]int{cell.icon.Col, cell.icon.Row}
+	}
+	if cells[string(appThisPC)] != [2]int{0, 0} {
+		t.Fatalf("This PC at %v, the first cell is %v", cells[string(appThisPC)], cells)
+	}
+	if first, folder := cells[string(appAppCenter)], cells[desktopFolderPrefix+"preset-system"]; folder[0]*g.rows+folder[1] < first[0]*g.rows+first[1] {
+		t.Fatalf("a folder (%v) before the desktop's apps (%v)", folder, first)
+	}
 	// An app in a folder of the user's own stays there.
 	mine = a.desktopNewFolder(d, s)
 	d.shell.rename = ""
@@ -377,7 +391,10 @@ func TestDesktopFolderPanelDragAndSize(t *testing.T) {
 	medium := d.shell.folderRect
 	a.changeDesktopPreferences(func(p *config.DesktopSettings) { p.IconSize = "large" })
 	tt.Frame()
-	if r := d.shell.folderRect; r.W <= medium.W || r.H <= medium.H {
+	if medium.H != desktopFolderMinHeight {
+		t.Fatalf("a folder of few icons is %v tall, want %v", medium.H, desktopFolderMinHeight)
+	}
+	if r := d.shell.folderRect; r.W <= medium.W || r.H < medium.H {
 		t.Fatalf("large icons: %+v, medium %+v", r, medium)
 	}
 }

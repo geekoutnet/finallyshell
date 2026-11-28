@@ -297,7 +297,17 @@ func (a *App) desktopOrganize(s *Session) {
 				folders = append(folders, f)
 			}
 		}
-		var top []config.DesktopIcon
+		// As the default layout orders them, for the icons without a cell
+		// of their own: the apps on the desktop, the folders, the
+		// shortcuts, then the apps in folders.
+		var top, inside []config.DesktopIcon
+		for _, icon := range icons {
+			if icon.Folder == "" {
+				top = append(top, icon)
+			} else {
+				inside = append(inside, icon)
+			}
+		}
 		for _, f := range folders {
 			icon, ok := placed[desktopFolderPrefix+f.ID]
 			if !ok || icon.Folder != "" {
@@ -310,7 +320,7 @@ func (a *App) desktopOrganize(s *Session) {
 				top = append(top, icon)
 			}
 		}
-		h.Icons, h.Folders = append(top, icons...), folders
+		h.Icons, h.Folders = append(top, inside...), folders
 	})
 }
 
@@ -475,20 +485,22 @@ const (
 	// desktopFolderScrollbar is the room the panel's scroll area keeps for
 	// its scroll bar, which the icons' row cannot use.
 	desktopFolderScrollbar = 14
+	// desktopFolderMinHeight is the panel's height while its icons need
+	// less, near that of an app's window.
+	desktopFolderMinHeight = 460
 )
 
 // desktopFolderRect is where the panel of the folder id is, with n icons
 // as large as the desktop's (g): 3 to 5 columns, as many rows as they
-// need while the desktop has the room, where the user dragged it, else
+// need and at least desktopFolderMinHeight tall while the desktop has the
+// room, where the user dragged it, else
 // centered above the dock.
 func desktopFolderRect(d *desktopState, sh *desktopShellState, id string, g desktopGrid, n int) (ui.Rect, bool) {
 	cols := min(5, max(3, n))
 	rows := max(1, (n+cols-1)/cols)
 	w := float32(cols)*(g.spaceW+desktopFolderGap) - desktopFolderGap + 2*desktopFolderPad + desktopFolderScrollbar
 	h := desktopFolderHeader + float32(rows)*(g.spaceH+desktopFolderGap) - desktopFolderGap + 2*desktopFolderPad
-	if n == 0 {
-		h = max(h, desktopFolderHeader+110) // the hint to drag icons in
-	}
+	h = max(h, desktopFolderMinHeight) // as tall as a window, however few its icons
 	areaW, areaH := d.area.W, d.area.H-desktopDockHeight
 	w, h = min(w, areaW-24), min(h, areaH-24)
 	if w < 80 || h < 80 {

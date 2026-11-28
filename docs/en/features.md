@@ -2175,7 +2175,7 @@ its desktop for when its tab is selected.
   drag icons back out, rename it, or delete it and return its icons to
   the desktop. This never changes files on the server. An open folder's
   icons are the desktop's size (Small, Medium or Large), five to a row,
-  and the panel is as large as they need. Drag it by its header anywhere
+  and the panel is as large as they need, and at least as tall as a window. Drag it by its header anywhere
   on the desktop; it opens there again until the desktop is closed.
 - **Desktop layout** in the desktop menu: **Tidy apps into folders** puts
   every app in its folder (apps in folders of your own stay there), and

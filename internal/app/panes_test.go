@@ -348,6 +348,13 @@ func TestClosePanes(t *testing.T) {
 		t.Error("one pane still shown split")
 	}
 	press(tt, a, scCloseTab)
+	// A connected session asks first.
+	if a.closeAsk != s {
+		t.Fatal("the last pane's close key did not ask to close the session")
+	}
+	if err := tt.Click(locales.CloseSessionConfirm()); err != nil {
+		t.Fatal(err)
+	}
 	if slices.Contains(a.sessions, s) {
 		t.Fatal("the last pane's close key left the session")
 	}

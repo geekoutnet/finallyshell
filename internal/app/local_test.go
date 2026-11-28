@@ -360,6 +360,14 @@ func TestLocalTerminalMenu(t *testing.T) {
 		t.Fatal(err)
 	}
 	tt.Frame()
+	// A running one asks first.
+	if a.closeAsk != s {
+		t.Fatal("closing a running local terminal did not ask")
+	}
+	if err := tt.Click(locales.CloseSessionConfirm()); err != nil {
+		t.Fatal(err)
+	}
+	tt.Frame()
 	if slices.Contains(a.sessions, s) || s.term() != nil {
 		t.Fatalf("close: %d rows", len(a.sessions))
 	}

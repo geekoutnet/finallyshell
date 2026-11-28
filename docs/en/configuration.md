@@ -215,6 +215,7 @@ Fields with empty values are not written. Missing fields mean:
 | `noRememberPassword` | Passwords are remembered. | `true`: "Remember password" was turned off. |
 | `forwardAgent` | SSH agent forwarding is off. | `true`: request forwarding for interactive shells. |
 | `x11Forward` | X11 forwarding is off. | `untrusted` or `trusted`: request that mode for interactive shells. |
+| `entryMode` | A session opens in the terminal. | `desktop`: it opens in the desktop; `last`: in the mode its session was left in (`desktop.hosts[id].lastMode`). |
 
 ### Safety
 
@@ -348,11 +349,20 @@ server details on the right of the desktop), `iconSize` (`small`, empty for
 medium, or `large`), and `pinned` control desktop behavior. Omitted `pinned`
 uses the default apps; an empty array keeps no optional pins.
 
-`desktop.hosts` uses host IDs as keys. A host's `iconsConfigured` records
-whether its icon list is customized, including an intentionally empty
-list. `icons` stores app, folder, and path shortcuts with their grid cells;
-`folders` stores the names of icon folders. `autoArrange` packs icons into
-the grid instead of using saved cells. No window placement is written.
+`desktop.hosts` uses host IDs as keys, and `*` for the shared layout,
+which every host without a layout of its own uses: an entry like a host's,
+so that older versions keep it. A host has its own layout when it has
+`iconsConfigured`, `icons` or `folders`. `iconsConfigured` records whether
+the icon list is customized, including an intentionally empty list; with
+neither, the default layout groups apps into the preset folders
+`preset-system`, `preset-network`, `preset-apps` and `preset-transfer`.
+`icons` stores app, folder, and path shortcuts with their grid cells
+(`folder:<id>`, `path:<absolute path>`, and the folder an icon is in);
+`folders` stores the IDs and names of icon folders. `autoArrange` packs
+icons into the grid instead of using saved cells. No window placement is
+written. `lastMode` is `desktop` when the host's session was last left on
+its desktop, for `entryMode` `last`. The desktop's files are not written:
+they are the server's `~/Desktop`.
 `browser` is the host's Server Browser: `kernel:chrome`, `kernel:firefox` or
 `kernel:camoufox` for a downloaded kernel, the absolute path of a browser on
 this computer, or omitted for the first one found. It stays on this device:

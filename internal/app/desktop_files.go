@@ -270,6 +270,9 @@ func (a *App) desktopFilesRefresh(w *desktopWindow) {
 
 func (a *App) desktopFilesRefreshDir(s *Session, dirs ...string) {
 	if d := a.desktopOf(s); d != nil {
+		if d.files != nil && d.filesDir != "" && slices.Contains(dirs, d.filesDir) {
+			a.desktopSurfaceRead(d)
+		}
 		for _, w := range d.windows {
 			if f, ok := w.state.(*desktopFilesState); ok && (slices.Contains(dirs, f.dir) || f.deep != "") {
 				a.desktopFilesRefresh(w)

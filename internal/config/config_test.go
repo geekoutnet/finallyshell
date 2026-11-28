@@ -201,6 +201,7 @@ func fullHost() *Host {
 		X11Forward:         "trusted",
 		Telnet:             &TelnetConfig{AutoLogin: true, LoginPrompt: "user:", PasswordPrompt: "pass:", KeepAlive: true},
 		Serial:             &SerialConfig{Baud: 115200, DataBits: 7, Parity: "even", StopBits: 2, Flow: "rtscts", LocalEcho: true, LineEnding: "crlf"},
+		EntryMode:          EntryLast,
 		Kind:               KindRDP,
 		RDP:                fullRDP(),
 	}

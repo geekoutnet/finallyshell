@@ -47813,3 +47813,487 @@ func CertsCenter() string { return In(i18n.Locale()).CertsCenter() }
 func (msgs Messages) CertsCenter() string {
 	return Catalog.Format(msgs.locale, "certsCenter", nil)
 }
+
+// DesktopFolderSystem says "System tools"
+// in the language the app shows.
+func DesktopFolderSystem() string { return In(i18n.Locale()).DesktopFolderSystem() }
+
+// DesktopFolderSystem says "System tools"
+// in the language of msgs.
+func (msgs Messages) DesktopFolderSystem() string {
+	return Catalog.Format(msgs.locale, "desktopFolderSystem", nil)
+}
+
+// DesktopFolderNetwork says "Network & security"
+// in the language the app shows.
+func DesktopFolderNetwork() string { return In(i18n.Locale()).DesktopFolderNetwork() }
+
+// DesktopFolderNetwork says "Network & security"
+// in the language of msgs.
+func (msgs Messages) DesktopFolderNetwork() string {
+	return Catalog.Format(msgs.locale, "desktopFolderNetwork", nil)
+}
+
+// DesktopFolderApps says "Apps & sites"
+// in the language the app shows.
+func DesktopFolderApps() string { return In(i18n.Locale()).DesktopFolderApps() }
+
+// DesktopFolderApps says "Apps & sites"
+// in the language of msgs.
+func (msgs Messages) DesktopFolderApps() string {
+	return Catalog.Format(msgs.locale, "desktopFolderApps", nil)
+}
+
+// DesktopFolderTransfer says "Transfers & commands"
+// in the language the app shows.
+func DesktopFolderTransfer() string { return In(i18n.Locale()).DesktopFolderTransfer() }
+
+// DesktopFolderTransfer says "Transfers & commands"
+// in the language of msgs.
+func (msgs Messages) DesktopFolderTransfer() string {
+	return Catalog.Format(msgs.locale, "desktopFolderTransfer", nil)
+}
+
+// DesktopShellLayout says "Desktop layout"
+// in the language the app shows.
+func DesktopShellLayout() string { return In(i18n.Locale()).DesktopShellLayout() }
+
+// DesktopShellLayout says "Desktop layout"
+// in the language of msgs.
+func (msgs Messages) DesktopShellLayout() string {
+	return Catalog.Format(msgs.locale, "desktopShellLayout", nil)
+}
+
+// DesktopShellFlatten says "Show all apps on the desktop"
+// in the language the app shows.
+func DesktopShellFlatten() string { return In(i18n.Locale()).DesktopShellFlatten() }
+
+// DesktopShellFlatten says "Show all apps on the desktop"
+// in the language of msgs.
+func (msgs Messages) DesktopShellFlatten() string {
+	return Catalog.Format(msgs.locale, "desktopShellFlatten", nil)
+}
+
+// DesktopShellOrganize says "Tidy apps into folders"
+// in the language the app shows.
+func DesktopShellOrganize() string { return In(i18n.Locale()).DesktopShellOrganize() }
+
+// DesktopShellOrganize says "Tidy apps into folders"
+// in the language of msgs.
+func (msgs Messages) DesktopShellOrganize() string {
+	return Catalog.Format(msgs.locale, "desktopShellOrganize", nil)
+}
+
+// DesktopShellLayoutShared says "Shared layout (all servers)"
+// in the language the app shows.
+func DesktopShellLayoutShared() string { return In(i18n.Locale()).DesktopShellLayoutShared() }
+
+// DesktopShellLayoutShared says "Shared layout (all servers)"
+// in the language of msgs.
+func (msgs Messages) DesktopShellLayoutShared() string {
+	return Catalog.Format(msgs.locale, "desktopShellLayoutShared", nil)
+}
+
+// DesktopShellLayoutOwn says "Own layout for this server"
+// in the language the app shows.
+func DesktopShellLayoutOwn() string { return In(i18n.Locale()).DesktopShellLayoutOwn() }
+
+// DesktopShellLayoutOwn says "Own layout for this server"
+// in the language of msgs.
+func (msgs Messages) DesktopShellLayoutOwn() string {
+	return Catalog.Format(msgs.locale, "desktopShellLayoutOwn", nil)
+}
+
+// DesktopShellLayoutMakeShared says "Make this the shared layout"
+// in the language the app shows.
+func DesktopShellLayoutMakeShared() string { return In(i18n.Locale()).DesktopShellLayoutMakeShared() }
+
+// DesktopShellLayoutMakeShared says "Make this the shared layout"
+// in the language of msgs.
+func (msgs Messages) DesktopShellLayoutMakeShared() string {
+	return Catalog.Format(msgs.locale, "desktopShellLayoutMakeShared", nil)
+}
+
+// DesktopShellLayoutReset says "Reset to the default layout"
+// in the language the app shows.
+func DesktopShellLayoutReset() string { return In(i18n.Locale()).DesktopShellLayoutReset() }
+
+// DesktopShellLayoutReset says "Reset to the default layout"
+// in the language of msgs.
+func (msgs Messages) DesktopShellLayoutReset() string {
+	return Catalog.Format(msgs.locale, "desktopShellLayoutReset", nil)
+}
+
+// DesktopShellUseSharedPrompt says "This server's own desktop layout will be discarded, and it will use the shared layout."
+// in the language the app shows.
+func DesktopShellUseSharedPrompt() string { return In(i18n.Locale()).DesktopShellUseSharedPrompt() }
+
+// DesktopShellUseSharedPrompt says "This server's own desktop layout will be discarded, and it will use the shared layout."
+// in the language of msgs.
+func (msgs Messages) DesktopShellUseSharedPrompt() string {
+	return Catalog.Format(msgs.locale, "desktopShellUseSharedPrompt", nil)
+}
+
+// DesktopShellMakeSharedPrompt says "Every server using the shared layout will show this server's layout. Shortcuts to this server's folders stay on this …"
+// in the language the app shows.
+func DesktopShellMakeSharedPrompt() string { return In(i18n.Locale()).DesktopShellMakeSharedPrompt() }
+
+// DesktopShellMakeSharedPrompt says "Every server using the shared layout will show this server's layout. Shortcuts to this server's folders stay on this …"
+// in the language of msgs.
+func (msgs Messages) DesktopShellMakeSharedPrompt() string {
+	return Catalog.Format(msgs.locale, "desktopShellMakeSharedPrompt", nil)
+}
+
+// DesktopShellResetPrompt says "The icons and folders of this layout go back to the default grouping."
+// in the language the app shows.
+func DesktopShellResetPrompt() string { return In(i18n.Locale()).DesktopShellResetPrompt() }
+
+// DesktopShellResetPrompt says "The icons and folders of this layout go back to the default grouping."
+// in the language of msgs.
+func (msgs Messages) DesktopShellResetPrompt() string {
+	return Catalog.Format(msgs.locale, "desktopShellResetPrompt", nil)
+}
+
+// DesktopShellOwnLayoutNotice says "This server now has its own desktop layout, as shortcuts to its folders only make sense here."
+// in the language the app shows.
+func DesktopShellOwnLayoutNotice() string { return In(i18n.Locale()).DesktopShellOwnLayoutNotice() }
+
+// DesktopShellOwnLayoutNotice says "This server now has its own desktop layout, as shortcuts to its folders only make sense here."
+// in the language of msgs.
+func (msgs Messages) DesktopShellOwnLayoutNotice() string {
+	return Catalog.Format(msgs.locale, "desktopShellOwnLayoutNotice", nil)
+}
+
+// DesktopShellMoveToFolder says "Move to folder"
+// in the language the app shows.
+func DesktopShellMoveToFolder() string { return In(i18n.Locale()).DesktopShellMoveToFolder() }
+
+// DesktopShellMoveToFolder says "Move to folder"
+// in the language of msgs.
+func (msgs Messages) DesktopShellMoveToFolder() string {
+	return Catalog.Format(msgs.locale, "desktopShellMoveToFolder", nil)
+}
+
+// DesktopShellMoveOut says "Move to desktop"
+// in the language the app shows.
+func DesktopShellMoveOut() string { return In(i18n.Locale()).DesktopShellMoveOut() }
+
+// DesktopShellMoveOut says "Move to desktop"
+// in the language of msgs.
+func (msgs Messages) DesktopShellMoveOut() string {
+	return Catalog.Format(msgs.locale, "desktopShellMoveOut", nil)
+}
+
+// EditorEntryMode says "Open in"
+// in the language the app shows.
+func EditorEntryMode() string { return In(i18n.Locale()).EditorEntryMode() }
+
+// EditorEntryMode says "Open in"
+// in the language of msgs.
+func (msgs Messages) EditorEntryMode() string {
+	return Catalog.Format(msgs.locale, "editorEntryMode", nil)
+}
+
+// EditorEntryTerminal says "Terminal (default)"
+// in the language the app shows.
+func EditorEntryTerminal() string { return In(i18n.Locale()).EditorEntryTerminal() }
+
+// EditorEntryTerminal says "Terminal (default)"
+// in the language of msgs.
+func (msgs Messages) EditorEntryTerminal() string {
+	return Catalog.Format(msgs.locale, "editorEntryTerminal", nil)
+}
+
+// EditorEntryLast says "The mode used last time"
+// in the language the app shows.
+func EditorEntryLast() string { return In(i18n.Locale()).EditorEntryLast() }
+
+// EditorEntryLast says "The mode used last time"
+// in the language of msgs.
+func (msgs Messages) EditorEntryLast() string {
+	return Catalog.Format(msgs.locale, "editorEntryLast", nil)
+}
+
+// EditorEntryDesktop says "Desktop"
+// in the language the app shows.
+func EditorEntryDesktop() string { return In(i18n.Locale()).EditorEntryDesktop() }
+
+// EditorEntryDesktop says "Desktop"
+// in the language of msgs.
+func (msgs Messages) EditorEntryDesktop() string {
+	return Catalog.Format(msgs.locale, "editorEntryDesktop", nil)
+}
+
+// EditorEntryModeHint says "What the session shows when it opens."
+// in the language the app shows.
+func EditorEntryModeHint() string { return In(i18n.Locale()).EditorEntryModeHint() }
+
+// EditorEntryModeHint says "What the session shows when it opens."
+// in the language of msgs.
+func (msgs Messages) EditorEntryModeHint() string {
+	return Catalog.Format(msgs.locale, "editorEntryModeHint", nil)
+}
+
+// DesktopTray says "System status"
+// in the language the app shows.
+func DesktopTray() string { return In(i18n.Locale()).DesktopTray() }
+
+// DesktopTray says "System status"
+// in the language of msgs.
+func (msgs Messages) DesktopTray() string {
+	return Catalog.Format(msgs.locale, "desktopTray", nil)
+}
+
+// DesktopTrayDown says "Down"
+// in the language the app shows.
+func DesktopTrayDown() string { return In(i18n.Locale()).DesktopTrayDown() }
+
+// DesktopTrayDown says "Down"
+// in the language of msgs.
+func (msgs Messages) DesktopTrayDown() string {
+	return Catalog.Format(msgs.locale, "desktopTrayDown", nil)
+}
+
+// DesktopTrayUp says "Up"
+// in the language the app shows.
+func DesktopTrayUp() string { return In(i18n.Locale()).DesktopTrayUp() }
+
+// DesktopTrayUp says "Up"
+// in the language of msgs.
+func (msgs Messages) DesktopTrayUp() string {
+	return Catalog.Format(msgs.locale, "desktopTrayUp", nil)
+}
+
+// DesktopClock says "Date and time"
+// in the language the app shows.
+func DesktopClock() string { return In(i18n.Locale()).DesktopClock() }
+
+// DesktopClock says "Date and time"
+// in the language of msgs.
+func (msgs Messages) DesktopClock() string {
+	return Catalog.Format(msgs.locale, "desktopClock", nil)
+}
+
+// DesktopClockSettings says "Date & time settings"
+// in the language the app shows.
+func DesktopClockSettings() string { return In(i18n.Locale()).DesktopClockSettings() }
+
+// DesktopClockSettings says "Date & time settings"
+// in the language of msgs.
+func (msgs Messages) DesktopClockSettings() string {
+	return Catalog.Format(msgs.locale, "desktopClockSettings", nil)
+}
+
+// DesktopClockToday says "Today"
+// in the language the app shows.
+func DesktopClockToday() string { return In(i18n.Locale()).DesktopClockToday() }
+
+// DesktopClockToday says "Today"
+// in the language of msgs.
+func (msgs Messages) DesktopClockToday() string {
+	return Catalog.Format(msgs.locale, "desktopClockToday", nil)
+}
+
+// DesktopClockPrev says "Previous month"
+// in the language the app shows.
+func DesktopClockPrev() string { return In(i18n.Locale()).DesktopClockPrev() }
+
+// DesktopClockPrev says "Previous month"
+// in the language of msgs.
+func (msgs Messages) DesktopClockPrev() string {
+	return Catalog.Format(msgs.locale, "desktopClockPrev", nil)
+}
+
+// DesktopClockNext says "Next month"
+// in the language the app shows.
+func DesktopClockNext() string { return In(i18n.Locale()).DesktopClockNext() }
+
+// DesktopClockNext says "Next month"
+// in the language of msgs.
+func (msgs Messages) DesktopClockNext() string {
+	return Catalog.Format(msgs.locale, "desktopClockNext", nil)
+}
+
+// DesktopClockWeekdays says "Mo,Tu,We,Th,Fr,Sa,Su"
+// in the language the app shows.
+func DesktopClockWeekdays() string { return In(i18n.Locale()).DesktopClockWeekdays() }
+
+// DesktopClockWeekdays says "Mo,Tu,We,Th,Fr,Sa,Su"
+// in the language of msgs.
+func (msgs Messages) DesktopClockWeekdays() string {
+	return Catalog.Format(msgs.locale, "desktopClockWeekdays", nil)
+}
+
+// DesktopClockWeekdaysLong says "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"
+// in the language the app shows.
+func DesktopClockWeekdaysLong() string { return In(i18n.Locale()).DesktopClockWeekdaysLong() }
+
+// DesktopClockWeekdaysLong says "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday"
+// in the language of msgs.
+func (msgs Messages) DesktopClockWeekdaysLong() string {
+	return Catalog.Format(msgs.locale, "desktopClockWeekdaysLong", nil)
+}
+
+// DesktopPower says "Power"
+// in the language the app shows.
+func DesktopPower() string { return In(i18n.Locale()).DesktopPower() }
+
+// DesktopPower says "Power"
+// in the language of msgs.
+func (msgs Messages) DesktopPower() string {
+	return Catalog.Format(msgs.locale, "desktopPower", nil)
+}
+
+// DesktopPowerReboot says "Restart server…"
+// in the language the app shows.
+func DesktopPowerReboot() string { return In(i18n.Locale()).DesktopPowerReboot() }
+
+// DesktopPowerReboot says "Restart server…"
+// in the language of msgs.
+func (msgs Messages) DesktopPowerReboot() string {
+	return Catalog.Format(msgs.locale, "desktopPowerReboot", nil)
+}
+
+// DesktopPowerShutdown says "Shut down server…"
+// in the language the app shows.
+func DesktopPowerShutdown() string { return In(i18n.Locale()).DesktopPowerShutdown() }
+
+// DesktopPowerShutdown says "Shut down server…"
+// in the language of msgs.
+func (msgs Messages) DesktopPowerShutdown() string {
+	return Catalog.Format(msgs.locale, "desktopPowerShutdown", nil)
+}
+
+// DesktopPowerRebootTitle says "Restart server"
+// in the language the app shows.
+func DesktopPowerRebootTitle() string { return In(i18n.Locale()).DesktopPowerRebootTitle() }
+
+// DesktopPowerRebootTitle says "Restart server"
+// in the language of msgs.
+func (msgs Messages) DesktopPowerRebootTitle() string {
+	return Catalog.Format(msgs.locale, "desktopPowerRebootTitle", nil)
+}
+
+// DesktopPowerShutdownTitle says "Shut down server"
+// in the language the app shows.
+func DesktopPowerShutdownTitle() string { return In(i18n.Locale()).DesktopPowerShutdownTitle() }
+
+// DesktopPowerShutdownTitle says "Shut down server"
+// in the language of msgs.
+func (msgs Messages) DesktopPowerShutdownTitle() string {
+	return Catalog.Format(msgs.locale, "desktopPowerShutdownTitle", nil)
+}
+
+// DesktopPowerRebootAction says "Restart"
+// in the language the app shows.
+func DesktopPowerRebootAction() string { return In(i18n.Locale()).DesktopPowerRebootAction() }
+
+// DesktopPowerRebootAction says "Restart"
+// in the language of msgs.
+func (msgs Messages) DesktopPowerRebootAction() string {
+	return Catalog.Format(msgs.locale, "desktopPowerRebootAction", nil)
+}
+
+// DesktopPowerShutdownAction says "Shut down"
+// in the language the app shows.
+func DesktopPowerShutdownAction() string { return In(i18n.Locale()).DesktopPowerShutdownAction() }
+
+// DesktopPowerShutdownAction says "Shut down"
+// in the language of msgs.
+func (msgs Messages) DesktopPowerShutdownAction() string {
+	return Catalog.Format(msgs.locale, "desktopPowerShutdownAction", nil)
+}
+
+// DesktopPowerRebootWarning says "{name} restarts in 2 seconds. Every connection to it drops, and its services stop until it is back up."
+// in the language the app shows.
+func DesktopPowerRebootWarning(name string) string {
+	return In(i18n.Locale()).DesktopPowerRebootWarning(name)
+}
+
+// DesktopPowerRebootWarning says "{name} restarts in 2 seconds. Every connection to it drops, and its services stop until it is back up."
+// in the language of msgs.
+func (msgs Messages) DesktopPowerRebootWarning(name string) string {
+	return Catalog.Format(msgs.locale, "desktopPowerRebootWarning", map[string]any{"name": name})
+}
+
+// DesktopPowerShutdownWarning says "{name} shuts down in 2 seconds. It can only be started again from its provider's console or by hand, not over SSH."
+// in the language the app shows.
+func DesktopPowerShutdownWarning(name string) string {
+	return In(i18n.Locale()).DesktopPowerShutdownWarning(name)
+}
+
+// DesktopPowerShutdownWarning says "{name} shuts down in 2 seconds. It can only be started again from its provider's console or by hand, not over SSH."
+// in the language of msgs.
+func (msgs Messages) DesktopPowerShutdownWarning(name string) string {
+	return Catalog.Format(msgs.locale, "desktopPowerShutdownWarning", map[string]any{"name": name})
+}
+
+// DesktopPowerUnavailable says "Connect, with the server monitor on, to restart or shut down the server."
+// in the language the app shows.
+func DesktopPowerUnavailable() string { return In(i18n.Locale()).DesktopPowerUnavailable() }
+
+// DesktopPowerUnavailable says "Connect, with the server monitor on, to restart or shut down the server."
+// in the language of msgs.
+func (msgs Messages) DesktopPowerUnavailable() string {
+	return Catalog.Format(msgs.locale, "desktopPowerUnavailable", nil)
+}
+
+// DesktopShellNewGroup says "App group"
+// in the language the app shows.
+func DesktopShellNewGroup() string { return In(i18n.Locale()).DesktopShellNewGroup() }
+
+// DesktopShellNewGroup says "App group"
+// in the language of msgs.
+func (msgs Messages) DesktopShellNewGroup() string {
+	return Catalog.Format(msgs.locale, "desktopShellNewGroup", nil)
+}
+
+// DesktopShellNewScript says "Shell script"
+// in the language the app shows.
+func DesktopShellNewScript() string { return In(i18n.Locale()).DesktopShellNewScript() }
+
+// DesktopShellNewScript says "Shell script"
+// in the language of msgs.
+func (msgs Messages) DesktopShellNewScript() string {
+	return Catalog.Format(msgs.locale, "desktopShellNewScript", nil)
+}
+
+// DesktopShellNewTextName says "New text file.txt"
+// in the language the app shows.
+func DesktopShellNewTextName() string { return In(i18n.Locale()).DesktopShellNewTextName() }
+
+// DesktopShellNewTextName says "New text file.txt"
+// in the language of msgs.
+func (msgs Messages) DesktopShellNewTextName() string {
+	return Catalog.Format(msgs.locale, "desktopShellNewTextName", nil)
+}
+
+// DesktopShellNewScriptName says "new-script.sh"
+// in the language the app shows.
+func DesktopShellNewScriptName() string { return In(i18n.Locale()).DesktopShellNewScriptName() }
+
+// DesktopShellNewScriptName says "new-script.sh"
+// in the language of msgs.
+func (msgs Messages) DesktopShellNewScriptName() string {
+	return Catalog.Format(msgs.locale, "desktopShellNewScriptName", nil)
+}
+
+// DesktopShellRunInTerminal says "Run in terminal"
+// in the language the app shows.
+func DesktopShellRunInTerminal() string { return In(i18n.Locale()).DesktopShellRunInTerminal() }
+
+// DesktopShellRunInTerminal says "Run in terminal"
+// in the language of msgs.
+func (msgs Messages) DesktopShellRunInTerminal() string {
+	return Catalog.Format(msgs.locale, "desktopShellRunInTerminal", nil)
+}
+
+// DesktopShellFilesHint says "Files and folders on the desktop are in {dir} on the server."
+// in the language the app shows.
+func DesktopShellFilesHint(dir string) string { return In(i18n.Locale()).DesktopShellFilesHint(dir) }
+
+// DesktopShellFilesHint says "Files and folders on the desktop are in {dir} on the server."
+// in the language of msgs.
+func (msgs Messages) DesktopShellFilesHint(dir string) string {
+	return Catalog.Format(msgs.locale, "desktopShellFilesHint", map[string]any{"dir": dir})
+}

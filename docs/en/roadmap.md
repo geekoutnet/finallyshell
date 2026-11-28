@@ -61,7 +61,7 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 
 ## In progress
 
-Nothing yet.
+Desktop organization (`feature/desktop-folders`): default folders of apps, tidying up and showing all apps in one click, a shared layout or one per server (made shared, reset), "Move to folder" on icons; "Open in" in the connection editor (terminal, desktop, or the mode used last); a dock tray (CPU, memory), the date with a month calendar, and a power menu (reconnect, disconnect, restart or shut down the server); the server's `~/Desktop` files on the desktop, with new folders, text files and shell scripts, opening with a double click, "Run in terminal", and copy, cut, paste, rename and delete.
 
 ## Next
 
@@ -76,6 +76,7 @@ The first batch and the next one hold every candidate listed before. Add new ide
 | Global TUN / VPN mode | Every program's traffic through the tunnel. `ssh -w` needs `PermitTunnel` on the server, root on both ends, and carries TCP over TCP; a global mode on Windows needs the wintun driver, administrator rights and a gVisor network stack. v2.0.16 covers browsers and most programs with the system proxy and PAC instead |
 | Device pairing for the account | A random sync key instead of the email address, handed from a signed-in computer to a new one through the gist after the user confirms a short code on both, as Signal and 1Password link devices: nothing to type or remember, and nothing guessable. |
 | OpenWrt, further | Wireless (Wi-Fi: iwinfo, SSIDs, channels, connected stations), general firewall rules and zone editing, editing interfaces, browsing files over the shell without SFTP. v2.0.21 does the parts of a router used most |
+| Features as plugins | Every feature apart from the core (SSH sessions, terminal, connection list and manager, options window, file panel) as a built-in plugin the user switches on and off at runtime, all on by default; new features are built as plugins from then on. Not Go's `plugin` package (no Windows) nor out-of-process plugins (they cannot draw MyGo UI): one registry that desktop apps, bottom tabs, options pages, menus and background work go through, gated by the plugin's switch. Switching a plugin off hides its UI and stops its background work but keeps its data in sync, or the other computers would delete it. Estimated 6–8 PRs over 60–90 files: the registry and a Plugins options page; the features already behind tables (desktop apps, bottom tabs, options pages: Docker, Caddy, databases, processes, network, System tab, OpenWrt, certificates, AI); the ones woven into the terminal and connection paths (tunnels, highlighting, quick commands, recording, ZMODEM, TOTP, Remote Desktop/Telnet/serial, bulk run, relay, alerts, import, sync and account); desktop mode as one plugin. Open: whether the switches sync between computers |
 
 ## Not planned
 

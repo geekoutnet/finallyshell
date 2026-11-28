@@ -115,7 +115,7 @@ func (a *App) desktopFilesItemMenu(c *ui.Context, w *desktopWindow, menu *ui.Men
 		label = locales.DesktopFilesRemoveFavorite()
 	}
 	desktopFilesMenuAction(menu, label, one, func() { a.desktopFilesFavorite(s, item.target, !favorite) })
-	if hook := desktopAddShortcutHook; hook != nil {
+	if hook := desktopAddShortcutHook; hook != nil && !a.desktopSurfaceWindow(w) { // already on the desktop
 		desktopFilesMenuAction(menu, locales.DesktopFilesShortcut(), one && valid, func() { hook(a, s, item.target) })
 	}
 	desktopFilesMenuAction(menu, locales.DesktopFilesNoteEdit(), one, func() { a.desktopFilesAskNote(w, item) })

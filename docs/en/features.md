@@ -2136,6 +2136,12 @@ Ctrl+Shift+D on Windows and Linux) switches both ways, from the terminal
 too. The terminal's own context menu (Copy, Paste, Select All, Clear) is
 built by MyGo's terminal and takes no items of the app's.
 
+**Open in** in the connection editor's Advanced section says what a session
+to the host shows when it opens: **Terminal (default)**, **Desktop**, or
+**The mode used last**, which remembers whether the host's session was left
+on its terminal or its desktop. A session opened in the background keeps
+its desktop for when its tab is selected.
+
 ### Desktop windows
 
 - Drag a title bar to move a window; drag any edge or corner to resize it.
@@ -2154,10 +2160,25 @@ built by MyGo's terminal and takes no items of the app's.
 - Click to select; use Ctrl (Command on macOS) to toggle items, Shift to
   select a range, or drag a rectangle from empty space. Double-click or
   press Enter to open; single-click opening is optional.
-- Drag an icon onto another grid cell or onto a folder. **New › New folder**
+- The default desktop keeps This PC, Files, Terminal, Trash, AI Assistant
+  and App Center, and groups the other apps into four folders: System
+  tools, Network & security, Apps & sites, and Transfers & commands.
+- Drag an icon onto another grid cell or onto a folder, or use its menu's
+  **Move to folder** (with the icons selected with it, or into a new
+  folder) and, inside a folder, **Move to desktop**. **New › App group**
   creates a folder with an inline name field. Open it to see its apps,
   drag icons back out, rename it, or delete it and return its icons to
   the desktop. This never changes files on the server.
+- **Desktop layout** in the desktop menu: **Tidy apps into folders** puts
+  every app in its folder (apps in folders of your own stay there), and
+  **Show all apps on the desktop** takes them all out and deletes the
+  folders. A server uses the **shared layout**, which every server without
+  one of its own shows, or **its own layout**, which starts as a copy of
+  the shared one; **Make this the shared layout** gives the others its
+  icons and folders, and **Reset to the default layout** resets the layout
+  in use. Leaving its own layout, sharing it and resetting ask first.
+  Adding a shortcut to a server's path gives that server its own layout,
+  as the path means nothing on the others.
 - The desktop menu contains icon sizes, auto-arrange, name/type sorting,
   refresh, Files, Terminal and Personalization. Removing an icon does not
   uninstall the app; the launcher can add it back. Path shortcuts sent
@@ -2170,9 +2191,18 @@ apps, and desktop controls. A dot indicates a running app; the focused app
 has a wider marker. Click to open, focus, minimize or restore. For multiple
 windows, pick one from the list. Right-click for window and pin actions, or
 drag pinned apps to reorder. **Show desktop** hides the visible windows; use
-it again to restore them. The clock uses local time; the host popover shows
-the connection status and lets you return to the terminal or switch to
-another connected SSH session's desktop.
+it again to restore them. On a wide desktop the tray shows the server's CPU
+and memory; click it for CPU, memory, swap and root disk bars, network
+rates, uptime and the Task Manager. The clock shows local time and, on a
+middling or wide desktop, the date; click it for the time with seconds, the
+weekday and a month calendar starting on Monday, with **Date & time
+settings**. The host popover shows the connection status and lets you
+return to the terminal or switch to another connected SSH session's
+desktop. The power button reconnects or disconnects the session, or
+restarts or shuts down the server: these two ask first, then run with root's
+rights (sudo or su as the server needs), in two seconds and in the
+background, through systemd, `shutdown` or BusyBox. They need a connection
+with the server monitor on.
 
 The launcher groups available apps and searches names in the current
 language. Right-click an app to pin it or add it to the desktop. Escape or
@@ -2183,8 +2213,25 @@ eight solid colors, or a local PNG, JPEG, GIF (still frame), or WebP image.
 The same page sets icon size, single/double click, cascade/stack placement,
 and whether maximized windows cover the dock. In cover mode, move the
 pointer to the bottom edge to show the dock. You can reset the dock pins and
-wallpaper independently. Icon layouts and folders are saved per host; other
-personalization stays on this device.
+wallpaper independently. Icon layouts and folders are shared by the servers
+or saved per server, and sync with the rest of the desktop's settings.
+
+### Desktop files
+
+The desktop shows the files and folders of `~/Desktop` on the server after
+its icons, folders first, hidden ones left out, and reads it again every 15
+seconds, on Refresh and on F5. **New** in the desktop menu makes a folder, a
+text file or a shell script (`#!/bin/sh`, executable) there, making
+`~/Desktop` first when the server has none; opening the desktop alone never
+writes to the server. Double-click a folder to open it in Files and a file
+to open it as Files does (text in the editor). A file's menu has the file
+manager's items (open, terminal here, download, copy, cut, paste, rename,
+Trash, delete, compress, extract, copy path, favorite, note, properties),
+and a script or executable file also has **Run in terminal**, which opens a
+terminal in its folder and runs it, through bash or sh when it is not
+executable. On the desktop, Ctrl+C, Ctrl+X and Ctrl+V copy, cut and paste,
+Delete moves to Trash, Shift+Delete deletes, and F2 renames. **Paste** and
+**Upload** are in the desktop menu too.
 
 ### Desktop mode › This PC and Files
 

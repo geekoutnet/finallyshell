@@ -1,8 +1,8 @@
 package app
 
 import (
-	"maps"
 	"slices"
+	"time"
 
 	"finallyshell/internal/config"
 
@@ -30,6 +30,8 @@ type desktopShellState struct {
 	folderRect                               ui.Rect
 	folder, rename, renameText, deleteFolder string
 	renameFocus                              bool
+	// layoutConfirm is the layout change asked about: desktopConfirm*.
+	layoutConfirm int
 
 	launcher, launcherFocus bool
 	launcherButton          ui.Rect
@@ -40,6 +42,12 @@ type desktopShellState struct {
 	dockDrag                *desktopDockDrag
 	dockRelease             bool
 	dockPositions           []desktopDockPosition
+
+	// The tray's popups, the month its calendar shows, and the power
+	// menu's restart or shutdown (desktop_shell_tray.go).
+	trayPopup, clockPopup, powerPopup bool
+	clockMonth                        time.Time
+	power                             opsState
 }
 
 func (a *App) desktopPreferences() config.DesktopSettings {
@@ -53,24 +61,6 @@ func (a *App) changeDesktopPreferences(change func(*config.DesktopSettings)) {
 	next := a.desktopPreferences()
 	change(&next)
 	a.changeSettings(func() { a.settings.Desktop = &next })
-}
-
-func (a *App) desktopHost(s *Session) config.DesktopHost {
-	return a.desktopPreferences().Hosts[s.Host.ID]
-}
-
-func (a *App) changeDesktopHost(s *Session, change func(*config.DesktopHost)) {
-	a.changeDesktopPreferences(func(prefs *config.DesktopSettings) {
-		host := prefs.Hosts[s.Host.ID]
-		host.Icons = slices.Clone(host.Icons)
-		host.Folders = slices.Clone(host.Folders)
-		change(&host)
-		prefs.Hosts = maps.Clone(prefs.Hosts)
-		if prefs.Hosts == nil {
-			prefs.Hosts = make(map[string]config.DesktopHost)
-		}
-		prefs.Hosts[s.Host.ID] = host
-	})
 }
 
 func (a *App) desktopArea(c *ui.Context, row *Session) {
@@ -105,5 +95,7 @@ func (a *App) desktopArea(c *ui.Context, row *Session) {
 		a.desktopFolderPanel(c, d, s)
 		a.desktopDock(c, d, s)
 		a.desktopLauncher(c, d, s)
+		a.opsWorkDialog(c, s, &d.shell.power)
+		a.desktopSurfaceDialogs(c, d, s)
 	})
 }

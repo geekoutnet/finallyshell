@@ -47,24 +47,31 @@ func (a *App) desktopAddShortcut(s *Session, p string) {
 	if !canOpenDesktop(s) || !desktopRemotePath(p) {
 		return
 	}
-	a.desktopAddIcon(s, desktopPathPrefix+path.Clean(p))
+	id := desktopPathPrefix + path.Clean(p)
+	if !a.desktopOwnLayout(s) {
+		// A shortcut to a path means nothing on the other hosts.
+		if slices.ContainsFunc(a.desktopHostIcons(s, a.desktopHost(s)), func(icon config.DesktopIcon) bool { return icon.App == id }) {
+			return
+		}
+		a.desktopChangeOwnLayout(s, func(h *config.DesktopHost) {
+			h.Icons = append(h.Icons, config.DesktopIcon{App: id, Col: -1, Row: -1})
+		})
+		a.notifyDesktopOwnLayout()
+		return
+	}
+	a.desktopAddIcon(s, id)
 }
 
 func (a *App) desktopHostIcons(s *Session, h config.DesktopHost) []config.DesktopIcon {
 	if h.IconsConfigured || h.Icons != nil {
 		return h.Icons
 	}
-	var out []config.DesktopIcon
-	for _, app := range desktopAppsFor(s) {
-		if app.onDesktop {
-			out = append(out, config.DesktopIcon{App: string(app.id), Col: -1, Row: -1})
-		}
-	}
-	return out
+	return desktopDefaultIcons(s)
 }
 
 func (a *App) changeDesktopIcons(s *Session, change func(*config.DesktopHost)) {
 	a.changeDesktopHost(s, func(h *config.DesktopHost) {
+		h.Folders = desktopHostFolders(*h) // before Icons, which it reads
 		h.Icons = a.desktopHostIcons(s, *h)
 		h.IconsConfigured = true
 		change(h)
@@ -87,7 +94,7 @@ func (a *App) desktopAddIcon(s *Session, id string) {
 }
 
 func desktopIconFolder(h config.DesktopHost, id string) (config.DesktopFolder, bool) {
-	for _, folder := range h.Folders {
+	for _, folder := range desktopHostFolders(h) {
 		if folder.ID == id {
 			return folder, true
 		}
@@ -100,6 +107,9 @@ func desktopIconInfo(s *Session, h config.DesktopHost, id string) (label, icon s
 		if f, ok := desktopIconFolder(h, raw); ok {
 			return f.Name, "folder", ui.Hex("#ba722a")
 		}
+	} else if name, ok := desktopSurfaceFile(id); ok {
+		icon, tint := desktopSurfaceIcon(id)
+		return name, icon, tint
 	} else if raw, ok := strings.CutPrefix(id, desktopPathPrefix); ok && desktopRemotePath(raw) {
 		return path.Base(raw), "folder", ui.Hex("#2568c4")
 	} else if app := desktopAppByID(desktopAppID(id)); app != nil && (app.available == nil || app.available(s)) {
@@ -179,13 +189,17 @@ func (a *App) desktopIcons(c *ui.Context, d *desktopState, s *Session) {
 	shell := &d.shell
 	prefs, h := a.desktopPreferences(), a.desktopHost(s)
 	grid := desktopMakeGrid(d.area, prefs.IconSize)
-	items := grid.layout(s, h, a.desktopHostIcons(s, h))
+	a.desktopSurface(d, s)
+	items := grid.layout(s, h, append(slices.Clone(a.desktopHostIcons(s, h)), desktopSurfaceIcons(d)...))
+	if shell.iconKeys && !shell.launcher && shell.deleteFolder == "" && shell.layoutConfirm == 0 {
+		a.desktopSurfaceKeys(c, d, s)
+	}
 	bg := ui.Box(c.Key("desktop-background")).Absolute().Left(0).Top(0).Right(0).Bottom(0).Label(locales.DesktopTab())
 	bg.ContextMenu(func(m *ui.Menu) { a.desktopBackgroundMenu(c, m, d, s, h) })
 	a.desktopMarquee(c, d, bg, items)
-	if shell.iconKeys && !shell.launcher && shell.rename == "" && shell.deleteFolder == "" && c.Shortcut(0, ui.KeyEnter) {
+	if shell.iconKeys && !shell.launcher && shell.rename == "" && shell.deleteFolder == "" && shell.layoutConfirm == 0 && c.Shortcut(0, ui.KeyEnter) {
 		var selected []string
-		for _, icon := range a.desktopHostIcons(s, h) {
+		for _, icon := range append(slices.Clone(a.desktopHostIcons(s, h)), desktopSurfaceIcons(d)...) {
 			if shell.selection[icon.App] && icon.Folder == shell.folder {
 				selected = append(selected, icon.App)
 			}
@@ -288,13 +302,19 @@ func (a *App) desktopIconView(c *ui.Context, d *desktopState, s *Session, h conf
 	if tile.PressCanceled() && sh.doubleIcon == id {
 		sh.doubleIcon = ""
 	}
-	tile.ContextMenu(func(m *ui.Menu) { a.desktopIconMenu(m, d, s, id) })
+	tile.ContextMenu(func(m *ui.Menu) {
+		if _, file := desktopSurfaceFile(id); file {
+			a.desktopSurfaceMenu(c, m, d, s, id)
+			return
+		}
+		a.desktopIconMenu(m, d, s, id)
+	})
 	a.desktopDragIcon(c, d, s, tile, item, g, items)
 	tile.Children(func() {
 		if isFolder {
 			desktopTile(c, "", ui.Hex("#7165bb"), g.tile, false).Padding(4).Children(func() {
 				var children []config.DesktopIcon
-				for _, child := range h.Icons {
+				for _, child := range a.desktopHostIcons(s, h) {
 					if child.Folder == folderID {
 						children = append(children, child)
 					}
@@ -381,6 +401,10 @@ func (a *App) desktopOpenIcon(d *desktopState, s *Session, id string) {
 		return
 	}
 	d.shell.folder = ""
+	if _, file := desktopSurfaceFile(id); file {
+		a.desktopSurfaceOpen(d, s, id)
+		return
+	}
 	if p, ok := strings.CutPrefix(id, desktopPathPrefix); ok {
 		if desktopRemotePath(p) {
 			a.desktopOpen(s, appFiles, p)
@@ -392,6 +416,9 @@ func (a *App) desktopOpenIcon(d *desktopState, s *Session, id string) {
 
 func (a *App) desktopDragIcon(c *ui.Context, d *desktopState, s *Session, tile ui.Element, item config.DesktopIcon, g desktopGrid, items []desktopIconCell) {
 	sh := &d.shell
+	if _, file := desktopSurfaceFile(item.App); file {
+		return // a file stays where its folder's order puts it
+	}
 	_, _, pressed := tile.Dragged()
 	if pressed {
 		if sh.iconDrag == nil {
@@ -489,16 +516,32 @@ func (a *App) desktopBackgroundMenu(c *ui.Context, m *ui.Menu, d *desktopState, 
 			a.desktopSortIcons(s, true)
 		}
 	})
+	a.desktopLayoutMenu(m, d, s)
 	if m.Item(locales.Refresh()).Chosen() {
+		a.desktopSurfaceRead(d)
 		clear(d.shell.selection)
 		a.desktopWall.requested = false
 		c.Invalidate()
 	}
 	m.Submenu(locales.DesktopShellNew(), func(sub *ui.Menu) {
-		if sub.Item(locales.NewFolder()).Chosen() {
+		a.desktopSurfaceNewMenu(sub, d, s)
+		sub.Separator()
+		if sub.Item(locales.DesktopShellNewGroup()).Chosen() {
 			a.desktopNewFolder(d, s)
 		}
 	})
+	if d.files != nil {
+		ready := s.sftp != nil && d.filesDir != "" && d.files.explorer().job == nil
+		m.Submenu(locales.DesktopFilesUpload(), func(sub *ui.Menu) {
+			if ready && d.files.explorer().dir != d.filesDir {
+				return // the folder is made by a file made or pasted first
+			}
+			a.desktopFilesUploadMenu(d.files, sub, ready)
+		}).Disabled(!ready || d.files.explorer().dir != d.filesDir)
+		if m.Item(locales.DesktopFilesPaste()).Disabled(!a.desktopSurfaceCanPaste(c, s, d)).Chosen() && a.desktopSurfaceCanPaste(c, s, d) {
+			a.desktopSurfacePaste(c, d, s)
+		}
+	}
 	m.Separator()
 	a.desktopModeItem(m, s)
 	m.Separator()
@@ -559,6 +602,7 @@ func (a *App) desktopIconMenu(m *ui.Menu, d *desktopState, s *Session, id string
 	if app := desktopAppByID(desktopAppID(id)); app != nil && app.id != appAI {
 		a.desktopPinMenu(m, app.id)
 	}
+	a.desktopMoveMenu(m, d, s, id)
 	if m.Item(locales.DesktopShellRemoveIcon()).Chosen() {
 		a.changeDesktopIcons(s, func(h *config.DesktopHost) {
 			h.Icons = slices.DeleteFunc(h.Icons, func(icon config.DesktopIcon) bool { return icon.App == id })
@@ -567,7 +611,7 @@ func (a *App) desktopIconMenu(m *ui.Menu, d *desktopState, s *Session, id string
 	}
 }
 
-func (a *App) desktopNewFolder(d *desktopState, s *Session) {
+func (a *App) desktopNewFolder(d *desktopState, s *Session) string {
 	id := fmt.Sprintf("%d", time.Now().UnixNano())
 	a.changeDesktopIcons(s, func(h *config.DesktopHost) {
 		h.Folders = append(h.Folders, config.DesktopFolder{ID: id, Name: locales.NewFolder()})
@@ -575,6 +619,7 @@ func (a *App) desktopNewFolder(d *desktopState, s *Session) {
 	})
 	d.shell.folder = ""
 	a.desktopStartRename(d, s, id)
+	return id
 }
 
 func (a *App) desktopStartRename(d *desktopState, s *Session, id string) {
@@ -602,6 +647,7 @@ func (a *App) desktopRenameFolder(d *desktopState, s *Session) {
 func (a *App) desktopFolderPanel(c *ui.Context, d *desktopState, s *Session) {
 	sh, h := &d.shell, a.desktopHost(s)
 	a.desktopFolderConfirm(c, d, s, h)
+	a.desktopLayoutConfirm(c, d, s)
 	f, ok := desktopIconFolder(h, sh.folder)
 	if !ok || sh.folder == "" {
 		sh.folderRect = ui.Rect{}
@@ -654,7 +700,7 @@ func (a *App) desktopFolderPanel(c *ui.Context, d *desktopState, s *Session) {
 		})
 		var items []desktopIconCell
 		g := desktopMakeGrid(d.area, "small")
-		for _, icon := range h.Icons {
+		for _, icon := range a.desktopHostIcons(s, h) {
 			if icon.Folder == f.ID {
 				items = append(items, desktopIconCell{icon: icon})
 			}

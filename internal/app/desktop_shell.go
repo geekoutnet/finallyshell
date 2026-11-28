@@ -34,7 +34,10 @@ type desktopShellState struct {
 	folderMoved string
 	// folderSize is the size the user gave that panel by its edges, zero
 	// while it has its own.
-	folderSize                               desktopSize
+	folderSize desktopSize
+	// renameEditing is set once the rename field has had the focus:
+	// losing it then keeps the name.
+	renameEditing                            bool
 	folder, rename, renameText, deleteFolder string
 	renameFocus                              bool
 	// layoutConfirm is the layout change asked about: desktopConfirm*.

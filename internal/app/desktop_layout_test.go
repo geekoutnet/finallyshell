@@ -354,8 +354,13 @@ func TestDesktopFolderPanelDragAndSize(t *testing.T) {
 	}
 	// Its icons are the desktop's size: medium by default, all in view.
 	g := desktopMakeGrid(d.area, "")
-	if want := 5*(g.spaceW+desktopFolderGap) - desktopFolderGap + 2*desktopFolderPad + desktopFolderScrollbar; start.W != want {
-		t.Fatalf("width %v, want %v for five medium icons", start.W, want)
+	cols := float32(desktopFolderCols(9))
+	if want := cols*(g.spaceW+desktopFolderGap) - desktopFolderGap + 2*desktopFolderPad + desktopFolderScrollbar; cols != 6 || start.W != want {
+		t.Fatalf("width %v, want %v for six medium icons a row", start.W, want)
+	}
+	// A folder of two icons is as wide as four, not narrow.
+	if desktopFolderCols(2) != 4 {
+		t.Fatalf("%d columns for two icons", desktopFolderCols(2))
 	}
 	// Drag it by its header.
 	x, y := desktopShellPoint(d, ui.Point{X: start.X + 60, Y: start.Y + desktopFolderHeader/2})
@@ -448,5 +453,106 @@ func TestDesktopFolderPanelResize(t *testing.T) {
 	tt.Frame()
 	if d.shell.folderRect.W == r.W {
 		t.Fatal("another folder took the resized one's size")
+	}
+}
+
+// renameField is the field renaming a folder, failing when there is none.
+func renameField(t *testing.T, tt *ui.Tester) ui.AccessInfo {
+	t.Helper()
+	field, ok := tt.AccessByRole(ui.RoleTextField, locales.Rename())
+	if !ok {
+		t.Fatal("no field to rename the folder")
+	}
+	return field
+}
+
+func TestDesktopFolderRename(t *testing.T) {
+	a, _, tt, s := desktopShellTestApp(t)
+	d := a.desktopOf(s)
+	name := func(id string) string {
+		f, _ := desktopIconFolder(a.desktopHost(s), id)
+		return f.Name
+	}
+	type_ := func(text string) {
+		t.Helper()
+		tt.Key(ui.Cmd, ui.KeyA)
+		tt.Type(text)
+		tt.Frame()
+	}
+	a.desktopOpenIcon(d, s, desktopFolderPrefix+"preset-transfer")
+	tt.Frame()
+
+	// The pencil edits the name, in the panel's header only (not also
+	// under the folder's icon on the desktop), and turns into a check.
+	desktopShellClick(t, tt, locales.Rename())
+	tt.Frame()
+	if field := renameField(t, tt); !desktopContains(d.shell.folderRect, ui.Point{X: field.Bounds.X - d.shell.root.X, Y: field.Bounds.Y - d.shell.root.Y}) {
+		t.Fatalf("the field is outside the panel: %+v, panel %+v", field.Bounds, d.shell.folderRect)
+	}
+	if _, ok := tt.AccessByRole(ui.RoleButton, locales.Save()); !ok {
+		t.Fatal("the pencil did not turn into a check")
+	}
+	type_("Deploy")
+	desktopShellClick(t, tt, locales.Save())
+	if got := name("preset-transfer"); got != "Deploy" || d.shell.rename != "" {
+		t.Fatalf("the check kept %q, still renaming %q", got, d.shell.rename)
+	}
+	if _, ok := tt.AccessByRole(ui.RoleButton, locales.Rename()); !ok {
+		t.Fatal("the check did not turn back into a pencil")
+	}
+
+	// Escape keeps the old name.
+	desktopShellClick(t, tt, locales.Rename())
+	tt.Frame()
+	type_("Nope")
+	tt.Key(0, ui.KeyEscape)
+	tt.Frame()
+	if got := name("preset-transfer"); got != "Deploy" {
+		t.Fatalf("Escape kept %q", got)
+	}
+
+	// Going on to something else keeps what was typed: closing the panel,
+	desktopShellClick(t, tt, locales.Rename())
+	tt.Frame()
+	type_("Ship")
+	// The panel's own ×, the last of its header (the session's tab has a
+	// Close too).
+	r := d.shell.folderRect
+	x, y := desktopShellPoint(d, ui.Point{X: r.X + r.W - 14 - 14, Y: r.Y + desktopFolderHeader/2})
+	tt.ClickAt(x, y)
+	tt.Frame()
+	if got := name("preset-transfer"); got != "Ship" || d.shell.folder != "" {
+		t.Fatalf("closing kept %q", got)
+	}
+	// pressing the desktop elsewhere,
+	a.desktopOpenIcon(d, s, desktopFolderPrefix+"preset-transfer")
+	tt.Frame()
+	desktopShellClick(t, tt, locales.Rename())
+	tt.Frame()
+	type_("Release")
+	x, y = desktopShellPoint(d, ui.Point{X: d.area.W - 40, Y: d.area.H - desktopDockHeight - 30})
+	tt.ClickAt(x, y)
+	tt.Frame()
+	if got := name("preset-transfer"); got != "Release" || d.shell.rename != "" {
+		t.Fatalf("pressing elsewhere kept %q, still renaming %q", got, d.shell.rename)
+	}
+	// and opening another folder.
+	a.desktopStartRename(d, s, "preset-apps")
+	tt.Frame()
+	tt.Frame()
+	type_("Stack")
+	a.desktopOpenIcon(d, s, desktopFolderPrefix+"preset-system")
+	if got := name("preset-apps"); got != "Stack" {
+		t.Fatalf("opening another folder kept %q", got)
+	}
+	// An empty name keeps the old one.
+	a.desktopStartRename(d, s, "preset-system")
+	tt.Frame()
+	tt.Frame()
+	type_("   ")
+	tt.Key(0, ui.KeyEnter)
+	tt.Frame()
+	if got := name("preset-system"); got != locales.DesktopFolderSystem() {
+		t.Fatalf("an empty name gave %q", got)
 	}
 }

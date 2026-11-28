@@ -10,6 +10,8 @@ import (
 	"finallyshell/internal/config"
 	"finallyshell/internal/icons"
 	"finallyshell/locales"
+
+	"github.com/egoist/mygo/plugins/glass"
 	"github.com/egoist/mygo/ui"
 )
 
@@ -338,18 +340,8 @@ func (a *App) desktopIconView(c *ui.Context, d *desktopState, s *Session, h conf
 		} else {
 			desktopTile(c, icon, tint, g.tile, false)
 		}
-		if sh.rename == folderID && isFolder {
-			edit := ui.TextInput(c, &sh.renameText).Width(g.spaceW - 12).Height(22).FontSize(11).Label(locales.Rename())
-			if sh.renameFocus {
-				edit.Focus()
-				sh.renameFocus = false
-			}
-			if edit.Submitted() {
-				a.desktopRenameFolder(d, s)
-			}
-			if edit.Shortcut(0, ui.KeyEscape) {
-				sh.rename = ""
-			}
+		if sh.rename == folderID && isFolder && sh.folder != folderID { // the open panel's header edits it then
+			a.desktopRenameField(d, s, ui.TextInput(c, &sh.renameText).Width(g.spaceW-12).Height(22).FontSize(11).Label(locales.Rename()))
 		} else {
 			text := ui.Text(c, label).SingleLine().MaxWidth(g.spaceW - 12).FontSize(11)
 			if insideFolder {
@@ -393,6 +385,9 @@ func (a *App) desktopSelectIcon(d *desktopState, id string, mods ui.Modifiers, i
 }
 
 func (a *App) desktopOpenIcon(d *desktopState, s *Session, id string) {
+	if d.shell.rename != "" && d.shell.rename != strings.TrimPrefix(id, desktopFolderPrefix) {
+		a.desktopRenameFolder(d, s) // as leaving the field for anything else
+	}
 	if folder, ok := strings.CutPrefix(id, desktopFolderPrefix); ok {
 		d.shell.folder = folder
 		clear(d.shell.selection)
@@ -624,17 +619,40 @@ func (a *App) desktopNewFolder(d *desktopState, s *Session) string {
 
 func (a *App) desktopStartRename(d *desktopState, s *Session, id string) {
 	if f, ok := desktopIconFolder(a.desktopHost(s), id); ok {
-		d.shell.rename, d.shell.renameText, d.shell.renameFocus = id, f.Name, true
+		d.shell.rename, d.shell.renameText, d.shell.renameFocus, d.shell.renameEditing = id, f.Name, true, false
+	}
+}
+
+// desktopRenameField is the field renaming a folder: Enter, and leaving it
+// for anything else, keep the name; Escape keeps the old one.
+func (a *App) desktopRenameField(d *desktopState, s *Session, edit ui.Element) {
+	sh := &d.shell
+	if sh.renameFocus {
+		edit.Focus()
+		sh.renameFocus = false
+		return
+	}
+	switch {
+	case edit.Shortcut(0, ui.KeyEscape):
+		sh.rename, sh.renameEditing = "", false
+	case edit.Submitted():
+		a.desktopRenameFolder(d, s)
+	case edit.Focused():
+		sh.renameEditing = true
+	case sh.renameEditing: // the user went on to something else
+		a.desktopRenameFolder(d, s)
 	}
 }
 
 func (a *App) desktopRenameFolder(d *desktopState, s *Session) {
 	id, name := d.shell.rename, strings.TrimSpace(d.shell.renameText)
-	d.shell.rename = ""
-	if name == "" {
+	d.shell.rename, d.shell.renameEditing = "", false
+	if id == "" || name == "" {
 		return
 	}
-	a.changeDesktopHost(s, func(h *config.DesktopHost) {
+	// changeDesktopIcons, which saves the default layout's preset folders
+	// first: renaming one of them changes the folders saved.
+	a.changeDesktopIcons(s, func(h *config.DesktopHost) {
 		for idx := range h.Folders {
 			if h.Folders[idx].ID == id {
 				h.Folders[idx].Name = name
@@ -665,17 +683,22 @@ func (a *App) desktopFolderPanel(c *ui.Context, d *desktopState, s *Session) {
 		return
 	}
 	sh.folderRect = r
+	// Frosted glass, the wallpaper blurred through it, unlike the apps'
+	// opaque windows.
 	panel := ui.Column(c.Key("folder-panel")).Absolute().Left(r.X).Top(r.Y).Size(r.W, r.H).ZIndex(3).
-		Radius(13).Border(1, theme.Border).Shadow(0, 8, 30, 0, ui.RGBA(0, 0, 0, .4)).Background(theme.Background).Clip().Label(f.Name)
+		Radius(16).Border(1, desktopFolderRim()).Shadow(0, 10, 34, 0, ui.RGBA(0, 0, 0, .3)).
+		Material(glass.Blur{Radius: desktopFolderBlur}).Clip().Label(f.Name)
 	if panel.PressedOutside() && sh.iconDrag == nil && sh.deleteFolder == "" {
 		sh.folder = ""
 		if sh.rename == f.ID {
-			sh.rename = ""
+			a.desktopRenameFolder(d, s)
 		}
 		c.Invalidate()
 	}
 	panel.Children(func() {
-		header := ui.Row(c).Height(desktopFolderHeader).Shrink(0).PaddingX(12).Gap(5).AlignItems(ui.Center).Background(colors.sidebar).Cursor(ui.CursorMove)
+		// The frost, under the panel's content.
+		ui.Box(c).Absolute().Left(0).Top(0).Right(0).Bottom(0).ZIndex(-1).Background(desktopFolderTint()).IgnoreInput(true)
+		header := ui.Row(c).Height(desktopFolderHeader).Shrink(0).PaddingX(14).Gap(5).AlignItems(ui.Center).Background(theme.Text.Alpha(.05)).Cursor(ui.CursorMove)
 		if dx, dy, dragging := header.Dragged(); dragging && (dx != 0 || dy != 0) && sh.rename != f.ID {
 			sh.folderAt = desktopClampFolder(d, ui.Point{X: r.X + dx, Y: r.Y + dy}, r.W, r.H)
 			if sh.folderMoved != f.ID {
@@ -685,22 +708,20 @@ func (a *App) desktopFolderPanel(c *ui.Context, d *desktopState, s *Session) {
 			c.Invalidate()
 		}
 		header.Children(func() {
-			if sh.rename == f.ID {
-				edit := ui.TextInput(c, &sh.renameText).Grow(1).MinWidth(0).Label(locales.Rename())
-				if sh.renameFocus {
-					edit.Focus()
-					sh.renameFocus = false
-				}
-				if edit.Submitted() {
-					a.desktopRenameFolder(d, s)
-				}
-				if edit.Shortcut(0, ui.KeyEscape) {
-					sh.rename = ""
-				}
+			renaming := sh.rename == f.ID
+			if renaming {
+				a.desktopRenameField(d, s, ui.TextInput(c, &sh.renameText).Grow(1).MinWidth(0).Label(locales.Rename()))
 			} else {
 				ui.Text(c, f.Name).Bold().SingleLine().Grow(1).MinWidth(0)
 			}
-			if desktopFrameButton(c, "pencil", locales.Rename()).Clicked() {
+			// The pencil starts renaming; it turns into a check that keeps
+			// the name.
+			if renaming {
+				if desktopFrameButton(c, "check", locales.Save()).Clicked() {
+					a.desktopRenameFolder(d, s)
+					c.Invalidate()
+				}
+			} else if desktopFrameButton(c, "pencil", locales.Rename()).Clicked() {
 				a.desktopStartRename(d, s, f.ID)
 				c.Invalidate()
 			}
@@ -709,6 +730,9 @@ func (a *App) desktopFolderPanel(c *ui.Context, d *desktopState, s *Session) {
 				c.Invalidate()
 			}
 			if desktopFrameButton(c, "x", locales.Close()).Clicked() {
+				if sh.rename == f.ID {
+					a.desktopRenameFolder(d, s)
+				}
 				sh.folder = ""
 				c.Invalidate()
 			}
@@ -719,7 +743,7 @@ func (a *App) desktopFolderPanel(c *ui.Context, d *desktopState, s *Session) {
 		ui.Scroll(c).Grow(1).MinHeight(0).Children(func() {
 			ui.Row(c).Wrap().Padding(desktopFolderPad).Gap(desktopFolderGap).Children(func() {
 				for _, item := range items {
-					tile := ui.Column(c.Key(item.icon.App)).Size(g.spaceW, g.spaceH).Shrink(0).Background(theme.Surface)
+					tile := ui.Column(c.Key(item.icon.App)).Size(g.spaceW, g.spaceH).Shrink(0).Background(theme.Background.Alpha(.38))
 					a.desktopIconView(c, d, s, h, tile, item.icon, g, items)
 				}
 			})

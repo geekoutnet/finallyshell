@@ -84,7 +84,8 @@ func (a *App) desktopDock(c *ui.Context, d *desktopState, s *Session) {
 	sh := &d.shell
 	now := c.Now()
 	c.After(time.Minute - time.Duration(now.Second())*time.Second - time.Duration(now.Nanosecond()))
-	if sh.covered && !sh.reveal && !sh.launcher && sh.dockPopup == "" && !sh.hostPopup && !sh.dockOverflow && sh.dockDrag == nil {
+	if sh.covered && !sh.reveal && !sh.launcher && sh.dockPopup == "" && !sh.hostPopup && !sh.dockOverflow && sh.dockDrag == nil &&
+		!sh.trayPopup && !sh.clockPopup && !sh.powerPopup && sh.power.dialog == nil {
 		return
 	}
 	apps := a.desktopDockApps(d, s)
@@ -95,7 +96,7 @@ func (a *App) desktopDock(c *ui.Context, d *desktopState, s *Session) {
 	if d.area.W < 420 {
 		hostWidth = 25
 	}
-	availableSlots := max(1, int((d.area.W-hostWidth-210)/42))
+	availableSlots := max(1, int((d.area.W-hostWidth-210-desktopTrayWidth(d.area.W)+46)/42))
 	visible := len(apps)
 	if visible > availableSlots {
 		visible = availableSlots - 1
@@ -134,8 +135,9 @@ func (a *App) desktopDock(c *ui.Context, d *desktopState, s *Session) {
 			}
 			button.Children(func() { ui.Icon(c, icons.Get("panels-top-left")).FontSize(17).TextColor(theme.Text) })
 			ui.Box(c).Size(1, 24).Background(theme.Text.Alpha(.22))
-			ui.Text(c, now.Format("15:04")).FontSize(12).Bold().Shrink(0).TextColor(theme.Text)
+			a.desktopDockTray(c, d, s)
 			a.desktopDockHost(c, d, s, hostWidth)
+			a.desktopDockPower(c, d, s)
 		})
 	})
 	if drag := sh.dockDrag; drag != nil && sh.dockRelease {

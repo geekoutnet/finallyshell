@@ -2,6 +2,7 @@ package app
 
 import (
 	"slices"
+	"time"
 
 	"finallyshell/internal/config"
 
@@ -41,6 +42,12 @@ type desktopShellState struct {
 	dockDrag                *desktopDockDrag
 	dockRelease             bool
 	dockPositions           []desktopDockPosition
+
+	// The tray's popups, the month its calendar shows, and the power
+	// menu's restart or shutdown (desktop_shell_tray.go).
+	trayPopup, clockPopup, powerPopup bool
+	clockMonth                        time.Time
+	power                             opsState
 }
 
 func (a *App) desktopPreferences() config.DesktopSettings {
@@ -88,5 +95,6 @@ func (a *App) desktopArea(c *ui.Context, row *Session) {
 		a.desktopFolderPanel(c, d, s)
 		a.desktopDock(c, d, s)
 		a.desktopLauncher(c, d, s)
+		a.opsWorkDialog(c, s, &d.shell.power)
 	})
 }

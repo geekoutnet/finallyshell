@@ -1,9 +1,11 @@
 package app
 
 import (
+	"errors"
 	"time"
 
 	"finallyshell/internal/icons"
+	"finallyshell/internal/sshx"
 	"finallyshell/locales"
 
 	"github.com/egoist/mygo/ui"
@@ -93,7 +95,13 @@ func (a *App) desktopConnCard(c *ui.Context, d *desktopState, s *Session) {
 			if detail != "" && detail != title {
 				ui.Text(c, detail).FontSize(12).TextColor(theme.TextMuted).FillWidth()
 			}
-			ui.Row(c).Gap(6).Children(func() {
+			ui.Row(c).Gap(6).Wrap().Children(func() {
+				// The server's key changed, as after a reinstall: trust the
+				// new one, once its fingerprint is checked, and connect.
+				var changed *sshx.HostKeyChangedError
+				if errors.As(s.err, &changed) && changed.Line != "" && ui.PrimaryButton(c, locales.HostKeyTrustNew()).FontSize(12).Clicked() {
+					a.trustNewHostKey(s, changed)
+				}
 				if ui.Button(c, locales.Reconnect()).FontSize(12).Clicked() {
 					a.reconnect(s)
 				}

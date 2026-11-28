@@ -271,3 +271,17 @@ func TestDNSProviders(t *testing.T) {
 		t.Fatalf("cloudflare: %v", err)
 	}
 }
+
+func TestHostedBy(t *testing.T) {
+	for ns, want := range map[string]string{
+		"ada.ns.cloudflare.com.": "cloudflare", "dns9.hichina.com": "alidns", "ns1.alidns.com": "alidns",
+		"f1g1ns1.dnspod.net": "tencentcloud", "ns1.huaweicloud-dns.com": "huaweicloud",
+	} {
+		if p := HostedBy([]string{"ns.other.example", ns}); p == nil || p.ID != want {
+			t.Errorf("%s: %v, want %s", ns, p, want)
+		}
+	}
+	if p := HostedBy([]string{"ns1.example.com", "cloudflare.com.evil.example"}); p != nil {
+		t.Fatalf("hosted by %s", p.ID)
+	}
+}

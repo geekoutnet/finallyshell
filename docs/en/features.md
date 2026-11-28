@@ -3366,8 +3366,11 @@ OAuth app has token expiration turned off, the sign-in lasts until it is
 revoked and nothing is renewed; a refresh token GitHub then refuses,
 its sign-in still working, is dropped and the sign-in kept. Another copy of the app may
 have renewed it first; the app then uses that one. If GitHub refuses the
-token, the app renews or checks it once and tries again. A sign-in that
-GitHub no longer accepts (revoked, or not used for six months) shows
+token, the app renews or checks it once and tries again; a token it has
+just renewed that GitHub refuses is checked, not renewed again, as GitHub
+may answer a renewal with a token that does not work. A sign-in that
+GitHub no longer accepts (revoked, or not used for six months, or renewed
+into a token that does not work) shows
 **Sign-in expired**; **Sign In Again** with the same account keeps its gist
 and settings. Signing in with another account starts that account's own
 gist.

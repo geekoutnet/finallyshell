@@ -34,6 +34,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `chats.json` | 按主机 ID 保存的本地 AI 对话，包括助手执行过的命令和退出码；不含命令输出、上下文附件、基于附件生成的回复或 API 密钥，不参与同步。 |
 | `sysproxy-backup.json` | 隧道接管系统代理前的本机设置恢复快照。 |
 | `db.json` | 按 SSH 主机 ID 保存的本机数据库连接配置，不含凭据和查询历史。 |
+| `browser-kernels/` | 服务器浏览器下载的浏览器：`chrome/`、`firefox/` 和 `camoufox/`，各含 `kernel.json`（版本、可执行文件、大小）和解压后的浏览器 `app/`。安装时先解压到 `.tmp-*` 目录，再整体替换；删除时先把目录移到 `.trash-*`。中断留下的目录在应用启动后首次打开窗口时清除（`.tmp-*` 要放满一天）。不参与同步。 |
 | `browser-profiles/` | 服务器浏览器的本机配置目录，按 SSH 主机 ID 隔离。基于 Chromium 的浏览器在对应配置中保存常规浏览数据；Firefox 使用停止后删除的临时配置。不参与同步。 |
 | `log-paths/<连接哈希>.json` | 每个连接最近输入的最多 12 个远程日志路径，仅存本机，不保存日志内容。旧版本以 `.bak-YYYYMMDDHHMMSS` 为后缀。 |
 | `known_hosts` | 信任过的主机指纹。 |
@@ -257,6 +258,9 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 `desktop.hosts` 按主机 ID 存储。`iconsConfigured` 标记图标列表已自定义，包括有意清空的
 列表。`icons` 存储应用、文件夹和路径快捷方式及其网格位置；`folders` 存储图标文件夹的
 名称。开启 `autoArrange` 后，图标连续排列，不使用保存的格子。不写入窗口的位置或大小。
+`browser` 是该主机的服务器浏览器：下载的内核写作 `kernel:chrome`、`kernel:firefox` 或
+`kernel:camoufox`，本机安装的浏览器写可执行文件的绝对路径，省略时用找到的第一个。它只保存在
+本机：同步既不上传也不覆盖它。
 
 `shortcuts` 中的桌面快捷键为 `openDesktop`、`desktopClose`、`desktopMinimize`、
 `desktopMaximize`、`desktopSnapLeft`、`desktopSnapRight`、`desktopCycle`、`desktopShow`

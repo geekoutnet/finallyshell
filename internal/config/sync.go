@@ -181,19 +181,42 @@ func deviceWallpaper(w string) bool {
 	return w != "" && !strings.HasPrefix(w, "builtin:") && !strings.HasPrefix(w, "color:")
 }
 
-// deviceDesktop is the desktop setting v without a wallpaper image of
-// this device's own, which stays here.
+// deviceDesktop is the desktop setting v without what stays on this
+// device: a wallpaper image of its own, and each host's server browser
+// (a kernel or a program of this computer's).
 func deviceDesktop(v json.RawMessage) json.RawMessage {
 	var m map[string]json.RawMessage
 	if json.Unmarshal(v, &m) != nil {
 		return v
 	}
+	changed := false
 	var w string
 	json.Unmarshal(m["wallpaper"], &w)
-	if !deviceWallpaper(w) {
+	if deviceWallpaper(w) {
+		delete(m, "wallpaper")
+		changed = true
+	}
+	var hosts map[string]map[string]json.RawMessage
+	if json.Unmarshal(m["hosts"], &hosts) == nil {
+		for id, host := range hosts {
+			if _, ok := host["browser"]; !ok {
+				continue
+			}
+			delete(host, "browser")
+			if len(host) == 0 {
+				delete(hosts, id)
+			}
+			changed = true
+		}
+		if len(hosts) == 0 {
+			delete(m, "hosts")
+		} else if data, err := json.Marshal(hosts); err == nil {
+			m["hosts"] = data
+		}
+	}
+	if !changed {
 		return v
 	}
-	delete(m, "wallpaper")
 	out, _ := json.Marshal(m)
 	return out
 }
@@ -247,7 +270,37 @@ func WithSyncedSettings(s Settings, synced map[string]json.RawMessage) Settings 
 			out.Desktop.Wallpaper = s.Desktop.Wallpaper
 		}
 	}
+	// Each host's server browser is this device's, whatever came.
+	keepDeviceBrowsers(s.Desktop, &out)
 	return out
+}
+
+func keepDeviceBrowsers(local *DesktopSettings, out *Settings) {
+	if out.Desktop != nil {
+		for id, host := range out.Desktop.Hosts {
+			if host.Browser != "" {
+				host.Browser = ""
+				out.Desktop.Hosts[id] = host
+			}
+		}
+	}
+	if local == nil {
+		return
+	}
+	for id, host := range local.Hosts {
+		if host.Browser == "" {
+			continue
+		}
+		if out.Desktop == nil {
+			out.Desktop = &DesktopSettings{}
+		}
+		if out.Desktop.Hosts == nil {
+			out.Desktop.Hosts = make(map[string]DesktopHost)
+		}
+		kept := out.Desktop.Hosts[id]
+		kept.Browser = host.Browser
+		out.Desktop.Hosts[id] = kept
+	}
 }
 
 func settingsMap(s Settings) map[string]json.RawMessage {

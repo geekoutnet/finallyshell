@@ -26310,6 +26310,272 @@ func (msgs Messages) DesktopBrowserIPFailed() string {
 	return Catalog.Format(msgs.locale, "desktopBrowserIPFailed", nil)
 }
 
+// DesktopBrowserKernels says "Browser kernels"
+// in the language the app shows.
+func DesktopBrowserKernels() string { return In(i18n.Locale()).DesktopBrowserKernels() }
+
+// DesktopBrowserKernels says "Browser kernels"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserKernels() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserKernels", nil)
+}
+
+// DesktopBrowserKernelsNote says "Downloaded on request into this computer's config folder, not bundled with the app. Each server remembers its own bro…"
+// in the language the app shows.
+func DesktopBrowserKernelsNote() string { return In(i18n.Locale()).DesktopBrowserKernelsNote() }
+
+// DesktopBrowserKernelsNote says "Downloaded on request into this computer's config folder, not bundled with the app. Each server remembers its own bro…"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserKernelsNote() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserKernelsNote", nil)
+}
+
+// DesktopKernelChromeNote says "Google's portable Chrome: 200 MB download, 470 MB on disk."
+// in the language the app shows.
+func DesktopKernelChromeNote() string { return In(i18n.Locale()).DesktopKernelChromeNote() }
+
+// DesktopKernelChromeNote says "Google's portable Chrome: 200 MB download, 470 MB on disk."
+// in the language of msgs.
+func (msgs Messages) DesktopKernelChromeNote() string {
+	return Catalog.Format(msgs.locale, "desktopKernelChromeNote", nil)
+}
+
+// DesktopKernelFirefoxNote says "Mozilla's official release: 90 MB download, 380 MB on disk."
+// in the language the app shows.
+func DesktopKernelFirefoxNote() string { return In(i18n.Locale()).DesktopKernelFirefoxNote() }
+
+// DesktopKernelFirefoxNote says "Mozilla's official release: 90 MB download, 380 MB on disk."
+// in the language of msgs.
+func (msgs Messages) DesktopKernelFirefoxNote() string {
+	return Catalog.Format(msgs.locale, "desktopKernelFirefoxNote", nil)
+}
+
+// DesktopKernelCamoufoxNote says "Firefox with fingerprint protection: 1.3 GB download, 2.6 GB on disk."
+// in the language the app shows.
+func DesktopKernelCamoufoxNote() string { return In(i18n.Locale()).DesktopKernelCamoufoxNote() }
+
+// DesktopKernelCamoufoxNote says "Firefox with fingerprint protection: 1.3 GB download, 2.6 GB on disk."
+// in the language of msgs.
+func (msgs Messages) DesktopKernelCamoufoxNote() string {
+	return Catalog.Format(msgs.locale, "desktopKernelCamoufoxNote", nil)
+}
+
+// DesktopKernelNotInstalled says "Not installed"
+// in the language the app shows.
+func DesktopKernelNotInstalled() string { return In(i18n.Locale()).DesktopKernelNotInstalled() }
+
+// DesktopKernelNotInstalled says "Not installed"
+// in the language of msgs.
+func (msgs Messages) DesktopKernelNotInstalled() string {
+	return Catalog.Format(msgs.locale, "desktopKernelNotInstalled", nil)
+}
+
+// DesktopKernelUnsupported says "No build for this system"
+// in the language the app shows.
+func DesktopKernelUnsupported() string { return In(i18n.Locale()).DesktopKernelUnsupported() }
+
+// DesktopKernelUnsupported says "No build for this system"
+// in the language of msgs.
+func (msgs Messages) DesktopKernelUnsupported() string {
+	return Catalog.Format(msgs.locale, "desktopKernelUnsupported", nil)
+}
+
+// DesktopKernelDamaged says "Damaged, download it again"
+// in the language the app shows.
+func DesktopKernelDamaged() string { return In(i18n.Locale()).DesktopKernelDamaged() }
+
+// DesktopKernelDamaged says "Damaged, download it again"
+// in the language of msgs.
+func (msgs Messages) DesktopKernelDamaged() string {
+	return Catalog.Format(msgs.locale, "desktopKernelDamaged", nil)
+}
+
+// DesktopKernelResolving says "Connecting…"
+// in the language the app shows.
+func DesktopKernelResolving() string { return In(i18n.Locale()).DesktopKernelResolving() }
+
+// DesktopKernelResolving says "Connecting…"
+// in the language of msgs.
+func (msgs Messages) DesktopKernelResolving() string {
+	return Catalog.Format(msgs.locale, "desktopKernelResolving", nil)
+}
+
+// DesktopKernelDownloading says "Downloading {progress}"
+// in the language the app shows.
+func DesktopKernelDownloading(progress string) string {
+	return In(i18n.Locale()).DesktopKernelDownloading(progress)
+}
+
+// DesktopKernelDownloading says "Downloading {progress}"
+// in the language of msgs.
+func (msgs Messages) DesktopKernelDownloading(progress string) string {
+	return Catalog.Format(msgs.locale, "desktopKernelDownloading", map[string]any{"progress": progress})
+}
+
+// DesktopKernelExtracting says "Unpacking…"
+// in the language the app shows.
+func DesktopKernelExtracting() string { return In(i18n.Locale()).DesktopKernelExtracting() }
+
+// DesktopKernelExtracting says "Unpacking…"
+// in the language of msgs.
+func (msgs Messages) DesktopKernelExtracting() string {
+	return Catalog.Format(msgs.locale, "desktopKernelExtracting", nil)
+}
+
+// DesktopKernelUpdate says "Update to {version}"
+// in the language the app shows.
+func DesktopKernelUpdate(version string) string {
+	return In(i18n.Locale()).DesktopKernelUpdate(version)
+}
+
+// DesktopKernelUpdate says "Update to {version}"
+// in the language of msgs.
+func (msgs Messages) DesktopKernelUpdate(version string) string {
+	return Catalog.Format(msgs.locale, "desktopKernelUpdate", map[string]any{"version": version})
+}
+
+// DesktopKernelCheckUpdate says "Check for updates"
+// in the language the app shows.
+func DesktopKernelCheckUpdate() string { return In(i18n.Locale()).DesktopKernelCheckUpdate() }
+
+// DesktopKernelCheckUpdate says "Check for updates"
+// in the language of msgs.
+func (msgs Messages) DesktopKernelCheckUpdate() string {
+	return Catalog.Format(msgs.locale, "desktopKernelCheckUpdate", nil)
+}
+
+// DesktopKernelUpToDate says "Up to date"
+// in the language the app shows.
+func DesktopKernelUpToDate() string { return In(i18n.Locale()).DesktopKernelUpToDate() }
+
+// DesktopKernelUpToDate says "Up to date"
+// in the language of msgs.
+func (msgs Messages) DesktopKernelUpToDate() string {
+	return Catalog.Format(msgs.locale, "desktopKernelUpToDate", nil)
+}
+
+// DesktopKernelReinstall says "Download again"
+// in the language the app shows.
+func DesktopKernelReinstall() string { return In(i18n.Locale()).DesktopKernelReinstall() }
+
+// DesktopKernelReinstall says "Download again"
+// in the language of msgs.
+func (msgs Messages) DesktopKernelReinstall() string {
+	return Catalog.Format(msgs.locale, "desktopKernelReinstall", nil)
+}
+
+// DesktopKernelRemoveConfirm says "Delete {name} ({size}) from this computer?"
+// in the language the app shows.
+func DesktopKernelRemoveConfirm(name string, size string) string {
+	return In(i18n.Locale()).DesktopKernelRemoveConfirm(name, size)
+}
+
+// DesktopKernelRemoveConfirm says "Delete {name} ({size}) from this computer?"
+// in the language of msgs.
+func (msgs Messages) DesktopKernelRemoveConfirm(name string, size string) string {
+	return Catalog.Format(msgs.locale, "desktopKernelRemoveConfirm", map[string]any{"name": name, "size": size})
+}
+
+// DesktopKernelInUse says "Stop the browser that uses this kernel first."
+// in the language the app shows.
+func DesktopKernelInUse() string { return In(i18n.Locale()).DesktopKernelInUse() }
+
+// DesktopKernelInUse says "Stop the browser that uses this kernel first."
+// in the language of msgs.
+func (msgs Messages) DesktopKernelInUse() string {
+	return Catalog.Format(msgs.locale, "desktopKernelInUse", nil)
+}
+
+// DesktopKernelChecksum says "The download did not match its published checksum and was discarded."
+// in the language the app shows.
+func DesktopKernelChecksum() string { return In(i18n.Locale()).DesktopKernelChecksum() }
+
+// DesktopKernelChecksum says "The download did not match its published checksum and was discarded."
+// in the language of msgs.
+func (msgs Messages) DesktopKernelChecksum() string {
+	return Catalog.Format(msgs.locale, "desktopKernelChecksum", nil)
+}
+
+// DesktopKernelStalled says "The download stalled. Check the network and try again."
+// in the language the app shows.
+func DesktopKernelStalled() string { return In(i18n.Locale()).DesktopKernelStalled() }
+
+// DesktopKernelStalled says "The download stalled. Check the network and try again."
+// in the language of msgs.
+func (msgs Messages) DesktopKernelStalled() string {
+	return Catalog.Format(msgs.locale, "desktopKernelStalled", nil)
+}
+
+// DesktopKernelFailed says "Could not download or unpack the browser. Check the network and try again."
+// in the language the app shows.
+func DesktopKernelFailed() string { return In(i18n.Locale()).DesktopKernelFailed() }
+
+// DesktopKernelFailed says "Could not download or unpack the browser. Check the network and try again."
+// in the language of msgs.
+func (msgs Messages) DesktopKernelFailed() string {
+	return Catalog.Format(msgs.locale, "desktopKernelFailed", nil)
+}
+
+// DesktopKernelCheckFailed says "Could not check for updates."
+// in the language the app shows.
+func DesktopKernelCheckFailed() string { return In(i18n.Locale()).DesktopKernelCheckFailed() }
+
+// DesktopKernelCheckFailed says "Could not check for updates."
+// in the language of msgs.
+func (msgs Messages) DesktopKernelCheckFailed() string {
+	return Catalog.Format(msgs.locale, "desktopKernelCheckFailed", nil)
+}
+
+// DesktopKernelRemoveFailed says "Could not delete the browser's files."
+// in the language the app shows.
+func DesktopKernelRemoveFailed() string { return In(i18n.Locale()).DesktopKernelRemoveFailed() }
+
+// DesktopKernelRemoveFailed says "Could not delete the browser's files."
+// in the language of msgs.
+func (msgs Messages) DesktopKernelRemoveFailed() string {
+	return Catalog.Format(msgs.locale, "desktopKernelRemoveFailed", nil)
+}
+
+// DesktopBrowserResetProfile says "Reset browser data"
+// in the language the app shows.
+func DesktopBrowserResetProfile() string { return In(i18n.Locale()).DesktopBrowserResetProfile() }
+
+// DesktopBrowserResetProfile says "Reset browser data"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserResetProfile() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserResetProfile", nil)
+}
+
+// DesktopBrowserResetConfirm says "Clear this server's browser data: logins, cookies and cache?"
+// in the language the app shows.
+func DesktopBrowserResetConfirm() string { return In(i18n.Locale()).DesktopBrowserResetConfirm() }
+
+// DesktopBrowserResetConfirm says "Clear this server's browser data: logins, cookies and cache?"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserResetConfirm() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserResetConfirm", nil)
+}
+
+// DesktopBrowserResetDone says "This server's browser data was cleared."
+// in the language the app shows.
+func DesktopBrowserResetDone() string { return In(i18n.Locale()).DesktopBrowserResetDone() }
+
+// DesktopBrowserResetDone says "This server's browser data was cleared."
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserResetDone() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserResetDone", nil)
+}
+
+// DesktopBrowserResetFailed says "Could not clear this server's browser data."
+// in the language the app shows.
+func DesktopBrowserResetFailed() string { return In(i18n.Locale()).DesktopBrowserResetFailed() }
+
+// DesktopBrowserResetFailed says "Could not clear this server's browser data."
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserResetFailed() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserResetFailed", nil)
+}
+
 // DesktopCenterHeading says "Find your desktop apps"
 // in the language the app shows.
 func DesktopCenterHeading() string { return In(i18n.Locale()).DesktopCenterHeading() }

@@ -17,6 +17,7 @@ import (
 	"time"
 	"unicode"
 
+	"finallyshell/internal/browserkernel"
 	"finallyshell/internal/config"
 	"finallyshell/internal/sshx"
 
@@ -29,6 +30,9 @@ var errDesktopBrowserURL = errors.New("invalid HTTP or HTTPS URL")
 type desktopBrowserChoice struct {
 	name, path string
 	firefox    bool
+	// kernel is the downloaded kernel it is, "" for a browser installed
+	// on this computer.
+	kernel browserkernel.Kind
 }
 
 type desktopBrowserProduct struct {
@@ -76,7 +80,7 @@ func desktopFindBrowsers(platform string, env func(string) string, registry func
 			}
 			if !seen[key] && exists(candidate) {
 				seen[key] = true
-				choices = append(choices, desktopBrowserChoice{product.name, candidate, product.name == "Firefox"})
+				choices = append(choices, desktopBrowserChoice{product.name, candidate, product.name == "Firefox", ""})
 			}
 		}
 	}
@@ -184,10 +188,7 @@ func desktopBrowserProfile(choice desktopBrowserChoice, root, hostID, addr strin
 		}
 		return profile, cleanup, nil
 	}
-	if !desktopBrowserProfileID(hostID) {
-		hostID = fmt.Sprintf("host-%x", sha256.Sum256([]byte(hostID)))
-	}
-	profile := filepath.Join(root, hostID)
+	profile := desktopBrowserProfileDir(root, hostID)
 	desktopBrowserProfiles.Lock()
 	if desktopBrowserProfiles.active[profile] {
 		desktopBrowserProfiles.Unlock()
@@ -208,6 +209,27 @@ func desktopBrowserProfile(choice desktopBrowserChoice, root, hostID, addr strin
 }
 
 var errDesktopBrowserProfileInUse = errors.New("browser profile in use")
+
+// desktopBrowserProfileDir is the host's Chromium profile, kept between
+// runs; Firefox's are temporary.
+func desktopBrowserProfileDir(root, hostID string) string {
+	if !desktopBrowserProfileID(hostID) {
+		hostID = fmt.Sprintf("host-%x", sha256.Sum256([]byte(hostID)))
+	}
+	return filepath.Join(root, hostID)
+}
+
+// desktopBrowserResetProfile deletes the host's Chromium profile: its
+// logins, cookies and cache. It refuses while a browser runs it.
+func desktopBrowserResetProfile(root, hostID string) error {
+	profile := desktopBrowserProfileDir(root, hostID)
+	desktopBrowserProfiles.Lock()
+	defer desktopBrowserProfiles.Unlock()
+	if desktopBrowserProfiles.active[profile] {
+		return errDesktopBrowserProfileInUse
+	}
+	return os.RemoveAll(profile)
+}
 
 func desktopBrowserProfileID(id string) bool {
 	if id == "" || len(id) > 96 || strings.ContainsAny(id, `/\:.`) {
@@ -233,7 +255,11 @@ func desktopBrowserDialer(addr string) proxy.ContextDialer {
 }
 
 func (choice desktopBrowserChoice) command(ctx context.Context, profile, addr, target string, newTab bool) *exec.Cmd {
-	return exec.CommandContext(ctx, choice.path, desktopBrowserArgs(choice, profile, addr, target, newTab)...)
+	args := desktopBrowserArgs(choice, profile, addr, target, newTab)
+	if choice.firefox && !newTab && desktopBrowserWaitFlag != "" {
+		args = append([]string{desktopBrowserWaitFlag}, args...)
+	}
+	return exec.CommandContext(ctx, choice.path, args...)
 }
 
 type desktopBrowserRun struct {
@@ -245,7 +271,7 @@ type desktopBrowserRun struct {
 type desktopBrowserCommand struct{ *exec.Cmd }
 
 func (cmd desktopBrowserCommand) Quit() { desktopBrowserQuit(cmd.Process) }
-func (cmd desktopBrowserCommand) Kill() { _ = cmd.Process.Kill() }
+func (cmd desktopBrowserCommand) Kill() { desktopBrowserKill(cmd.Process) }
 
 func desktopLaunchBrowser(run *desktopBrowserRun, target string) (desktopBrowserProcess, error) {
 	cmd := run.choice.command(context.Background(), run.profile, run.addr, target, false)

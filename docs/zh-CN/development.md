@@ -197,6 +197,7 @@ internal/
   sshtest/           测试用的进程内 SSH 服务器：密码登录、记下读到内容的空 shell、端口转发、MaxSessions 限制，StartSFTP 还提供 SFTP（本机文件系统）
   monitor/           服务器状态采集和解析；openwrt*.go 是 OpenWrt 的识别和系统页各模块的脚本（ubus、uci、procd、opkg 或 apk、logread）及解析、校验，testdata/openwrt/ 有各版本的样本；net.go 是每个网卡的网速和历史，以及选中网卡的合计；netstat.go 是网络页的 socket（ss，或 /proc/net 和 /proc/<pid>/fd）、速度和行；trace.go 是通过 exec 通道的路由追踪（NextTrace 的 RAW 输出、traceroute、tracepath）；shelldir.go 从 /proc 读连接上的一个 shell（连接上有几个时，读哪个由 ShellPick 指定）：它的目录和前台程序；agents.go 判断程序是哪个编程智能体
   geo/               IP 归属地：通过官方 Go 绑定读取 ip2region 数据（xdb.go），从 GitHub 或 jsDelivr 按校验和下载数据（download.go），ip-api.com 和 ip.sb 的在线查询（online.go）及其缓存（cache.go）；geotest/ 为测试生成小的 .xdb 文件
+  browserkernel/     服务器浏览器下载的浏览器：为本系统查找最新的 Chrome for Testing、Firefox 和 Camoufox（source.go），按官方校验和下载并断点续传，安全解压 zip、tar.xz、Firefox 的 Windows 安装程序和 macOS 磁盘映像，整体替换内核（install.go），列出、运行时占用和删除（kernel.go）；rename_windows.go 在 Windows 因文件被打开而拒绝移动时重试，并让 Chromium 沙箱能读取解压出的文件
   proxycheck/        测试代理：经代理建立连接的耗时，以及从 ip-api.com、ip.sb 或 Cloudflare 查到的出口 IP 和归属地
   remotefs/          SFTP 列目录、上传、下载（带进度和取消），重命名、新建、删除（ops.go）；textfile.go 是编辑器的读取（认出二进制文件）和安全保存；archive.go 是打包传输：打包和安全解包 tar.gz 数据流，在 exec 通道上运行 tar
   icons/             内嵌的 SVG 图标（Lucide，ISC 协议）；agents/ 是编程智能体的图标（LobeHub Icons，MIT 协议）

@@ -63,7 +63,11 @@ func TestDesktopBrowserVisitMapsHost(t *testing.T) {
 		launched <- run
 		return &desktopTestBrowserProcess{done: make(chan struct{})}, nil
 	}
-	state.choice = desktopBrowserChoice{name: "Test Chromium", path: "fake"}
+	// The window keeps a browser it can find: the fake one, once the
+	// search and the kernels are done.
+	platform.until(t, "browsers found", func() bool { return !state.discovering && a.browserKernels.loaded })
+	fake := desktopBrowserChoice{name: "Test Chromium", path: "fake"}
+	state.choices, state.choice = []desktopBrowserChoice{fake}, fake
 	url := "http://site.example.org:" + strings.TrimPrefix(target.Addr().String(), "127.0.0.1:") + "/"
 	a.desktopOpen(session, appBrowser, desktopBrowserVisit{url, "site.example.org", "127.0.0.1"})
 	platform.until(t, "browser started", func() bool { return state.run != nil })

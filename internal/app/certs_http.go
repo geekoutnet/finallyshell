@@ -17,12 +17,20 @@ import (
 )
 
 // The connected server answering Let's Encrypt's HTTP challenges for the
-// SSL certificates app, as Caddy does on its own server: a file in the
-// document root of the Nginx site of the domain, else in the folder of a
-// short-lived responder on a free port 80, else (once the user agrees) in
-// the folder of a temporary Nginx location. Each is tried first with a
-// probe file fetched from this computer over the domain's address, so
-// that the CA is asked only when it will find the file.
+// SSL certificates app, as Caddy does on its own server, without stopping
+// or disturbing what runs there. In this order, from no change to the
+// most: a file in a folder a web server on port 80 already serves (an
+// Nginx site's, Caddy's, Apache's or a usual one); a short-lived responder
+// of the app's own on a free port 80 (Python 3, BusyBox or Perl), with
+// the firewall opened for a while once the user agrees when it blocks
+// port 80; a temporary route through Caddy's admin API when Caddy holds
+// port 80; else, once the user agrees, the split of port 80
+// (monitor/acme_split.go), which answers the challenges and passes every
+// other connection to whatever holds port 80 (Nginx, Apache, Docker,
+// Traefik or another), which is never stopped. Each way is tried first
+// with a probe file fetched from this computer over the domain's address,
+// so that the CA is asked only when it will find the file, and close
+// undoes everything.
 
 type certHTTPMode int
 
@@ -31,7 +39,7 @@ const (
 	certHTTPWebroot   certHTTPMode = iota + 1 // a file in a site's document root
 	certHTTPResponder                         // a responder of the app's own on a free port 80
 	certHTTPCaddy                             // a temporary route through Caddy's admin API
-	certHTTPLocation                          // a temporary Nginx location (confirmed)
+	certHTTPSplit                             // the split of port 80 (confirmed)
 )
 
 // certFetcher reads a URL's body: certFetch, or a test's.
@@ -48,10 +56,13 @@ type certHTTP struct {
 	// The responder's process and folder.
 	pid int
 	dir string
-	// The location's change, undone by close.
-	change *monitor.NginxChange
-	tree   monitor.NginxTree
-	status monitor.NginxStatus
+	// The routes put in Caddy, by @id.
+	caddy       monitor.CaddyInstall
+	caddyRoutes []string
+	// The split's proxy, in dir, on splitPort; its rules too.
+	splitPID, splitPort int
+	// firewall is the firewall port 80 was opened in.
+	firewall string
 }
 
 func (h *certHTTP) Present(domain, token, keyAuth string) error {
@@ -73,26 +84,48 @@ func (h *certHTTP) CleanUp(domain, token, _ string) error {
 }
 
 // close undoes what serving the challenges set up: stops the responder,
-// or takes the location out and reloads Nginx. It runs with its own
-// time, as the issuance's may be over.
+// takes the Caddy routes out, undoes the split (its rules, then its
+// proxy), and closes the firewall again. It runs with its own time, as the
+// issuance's may be over, and goes through every step whatever fails.
 func (h *certHTTP) close() error {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Minute)
 	defer cancel()
-	switch h.mode {
-	case certHTTPResponder:
-		script, err := monitor.ACMEResponderStopCommand(h.pid, h.dir)
-		if err != nil {
-			return err
+	var errs []error
+	if h.pid > 0 {
+		if script, err := monitor.ACMEResponderStopCommand(h.pid, h.dir); err != nil {
+			errs = append(errs, err)
+		} else if _, stderr, err := h.run(ctx, script, nil, nil); err != nil {
+			errs = append(errs, certRunError(stderr, err))
 		}
-		_, stderr, err := h.run(ctx, script, nil, nil)
-		return certRunError(stderr, err)
-	case certHTTPLocation:
-		if h.change == nil {
-			return nil
-		}
-		return certUndoLocation(ctx, h.run, *h.change, h.tree, h.status)
+		h.pid = 0
 	}
-	return nil
+	for _, id := range h.caddyRoutes {
+		if target, err := monitor.ACMECaddyRouteTarget(id); err == nil {
+			if _, err := monitor.CaddyAdmin(ctx, monitor.CaddyRunner(h.run), h.caddy, "DELETE", target, ""); err != nil {
+				errs = append(errs, err)
+			}
+		}
+	}
+	h.caddyRoutes = nil
+	if h.splitPID > 0 {
+		if script, err := monitor.ACMESplitStopCommand(h.splitPID, h.dir, h.splitPort); err != nil {
+			errs = append(errs, err)
+		} else if out, stderr, err := h.run(ctx, script, nil, nil); err != nil {
+			errs = append(errs, certRunError(stderr, err))
+		} else if strings.TrimSpace(out) != "left 0" {
+			errs = append(errs, fmt.Errorf("the split's firewall rules are still there: %s", strings.TrimSpace(out)))
+		}
+		h.splitPID = 0
+	}
+	if h.firewall != "" {
+		if script, err := monitor.ACMEFirewallCloseCommand(h.firewall); err != nil {
+			errs = append(errs, err)
+		} else if _, stderr, err := h.run(ctx, script, nil, nil); err != nil {
+			errs = append(errs, certRunError(stderr, err))
+		}
+		h.firewall = ""
+	}
+	return errors.Join(errs...)
 }
 
 // certHTTPFound is how the server can serve a certificate's challenges:
@@ -107,63 +140,139 @@ type certHTTPFound struct {
 }
 
 // certHTTPConfirm is a change to the server the user agrees to first: of
-// kind, to target (a file, or the firewall's name); apply makes it, checks
+// kind, through target (the firewall, "ufw" or "firewalld"; or the tool
+// the split's rule goes in, "iptables" or "nft"); apply makes it, checks
 // it and gives what then serves the challenges, everything undone on an
 // error.
 type certHTTPConfirm struct {
 	kind   certConfirmKind
 	target string
 	apply  func(ctx context.Context) (*certHTTP, error)
-	// For tests: the Nginx location's server blocks.
-	lines []int
 }
 
 type certConfirmKind int
 
 const (
-	certConfirmNginx    certConfirmKind = iota + 1 // a temporary location in target, an Nginx file
-	certConfirmFirewall                            // port 80 opened in target (ufw, firewalld) for a while
+	// certConfirmSplit splits port 80 for a minute or so: the program on
+	// it (certHTTPFound.servers) sees its visitors come from 127.0.0.1
+	// meanwhile.
+	certConfirmSplit    certConfirmKind = iota + 1
+	certConfirmFirewall                 // port 80 opened in target (ufw, firewalld) for a while
 )
 
 // Why a server cannot serve the challenges, for the user.
 var (
 	errCertHTTPPort80   = errors.New("port 80 is used by another program")
-	errCertHTTPNoServer = errors.New("the server has neither Python 3 nor BusyBox to answer on port 80")
+	errCertHTTPNoServer = errors.New("the server has neither Python 3, BusyBox nor Perl to answer on port 80")
 	errCertHTTPProbe    = errors.New("the domain does not reach this server over HTTP")
 	errCertHTTPFirewall = errors.New("the server's firewall blocks port 80")
+	// errCertHTTPICP: a page a Chinese cloud puts in front of a site whose
+	// domain has no ICP filing (备案) came back instead of the file; only
+	// DNS proves the domain then.
+	errCertHTTPICP = errors.New("the cloud provider blocks the domain until it has an ICP filing")
 )
+
+// certServer is what certFindHTTP learns of a server first.
+type certServer struct {
+	status monitor.NginxStatus
+	// nginx says whether Nginx runs, with inv its sites.
+	nginx bool
+	inv   monitor.NginxInventory
+	// busy says whether something listens on port 80, programs what.
+	busy     bool
+	programs []string
+	survey   monitor.ACMESurvey
+	// Caddy, when its admin API answers: its HTTP servers and the folders
+	// they serve.
+	caddy        monitor.CaddyInstall
+	caddyServers []monitor.CaddyServer
+	caddyRoots   []string
+	// upstream is the address the split reaches port 80's program at.
+	upstream string
+	// probeErr is the last error of the probes of the folders.
+	probeErr error
+}
+
+// certLookAt learns what serves port 80 on the server run reaches.
+func certLookAt(ctx context.Context, run systemRunner) certServer {
+	var srv certServer
+	srv.status, _ = readSiteStatus(ctx, run)
+	out, _, err := run(ctx, monitor.ACMEPort80Command, nil, nil)
+	srv.busy, srv.programs = monitor.ParsePort80(out)
+	srv.upstream = monitor.ParsePort80Upstream(out)
+	if err != nil {
+		srv.busy = true // unknown: no responder of its own
+		srv.upstream = ""
+	}
+	srv.nginx = srv.status.Installed && !srv.status.Custom && srv.status.State == "active"
+	if srv.nginx {
+		var err error
+		srv.inv, err = monitor.ReadNginxInventory(ctx, func(ctx context.Context, script string) (string, string, error) {
+			return run(ctx, script, nil, nil)
+		})
+		srv.nginx = err == nil
+	}
+	if out, _, err := run(ctx, monitor.ACMESurveyCommand, nil, nil); err == nil {
+		srv.survey = monitor.ParseACMESurvey(out)
+	}
+	if slices.Contains(srv.programs, "caddy") || srv.status.Caddy != "" {
+		caddyRun := monitor.CaddyRunner(run)
+		if inst, err := monitor.DetectCaddy(ctx, caddyRun); err == nil && inst.AdminAddr != "off" {
+			if out, err := monitor.CaddyAdmin(ctx, caddyRun, inst, "GET", monitor.ACMECaddyServers, ""); err == nil {
+				if servers, roots, err := monitor.ParseCaddyServers(out); err == nil {
+					srv.caddy, srv.caddyServers, srv.caddyRoots = inst, servers, roots
+				}
+			}
+		}
+	}
+	return srv
+}
+
+// certMaxRoots is how many folders are tried for a domain.
+const certMaxRoots = 8
+
+// certRootsFor are the folders that may serve domain on port 80, the
+// likeliest first: its Nginx site's, Nginx's default server's, then
+// Caddy's, Apache's and the usual ones.
+func certRootsFor(srv certServer, domain string) []string {
+	var roots []string
+	add := func(list []string) {
+		for _, r := range list {
+			if len(roots) < certMaxRoots && !slices.Contains(roots, r) {
+				roots = append(roots, r)
+			}
+		}
+	}
+	if srv.nginx {
+		add(certWebroots(srv.inv, domain))
+	}
+	add(srv.caddyRoots)
+	add(srv.survey.Roots)
+	return roots
+}
 
 // certFindHTTP looks for a way for the server run reaches (as root) to
 // serve the challenges of domains, none a wildcard.
 func certFindHTTP(ctx context.Context, run systemRunner, domains []string, fetch certFetcher) certHTTPFound {
-	var found certHTTPFound
-	var inv monitor.NginxInventory
-	status, _ := readSiteStatus(ctx, run)
-	portOut, _, portErr := run(ctx, monitor.ACMEPort80Command, nil, nil)
-	busy, servers := monitor.ParsePort80(portOut)
-	found.servers = servers
-	if portErr != nil {
-		busy = true // unknown: no responder
-	}
-	nginx := status.Installed && !status.Custom && status.State == "active"
-	if nginx {
-		var err error
-		inv, err = monitor.ReadNginxInventory(ctx, func(ctx context.Context, script string) (string, string, error) {
-			return run(ctx, script, nil, nil)
-		})
-		if err != nil {
-			nginx = false
-		}
-	}
-	reason := errCertHTTPProbe
-	// The site's own folder: nothing changes but a file.
-	if nginx {
+	srv := certLookAt(ctx, run)
+	return srv.find(ctx, run, domains, fetch)
+}
+
+func (srv certServer) find(ctx context.Context, run systemRunner, domains []string, fetch certFetcher) certHTTPFound {
+	found := certHTTPFound{servers: srv.programs}
+	// A folder a web server on port 80 serves: nothing changes but a file.
+	if srv.busy {
 		roots := map[string]string{}
 		for _, d := range domains {
-			for _, root := range certWebroots(inv, d) {
-				if certProbe(ctx, run, fetch, d, root) == nil {
+			for _, root := range certRootsFor(srv, d) {
+				err := certProbe(ctx, run, fetch, d, root)
+				if err == nil {
 					roots[d] = root
 					break
+				}
+				srv.probeErr = err
+				if errors.Is(err, errCertHTTPICP) {
+					break // the cloud answers, not the server
 				}
 			}
 		}
@@ -172,93 +281,95 @@ func certFindHTTP(ctx context.Context, run systemRunner, domains []string, fetch
 			return found
 		}
 	}
-	// A responder of its own on a free port 80.
-	if !busy {
-		out, _, err := run(ctx, monitor.ACMEResponderStartCommand, nil, nil)
-		pid, dir, ok := monitor.ParseACMEResponder(out)
+	// A responder of its own on a free port 80, the firewall opened first
+	// when it blocks the port and the user agrees.
+	if !srv.busy {
+		h, err := certStartResponder(ctx, run, fetch, domains)
 		switch {
-		case err == nil && ok:
-			h := &certHTTP{ctx: ctx, run: run, mode: certHTTPResponder, pid: pid, dir: dir, roots: map[string]string{}}
-			for _, d := range domains {
-				h.roots[d] = dir
-			}
-			if certProbeAll(ctx, h, fetch, domains) == nil {
-				found.h = h
-				return found
-			}
-			h.close()
-		case strings.TrimSpace(out) == "none":
-			reason = errCertHTTPNoServer
-		}
-	} else if !slices.Contains(servers, "nginx") {
-		reason = errCertHTTPPort80
-	}
-	// A location for the challenges in the site's server blocks.
-	if nginx && slices.Contains(servers, "nginx") {
-		if file, lines := certLocationTarget(inv, domains); file != "" {
-			found.confirm = &certHTTPConfirm{kind: certConfirmNginx, target: file, lines: lines,
+		case h != nil:
+			found.h = h
+		case errors.Is(err, errCertHTTPNoServer), errors.Is(err, errCertHTTPICP):
+			found.err = err
+		case srv.survey.Firewall != "" && srv.survey.Blocked:
+			fw := srv.survey.Firewall
+			found.confirm = &certHTTPConfirm{kind: certConfirmFirewall, target: fw,
 				apply: func(ctx context.Context) (*certHTTP, error) {
-					return certApplyLocation(ctx, run, file, lines, inv, status, domains, fetch)
+					return certOpenFirewall(ctx, run, fw, domains, fetch)
 				}}
+		default:
+			found.err = err
+		}
+		return found
+	}
+	// Caddy on port 80: a route of its own through the admin API.
+	if slices.Contains(srv.programs, "caddy") && len(srv.caddyServers) > 0 && srv.caddy.Method != monitor.CaddyDocker {
+		if h, err := certCaddyRoute(ctx, run, fetch, domains, srv); err == nil {
+			found.h = h
 			return found
 		}
 	}
-	found.err = reason
+	if errors.Is(srv.probeErr, errCertHTTPICP) {
+		found.err = srv.probeErr
+		return found
+	}
+	// Whatever else holds port 80: the split, once the user agrees.
+	if upstream := srv.upstream; srv.survey.Python3 && srv.survey.Redirect != "" && upstream != "" {
+		found.confirm = &certHTTPConfirm{kind: certConfirmSplit, target: srv.survey.Redirect,
+			apply: func(ctx context.Context) (*certHTTP, error) {
+				return certSplit(ctx, run, fetch, domains, upstream)
+			}}
+		return found
+	}
+	switch {
+	case srv.survey.Firewall != "" && srv.survey.Blocked:
+		found.err = fmt.Errorf("%w (%s)", errCertHTTPFirewall, srv.survey.Firewall)
+	default:
+		holders := strings.Join(srv.programs, ", ")
+		if holders == "" {
+			holders = "unknown"
+		}
+		found.err = fmt.Errorf("%w: %s", errCertHTTPPort80, holders)
+	}
 	return found
 }
 
-// certApplyLocation adds a temporary location to the server blocks on
-// lines of file, reloads Nginx
-// and checks it with probes: what then serves the challenges, or an
-// error, everything undone.
-func certApplyLocation(ctx context.Context, run systemRunner, file string, lines []int, inv monitor.NginxInventory, status monitor.NginxStatus, domains []string, fetch certFetcher) (*certHTTP, error) {
-	read, err := monitor.NginxReadCommand(file)
+// certSplit splits port 80, passing other connections to port 80 of
+// upstream, and checks it with probes: what then serves the challenges,
+// or an error, everything undone.
+func certSplit(ctx context.Context, run systemRunner, fetch certFetcher, domains []string, upstream string) (*certHTTP, error) {
+	start, err := monitor.ACMESplitStartCommand(upstream)
 	if err != nil {
 		return nil, err
 	}
-	original, stderr, err := run(ctx, read, nil, nil)
+	out, stderr, err := run(ctx, start, nil, nil)
 	if err != nil {
 		return nil, certRunError(stderr, err)
 	}
-	text, err := monitor.NginxACMELocation(original, lines)
+	pid, dir, port, ok := monitor.ParseACMESplit(out)
+	if !ok {
+		if strings.TrimSpace(out) == "none" {
+			return nil, errCertHTTPNoServer
+		}
+		return nil, certRunError(stderr, errors.New("the split of port 80 did not start"))
+	}
+	h := &certHTTP{ctx: ctx, run: run, mode: certHTTPSplit, splitPID: pid, splitPort: port, dir: dir, roots: map[string]string{}}
+	for _, d := range domains {
+		h.roots[d] = dir
+	}
+	rules, err := monitor.ACMESplitRulesCommand(port)
 	if err != nil {
+		h.close()
 		return nil, err
 	}
-	change, err := monitor.NewNginxChange(file, original, text, time.Now(), inv.NginxTree)
-	if err != nil {
-		return nil, err
-	}
-	save, err := change.SaveCommand(original, inv.NginxTree)
-	if err != nil {
-		return nil, err
-	}
-	reload, err := monitor.NginxActionCommand("reload", status.Unit, inv.Main)
-	if err != nil {
-		return nil, err
-	}
-	if _, stderr, err := run(ctx, monitor.ACMERootCommand, nil, nil); err != nil {
-		return nil, certRunError(stderr, err)
-	}
-	out, stderr, err := run(ctx, save, strings.NewReader(text), nil)
-	if err != nil || strings.TrimSpace(out) != "finallyshell-written" {
+	if out, stderr, err := run(ctx, rules, nil, nil); err != nil || !strings.HasPrefix(strings.TrimSpace(out), "rules ") {
+		h.close()
 		if err == nil {
-			err = errors.New("the Nginx file was not written")
+			err = errors.New("the server has neither iptables nor nft")
 		}
 		return nil, certRunError(stderr, err)
 	}
-	h := &certHTTP{ctx: ctx, run: run, mode: certHTTPLocation, roots: map[string]string{},
-		change: &change, tree: inv.NginxTree, status: status}
-	for _, d := range domains {
-		h.roots[d] = monitor.ACMERoot
-	}
-	if _, stderr, err := run(ctx, reload, nil, nil); err != nil {
-		h.close()
-		return nil, certRunError(stderr, err)
-	}
-	// A reload returns before the new workers take the requests: the
-	// probes are tried for a while.
 	var probeErr error
-	for range 10 {
+	for range 3 {
 		if probeErr = certProbeAll(ctx, h, fetch, domains); probeErr == nil {
 			return h, nil
 		}
@@ -273,26 +384,101 @@ func certApplyLocation(ctx context.Context, run systemRunner, file string, lines
 	return nil, probeErr
 }
 
-// certUndoLocation puts the file change changed back from its backup, and
-// reloads Nginx.
-func certUndoLocation(ctx context.Context, run systemRunner, change monitor.NginxChange, tree monitor.NginxTree, status monitor.NginxStatus) error {
-	restore, err := change.RestoreCommand(tree, time.Now())
+// certStartResponder starts a responder on the free port 80 and checks it
+// with probes: what then serves the challenges, or errCertHTTPNoServer
+// (wrapped) when none starts, or the probe's error, the responder stopped.
+func certStartResponder(ctx context.Context, run systemRunner, fetch certFetcher, domains []string) (*certHTTP, error) {
+	out, stderr, err := run(ctx, monitor.ACMEResponderStartCommand, nil, nil)
 	if err != nil {
-		return err
+		return nil, certRunError(stderr, err)
 	}
-	out, stderr, err := run(ctx, restore, nil, nil)
-	if err != nil || strings.TrimSpace(out) != "finallyshell-written" {
-		if err == nil {
-			err = errors.New("the Nginx file was not restored")
+	if strings.TrimSpace(out) == "none" {
+		return nil, errCertHTTPNoServer
+	}
+	pid, dir, ok := monitor.ParseACMEResponder(out)
+	if !ok {
+		return nil, fmt.Errorf("%w: the responder did not start", errCertHTTPNoServer)
+	}
+	h := &certHTTP{ctx: ctx, run: run, mode: certHTTPResponder, pid: pid, dir: dir, roots: map[string]string{}}
+	for _, d := range domains {
+		h.roots[d] = dir
+	}
+	if err := certProbeAll(ctx, h, fetch, domains); err != nil {
+		h.close()
+		return nil, err
+	}
+	return h, nil
+}
+
+// certOpenFirewall lets port 80 in through firewall for a while, then
+// starts a responder: what then serves the challenges, which closes the
+// firewall again, or an error, everything undone.
+func certOpenFirewall(ctx context.Context, run systemRunner, firewall string, domains []string, fetch certFetcher) (*certHTTP, error) {
+	open, err := monitor.ACMEFirewallOpenCommand(firewall)
+	if err != nil {
+		return nil, err
+	}
+	out, stderr, err := run(ctx, open, nil, nil)
+	if err != nil {
+		return nil, certRunError(stderr, err)
+	}
+	opened := strings.TrimSpace(out) == "opened"
+	h, err := certStartResponder(ctx, run, fetch, domains)
+	if err != nil {
+		if opened {
+			(&certHTTP{run: run, firewall: firewall}).close()
 		}
-		return certRunError(stderr, err)
+		return nil, err
 	}
-	reload, err := monitor.NginxActionCommand("reload", status.Unit, tree.Main)
-	if err != nil {
-		return err
+	if opened {
+		h.firewall = firewall
 	}
-	_, stderr, err = run(ctx, reload, nil, nil)
-	return certRunError(stderr, err)
+	return h, nil
+}
+
+// certCaddyRoute puts a route for the challenges at the start of each of
+// Caddy's HTTP servers through its admin API, and checks it with probes:
+// what then serves the challenges, or an error, the routes taken out.
+func certCaddyRoute(ctx context.Context, run systemRunner, fetch certFetcher, domains []string, srv certServer) (*certHTTP, error) {
+	if _, stderr, err := run(ctx, monitor.ACMERootCommand, nil, nil); err != nil {
+		return nil, certRunError(stderr, err)
+	}
+	caddyRun := monitor.CaddyRunner(run)
+	h := &certHTTP{ctx: ctx, run: run, mode: certHTTPCaddy, caddy: srv.caddy, roots: map[string]string{}}
+	for _, d := range domains {
+		h.roots[d] = monitor.ACMERoot
+	}
+	for i, server := range srv.caddyServers {
+		id := monitor.CaddyRouteID(i)
+		target, body, err := monitor.ACMECaddyRoute(server, id)
+		if err != nil {
+			h.close()
+			return nil, err
+		}
+		// One a stopped app left behind would make the ID a duplicate.
+		if old, err := monitor.ACMECaddyRouteTarget(id); err == nil {
+			monitor.CaddyAdmin(ctx, caddyRun, srv.caddy, "DELETE", old, "")
+		}
+		if _, err := monitor.CaddyAdmin(ctx, caddyRun, srv.caddy, "PUT", target, body); err != nil {
+			h.close()
+			return nil, err
+		}
+		h.caddyRoutes = append(h.caddyRoutes, id)
+	}
+	var err error
+	for range 3 {
+		if err = certProbeAll(ctx, h, fetch, domains); err == nil {
+			return h, nil
+		}
+		select {
+		case <-ctx.Done():
+			h.close()
+			return nil, ctx.Err()
+		case <-time.After(time.Second):
+		}
+	}
+	h.close()
+	return nil, err
 }
 
 func certProbeAll(ctx context.Context, h *certHTTP, fetch certFetcher, domains []string) error {
@@ -321,13 +507,31 @@ func certProbe(ctx context.Context, run systemRunner, fetch certFetcher, domain,
 		}
 	}()
 	body, err := fetch(ctx, "http://"+domain+monitor.ACMEPath+token)
+	if strings.TrimSpace(body) == keyAuth && err == nil {
+		return nil
+	}
+	if certICPPage(body) {
+		return errCertHTTPICP
+	}
 	if err != nil {
 		return fmt.Errorf("%w: %v", errCertHTTPProbe, err)
 	}
-	if strings.TrimSpace(body) != keyAuth {
-		return errCertHTTPProbe
+	return errCertHTTPProbe
+}
+
+// certICPPage says whether body is the page a Chinese cloud (Alibaba,
+// Tencent, Huawei…) shows for a domain with no ICP filing.
+func certICPPage(body string) bool {
+	head := strings.ToLower(body)
+	if !strings.Contains(head, "<html") && !strings.Contains(head, "<!doctype") && !strings.Contains(head, "<head") {
+		return false
 	}
-	return nil
+	for _, mark := range []string{"备案", "icp", "beian", "未备案", "网站暂时无法访问"} {
+		if strings.Contains(head, mark) {
+			return true
+		}
+	}
+	return false
 }
 
 func certRandom() string {
@@ -337,7 +541,9 @@ func certRandom() string {
 }
 
 // certFetch reads url as Let's Encrypt does: following redirects, to
-// HTTPS too, without checking its certificate.
+// HTTPS too, without checking its certificate. The start of the body
+// comes back with the error of a status but 200, for the probe to tell a
+// cloud's ICP page.
 func certFetch(ctx context.Context, url string) (string, error) {
 	client := &http.Client{Timeout: 10 * time.Second, Transport: &http.Transport{
 		Proxy: http.ProxyFromEnvironment, TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
@@ -351,10 +557,10 @@ func certFetch(ctx context.Context, url string) (string, error) {
 		return "", err
 	}
 	defer resp.Body.Close()
+	b, err := io.ReadAll(io.LimitReader(resp.Body, 16<<10))
 	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("HTTP %d", resp.StatusCode)
+		return string(b), fmt.Errorf("HTTP %d", resp.StatusCode)
 	}
-	b, err := io.ReadAll(io.LimitReader(resp.Body, 4096))
 	return string(b), err
 }
 
@@ -411,43 +617,6 @@ func certNameMatch(names []string, domain string) bool {
 		}
 	}
 	return false
-}
-
-// certLocationTarget is the file and the lines of the server blocks of
-// domains, where a temporary location goes: all in one file Nginx's
-// editor may change, or "".
-func certLocationTarget(inv monitor.NginxInventory, domains []string) (string, []int) {
-	file := ""
-	var lines []int
-	for _, d := range domains {
-		matched := false
-		for _, site := range inv.Sites {
-			if !certNameMatch(site.Names, d) {
-				continue
-			}
-			// A site enabled by a link in sites-enabled is changed in
-			// sites-available, the file the link points at.
-			target, _, _ := inv.Target(site)
-			if file == "" {
-				file = target
-			}
-			if target != file {
-				return "", nil
-			}
-			if !slices.Contains(lines, site.Line) {
-				lines = append(lines, site.Line)
-			}
-			matched = true
-		}
-		if !matched {
-			return "", nil
-		}
-	}
-	if file == "" || !monitor.NginxEditable(file) {
-		return "", nil
-	}
-	slices.Sort(lines)
-	return file, lines
 }
 
 // certRunError is err with the server's message, nil for none.

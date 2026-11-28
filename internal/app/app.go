@@ -345,6 +345,10 @@ type App struct {
 	// Where the command bar and the Commands tab send (sendtarget.go):
 	// never saved, the current session at every start.
 	sendTo sendTarget
+
+	// The SSL certificates app (desktop_certs.go): this computer's
+	// certificates, the one being issued and its dialogs.
+	certs certsState
 }
 
 // New makes the app's state, with the hosts and settings saved on disk.

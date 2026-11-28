@@ -46695,3 +46695,1121 @@ func AccountLogRepeatShort(n int) string { return In(i18n.Locale()).AccountLogRe
 func (msgs Messages) AccountLogRepeatShort(n int) string {
 	return Catalog.Format(msgs.locale, "accountLogRepeatShort", map[string]any{"n": n})
 }
+
+// CertsApp says "SSL certificates"
+// in the language the app shows.
+func CertsApp() string { return In(i18n.Locale()).CertsApp() }
+
+// CertsApp says "SSL certificates"
+// in the language of msgs.
+func (msgs Messages) CertsApp() string {
+	return Catalog.Format(msgs.locale, "certsApp", nil)
+}
+
+// CertsNew says "New certificate"
+// in the language the app shows.
+func CertsNew() string { return In(i18n.Locale()).CertsNew() }
+
+// CertsNew says "New certificate"
+// in the language of msgs.
+func (msgs Messages) CertsNew() string {
+	return Catalog.Format(msgs.locale, "certsNew", nil)
+}
+
+// CertsSelfSigned says "Self-signed…"
+// in the language the app shows.
+func CertsSelfSigned() string { return In(i18n.Locale()).CertsSelfSigned() }
+
+// CertsSelfSigned says "Self-signed…"
+// in the language of msgs.
+func (msgs Messages) CertsSelfSigned() string {
+	return Catalog.Format(msgs.locale, "certsSelfSigned", nil)
+}
+
+// CertsDNSSettings says "DNS providers"
+// in the language the app shows.
+func CertsDNSSettings() string { return In(i18n.Locale()).CertsDNSSettings() }
+
+// CertsDNSSettings says "DNS providers"
+// in the language of msgs.
+func (msgs Messages) CertsDNSSettings() string {
+	return Catalog.Format(msgs.locale, "certsDNSSettings", nil)
+}
+
+// CertsEmptyTitle says "No certificates yet"
+// in the language the app shows.
+func CertsEmptyTitle() string { return In(i18n.Locale()).CertsEmptyTitle() }
+
+// CertsEmptyTitle says "No certificates yet"
+// in the language of msgs.
+func (msgs Messages) CertsEmptyTitle() string {
+	return Catalog.Format(msgs.locale, "certsEmptyTitle", nil)
+}
+
+// CertsEmptyNote says "Type a domain and get a free Let's Encrypt certificate, then download it for Nginx, Apache, IIS or Tomcat."
+// in the language the app shows.
+func CertsEmptyNote() string { return In(i18n.Locale()).CertsEmptyNote() }
+
+// CertsEmptyNote says "Type a domain and get a free Let's Encrypt certificate, then download it for Nginx, Apache, IIS or Tomcat."
+// in the language of msgs.
+func (msgs Messages) CertsEmptyNote() string {
+	return Catalog.Format(msgs.locale, "certsEmptyNote", nil)
+}
+
+// CertsStagingBadge says "Test"
+// in the language the app shows.
+func CertsStagingBadge() string { return In(i18n.Locale()).CertsStagingBadge() }
+
+// CertsStagingBadge says "Test"
+// in the language of msgs.
+func (msgs Messages) CertsStagingBadge() string {
+	return Catalog.Format(msgs.locale, "certsStagingBadge", nil)
+}
+
+// CertsSelfSignedBadge says "Self-signed"
+// in the language the app shows.
+func CertsSelfSignedBadge() string { return In(i18n.Locale()).CertsSelfSignedBadge() }
+
+// CertsSelfSignedBadge says "Self-signed"
+// in the language of msgs.
+func (msgs Messages) CertsSelfSignedBadge() string {
+	return Catalog.Format(msgs.locale, "certsSelfSignedBadge", nil)
+}
+
+// CertsExpires says "Expires {date}"
+// in the language the app shows.
+func CertsExpires(date string) string { return In(i18n.Locale()).CertsExpires(date) }
+
+// CertsExpires says "Expires {date}"
+// in the language of msgs.
+func (msgs Messages) CertsExpires(date string) string {
+	return Catalog.Format(msgs.locale, "certsExpires", map[string]any{"date": date})
+}
+
+// CertsDaysLeft says "{days} days left"
+// in the language the app shows.
+func CertsDaysLeft(days int) string { return In(i18n.Locale()).CertsDaysLeft(days) }
+
+// CertsDaysLeft says "{days} days left"
+// in the language of msgs.
+func (msgs Messages) CertsDaysLeft(days int) string {
+	return Catalog.Format(msgs.locale, "certsDaysLeft", map[string]any{"days": days})
+}
+
+// CertsExpired says "Expired"
+// in the language the app shows.
+func CertsExpired() string { return In(i18n.Locale()).CertsExpired() }
+
+// CertsExpired says "Expired"
+// in the language of msgs.
+func (msgs Messages) CertsExpired() string {
+	return Catalog.Format(msgs.locale, "certsExpired", nil)
+}
+
+// CertsDownload says "Download"
+// in the language the app shows.
+func CertsDownload() string { return In(i18n.Locale()).CertsDownload() }
+
+// CertsDownload says "Download"
+// in the language of msgs.
+func (msgs Messages) CertsDownload() string {
+	return Catalog.Format(msgs.locale, "certsDownload", nil)
+}
+
+// CertsRenew says "Renew"
+// in the language the app shows.
+func CertsRenew() string { return In(i18n.Locale()).CertsRenew() }
+
+// CertsRenew says "Renew"
+// in the language of msgs.
+func (msgs Messages) CertsRenew() string {
+	return Catalog.Format(msgs.locale, "certsRenew", nil)
+}
+
+// CertsMethodSelfSigned says "Self-signed"
+// in the language the app shows.
+func CertsMethodSelfSigned() string { return In(i18n.Locale()).CertsMethodSelfSigned() }
+
+// CertsMethodSelfSigned says "Self-signed"
+// in the language of msgs.
+func (msgs Messages) CertsMethodSelfSigned() string {
+	return Catalog.Format(msgs.locale, "certsMethodSelfSigned", nil)
+}
+
+// CertsMethodHTTP says "Proved over HTTP"
+// in the language the app shows.
+func CertsMethodHTTP() string { return In(i18n.Locale()).CertsMethodHTTP() }
+
+// CertsMethodHTTP says "Proved over HTTP"
+// in the language of msgs.
+func (msgs Messages) CertsMethodHTTP() string {
+	return Catalog.Format(msgs.locale, "certsMethodHTTP", nil)
+}
+
+// CertsMethodHTTPOn says "Proved over HTTP on {server}"
+// in the language the app shows.
+func CertsMethodHTTPOn(server string) string { return In(i18n.Locale()).CertsMethodHTTPOn(server) }
+
+// CertsMethodHTTPOn says "Proved over HTTP on {server}"
+// in the language of msgs.
+func (msgs Messages) CertsMethodHTTPOn(server string) string {
+	return Catalog.Format(msgs.locale, "certsMethodHTTPOn", map[string]any{"server": server})
+}
+
+// CertsMethodDNS says "Proved with DNS"
+// in the language the app shows.
+func CertsMethodDNS() string { return In(i18n.Locale()).CertsMethodDNS() }
+
+// CertsMethodDNS says "Proved with DNS"
+// in the language of msgs.
+func (msgs Messages) CertsMethodDNS() string {
+	return Catalog.Format(msgs.locale, "certsMethodDNS", nil)
+}
+
+// CertsMethodDNSOn says "Proved with {provider} DNS"
+// in the language the app shows.
+func CertsMethodDNSOn(provider string) string { return In(i18n.Locale()).CertsMethodDNSOn(provider) }
+
+// CertsMethodDNSOn says "Proved with {provider} DNS"
+// in the language of msgs.
+func (msgs Messages) CertsMethodDNSOn(provider string) string {
+	return Catalog.Format(msgs.locale, "certsMethodDNSOn", map[string]any{"provider": provider})
+}
+
+// CertsMethodManual says "Proved with a TXT record added by hand"
+// in the language the app shows.
+func CertsMethodManual() string { return In(i18n.Locale()).CertsMethodManual() }
+
+// CertsMethodManual says "Proved with a TXT record added by hand"
+// in the language of msgs.
+func (msgs Messages) CertsMethodManual() string {
+	return Catalog.Format(msgs.locale, "certsMethodManual", nil)
+}
+
+// CertsNoDomain says "Type a domain."
+// in the language the app shows.
+func CertsNoDomain() string { return In(i18n.Locale()).CertsNoDomain() }
+
+// CertsNoDomain says "Type a domain."
+// in the language of msgs.
+func (msgs Messages) CertsNoDomain() string {
+	return Catalog.Format(msgs.locale, "certsNoDomain", nil)
+}
+
+// CertsBadDomain says "\"{name}\" is not a domain."
+// in the language the app shows.
+func CertsBadDomain(name string) string { return In(i18n.Locale()).CertsBadDomain(name) }
+
+// CertsBadDomain says "\"{name}\" is not a domain."
+// in the language of msgs.
+func (msgs Messages) CertsBadDomain(name string) string {
+	return Catalog.Format(msgs.locale, "certsBadDomain", map[string]any{"name": name})
+}
+
+// CertsIPNeedsSelfSigned says "{name} is an IP address: Let's Encrypt only signs domains. Use a self-signed certificate for an IP address."
+// in the language the app shows.
+func CertsIPNeedsSelfSigned(name string) string {
+	return In(i18n.Locale()).CertsIPNeedsSelfSigned(name)
+}
+
+// CertsIPNeedsSelfSigned says "{name} is an IP address: Let's Encrypt only signs domains. Use a self-signed certificate for an IP address."
+// in the language of msgs.
+func (msgs Messages) CertsIPNeedsSelfSigned(name string) string {
+	return Catalog.Format(msgs.locale, "certsIPNeedsSelfSigned", map[string]any{"name": name})
+}
+
+// CertsNewTitle says "New certificate"
+// in the language the app shows.
+func CertsNewTitle() string { return In(i18n.Locale()).CertsNewTitle() }
+
+// CertsNewTitle says "New certificate"
+// in the language of msgs.
+func (msgs Messages) CertsNewTitle() string {
+	return Catalog.Format(msgs.locale, "certsNewTitle", nil)
+}
+
+// CertsNewNote says "Free, from Let's Encrypt, valid for 90 days. The app works out how to prove the domain is yours."
+// in the language the app shows.
+func CertsNewNote() string { return In(i18n.Locale()).CertsNewNote() }
+
+// CertsNewNote says "Free, from Let's Encrypt, valid for 90 days. The app works out how to prove the domain is yours."
+// in the language of msgs.
+func (msgs Messages) CertsNewNote() string {
+	return Catalog.Format(msgs.locale, "certsNewNote", nil)
+}
+
+// CertsSelfSignedTitle says "Self-signed certificate"
+// in the language the app shows.
+func CertsSelfSignedTitle() string { return In(i18n.Locale()).CertsSelfSignedTitle() }
+
+// CertsSelfSignedTitle says "Self-signed certificate"
+// in the language of msgs.
+func (msgs Messages) CertsSelfSignedTitle() string {
+	return Catalog.Format(msgs.locale, "certsSelfSignedTitle", nil)
+}
+
+// CertsSelfSignedNote says "Made at once on this computer, for a domain or an IP address, valid for a year."
+// in the language the app shows.
+func CertsSelfSignedNote() string { return In(i18n.Locale()).CertsSelfSignedNote() }
+
+// CertsSelfSignedNote says "Made at once on this computer, for a domain or an IP address, valid for a year."
+// in the language of msgs.
+func (msgs Messages) CertsSelfSignedNote() string {
+	return Catalog.Format(msgs.locale, "certsSelfSignedNote", nil)
+}
+
+// CertsSelfSignedWarning says "Browsers do not trust a self-signed certificate: use it on a LAN or for tests."
+// in the language the app shows.
+func CertsSelfSignedWarning() string { return In(i18n.Locale()).CertsSelfSignedWarning() }
+
+// CertsSelfSignedWarning says "Browsers do not trust a self-signed certificate: use it on a LAN or for tests."
+// in the language of msgs.
+func (msgs Messages) CertsSelfSignedWarning() string {
+	return Catalog.Format(msgs.locale, "certsSelfSignedWarning", nil)
+}
+
+// CertsDomains says "Domains"
+// in the language the app shows.
+func CertsDomains() string { return In(i18n.Locale()).CertsDomains() }
+
+// CertsDomains says "Domains"
+// in the language of msgs.
+func (msgs Messages) CertsDomains() string {
+	return Catalog.Format(msgs.locale, "certsDomains", nil)
+}
+
+// CertsDomainsPlaceholder says "example.com, www.example.com or *.example.com"
+// in the language the app shows.
+func CertsDomainsPlaceholder() string { return In(i18n.Locale()).CertsDomainsPlaceholder() }
+
+// CertsDomainsPlaceholder says "example.com, www.example.com or *.example.com"
+// in the language of msgs.
+func (msgs Messages) CertsDomainsPlaceholder() string {
+	return Catalog.Format(msgs.locale, "certsDomainsPlaceholder", nil)
+}
+
+// CertsSelfSignedPlaceholder says "lan.example or 192.168.1.10"
+// in the language the app shows.
+func CertsSelfSignedPlaceholder() string { return In(i18n.Locale()).CertsSelfSignedPlaceholder() }
+
+// CertsSelfSignedPlaceholder says "lan.example or 192.168.1.10"
+// in the language of msgs.
+func (msgs Messages) CertsSelfSignedPlaceholder() string {
+	return Catalog.Format(msgs.locale, "certsSelfSignedPlaceholder", nil)
+}
+
+// CertsAdvanced says "Advanced"
+// in the language the app shows.
+func CertsAdvanced() string { return In(i18n.Locale()).CertsAdvanced() }
+
+// CertsAdvanced says "Advanced"
+// in the language of msgs.
+func (msgs Messages) CertsAdvanced() string {
+	return Catalog.Format(msgs.locale, "certsAdvanced", nil)
+}
+
+// CertsKeyRSA says "RSA 2048 key"
+// in the language the app shows.
+func CertsKeyRSA() string { return In(i18n.Locale()).CertsKeyRSA() }
+
+// CertsKeyRSA says "RSA 2048 key"
+// in the language of msgs.
+func (msgs Messages) CertsKeyRSA() string {
+	return Catalog.Format(msgs.locale, "certsKeyRSA", nil)
+}
+
+// CertsKeyNote says "Leave it off for an ECDSA P-256 key, smaller and faster; RSA is for old systems."
+// in the language the app shows.
+func CertsKeyNote() string { return In(i18n.Locale()).CertsKeyNote() }
+
+// CertsKeyNote says "Leave it off for an ECDSA P-256 key, smaller and faster; RSA is for old systems."
+// in the language of msgs.
+func (msgs Messages) CertsKeyNote() string {
+	return Catalog.Format(msgs.locale, "certsKeyNote", nil)
+}
+
+// CertsStaging says "Use Let's Encrypt's test service"
+// in the language the app shows.
+func CertsStaging() string { return In(i18n.Locale()).CertsStaging() }
+
+// CertsStaging says "Use Let's Encrypt's test service"
+// in the language of msgs.
+func (msgs Messages) CertsStaging() string {
+	return Catalog.Format(msgs.locale, "certsStaging", nil)
+}
+
+// CertsStagingNote says "Test certificates are not trusted by browsers: they are for trying the app out without Let's Encrypt's limits."
+// in the language the app shows.
+func CertsStagingNote() string { return In(i18n.Locale()).CertsStagingNote() }
+
+// CertsStagingNote says "Test certificates are not trusted by browsers: they are for trying the app out without Let's Encrypt's limits."
+// in the language of msgs.
+func (msgs Messages) CertsStagingNote() string {
+	return Catalog.Format(msgs.locale, "certsStagingNote", nil)
+}
+
+// CertsGenerate says "Generate"
+// in the language the app shows.
+func CertsGenerate() string { return In(i18n.Locale()).CertsGenerate() }
+
+// CertsGenerate says "Generate"
+// in the language of msgs.
+func (msgs Messages) CertsGenerate() string {
+	return Catalog.Format(msgs.locale, "certsGenerate", nil)
+}
+
+// CertsJobTitle says "Certificate for {domains}"
+// in the language the app shows.
+func CertsJobTitle(domains string) string { return In(i18n.Locale()).CertsJobTitle(domains) }
+
+// CertsJobTitle says "Certificate for {domains}"
+// in the language of msgs.
+func (msgs Messages) CertsJobTitle(domains string) string {
+	return Catalog.Format(msgs.locale, "certsJobTitle", map[string]any{"domains": domains})
+}
+
+// CertsStepDetect says "Choosing how to prove the domain"
+// in the language the app shows.
+func CertsStepDetect() string { return In(i18n.Locale()).CertsStepDetect() }
+
+// CertsStepDetect says "Choosing how to prove the domain"
+// in the language of msgs.
+func (msgs Messages) CertsStepDetect() string {
+	return Catalog.Format(msgs.locale, "certsStepDetect", nil)
+}
+
+// CertsStepProve says "Proving the domain is yours"
+// in the language the app shows.
+func CertsStepProve() string { return In(i18n.Locale()).CertsStepProve() }
+
+// CertsStepProve says "Proving the domain is yours"
+// in the language of msgs.
+func (msgs Messages) CertsStepProve() string {
+	return Catalog.Format(msgs.locale, "certsStepProve", nil)
+}
+
+// CertsStepWait says "Let's Encrypt checking it"
+// in the language the app shows.
+func CertsStepWait() string { return In(i18n.Locale()).CertsStepWait() }
+
+// CertsStepWait says "Let's Encrypt checking it"
+// in the language of msgs.
+func (msgs Messages) CertsStepWait() string {
+	return Catalog.Format(msgs.locale, "certsStepWait", nil)
+}
+
+// CertsStepIssue says "Issuing the certificate"
+// in the language the app shows.
+func CertsStepIssue() string { return In(i18n.Locale()).CertsStepIssue() }
+
+// CertsStepIssue says "Issuing the certificate"
+// in the language of msgs.
+func (msgs Messages) CertsStepIssue() string {
+	return Catalog.Format(msgs.locale, "certsStepIssue", nil)
+}
+
+// CertsStepDone says "Done"
+// in the language the app shows.
+func CertsStepDone() string { return In(i18n.Locale()).CertsStepDone() }
+
+// CertsStepDone says "Done"
+// in the language of msgs.
+func (msgs Messages) CertsStepDone() string {
+	return Catalog.Format(msgs.locale, "certsStepDone", nil)
+}
+
+// CertsAddKey says "Add key"
+// in the language the app shows.
+func CertsAddKey() string { return In(i18n.Locale()).CertsAddKey() }
+
+// CertsAddKey says "Add key"
+// in the language of msgs.
+func (msgs Messages) CertsAddKey() string {
+	return Catalog.Format(msgs.locale, "certsAddKey", nil)
+}
+
+// CertsFailedAt says "Failed at: {step}"
+// in the language the app shows.
+func CertsFailedAt(step string) string { return In(i18n.Locale()).CertsFailedAt(step) }
+
+// CertsFailedAt says "Failed at: {step}"
+// in the language of msgs.
+func (msgs Messages) CertsFailedAt(step string) string {
+	return Catalog.Format(msgs.locale, "certsFailedAt", map[string]any{"step": step})
+}
+
+// CertsCanceled says "Canceled."
+// in the language the app shows.
+func CertsCanceled() string { return In(i18n.Locale()).CertsCanceled() }
+
+// CertsCanceled says "Canceled."
+// in the language of msgs.
+func (msgs Messages) CertsCanceled() string {
+	return Catalog.Format(msgs.locale, "certsCanceled", nil)
+}
+
+// CertsIssued says "Issued, valid until {date}."
+// in the language the app shows.
+func CertsIssued(date string) string { return In(i18n.Locale()).CertsIssued(date) }
+
+// CertsIssued says "Issued, valid until {date}."
+// in the language of msgs.
+func (msgs Messages) CertsIssued(date string) string {
+	return Catalog.Format(msgs.locale, "certsIssued", map[string]any{"date": date})
+}
+
+// CertsRetry says "Try again"
+// in the language the app shows.
+func CertsRetry() string { return In(i18n.Locale()).CertsRetry() }
+
+// CertsRetry says "Try again"
+// in the language of msgs.
+func (msgs Messages) CertsRetry() string {
+	return Catalog.Format(msgs.locale, "certsRetry", nil)
+}
+
+// CertsConfirmTitle says "The server needs a short change"
+// in the language the app shows.
+func CertsConfirmTitle() string { return In(i18n.Locale()).CertsConfirmTitle() }
+
+// CertsConfirmTitle says "The server needs a short change"
+// in the language of msgs.
+func (msgs Messages) CertsConfirmTitle() string {
+	return Catalog.Format(msgs.locale, "certsConfirmTitle", nil)
+}
+
+// CertsConfirmSplit says "Port 80 is in use. The app will add a network rule ({tool}) that sends only Let's Encrypt's check requests to the app…"
+// in the language the app shows.
+func CertsConfirmSplit(tool string) string { return In(i18n.Locale()).CertsConfirmSplit(tool) }
+
+// CertsConfirmSplit says "Port 80 is in use. The app will add a network rule ({tool}) that sends only Let's Encrypt's check requests to the app…"
+// in the language of msgs.
+func (msgs Messages) CertsConfirmSplit(tool string) string {
+	return Catalog.Format(msgs.locale, "certsConfirmSplit", map[string]any{"tool": tool})
+}
+
+// CertsConfirmPort80By says "On port 80: {servers}"
+// in the language the app shows.
+func CertsConfirmPort80By(servers string) string {
+	return In(i18n.Locale()).CertsConfirmPort80By(servers)
+}
+
+// CertsConfirmPort80By says "On port 80: {servers}"
+// in the language of msgs.
+func (msgs Messages) CertsConfirmPort80By(servers string) string {
+	return Catalog.Format(msgs.locale, "certsConfirmPort80By", map[string]any{"servers": servers})
+}
+
+// CertsConfirmFirewall says "The server's firewall ({firewall}) blocks port 80. The app will open it for the check."
+// in the language the app shows.
+func CertsConfirmFirewall(firewall string) string {
+	return In(i18n.Locale()).CertsConfirmFirewall(firewall)
+}
+
+// CertsConfirmFirewall says "The server's firewall ({firewall}) blocks port 80. The app will open it for the check."
+// in the language of msgs.
+func (msgs Messages) CertsConfirmFirewall(firewall string) string {
+	return Catalog.Format(msgs.locale, "certsConfirmFirewall", map[string]any{"firewall": firewall})
+}
+
+// CertsConfirmOther says "The app will change {target} for the check."
+// in the language the app shows.
+func CertsConfirmOther(target string) string { return In(i18n.Locale()).CertsConfirmOther(target) }
+
+// CertsConfirmOther says "The app will change {target} for the check."
+// in the language of msgs.
+func (msgs Messages) CertsConfirmOther(target string) string {
+	return Catalog.Format(msgs.locale, "certsConfirmOther", map[string]any{"target": target})
+}
+
+// CertsConfirmUndo says "It is undone on its own in about a minute, when the certificate is issued or the check fails."
+// in the language the app shows.
+func CertsConfirmUndo() string { return In(i18n.Locale()).CertsConfirmUndo() }
+
+// CertsConfirmUndo says "It is undone on its own in about a minute, when the certificate is issued or the check fails."
+// in the language of msgs.
+func (msgs Messages) CertsConfirmUndo() string {
+	return Catalog.Format(msgs.locale, "certsConfirmUndo", nil)
+}
+
+// CertsConfirmApply says "Go ahead"
+// in the language the app shows.
+func CertsConfirmApply() string { return In(i18n.Locale()).CertsConfirmApply() }
+
+// CertsConfirmApply says "Go ahead"
+// in the language of msgs.
+func (msgs Messages) CertsConfirmApply() string {
+	return Catalog.Format(msgs.locale, "certsConfirmApply", nil)
+}
+
+// CertsConfirmUseDNS says "Use a DNS record instead"
+// in the language the app shows.
+func CertsConfirmUseDNS() string { return In(i18n.Locale()).CertsConfirmUseDNS() }
+
+// CertsConfirmUseDNS says "Use a DNS record instead"
+// in the language of msgs.
+func (msgs Messages) CertsConfirmUseDNS() string {
+	return Catalog.Format(msgs.locale, "certsConfirmUseDNS", nil)
+}
+
+// CertsRecordsTitle says "Add this record at your DNS provider"
+// in the language the app shows.
+func CertsRecordsTitle() string { return In(i18n.Locale()).CertsRecordsTitle() }
+
+// CertsRecordsTitle says "Add this record at your DNS provider"
+// in the language of msgs.
+func (msgs Messages) CertsRecordsTitle() string {
+	return Catalog.Format(msgs.locale, "certsRecordsTitle", nil)
+}
+
+// CertsRecordsNote says "The app checks for it on its own and goes on once it is there, for up to 30 minutes. You can remove it afterwards."
+// in the language the app shows.
+func CertsRecordsNote() string { return In(i18n.Locale()).CertsRecordsNote() }
+
+// CertsRecordsNote says "The app checks for it on its own and goes on once it is there, for up to 30 minutes. You can remove it afterwards."
+// in the language of msgs.
+func (msgs Messages) CertsRecordsNote() string {
+	return Catalog.Format(msgs.locale, "certsRecordsNote", nil)
+}
+
+// CertsRecordType says "Type"
+// in the language the app shows.
+func CertsRecordType() string { return In(i18n.Locale()).CertsRecordType() }
+
+// CertsRecordType says "Type"
+// in the language of msgs.
+func (msgs Messages) CertsRecordType() string {
+	return Catalog.Format(msgs.locale, "certsRecordType", nil)
+}
+
+// CertsRecordName says "Name"
+// in the language the app shows.
+func CertsRecordName() string { return In(i18n.Locale()).CertsRecordName() }
+
+// CertsRecordName says "Name"
+// in the language of msgs.
+func (msgs Messages) CertsRecordName() string {
+	return Catalog.Format(msgs.locale, "certsRecordName", nil)
+}
+
+// CertsRecordValue says "Value"
+// in the language the app shows.
+func CertsRecordValue() string { return In(i18n.Locale()).CertsRecordValue() }
+
+// CertsRecordValue says "Value"
+// in the language of msgs.
+func (msgs Messages) CertsRecordValue() string {
+	return Catalog.Format(msgs.locale, "certsRecordValue", nil)
+}
+
+// CertsRecordsWaiting says "Waiting for the record…"
+// in the language the app shows.
+func CertsRecordsWaiting() string { return In(i18n.Locale()).CertsRecordsWaiting() }
+
+// CertsRecordsWaiting says "Waiting for the record…"
+// in the language of msgs.
+func (msgs Messages) CertsRecordsWaiting() string {
+	return Catalog.Format(msgs.locale, "certsRecordsWaiting", nil)
+}
+
+// CertsCopy says "Copy {what}"
+// in the language the app shows.
+func CertsCopy(what string) string { return In(i18n.Locale()).CertsCopy(what) }
+
+// CertsCopy says "Copy {what}"
+// in the language of msgs.
+func (msgs Messages) CertsCopy(what string) string {
+	return Catalog.Format(msgs.locale, "certsCopy", map[string]any{"what": what})
+}
+
+// CertsDownloadTitle says "Download {domains}"
+// in the language the app shows.
+func CertsDownloadTitle(domains string) string { return In(i18n.Locale()).CertsDownloadTitle(domains) }
+
+// CertsDownloadTitle says "Download {domains}"
+// in the language of msgs.
+func (msgs Messages) CertsDownloadTitle(domains string) string {
+	return Catalog.Format(msgs.locale, "certsDownloadTitle", map[string]any{"domains": domains})
+}
+
+// CertsPassword says "Password"
+// in the language the app shows.
+func CertsPassword() string { return In(i18n.Locale()).CertsPassword() }
+
+// CertsPassword says "Password"
+// in the language of msgs.
+func (msgs Messages) CertsPassword() string {
+	return Catalog.Format(msgs.locale, "certsPassword", nil)
+}
+
+// CertsPasswordNote says "The PFX and JKS files open with this password. It is not in the ZIP: copy it now, or come back for it."
+// in the language the app shows.
+func CertsPasswordNote() string { return In(i18n.Locale()).CertsPasswordNote() }
+
+// CertsPasswordNote says "The PFX and JKS files open with this password. It is not in the ZIP: copy it now, or come back for it."
+// in the language of msgs.
+func (msgs Messages) CertsPasswordNote() string {
+	return Catalog.Format(msgs.locale, "certsPasswordNote", nil)
+}
+
+// CertsSaved says "Saved to {path}"
+// in the language the app shows.
+func CertsSaved(path string) string { return In(i18n.Locale()).CertsSaved(path) }
+
+// CertsSaved says "Saved to {path}"
+// in the language of msgs.
+func (msgs Messages) CertsSaved(path string) string {
+	return Catalog.Format(msgs.locale, "certsSaved", map[string]any{"path": path})
+}
+
+// CertsSaving says "Saving…"
+// in the language the app shows.
+func CertsSaving() string { return In(i18n.Locale()).CertsSaving() }
+
+// CertsSaving says "Saving…"
+// in the language of msgs.
+func (msgs Messages) CertsSaving() string {
+	return Catalog.Format(msgs.locale, "certsSaving", nil)
+}
+
+// CertsSaveZip says "Save ZIP…"
+// in the language the app shows.
+func CertsSaveZip() string { return In(i18n.Locale()).CertsSaveZip() }
+
+// CertsSaveZip says "Save ZIP…"
+// in the language of msgs.
+func (msgs Messages) CertsSaveZip() string {
+	return Catalog.Format(msgs.locale, "certsSaveZip", nil)
+}
+
+// CertsFormatNginx says "Nginx and other PEM servers"
+// in the language the app shows.
+func CertsFormatNginx() string { return In(i18n.Locale()).CertsFormatNginx() }
+
+// CertsFormatNginx says "Nginx and other PEM servers"
+// in the language of msgs.
+func (msgs Messages) CertsFormatNginx() string {
+	return Catalog.Format(msgs.locale, "certsFormatNginx", nil)
+}
+
+// CertsFormatNginxNote says "fullchain.pem and privkey.pem: Nginx, Caddy, BT Panel and most panels."
+// in the language the app shows.
+func CertsFormatNginxNote() string { return In(i18n.Locale()).CertsFormatNginxNote() }
+
+// CertsFormatNginxNote says "fullchain.pem and privkey.pem: Nginx, Caddy, BT Panel and most panels."
+// in the language of msgs.
+func (msgs Messages) CertsFormatNginxNote() string {
+	return Catalog.Format(msgs.locale, "certsFormatNginxNote", nil)
+}
+
+// CertsFormatApache says "Apache"
+// in the language the app shows.
+func CertsFormatApache() string { return In(i18n.Locale()).CertsFormatApache() }
+
+// CertsFormatApache says "Apache"
+// in the language of msgs.
+func (msgs Messages) CertsFormatApache() string {
+	return Catalog.Format(msgs.locale, "certsFormatApache", nil)
+}
+
+// CertsFormatApacheNote says "The certificate, its chain and its key, as .crt and .key files."
+// in the language the app shows.
+func CertsFormatApacheNote() string { return In(i18n.Locale()).CertsFormatApacheNote() }
+
+// CertsFormatApacheNote says "The certificate, its chain and its key, as .crt and .key files."
+// in the language of msgs.
+func (msgs Messages) CertsFormatApacheNote() string {
+	return Catalog.Format(msgs.locale, "certsFormatApacheNote", nil)
+}
+
+// CertsFormatIIS says "IIS and Windows (PFX)"
+// in the language the app shows.
+func CertsFormatIIS() string { return In(i18n.Locale()).CertsFormatIIS() }
+
+// CertsFormatIIS says "IIS and Windows (PFX)"
+// in the language of msgs.
+func (msgs Messages) CertsFormatIIS() string {
+	return Catalog.Format(msgs.locale, "certsFormatIIS", nil)
+}
+
+// CertsFormatIISNote says "A .pfx file with a password: IIS, Windows, Tomcat 8.5 and later."
+// in the language the app shows.
+func CertsFormatIISNote() string { return In(i18n.Locale()).CertsFormatIISNote() }
+
+// CertsFormatIISNote says "A .pfx file with a password: IIS, Windows, Tomcat 8.5 and later."
+// in the language of msgs.
+func (msgs Messages) CertsFormatIISNote() string {
+	return Catalog.Format(msgs.locale, "certsFormatIISNote", nil)
+}
+
+// CertsFormatTomcat says "Tomcat and Java (JKS)"
+// in the language the app shows.
+func CertsFormatTomcat() string { return In(i18n.Locale()).CertsFormatTomcat() }
+
+// CertsFormatTomcat says "Tomcat and Java (JKS)"
+// in the language of msgs.
+func (msgs Messages) CertsFormatTomcat() string {
+	return Catalog.Format(msgs.locale, "certsFormatTomcat", nil)
+}
+
+// CertsFormatTomcatNote says "A .jks keystore with a password, for Java and older Tomcat."
+// in the language the app shows.
+func CertsFormatTomcatNote() string { return In(i18n.Locale()).CertsFormatTomcatNote() }
+
+// CertsFormatTomcatNote says "A .jks keystore with a password, for Java and older Tomcat."
+// in the language of msgs.
+func (msgs Messages) CertsFormatTomcatNote() string {
+	return Catalog.Format(msgs.locale, "certsFormatTomcatNote", nil)
+}
+
+// CertsReadmeTitle says "SSL certificate for {domains}"
+// in the language the app shows.
+func CertsReadmeTitle(domains string) string { return In(i18n.Locale()).CertsReadmeTitle(domains) }
+
+// CertsReadmeTitle says "SSL certificate for {domains}"
+// in the language of msgs.
+func (msgs Messages) CertsReadmeTitle(domains string) string {
+	return Catalog.Format(msgs.locale, "certsReadmeTitle", map[string]any{"domains": domains})
+}
+
+// CertsReadmeExpires says "Valid until {date}. Renew it before then in Finallyshell's SSL certificates app."
+// in the language the app shows.
+func CertsReadmeExpires(date string) string { return In(i18n.Locale()).CertsReadmeExpires(date) }
+
+// CertsReadmeExpires says "Valid until {date}. Renew it before then in Finallyshell's SSL certificates app."
+// in the language of msgs.
+func (msgs Messages) CertsReadmeExpires(date string) string {
+	return Catalog.Format(msgs.locale, "certsReadmeExpires", map[string]any{"date": date})
+}
+
+// CertsReadmePassword says "The .pfx and .jks files are protected by a password, which is not in this ZIP: Finallyshell shows it when you downloa…"
+// in the language the app shows.
+func CertsReadmePassword() string { return In(i18n.Locale()).CertsReadmePassword() }
+
+// CertsReadmePassword says "The .pfx and .jks files are protected by a password, which is not in this ZIP: Finallyshell shows it when you downloa…"
+// in the language of msgs.
+func (msgs Messages) CertsReadmePassword() string {
+	return Catalog.Format(msgs.locale, "certsReadmePassword", nil)
+}
+
+// CertsReadmeKey says "Keep the private keys (privkey.pem, *.key and the files that hold them) secret: anyone with one can pose as your site."
+// in the language the app shows.
+func CertsReadmeKey() string { return In(i18n.Locale()).CertsReadmeKey() }
+
+// CertsReadmeKey says "Keep the private keys (privkey.pem, *.key and the files that hold them) secret: anyone with one can pose as your site."
+// in the language of msgs.
+func (msgs Messages) CertsReadmeKey() string {
+	return Catalog.Format(msgs.locale, "certsReadmeKey", nil)
+}
+
+// CertsDeleteTitle says "Delete certificate?"
+// in the language the app shows.
+func CertsDeleteTitle() string { return In(i18n.Locale()).CertsDeleteTitle() }
+
+// CertsDeleteTitle says "Delete certificate?"
+// in the language of msgs.
+func (msgs Messages) CertsDeleteTitle() string {
+	return Catalog.Format(msgs.locale, "certsDeleteTitle", nil)
+}
+
+// CertsDeleteNote says "The certificate for {domains} and its private key are deleted from this computer. Servers that use it keep their copy."
+// in the language the app shows.
+func CertsDeleteNote(domains string) string { return In(i18n.Locale()).CertsDeleteNote(domains) }
+
+// CertsDeleteNote says "The certificate for {domains} and its private key are deleted from this computer. Servers that use it keep their copy."
+// in the language of msgs.
+func (msgs Messages) CertsDeleteNote(domains string) string {
+	return Catalog.Format(msgs.locale, "certsDeleteNote", map[string]any{"domains": domains})
+}
+
+// CertsDNSNote says "With a provider's key, a domain hosted there is proved with no step of yours, wildcards (*.example.com) too. Keys sta…"
+// in the language the app shows.
+func CertsDNSNote() string { return In(i18n.Locale()).CertsDNSNote() }
+
+// CertsDNSNote says "With a provider's key, a domain hosted there is proved with no step of yours, wildcards (*.example.com) too. Keys sta…"
+// in the language of msgs.
+func (msgs Messages) CertsDNSNote() string {
+	return Catalog.Format(msgs.locale, "certsDNSNote", nil)
+}
+
+// CertsDNSProvider says "Provider"
+// in the language the app shows.
+func CertsDNSProvider() string { return In(i18n.Locale()).CertsDNSProvider() }
+
+// CertsDNSProvider says "Provider"
+// in the language of msgs.
+func (msgs Messages) CertsDNSProvider() string {
+	return Catalog.Format(msgs.locale, "certsDNSProvider", nil)
+}
+
+// CertsDNSGetKey says "Get a key at {provider}"
+// in the language the app shows.
+func CertsDNSGetKey(provider string) string { return In(i18n.Locale()).CertsDNSGetKey(provider) }
+
+// CertsDNSGetKey says "Get a key at {provider}"
+// in the language of msgs.
+func (msgs Messages) CertsDNSGetKey(provider string) string {
+	return Catalog.Format(msgs.locale, "certsDNSGetKey", map[string]any{"provider": provider})
+}
+
+// CertsDNSClear says "Remove key"
+// in the language the app shows.
+func CertsDNSClear() string { return In(i18n.Locale()).CertsDNSClear() }
+
+// CertsDNSClear says "Remove key"
+// in the language of msgs.
+func (msgs Messages) CertsDNSClear() string {
+	return Catalog.Format(msgs.locale, "certsDNSClear", nil)
+}
+
+// CertsDNSCleared says "Key removed."
+// in the language the app shows.
+func CertsDNSCleared() string { return In(i18n.Locale()).CertsDNSCleared() }
+
+// CertsDNSCleared says "Key removed."
+// in the language of msgs.
+func (msgs Messages) CertsDNSCleared() string {
+	return Catalog.Format(msgs.locale, "certsDNSCleared", nil)
+}
+
+// CertsDNSSaved says "{provider} saved."
+// in the language the app shows.
+func CertsDNSSaved(provider string) string { return In(i18n.Locale()).CertsDNSSaved(provider) }
+
+// CertsDNSSaved says "{provider} saved."
+// in the language of msgs.
+func (msgs Messages) CertsDNSSaved(provider string) string {
+	return Catalog.Format(msgs.locale, "certsDNSSaved", map[string]any{"provider": provider})
+}
+
+// CertsDNSMissing says "Fill in {field}."
+// in the language the app shows.
+func CertsDNSMissing(field string) string { return In(i18n.Locale()).CertsDNSMissing(field) }
+
+// CertsDNSMissing says "Fill in {field}."
+// in the language of msgs.
+func (msgs Messages) CertsDNSMissing(field string) string {
+	return Catalog.Format(msgs.locale, "certsDNSMissing", map[string]any{"field": field})
+}
+
+// CertsHintProvider says "This domain is hosted at {provider}: add its key and next time it is proved on its own."
+// in the language the app shows.
+func CertsHintProvider(provider string) string { return In(i18n.Locale()).CertsHintProvider(provider) }
+
+// CertsHintProvider says "This domain is hosted at {provider}: add its key and next time it is proved on its own."
+// in the language of msgs.
+func (msgs Messages) CertsHintProvider(provider string) string {
+	return Catalog.Format(msgs.locale, "certsHintProvider", map[string]any{"provider": provider})
+}
+
+// CertsWhyDNS says "The domain is hosted at {provider}: proved through its API, nothing to do."
+// in the language the app shows.
+func CertsWhyDNS(provider string) string { return In(i18n.Locale()).CertsWhyDNS(provider) }
+
+// CertsWhyDNS says "The domain is hosted at {provider}: proved through its API, nothing to do."
+// in the language of msgs.
+func (msgs Messages) CertsWhyDNS(provider string) string {
+	return Catalog.Format(msgs.locale, "certsWhyDNS", map[string]any{"provider": provider})
+}
+
+// CertsWhyWebroot says "Proved with a file in the website's folder on the server."
+// in the language the app shows.
+func CertsWhyWebroot() string { return In(i18n.Locale()).CertsWhyWebroot() }
+
+// CertsWhyWebroot says "Proved with a file in the website's folder on the server."
+// in the language of msgs.
+func (msgs Messages) CertsWhyWebroot() string {
+	return Catalog.Format(msgs.locale, "certsWhyWebroot", nil)
+}
+
+// CertsWhyResponder says "Port 80 is free: the app answers the check on it for a moment."
+// in the language the app shows.
+func CertsWhyResponder() string { return In(i18n.Locale()).CertsWhyResponder() }
+
+// CertsWhyResponder says "Port 80 is free: the app answers the check on it for a moment."
+// in the language of msgs.
+func (msgs Messages) CertsWhyResponder() string {
+	return Catalog.Format(msgs.locale, "certsWhyResponder", nil)
+}
+
+// CertsWhyCaddy says "Proved through Caddy, with a route that is removed afterwards."
+// in the language the app shows.
+func CertsWhyCaddy() string { return In(i18n.Locale()).CertsWhyCaddy() }
+
+// CertsWhyCaddy says "Proved through Caddy, with a route that is removed afterwards."
+// in the language of msgs.
+func (msgs Messages) CertsWhyCaddy() string {
+	return Catalog.Format(msgs.locale, "certsWhyCaddy", nil)
+}
+
+// CertsWhySplit says "Port 80 is in use: the check requests are split off it for about a minute; your website is not affected."
+// in the language the app shows.
+func CertsWhySplit() string { return In(i18n.Locale()).CertsWhySplit() }
+
+// CertsWhySplit says "Port 80 is in use: the check requests are split off it for about a minute; your website is not affected."
+// in the language of msgs.
+func (msgs Messages) CertsWhySplit() string {
+	return Catalog.Format(msgs.locale, "certsWhySplit", nil)
+}
+
+// CertsWhyHTTP says "Proved through the server over HTTP."
+// in the language the app shows.
+func CertsWhyHTTP() string { return In(i18n.Locale()).CertsWhyHTTP() }
+
+// CertsWhyHTTP says "Proved through the server over HTTP."
+// in the language of msgs.
+func (msgs Messages) CertsWhyHTTP() string {
+	return Catalog.Format(msgs.locale, "certsWhyHTTP", nil)
+}
+
+// CertsWhyPort80 says "Port 80 is used by another program, which the app leaves alone: proved with a DNS record."
+// in the language the app shows.
+func CertsWhyPort80() string { return In(i18n.Locale()).CertsWhyPort80() }
+
+// CertsWhyPort80 says "Port 80 is used by another program, which the app leaves alone: proved with a DNS record."
+// in the language of msgs.
+func (msgs Messages) CertsWhyPort80() string {
+	return Catalog.Format(msgs.locale, "certsWhyPort80", nil)
+}
+
+// CertsWhyPort80By says "Port 80 is used by {servers}, which the app leaves alone: proved with a DNS record."
+// in the language the app shows.
+func CertsWhyPort80By(servers string) string { return In(i18n.Locale()).CertsWhyPort80By(servers) }
+
+// CertsWhyPort80By says "Port 80 is used by {servers}, which the app leaves alone: proved with a DNS record."
+// in the language of msgs.
+func (msgs Messages) CertsWhyPort80By(servers string) string {
+	return Catalog.Format(msgs.locale, "certsWhyPort80By", map[string]any{"servers": servers})
+}
+
+// CertsWhyNoResponder says "The server has nothing to answer on port 80 with (no Python 3 or BusyBox): proved with a DNS record."
+// in the language the app shows.
+func CertsWhyNoResponder() string { return In(i18n.Locale()).CertsWhyNoResponder() }
+
+// CertsWhyNoResponder says "The server has nothing to answer on port 80 with (no Python 3 or BusyBox): proved with a DNS record."
+// in the language of msgs.
+func (msgs Messages) CertsWhyNoResponder() string {
+	return Catalog.Format(msgs.locale, "certsWhyNoResponder", nil)
+}
+
+// CertsWhyFirewall says "The server's firewall blocks port 80: proved with a DNS record."
+// in the language the app shows.
+func CertsWhyFirewall() string { return In(i18n.Locale()).CertsWhyFirewall() }
+
+// CertsWhyFirewall says "The server's firewall blocks port 80: proved with a DNS record."
+// in the language of msgs.
+func (msgs Messages) CertsWhyFirewall() string {
+	return Catalog.Format(msgs.locale, "certsWhyFirewall", nil)
+}
+
+// CertsWhyICP says "The server's cloud in mainland China blocks domains without an ICP filing: only a DNS record proves it."
+// in the language the app shows.
+func CertsWhyICP() string { return In(i18n.Locale()).CertsWhyICP() }
+
+// CertsWhyICP says "The server's cloud in mainland China blocks domains without an ICP filing: only a DNS record proves it."
+// in the language of msgs.
+func (msgs Messages) CertsWhyICP() string {
+	return Catalog.Format(msgs.locale, "certsWhyICP", nil)
+}
+
+// CertsWhyUnreachable says "The domain does not reach the connected server over HTTP (it points elsewhere, or a firewall or security group blocks…"
+// in the language the app shows.
+func CertsWhyUnreachable() string { return In(i18n.Locale()).CertsWhyUnreachable() }
+
+// CertsWhyUnreachable says "The domain does not reach the connected server over HTTP (it points elsewhere, or a firewall or security group blocks…"
+// in the language of msgs.
+func (msgs Messages) CertsWhyUnreachable() string {
+	return Catalog.Format(msgs.locale, "certsWhyUnreachable", nil)
+}
+
+// CertsWhyHTTPFailed says "The server could not prove the domain over HTTP: proved with a DNS record."
+// in the language the app shows.
+func CertsWhyHTTPFailed() string { return In(i18n.Locale()).CertsWhyHTTPFailed() }
+
+// CertsWhyHTTPFailed says "The server could not prove the domain over HTTP: proved with a DNS record."
+// in the language of msgs.
+func (msgs Messages) CertsWhyHTTPFailed() string {
+	return Catalog.Format(msgs.locale, "certsWhyHTTPFailed", nil)
+}
+
+// CertsWhyWildcard says "A wildcard domain is proved with a DNS record alone."
+// in the language the app shows.
+func CertsWhyWildcard() string { return In(i18n.Locale()).CertsWhyWildcard() }
+
+// CertsWhyWildcard says "A wildcard domain is proved with a DNS record alone."
+// in the language of msgs.
+func (msgs Messages) CertsWhyWildcard() string {
+	return Catalog.Format(msgs.locale, "certsWhyWildcard", nil)
+}
+
+// CertsWhyNoServer says "No server is connected to answer over HTTP: proved with a DNS record."
+// in the language the app shows.
+func CertsWhyNoServer() string { return In(i18n.Locale()).CertsWhyNoServer() }
+
+// CertsWhyNoServer says "No server is connected to answer over HTTP: proved with a DNS record."
+// in the language of msgs.
+func (msgs Messages) CertsWhyNoServer() string {
+	return Catalog.Format(msgs.locale, "certsWhyNoServer", nil)
+}
+
+// CertsWhyDeclined says "Proved with a DNS record, the server left as it is."
+// in the language the app shows.
+func CertsWhyDeclined() string { return In(i18n.Locale()).CertsWhyDeclined() }
+
+// CertsWhyDeclined says "Proved with a DNS record, the server left as it is."
+// in the language of msgs.
+func (msgs Messages) CertsWhyDeclined() string {
+	return Catalog.Format(msgs.locale, "certsWhyDeclined", nil)
+}
+
+// CertsBannerRunning says "{domains}: {step}…"
+// in the language the app shows.
+func CertsBannerRunning(domains string, step string) string {
+	return In(i18n.Locale()).CertsBannerRunning(domains, step)
+}
+
+// CertsBannerRunning says "{domains}: {step}…"
+// in the language of msgs.
+func (msgs Messages) CertsBannerRunning(domains string, step string) string {
+	return Catalog.Format(msgs.locale, "certsBannerRunning", map[string]any{"domains": domains, "step": step})
+}
+
+// CertsBannerDone says "Certificate for {domains} issued."
+// in the language the app shows.
+func CertsBannerDone(domains string) string { return In(i18n.Locale()).CertsBannerDone(domains) }
+
+// CertsBannerDone says "Certificate for {domains} issued."
+// in the language of msgs.
+func (msgs Messages) CertsBannerDone(domains string) string {
+	return Catalog.Format(msgs.locale, "certsBannerDone", map[string]any{"domains": domains})
+}
+
+// CertsBannerFailed says "Certificate for {domains} failed."
+// in the language the app shows.
+func CertsBannerFailed(domains string) string { return In(i18n.Locale()).CertsBannerFailed(domains) }
+
+// CertsBannerFailed says "Certificate for {domains} failed."
+// in the language of msgs.
+func (msgs Messages) CertsBannerFailed(domains string) string {
+	return Catalog.Format(msgs.locale, "certsBannerFailed", map[string]any{"domains": domains})
+}
+
+// CertsShow says "Show"
+// in the language the app shows.
+func CertsShow() string { return In(i18n.Locale()).CertsShow() }
+
+// CertsShow says "Show"
+// in the language of msgs.
+func (msgs Messages) CertsShow() string {
+	return Catalog.Format(msgs.locale, "certsShow", nil)
+}
+
+// CertsCenter says "Get free SSL certificates for your domains, and download them for any server."
+// in the language the app shows.
+func CertsCenter() string { return In(i18n.Locale()).CertsCenter() }
+
+// CertsCenter says "Get free SSL certificates for your domains, and download them for any server."
+// in the language of msgs.
+func (msgs Messages) CertsCenter() string {
+	return Catalog.Format(msgs.locale, "certsCenter", nil)
+}

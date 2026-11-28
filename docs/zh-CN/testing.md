@@ -73,6 +73,21 @@ for account in root tester; do
 done
 ```
 
+SSL 证书应用的 `TestCertHTTPLive` 在测试箱上用应用的每一种方式响应 HTTP 验证，比如在空闲的 80 端口启动应用自己的临时服务、放进网站目录，并逐一撤销。它需要 root，会改动测试箱的 Nginx 站点、启动和停止 Nginx，结束时删除自己添加的内容。探测请求通过 `127.0.0.1:8080` 发到测试箱的 80 端口；测试箱换了端口时，用 `TESTBOX_HTTP` 指定。
+
+```bash
+(
+    set -e
+    set +x
+    ssh_export=$(.claude/skills/testbox/testbox.sh ssh-env root)
+    eval "$ssh_export"
+    unset ssh_export
+    FINALLYSHELL_TEST_MUTATE=1 go test ./internal/app -run '^TestCertHTTPLive$' -count=1 -v -timeout 5m
+)
+```
+
+签发本身在 Pebble 上用 `tools/pebble-test.sh` 测试，不在测试箱上（见[开发](development.md#证书签发)）。
+
 ## 添加组件
 
 额外组件装在可随时重建的容器里，不要装到宿主机上：

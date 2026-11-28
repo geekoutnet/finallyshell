@@ -26,6 +26,7 @@ var desktopCenterDescriptions = map[desktopAppID]func() string{
 	appBrowser:      locales.DesktopCenterBrowser,
 	appAppCenter:    locales.DesktopCenterCenter,
 	appAI:           locales.DesktopCenterAI,
+	appCerts:        locales.CertsCenter,
 	"srv-docker":    locales.DesktopCenterDocker,
 	"srv-db":        locales.DesktopCenterDB,
 	"srv-sites":     locales.DesktopCenterSites,

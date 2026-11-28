@@ -121,6 +121,28 @@ for account in root tester; do
 done
 ```
 
+For the SSL certificates app, `TestCertHTTPLive` serves HTTP challenges
+from the box in each of the ways the app has, such as a responder of the
+app's own on the free port 80 and a site's document root, and undoes each
+one. It needs root, and changes the box's Nginx sites and starts and stops
+Nginx; it removes what it made. The probes go to the
+box's port 80 through `127.0.0.1:8080`, or `TESTBOX_HTTP` when the box was
+made with another port.
+
+```bash
+(
+    set -e
+    set +x
+    ssh_export=$(.claude/skills/testbox/testbox.sh ssh-env root)
+    eval "$ssh_export"
+    unset ssh_export
+    FINALLYSHELL_TEST_MUTATE=1 go test ./internal/app -run '^TestCertHTTPLive$' -count=1 -v -timeout 5m
+)
+```
+
+Issuing itself is tested against Pebble with `tools/pebble-test.sh`, not on
+the box (see [Development](development.md#certificate-issuance)).
+
 ## Adding components
 
 Install extras inside the disposable container, not on the host:

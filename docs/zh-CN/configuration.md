@@ -50,6 +50,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `commandeditor.txt` | 命令页里命令编辑器的文本（见 [commandeditor.txt](#commandeditortxt)）。 |
 | `bulk-runs/` | 最近 20 次[批量执行](features.md#批量执行)的本地记录，每次一个 JSON 文件。仅在勾选时保存脚本，从不保存输出，不参与同步。 |
 | `geo/` | IP 位置数据，只在你同意时下载：`ip2region_v4.xdb`、`ip2region_v6.xdb`，以及在线查询结果的缓存 `cache.json`（见 [IP 归属地](features.md#ip-归属地)）。 |
+| `certs/` | SSL 证书应用的证书、私钥和 Let's Encrypt 账户（见 [SSL 证书](#ssl-证书)），不参与同步。 |
 
 `mygo dev`、`go run` 和安装版用的是同一个目录，所以共用主机和设置。
 
@@ -415,6 +416,7 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 - `sync/<服务>/credential`：同步服务（`gist`、`webdav` 或 `s3`）的令牌、密码或私有访问密钥；
 - `account/<服务>/token`：已登录账户的令牌，格式为 JSON，包括访问令牌、刷新令牌和它们各自的到期时间（见[账户](features.md#账户)）；
 - `account/<服务>/<用户 ID>/sync-password`：账户的同步密码，本机登录过的每个账户各存一份；
+- `certs/dns/<服务商 ID>`：SSL 证书应用里 DNS 服务商的密钥，格式为各字段组成的 JSON（见 [SSL 证书](#ssl-证书)）；
 - `app/lock/verifier`：带随机盐的 Argon2id 验证数据（3 次迭代、64 MiB、4 路并行）。不保存应用锁密码本身，验证数据也不参与同步。重置能删除已登记及当前主机的提权凭据；已移除主机或旧端点的历史提权凭据可能需要在系统凭据库手动删除。
 
 “记住密码”按主机设置，适用于登录和代理凭据。提权弹窗有独立的 **记住** 选项。
@@ -438,6 +440,23 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 ## Caddy 网站和全局配置文件
 
 网站和全局设置会读取探测到的主 Caddyfile（通常为 `/etc/caddy/Caddyfile`）及其导入文件。已有网站写回原文件。托管布局下，新建或复制网站会写入 `<网站目录>/<清理后的首个地址>.caddy`，重名时加数字后缀；选定路径意外出现文件时不会覆盖。其他布局下，新网站追加到主文件；新建片段和全局设置也写入主文件。停用的网站保留在原文件的带标记注释块中。配置事务的带时间戳备份位于主文件旁的 `.backups`，原生卸载的恢复副本位于 `/var/backups/finallyshell-caddy.*`。这两个页面没有独立的应用设置，也不会将网站明文密码写入本地配置或同步数据。
+
+## SSL 证书
+
+[SSL 证书](features.md#桌面模式--ssl-证书)应用的所有数据都在 `<配置目录>/certs/` 里。这个文件夹只有当前用户能打开（权限 700），里面的文件只有当前用户能读（权限 600）。这些内容不参与同步，不随主机备份，也不会上传。
+
+| 文件 | 内容 |
+|---|---|
+| `certs/<ID>/meta.json` | 证书的说明：域名、验证方式（`self-signed`、`http`、`dns`、`dns-manual`）、用到的 DNS 服务商或服务器、密钥类型（`ec256` 或 `rsa2048`）、颁发者、是否来自 Let's Encrypt 测试环境、有效期，以及下载 PFX 和 JKS 时用的密码。 |
+| `certs/<ID>/fullchain.pem` | 证书，后面跟着为它担保的中间证书。 |
+| `certs/<ID>/privkey.pem` | 私钥，PKCS#8 PEM 格式。 |
+| `certs/accounts/<CA>.json` | 在某个 CA 的 ACME 账户，每个 CA 一个（Let's Encrypt 和它的测试环境）：账户私钥和注册信息。不填邮箱。 |
+
+证书的 ID 是它的第一个域名，`*.` 写成 `wildcard.`，自签名证书再加上 `-self-signed`，例如 `example.com`、`wildcard.example.com`、`lan.example-self-signed`。续期会替换文件夹里的文件，密码不变；删除证书会删掉整个文件夹。把文件夹复制到另一台电脑的 `certs/` 下就能带走证书；删掉 `certs/accounts/` 后，下次签发会新建账户。
+
+DNS 服务商的密钥存在系统凭据库，键是 `certs/dns/<服务商 ID>`（`cloudflare`、`alidns`、`tencentcloud`、`huaweicloud`），内容是该服务商各字段组成的 JSON：Cloudflare 是 `token`，其他服务商是 `id` 和 `secret`，华为云还有 `region`。
+
+通过 HTTP 验证签发时，不改任何配置文件，服务器上也不留东西：验证文件放在 `<网站目录>/.well-known/acme-challenge/`，用完连同应用新建的文件夹一起删除；应用自己的临时服务，以及 80 端口透明分流用的小程序，使用 `/tmp/finallyshell-acme.<随机>/`，停止时删除；透明分流的 iptables 或 nftables 规则、Caddy 的临时路由用完都会删除，临时放行的防火墙端口也会关闭。
 
 ## SSH 密钥存在哪里
 

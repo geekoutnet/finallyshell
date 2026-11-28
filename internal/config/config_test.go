@@ -414,6 +414,13 @@ func TestRecentAndDelete(t *testing.T) {
 		t.Errorf("remove: %v", hostIDs(s.Hosts))
 	}
 
+	if !s.RemoveRecent("c") || s.RemoveRecent("zz") {
+		t.Error("remove recent")
+	}
+	if got := hostIDs(s.Recent(0)); slices.Contains(got, "c") || len(s.Live()) != 3 {
+		t.Errorf("after removing c: recent %v live %v", got, hostIDs(s.Live()))
+	}
+
 	s.ClearRecents()
 	if len(s.Recent(0)) != 0 || len(s.Live()) != 3 {
 		t.Errorf("after clearing: recent %v live %v", hostIDs(s.Recent(0)), hostIDs(s.Live()))

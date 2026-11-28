@@ -411,6 +411,11 @@ away, without having to be connected once first.
   connections" rows.
 - "Clear" clears the list of recent connections. It does not delete
   hosts: they are all still listed under "Other connections".
+- Right-clicking a host opens the connection manager's menu for it:
+  connect, edit, duplicate, rename, move to a folder and the rest. In
+  place of Delete, a recent host has "Remove from recent", which takes
+  only that host off the recent list and keeps it under "Other
+  connections"; hosts are deleted in the connection manager.
 - The "Connection manager" button opens the connection manager. While a
   new tab is selected, connecting from the connection manager also
   connects in that tab.

@@ -78,6 +78,14 @@ func (a *App) clearRecents() {
 	a.redraw()
 }
 
+// removeRecent takes h off the recent list, keeping the host: it goes
+// back among the other hosts.
+func (a *App) removeRecent(h *config.Host) {
+	a.hosts.RemoveRecent(h.ID)
+	a.saveHosts(a.hosts)
+	a.redraw()
+}
+
 // quickHosts are the hosts the start page lists, while searching those
 // that match: first the recent ones, the last connected first, then the
 // other hosts that are not deleted, the last added first, and after them
@@ -228,7 +236,8 @@ func (a *App) quickConnect(c *ui.Context, tab *Session, st *startState) {
 		st.row++ // a header: the host under it
 	}
 	var connect *config.Host
-	var local bool // Local terminal clicked
+	var local bool     // Local terminal clicked
+	var later []func() // what a row's menu chose, done after the list
 	ui.Row(c).Gap(12).AlignItems(ui.Center).Children(func() {
 		ui.Text(c, locales.QuickConnect()).FontSize(16).Bold().Grow(1)
 		search := ui.SearchField(c, &st.query).Placeholder(locales.TelnetQuickConnect()).Label(locales.SearchHosts()).Width(350).MinWidth(0).Shrink(1).AutoFocus()
@@ -308,6 +317,18 @@ func (a *App) quickConnect(c *ui.Context, tab *Session, st *startState) {
 			if row.Clicked() {
 				connect = h
 			}
+			// The connection manager's menu, the row chosen for it; but
+			// a recent host is taken off the list, not deleted.
+			row.ContextMenu(func(menu *ui.Menu) {
+				later = append(later, func() { st.row = i })
+				a.hostMenuItems(c, &a.connTree, menu, h, &later)
+				if slices.Contains(a.hosts.Recent(recentLimit), h) {
+					menu.Separator()
+					if menu.Item(locales.RemoveRecent()).Chosen() {
+						later = append(later, func() { a.removeRecent(h) })
+					}
+				}
+			})
 			row.Children(func() {
 				st.widths.Size(ui.Row(c).Gap(8).AlignItems(ui.Center), "name", 0).Children(func() {
 					hostIcon(c, h, i == st.row, color)
@@ -342,6 +363,9 @@ func (a *App) quickConnect(c *ui.Context, tab *Session, st *startState) {
 			a.openManager()
 		}
 	})
+	for _, fn := range later {
+		fn()
+	}
 	switch {
 	case connect != nil:
 		a.openSessionIn(tab, connect)

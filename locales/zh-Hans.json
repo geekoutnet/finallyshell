@@ -139,6 +139,7 @@
   "otherHosts": "其他连接",
   "noMatchingHosts": "没有匹配的连接。",
   "clearRecents": "清空",
+  "removeRecent": "从最近连接中移除",
   "connectionManager": "连接管理器",
   "noHostsTitle": "还没有连接",
   "noHostsBody": "添加一台服务器，或者在连接管理器里从 FinalShell、Xshell 等客户端导入连接。",

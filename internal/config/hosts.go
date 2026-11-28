@@ -523,6 +523,16 @@ func (s *Store) ClearRecents() {
 	}
 }
 
+// RemoveRecent takes the host with the ID off the recent list, keeping
+// the host. It reports whether there is such a host.
+func (s *Store) RemoveRecent(id string) bool {
+	h := s.Host(id)
+	if h != nil {
+		h.LastConnectedAt = time.Time{}
+	}
+	return h != nil
+}
+
 // SoftDelete moves the host with the ID to the deleted hosts, as of t,
 // unless it is there already. It reports whether there is such a host.
 func (s *Store) SoftDelete(id string, t time.Time) bool {

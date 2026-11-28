@@ -575,3 +575,51 @@ func TestStartPageShots(t *testing.T) {
 		})
 	}
 }
+
+// TestStartPageRowMenu right-clicks the start page's rows: a host has the
+// connection manager's menu, but a recent one is taken off the recent
+// list instead of deleted, and one not recent has nothing to take off.
+func TestStartPageRowMenu(t *testing.T) {
+	a, _, tt, _ := startApp(t)
+	hosts := a.hosts.Live()
+	saved := 0
+	a.saveHosts = func(*config.Store) error { saved++; return nil }
+
+	tt.RightClickAt(rowCenter(t, tt, "web-1"))
+	menu := tt.Menu()
+	for _, item := range []string{locales.Connect(), locales.Edit(), locales.Duplicate(), locales.Rename(), locales.MoveToFolder(), locales.CopyHost(), locales.RemoveRecent()} {
+		if !slices.Contains(menu, item) {
+			t.Errorf("menu %q has no %q", menu, item)
+		}
+	}
+	if slices.Contains(menu, locales.Delete()) {
+		t.Errorf("menu %q deletes the host", menu)
+	}
+	if err := tt.ChooseMenuItem(locales.RemoveRecent()); err != nil {
+		t.Fatal(err)
+	}
+	if got := titles(a.hosts.Recent(0)); !slices.Equal(got, []string{"db-1", "backup"}) {
+		t.Errorf("recent %q", got)
+	}
+	if got := a.hosts.Live(); !slices.Equal(got, hosts) {
+		t.Errorf("hosts %q, want %q", titles(got), titles(hosts))
+	}
+	if saved != 1 {
+		t.Errorf("saved %d times", saved)
+	}
+	tt.Frame()
+	shownInOrder(t, tt, locales.RecentHosts(), "db-1", "backup", locales.OtherHosts(), "new-app", "ci-runner", "web-1")
+
+	// Not recent any more: the menu has nothing to take off; Edit opens
+	// the editor on the host.
+	tt.RightClickAt(rowCenter(t, tt, "web-1"))
+	if menu := tt.Menu(); slices.Contains(menu, locales.RemoveRecent()) || slices.Contains(menu, locales.Delete()) {
+		t.Errorf("menu %q of a host not recent", menu)
+	}
+	if err := tt.ChooseMenuItem(locales.Edit()); err != nil {
+		t.Fatal(err)
+	}
+	if !a.windowOpen(WindowEditor) || a.editor == nil || a.editor.id != "id-web-1" {
+		t.Errorf("editor not open on web-1: %v %+v", a.windowOpen(WindowEditor), a.editor)
+	}
+}

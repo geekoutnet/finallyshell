@@ -2,6 +2,7 @@ package app
 
 import (
 	"os"
+	"path"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -397,10 +398,10 @@ func TestRenameSessionReconnect(t *testing.T) {
 // session's name; a tab open already keeps the name it had.
 func TestRenamedSessionEditorTab(t *testing.T) {
 	f := newEditorFixture(t)
-	f.a.openRemoteFile(f.s, filepath.Join(f.dir, "app.yaml"))
+	f.a.openRemoteFile(f.s, path.Join(f.remote, "app.yaml"))
 	before := f.tab(t, "app.yaml")
 	f.s.setName(" deploy ")
-	f.a.openRemoteFile(f.s, filepath.Join(f.dir, "deploy.sh"))
+	f.a.openRemoteFile(f.s, path.Join(f.remote, "deploy.sh"))
 	after := f.tab(t, "deploy.sh")
 	if before.host != "web-1" || after.host != "deploy" {
 		t.Errorf("tabs of %q and %q", before.host, after.host)

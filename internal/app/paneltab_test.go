@@ -310,6 +310,7 @@ func TestPanelRowSharesConnection(t *testing.T) {
 	}
 	os.WriteFile(filepath.Join(home, "srv/www/index.html"), []byte("hi"), 0o644)
 	srv := sshtest.StartSFTP(t, home)
+	remote := sshtest.RemotePath(home)
 	a, p := testApp(t)
 	procs := &recordingProcesses{fakeProcesses: demoProcesses()}
 	a.processes.api = procs
@@ -325,7 +326,7 @@ func TestPanelRowSharesConnection(t *testing.T) {
 			s.hostKeyQ.Answer <- true
 			s.hostKeyQ = nil
 		}
-		return s.status == statusFailed || s.files.cwd == home && !s.files.loading
+		return s.status == statusFailed || s.files.cwd == remote && !s.files.loading
 	})
 	if s.status != statusConnected {
 		t.Fatal(describeError(s.err))
@@ -342,8 +343,8 @@ func TestPanelRowSharesConnection(t *testing.T) {
 	if !panel.isPanelTab() || panel.panelTab != tabFiles || !tt.HasText("srv") {
 		t.Fatalf("panel row on %d; texts %q", panel.panelTab, tt.Texts())
 	}
-	a.openDir(s, path.Join(home, "srv/www"))
-	p.until(t, "srv/www", func() bool { return s.files.cwd == path.Join(home, "srv/www") && !s.files.loading })
+	a.openDir(s, path.Join(remote, "srv/www"))
+	p.until(t, "srv/www", func() bool { return s.files.cwd == path.Join(remote, "srv/www") && !s.files.loading })
 	tt.Frame()
 	if !tt.HasText("index.html") {
 		t.Errorf("the panel row does not list srv/www; texts %q", tt.Texts())
@@ -351,7 +352,7 @@ func TestPanelRowSharesConnection(t *testing.T) {
 	if err := tt.Click(locales.ParentFolder()); err != nil {
 		t.Fatal(err)
 	}
-	p.until(t, "srv", func() bool { return s.files.cwd == path.Join(home, "srv") && !s.files.loading })
+	p.until(t, "srv", func() bool { return s.files.cwd == path.Join(remote, "srv") && !s.files.loading })
 	if err := tt.Click(locales.BackToTerminal()); err != nil {
 		t.Fatal(err)
 	}

@@ -2,6 +2,7 @@ package app
 
 import (
 	"os"
+	"path"
 	"path/filepath"
 	"slices"
 	"testing"
@@ -183,7 +184,7 @@ func TestFileOpsInTable(t *testing.T) {
 
 	// A delete that fails half way asks again for what is left: here
 	// ghost isn't there, so the first try removes legacy.ini and fails.
-	a.askDelete(s, f.dir, []string{"legacy.ini", "ghost"}, false)
+	a.askDelete(s, f.remote, []string{"legacy.ini", "ghost"}, false)
 	tt.Frame()
 	tt.Click(locales.Delete())
 	f.settled(t)
@@ -227,14 +228,14 @@ func TestFileOpsInTree(t *testing.T) {
 		os.MkdirAll(filepath.Join(f.dir, d), 0o755)
 	}
 	// In docs, webroot shows in the tree alone, not in the table.
-	a.openDir(s, f.dir)
+	a.openDir(s, f.remote)
 	f.settled(t)
-	a.openDir(s, filepath.Join(f.dir, "docs"))
+	a.openDir(s, path.Join(f.remote, "docs"))
 	f.settled(t)
 	docs := s.files.cwd
 
-	f.treeMenu(t, filepath.Join(f.dir, "webroot"), locales.NewFolder())
-	if a.fileDlg == nil || a.fileDlg.dir != filepath.Join(f.dir, "webroot") {
+	f.treeMenu(t, path.Join(f.remote, "webroot"), locales.NewFolder())
+	if a.fileDlg == nil || a.fileDlg.dir != path.Join(f.remote, "webroot") {
 		t.Fatalf("dialog %+v", a.fileDlg)
 	}
 	tt.Type("cache")
@@ -245,7 +246,7 @@ func TestFileOpsInTree(t *testing.T) {
 	}
 
 	// Renaming a folder that isn't current leaves the current one.
-	f.treeMenu(t, filepath.Join(f.dir, "webroot"), locales.Rename())
+	f.treeMenu(t, path.Join(f.remote, "webroot"), locales.Rename())
 	tt.Key(ui.Cmd, ui.KeyA)
 	tt.Type("service")
 	tt.Key(0, ui.KeyEnter)
@@ -258,29 +259,29 @@ func TestFileOpsInTree(t *testing.T) {
 	}
 
 	// Renaming a folder the current one is in follows it.
-	a.openDir(s, filepath.Join(f.dir, "service", "www"))
+	a.openDir(s, path.Join(f.remote, "service", "www"))
 	f.settled(t)
-	f.treeMenu(t, filepath.Join(f.dir, "service"), locales.Rename())
+	f.treeMenu(t, path.Join(f.remote, "service"), locales.Rename())
 	tt.Key(ui.Cmd, ui.KeyA)
 	tt.Type("svc")
 	tt.Key(0, ui.KeyEnter)
 	f.settled(t)
-	if want := filepath.Join(f.dir, "svc", "www"); s.files.cwd != want || s.files.err != nil {
+	if want := path.Join(f.remote, "svc", "www"); s.files.cwd != want || s.files.err != nil {
 		t.Fatalf("cwd %s, want %s; err %v", s.files.cwd, want, s.files.err)
 	}
-	if !s.files.tree.Open.Has(filepath.Join(f.dir, "svc")) || s.files.tree.Open.Has(filepath.Join(f.dir, "service")) {
+	if !s.files.tree.Open.Has(path.Join(f.remote, "svc")) || s.files.tree.Open.Has(path.Join(f.remote, "service")) {
 		t.Error("the tree's open folders didn't follow the rename")
 	}
 
 	// Deleting it goes to the folder it was in.
-	f.treeMenu(t, filepath.Join(f.dir, "svc"), locales.Delete())
+	f.treeMenu(t, path.Join(f.remote, "svc"), locales.Delete())
 	if !tt.HasText(locales.DeleteFileTitle("svc")) {
 		t.Fatalf("texts %q", tt.Texts())
 	}
 	saveShot(t, tt, "tree-delete-en.png")
 	tt.Click(locales.Delete())
 	f.settled(t)
-	if f.exists("svc") || s.files.cwd != f.dir || s.files.err != nil {
+	if f.exists("svc") || s.files.cwd != f.remote || s.files.err != nil {
 		t.Fatalf("svc %v; cwd %s; err %v", f.exists("svc"), s.files.cwd, s.files.err)
 	}
 

@@ -13,7 +13,9 @@ import (
 	"errors"
 	"io"
 	"net"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"sync"
 	"sync/atomic"
 	"testing"
@@ -24,6 +26,22 @@ import (
 
 // Password is the password the server takes, for any user.
 const Password = "secret"
+
+// RemotePath is the path SFTP servers of pkg/sftp, as StartSFTP's, give
+// for the local path p: p with forward slashes, from "/". On Windows the
+// drive comes after the slash in lower case, as "/" lists it, as in
+// /c:/Users/tester, so tests compare what the app shows with RemotePath
+// of the folders they make.
+func RemotePath(p string) string {
+	p = filepath.ToSlash(p)
+	if len(p) >= 2 && p[1] == ':' {
+		p = strings.ToLower(p[:1]) + p[1:]
+	}
+	if !strings.HasPrefix(p, "/") {
+		p = "/" + p
+	}
+	return p
+}
 
 // Server is a running test server.
 type Server struct {
@@ -68,10 +86,10 @@ func Start(t testing.TB) *Server {
 
 // StartSFTP starts a server as Start does, which also serves the local
 // file system over SFTP, as the user running the test, with home as the
-// working directory.
+// working directory, which the server gives as RemotePath(home).
 func StartSFTP(t testing.TB, home string) *Server {
 	t.Helper()
-	return start(t, home)
+	return start(t, RemotePath(home))
 }
 
 func start(t testing.TB, sftpDir string) *Server {
@@ -376,7 +394,10 @@ func (s *Server) session(nc ssh.NewChannel, closed func()) {
 // serveSFTP serves the local file system on ch until the client is done.
 func (s *Server) serveSFTP(ch ssh.Channel) {
 	defer ch.Close()
-	srv, err := sftp.NewServer(ch, sftp.WithServerWorkingDirectory(s.sftpDir))
+	// On Windows "/" lists the drives, as /c:, so that folders under
+	// the root, as the tree of the file panel walks them, reach the
+	// working directory on any drive.
+	srv, err := sftp.NewServer(ch, sftp.WithServerWorkingDirectory(s.sftpDir), sftp.WindowsRootEnumeratesDrives())
 	if err != nil {
 		return
 	}

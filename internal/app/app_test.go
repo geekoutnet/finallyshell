@@ -13,6 +13,7 @@ import (
 	"finallyshell/internal/config"
 	"finallyshell/internal/monitor"
 	"finallyshell/internal/remotefs"
+	"finallyshell/internal/sshtest"
 	"finallyshell/locales"
 
 	"github.com/egoist/mygo/i18n"
@@ -264,8 +265,8 @@ func TestDropUploadAndDownload(t *testing.T) {
 
 	tt := ui.NewTester(a.View, 1280, 820)
 	p.tt = tt
-	a.openDir(s, remote)
-	p.until(t, "the listing", func() bool { return s.files.cwd == remote && !s.files.loading })
+	a.openDir(s, sshtest.RemotePath(remote))
+	p.until(t, "the listing", func() bool { return s.files.cwd == sshtest.RemotePath(remote) && !s.files.loading })
 
 	// Drop a file and a folder from the desktop onto the file table.
 	report := filepath.Join(local, "report.txt")
@@ -326,6 +327,29 @@ func TestDropUploadAndDownload(t *testing.T) {
 	}
 	if len(a.transfers.jobs) != 0 {
 		t.Errorf("%d jobs left", len(a.transfers.jobs))
+	}
+}
+
+// A folder typed in the path bar without a leading slash is the server's,
+// relative to where SFTP starts: the panel lists it under its full path,
+// and the app does not freeze opening the tree down to it.
+func TestOpenRelativeDir(t *testing.T) {
+	a, p := testApp(t)
+	s := demoSession(a, "files", "127.0.0.1")
+	a.active = 0
+	s.sftp = localSFTP(t)
+	s.files = fileState{}
+	s.files.init()
+	tt := ui.NewTester(a.View, 1280, 820)
+	p.tt = tt
+	want, err := s.sftp.RealPath(".")
+	if err != nil {
+		t.Fatal(err)
+	}
+	a.openDir(s, ".")
+	p.until(t, "the listing", func() bool { return s.files.cwd == want && !s.files.loading })
+	if s.files.pathEdit != want {
+		t.Errorf("path bar shows %q, want %q", s.files.pathEdit, want)
 	}
 }
 

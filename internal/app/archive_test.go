@@ -17,6 +17,7 @@ import (
 
 	"finallyshell/internal/config"
 	"finallyshell/internal/remotefs"
+	"finallyshell/internal/sshtest"
 	"finallyshell/locales"
 
 	"github.com/egoist/mygo/ui"
@@ -42,8 +43,8 @@ func archiveFixture(t *testing.T) (*App, *fakePlatform, *Session, string, *ui.Te
 		a.View(c)
 	}, 1280, 820)
 	p.tt = tt
-	a.openDir(s, remote)
-	p.until(t, "the listing", func() bool { return s.files.cwd == remote && !s.files.loading })
+	a.openDir(s, sshtest.RemotePath(remote))
+	p.until(t, "the listing", func() bool { return s.files.cwd == sshtest.RemotePath(remote) && !s.files.loading })
 	return a, p, s, remote, tt
 }
 
@@ -165,7 +166,7 @@ func TestArchiveMenus(t *testing.T) {
 	}
 	p.until(t, "the archive download", idle(a))
 	j := a.transfers.jobs[0]
-	if !j.archive || j.state != transferFailed || !errors.Is(j.err, remotefs.ErrNoShell) || !slices.Equal(j.srcs, []string{path.Join(remote, "site")}) {
+	if !j.archive || j.state != transferFailed || !errors.Is(j.err, remotefs.ErrNoShell) || !slices.Equal(j.srcs, []string{path.Join(sshtest.RemotePath(remote), "site")}) {
 		t.Fatalf("job %+v", j)
 	}
 	a.bottomTab = 1
@@ -229,9 +230,9 @@ func TestArchiveMenus(t *testing.T) {
 func TestArchiveTreeMenu(t *testing.T) {
 	f := newEditorFixture(t)
 	writeTree(t, filepath.Join(f.dir, "webroot", "www"), 3)
-	f.a.openDir(f.s, f.dir)
+	f.a.openDir(f.s, f.remote)
 	f.settled(t)
-	f.showInTree(t, filepath.Join(f.dir, "webroot"))
+	f.showInTree(t, path.Join(f.remote, "webroot"))
 	f.tt.RightClickAt(rowCenter(t, f.tt, "webroot"))
 	if menu := f.tt.Menu(); !slices.Contains(menu, locales.DownloadAsArchive()) || !slices.Contains(menu, locales.UploadAsArchive()) {
 		t.Errorf("folder menu %q", menu)
@@ -242,7 +243,7 @@ func TestArchiveTreeMenu(t *testing.T) {
 	f.p.until(t, "the archive download", idle(f.a))
 	// The in-process server has no exec: tar cannot run.
 	j := f.a.transfers.jobs[0]
-	if !j.archive || !slices.Equal(j.srcs, []string{filepath.Join(f.dir, "webroot")}) || j.state != transferFailed || !strings.Contains(j.err.Error(), "cannot run tar") {
+	if !j.archive || !slices.Equal(j.srcs, []string{path.Join(f.remote, "webroot")}) || j.state != transferFailed || !strings.Contains(j.err.Error(), "cannot run tar") {
 		t.Fatalf("job %+v, err %v", j, j.err)
 	}
 	if !f.a.canRetry(j) || !f.a.canRetryOverSFTP(j) {

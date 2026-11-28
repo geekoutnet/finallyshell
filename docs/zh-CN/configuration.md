@@ -147,6 +147,7 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 | `noRememberPassword` | 记住密码。 | `true`：关掉了“记住密码”。 |
 | `forwardAgent` | 关闭 SSH 代理转发。 | `true`：打开交互式 shell 时请求转发。 |
 | `x11Forward` | 关闭 X11 转发。 | `untrusted`（非信任）或 `trusted`（信任）：打开交互式 shell 时请求对应模式。 |
+| `entryMode` | 打开会话时进入终端。 | `desktop`：进入桌面；`last`：进入会话上次停留的模式（`desktop.hosts[id].lastMode`）。 |
 
 ### 安全
 
@@ -256,9 +257,15 @@ Finallyshell 把主机和设置存在普通的 JSON 文件里。密码从不写�
 文件名。`singleClick`、`stackWindows`、`coverDock`、`hideServerInfo`（收起桌面右侧的服务器信息）、`iconSize`（`small`、空值对应中等，
 或 `large`）和 `pinned` 控制桌面行为。省略 `pinned` 使用默认应用，空数组不保留可选固定项。
 
-`desktop.hosts` 按主机 ID 存储。`iconsConfigured` 标记图标列表已自定义，包括有意清空的
-列表。`icons` 存储应用、文件夹和路径快捷方式及其网格位置；`folders` 存储图标文件夹的
-名称。开启 `autoArrange` 后，图标连续排列，不使用保存的格子。不写入窗口的位置或大小。
+`desktop.hosts` 按主机 ID 存储，`*` 是共享布局：所有没有单独布局的主机都用它。它和
+主机的条目结构相同，所以旧版本也会保留它。主机有 `iconsConfigured`、`icons` 或
+`folders` 时即有单独布局。`iconsConfigured` 标记图标列表已自定义，包括有意清空的列表；
+都没有时，默认布局把应用分进预置文件夹 `preset-system`、`preset-network`、`preset-apps`
+和 `preset-transfer`。`icons` 存储应用、文件夹和路径快捷方式及其网格位置（`folder:<id>`、
+`path:<绝对路径>`，以及图标所在的文件夹）；`folders` 存储图标文件夹的 ID 和名称。开启
+`autoArrange` 后，图标连续排列，不使用保存的格子。不写入窗口的位置或大小。`lastMode`
+为 `desktop` 表示该主机的会话上次停在桌面，供 `entryMode` 为 `last` 时使用。桌面上的
+文件不写入设置：它们就是服务器的 `~/Desktop`。
 `browser` 是该主机的服务器浏览器：下载的内核写作 `kernel:chrome`、`kernel:firefox` 或
 `kernel:camoufox`，本机安装的浏览器写可执行文件的绝对路径，省略时用找到的第一个。它只保存在
 本机：同步既不上传也不覆盖它。

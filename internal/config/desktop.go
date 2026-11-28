@@ -87,6 +87,21 @@ type DesktopHost struct {
 	// the first one found. It stays on this device: sync leaves it out
 	// (deviceDesktop) and keeps it (WithSyncedSettings).
 	Browser string `json:"browser,omitempty"`
+	// LastMode is the mode the host's session was last left in, "desktop"
+	// or "" for the terminal, for a host whose EntryMode is EntryLast.
+	LastMode string `json:"lastMode,omitempty"`
+}
+
+// DesktopSharedLayout is the key in DesktopSettings.Hosts of the shared
+// desktop layout: the icons, folders and arrangement of every host that
+// has no layout of its own. It is an entry like a host's, so that an
+// older version, which knows only hosts, keeps it when it saves and syncs.
+const DesktopSharedLayout = "*"
+
+// HasOwnLayout reports whether h has a desktop layout of its own, rather
+// than using the shared one.
+func (h DesktopHost) HasOwnLayout() bool {
+	return h.IconsConfigured || h.Icons != nil || len(h.Folders) > 0
 }
 
 // DesktopIcon is an icon on the desktop: an app, a folder of icons, or a

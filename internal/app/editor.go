@@ -99,6 +99,7 @@ type connEditor struct {
 	encoding                config.Encoding
 	forwardAgent            bool
 	x11Forward              string
+	entryMode               config.EntryMode
 	proxy                   proxyFields  // the Proxy page (editor_proxy.go)
 	tunnels                 tunnelEditor // see editor_tunnels.go
 	folder                  string       // a new host's, from the manager
@@ -169,6 +170,7 @@ func (a *App) openEditor(h *config.Host, from WindowKind) {
 		ed.monitor = h.MonitorEnabled()
 		ed.termType, ed.backspace, ed.delete, ed.encoding = h.TermType, h.Backspace, h.Delete, h.Encoding
 		ed.forwardAgent, ed.x11Forward = h.ForwardAgent, h.X11Forward
+		ed.entryMode = h.EntryMode
 		ed.kind = h.Kind
 	}
 	ed.rdp = a.rdpFieldsOf(h)
@@ -357,6 +359,7 @@ func (a *App) saveSSH(h *config.Host, ed *connEditor) {
 	h.NoMonitor = !ed.monitor
 	h.TermType, h.Backspace, h.Delete, h.Encoding = strings.TrimSpace(ed.termType), ed.backspace, ed.delete, ed.encoding
 	h.ForwardAgent, h.X11Forward = ed.forwardAgent, ed.x11Forward
+	h.EntryMode = ed.entryMode
 	if h.TermType == config.DefaultTermType {
 		h.TermType = ""
 	}
@@ -511,6 +514,7 @@ func (a *App) sshPage(c *ui.Context, ed *connEditor, errs map[editorField]string
 			ui.Field(c, "", func() {
 				ui.Checkbox(c, &ed.monitor, locales.MonitorChannel())
 			}).Description(locales.MonitorChannelHint())
+			entryModeField(c, &ed.entryMode)
 		})
 	})
 }
@@ -556,4 +560,22 @@ func (a *App) terminalPage(c *ui.Context, ed *connEditor, errs map[editorField]s
 		}
 	})
 	widgets.Muted(c, locales.TerminalNextConnect()).FontSize(12)
+}
+
+// entryModes are the modes a session can open in, as the editor names them.
+var entryModes = []config.EntryMode{config.EntryTerminal, config.EntryLast, config.EntryDesktop}
+
+func entryModeNames() []string {
+	return []string{locales.EditorEntryTerminal(), locales.EditorEntryLast(), locales.EditorEntryDesktop()}
+}
+
+// entryModeField is the editor's choice of what a session opens in.
+func entryModeField(c *ui.Context, mode *config.EntryMode) {
+	ui.Field(c, locales.EditorEntryMode(), func() {
+		names := entryModeNames()
+		chosen := names[max(slices.Index(entryModes, *mode), 0)]
+		if ui.Select(c, &chosen, names).Width(200).Label(locales.EditorEntryMode()).Changed() {
+			*mode = entryModes[slices.Index(names, chosen)]
+		}
+	}).Description(locales.EditorEntryModeHint())
 }

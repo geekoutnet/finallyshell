@@ -122,9 +122,22 @@ type Host struct {
 	X11Forward   string        `json:"x11Forward,omitempty"`
 	Telnet       *TelnetConfig `json:"telnet,omitempty"`
 	Serial       *SerialConfig `json:"serial,omitempty"`
+	// EntryMode is what a session to the host shows when it opens:
+	// EntryTerminal (""), EntryLast (the mode it was left in, kept in
+	// DesktopHost.LastMode) or EntryDesktop.
+	EntryMode EntryMode `json:"entryMode,omitempty"`
 
 	extra extras
 }
+
+// EntryMode is what a session shows when it opens: see Host.EntryMode.
+type EntryMode string
+
+const (
+	EntryTerminal EntryMode = ""
+	EntryLast     EntryMode = "last"
+	EntryDesktop  EntryMode = "desktop"
+)
 
 const (
 	KindTelnet                  HostKind = "telnet"

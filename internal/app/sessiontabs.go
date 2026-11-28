@@ -162,6 +162,7 @@ func (a *App) sessionTabs(c *ui.Context) {
 	if cur != nil {
 		shown = sessionRoot(cur)
 		shown.lastRow = cur
+		a.noteEntryMode(shown, cur)
 	}
 	var roots []*Session
 	for _, s := range a.sessions {
@@ -405,10 +406,7 @@ func (a *App) sessionMenuItems(c *ui.Context, m *ui.Menu, s *Session) {
 		}
 	}
 	if m.Item(locales.Disconnect()).Disabled(s.status != statusConnected && s.status != statusConnecting).Chosen() {
-		a.transfers.cancelSession(s)
-		s.disconnect()
-		s.status, s.err = statusClosed, nil
-		a.syncAlertSessions()
+		a.disconnectByUser(s)
 	}
 	if !s.isLocal() {
 		m.Separator()
@@ -464,4 +462,13 @@ func tabModeName(row *Session) string {
 		return panelTabName(row)
 	}
 	return locales.TabModeTerminal()
+}
+
+// disconnectByUser ends the connection of s, as the user asked: its
+// transfers stop, and it shows as closed rather than failed.
+func (a *App) disconnectByUser(s *Session) {
+	a.transfers.cancelSession(s)
+	s.disconnect()
+	s.status, s.err = statusClosed, nil
+	a.syncAlertSessions()
 }

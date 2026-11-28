@@ -61,7 +61,7 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 
 ## In progress
 
-Nothing yet.
+Desktop organization (`feature/desktop-folders`): default folders of apps, tidying up and showing all apps in one click, a shared layout or one per server (made shared, reset), "Move to folder" on icons; "Open in" in the connection editor (terminal, desktop, or the mode used last); a dock tray (CPU, memory), the date with a month calendar, and a power menu (reconnect, disconnect, restart or shut down the server); the server's `~/Desktop` files on the desktop, with new folders, text files and shell scripts, opening with a double click, "Run in terminal", and copy, cut, paste, rename and delete.
 
 ## Next
 

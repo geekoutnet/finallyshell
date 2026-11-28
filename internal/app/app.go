@@ -613,6 +613,7 @@ func (a *App) openSessionThen(tab *Session, h *config.Host, opened func(*Session
 	pw := a.passwords[h.ID]
 	if tab != nil && tab.isNewTab() && !tab.isPanelTab() && slices.Contains(a.sessions, tab) {
 		a.fillTab(tab, h, pw)
+		a.enterInitialMode(tab)
 		if opened != nil {
 			opened(tab)
 		}
@@ -624,6 +625,7 @@ func (a *App) openSessionThen(tab *Session, h *config.Host, opened func(*Session
 		a.active = len(a.sessions) - 1
 	}
 	a.connect(s, pw)
+	a.enterInitialMode(s)
 	if opened != nil {
 		opened(s)
 	}

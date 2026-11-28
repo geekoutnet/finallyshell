@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -150,6 +151,9 @@ func TestCertHTTPLive(t *testing.T) {
 	}
 	const reset = `for u in nginx caddy apache2; do systemctl stop "$u" 2>/dev/null || :; done
 [ -x /usr/bin/python3.cert-test ] && mv /usr/bin/python3.cert-test /usr/bin/python3 || :
+[ -x /usr/sbin/nginx.cert-test ] && mv /usr/sbin/nginx.cert-test /usr/sbin/nginx || :
+[ -x /usr/bin/caddy.cert-test ] && mv /usr/bin/caddy.cert-test /usr/bin/caddy || :
+[ -L /etc/nginx/cert-test-default.link ] && mv /etc/nginx/cert-test-default.link /etc/nginx/sites-enabled/default || :
 ufw --force reset >/dev/null 2>&1 || :; ufw disable >/dev/null 2>&1 || :
 for t in iptables ip6tables; do
     $t -t nat -S PREROUTING | grep -e finallyshell-acme -e cert-test | sed 's/^-A/-D/' | while read -r r; do eval "$t -t nat $r" || :; done
@@ -291,6 +295,134 @@ systemctl start caddy && caddy reload --config /etc/caddy/Caddyfile >/dev/null 2
 		}
 		if after := sh("cat /etc/caddy/Caddyfile /etc/caddy/sites/*.caddy"); after != before {
 			t.Fatal("Caddy's files changed")
+		}
+	})
+
+	// Both web servers, Nginx on port 80 and Caddy on another port with its
+	// admin API: Nginx's folders serve, and a proxy-only Nginx site gets the
+	// split, never a route in Caddy, which does not hold port 80.
+	t.Run("both-nginx80", func(t *testing.T) {
+		cur = t
+		free()
+		sh("mkdir -p /srv/cert-backend && echo nginx-backend >/srv/cert-backend/index.html")
+		start("cd /srv/cert-backend && exec python3 -m http.server 9 --bind 127.0.0.1")
+		sh(`mkdir -p /srv/cert-alt && echo caddy-alt >/srv/cert-alt/index.html
+cat >/srv/cert-alt/Caddyfile <<'EOF'
+{
+	admin localhost:2019
+}
+:8081 {
+	root * /srv/cert-alt
+	file_server
+}
+EOF`)
+		start("exec caddy run --adapter caddyfile --config /srv/cert-alt/Caddyfile")
+		sh(`mkdir -p /var/www/certweb
+cat >/etc/nginx/sites-available/cert-web <<'EOF'
+server {
+    listen 80;
+    server_name web.example.test;
+    root /var/www/certweb;
+}
+EOF
+cat >/etc/nginx/sites-available/cert-proxy <<'EOF'
+server {
+    listen 80;
+    server_name proxy.example.test;
+    location / {
+        proxy_pass http://127.0.0.1:9;
+    }
+}
+EOF
+ln -sf /etc/nginx/sites-available/cert-web /etc/nginx/sites-enabled/cert-web
+ln -sf /etc/nginx/sites-available/cert-proxy /etc/nginx/sites-enabled/cert-proxy
+nginx -t && systemctl start nginx
+for i in 1 2 3 4 5 6 7 8 9 10; do curl -sf localhost:2019/config/ >/dev/null && break; sleep 0.5; done`)
+		if busy, programs := monitor.ParsePort80(sh(monitor.ACMEPort80Command)); !busy || !slices.Contains(programs, "nginx") || slices.Contains(programs, "caddy") {
+			t.Fatalf("port 80 held by %q, want nginx alone", programs)
+		}
+		caddyBefore := sh("curl -s localhost:2019/config/")
+		found := certFindHTTP(ctx, run, []string{"web.example.test"}, fetch)
+		if found.h == nil || found.h.mode != certHTTPWebroot || found.h.roots["web.example.test"] != "/var/www/certweb" {
+			t.Fatalf("nginx folder: %+v", found)
+		}
+		serves(found.h, "web.example.test")
+		found = certFindHTTP(ctx, run, []string{"proxy.example.test"}, fetch)
+		split(found, "proxy.example.test", "nginx-backend", 200)
+		if after := sh("curl -s localhost:2019/config/"); after != caddyBefore {
+			t.Fatalf("Caddy, not on port 80, was changed:\n%s", after)
+		}
+	})
+
+	// Both web servers, Caddy on port 80 and Nginx on another port: Caddy's
+	// folder serves, a proxy-only Caddy site gets a route through its admin
+	// API, and Nginx, which does not hold port 80, is not touched.
+	t.Run("both-caddy80", func(t *testing.T) {
+		cur = t
+		free()
+		sh("mkdir -p /srv/cert-backend && echo caddy-backend >/srv/cert-backend/index.html")
+		start("cd /srv/cert-backend && exec python3 -m http.server 9 --bind 127.0.0.1")
+		sh(`mv /etc/nginx/sites-enabled/default /etc/nginx/cert-test-default.link
+mkdir -p /srv/cert-alt && echo nginx-alt >/srv/cert-alt/index.html
+cat >/etc/nginx/sites-available/cert-alt <<'EOF'
+server {
+    listen 8081;
+    server_name alt.example.test;
+    root /srv/cert-alt;
+}
+EOF
+ln -sf /etc/nginx/sites-available/cert-alt /etc/nginx/sites-enabled/cert-alt
+nginx -t && systemctl start nginx
+cat >/etc/caddy/sites/cert-test.caddy <<'EOF'
+http://proxy.example.test {
+	reverse_proxy 127.0.0.1:9
+}
+EOF
+systemctl start caddy && caddy reload --config /etc/caddy/Caddyfile >/dev/null 2>&1; sleep 1`)
+		if busy, programs := monitor.ParsePort80(sh(monitor.ACMEPort80Command)); !busy || !slices.Contains(programs, "caddy") || slices.Contains(programs, "nginx") {
+			t.Fatalf("port 80 held by %q, want caddy alone", programs)
+		}
+		nginxBefore := sh("nginx -T 2>/dev/null | sha256sum")
+		found := certFindHTTP(ctx, run, []string{"site.example.test"}, fetch)
+		if found.h == nil || found.h.mode != certHTTPWebroot || found.h.roots["site.example.test"] != "/srv/www" {
+			t.Fatalf("caddy folder: %+v", found)
+		}
+		serves(found.h, "site.example.test")
+		found = certFindHTTP(ctx, run, []string{"proxy.example.test"}, fetch)
+		if found.h == nil || found.h.mode != certHTTPCaddy {
+			t.Fatalf("caddy route: %+v (%v)", found, found.err)
+		}
+		serves(found.h, "proxy.example.test")
+		if err := found.h.close(); err != nil {
+			t.Fatal(err)
+		}
+		page("proxy.example.test", "caddy-backend", 200)
+		if after := sh("nginx -T 2>/dev/null | sha256sum"); after != nginxBefore {
+			t.Fatal("Nginx, not on port 80, was changed")
+		}
+		if strings.Contains(sh("nginx -T 2>/dev/null"), "acme-challenge") {
+			t.Fatal("Nginx got a challenge location")
+		}
+	})
+
+	// Neither web server installed: a responder of the app's own.
+	t.Run("neither", func(t *testing.T) {
+		cur = t
+		free()
+		sh("mv /usr/sbin/nginx /usr/sbin/nginx.cert-test; mv /usr/bin/caddy /usr/bin/caddy.cert-test")
+		found := certFindHTTP(ctx, run, []string{"bare.example.test"}, fetch)
+		if found.h == nil || found.h.mode != certHTTPResponder {
+			sh("mv /usr/sbin/nginx.cert-test /usr/sbin/nginx; mv /usr/bin/caddy.cert-test /usr/bin/caddy")
+			t.Fatalf("%+v (%v)", found, found.err)
+		}
+		serves(found.h, "bare.example.test")
+		err := found.h.close()
+		sh("mv /usr/sbin/nginx.cert-test /usr/sbin/nginx; mv /usr/bin/caddy.cert-test /usr/bin/caddy")
+		if err != nil {
+			t.Fatal(err)
+		}
+		if busy, _ := monitor.ParsePort80(sh(monitor.ACMEPort80Command)); busy {
+			t.Fatal("the responder still runs")
 		}
 	})
 

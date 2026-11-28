@@ -377,7 +377,10 @@ func TestDesktopFolderPanelDragAndSize(t *testing.T) {
 	medium := d.shell.folderRect
 	a.changeDesktopPreferences(func(p *config.DesktopSettings) { p.IconSize = "large" })
 	tt.Frame()
-	if r := d.shell.folderRect; r.W <= medium.W || r.H <= medium.H {
+	if medium.H != desktopFolderMinHeight {
+		t.Fatalf("a folder of few icons is %v tall, want %v", medium.H, desktopFolderMinHeight)
+	}
+	if r := d.shell.folderRect; r.W <= medium.W || r.H < medium.H {
 		t.Fatalf("large icons: %+v, medium %+v", r, medium)
 	}
 }

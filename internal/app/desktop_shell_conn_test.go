@@ -3,8 +3,10 @@ package app
 import (
 	"errors"
 	"net"
+	"path/filepath"
 	"testing"
 
+	"finallyshell/internal/sshx"
 	"finallyshell/locales"
 )
 
@@ -107,5 +109,34 @@ func TestDesktopConnCardUserDisconnect(t *testing.T) {
 	saveShot(t, tt, "desktop-conn-disconnected.png")
 	if a.desktopOf(s).shell.powerPopup {
 		t.Fatal("the power menu stays open")
+	}
+}
+
+// When the server's key changed, the card trusts the new one, after asking
+// with its fingerprint, as the terminal's banner does; other failures have
+// no such button.
+func TestDesktopConnCardTrustNewKey(t *testing.T) {
+	_, p, tt, s := desktopShellTestApp(t)
+	s.status, s.err = statusFailed, errConnectionLost
+	tt.Frame()
+	if tt.HasText(locales.HostKeyTrustNew()) {
+		t.Fatal("trust the new key, for a failure that is not a changed key")
+	}
+	changed := &sshx.HostKeyChangedError{Fingerprint: "SHA256:new", File: filepath.Join(t.TempDir(), "known_hosts"), Host: "[10.0.0.11]:22", Line: "[10.0.0.11]:22 ssh-ed25519 AAAA"}
+	s.status, s.err = statusFailed, changed
+	tt.Frame()
+	if !tt.HasText(locales.HostKeyTrustNew()) || !tt.HasText(locales.Reconnect()) {
+		t.Fatalf("no trust button; texts %q", tt.Texts())
+	}
+	saveShot(t, tt, "desktop-conn-hostkey.png")
+	desktopShellClick(t, tt, locales.HostKeyTrustNew())
+	p.until(t, "the question", func() bool { return len(p.questions()) == 1 })
+	if q := p.questions()[0]; q.Title != locales.HostKeyTrustTitle() || q.Detail != locales.HostKeyTrustDetail("SHA256:new") || !q.RequireExplicit {
+		t.Fatalf("asked %+v", q)
+	}
+	// Answered no (the fake's default): nothing trusted, still failed.
+	tt.Frame()
+	if s.status != statusFailed || !tt.HasText(locales.HostKeyTrustNew()) {
+		t.Fatal("a refused key was trusted")
 	}
 }

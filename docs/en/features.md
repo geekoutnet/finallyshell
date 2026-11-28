@@ -2224,7 +2224,9 @@ and goes. When the connection fails or is lost the card stays with the
 reason (as the terminal's banner words it), **Reconnect** and **Switch to
 terminal mode**, until you act on it or dismiss it with its ×; disconnecting
 from the power menu shows a plain **Disconnected** card with the same
-buttons.
+buttons. When the server's host key changed, as after a reinstall, the card
+also has **Trust new key**, which shows the new key's fingerprint and asks
+before it replaces the old key in `known_hosts` and connects again.
 
 The launcher groups available apps and searches names in the current
 language. Right-click an app to pin it or add it to the desktop. Escape or

@@ -189,7 +189,7 @@ func (a *App) readNginxTuning(s *Session) {
 	page := &s.server.sites
 	t := &page.tuning
 	main := page.inventory.Main
-	script, err := monitor.NginxReadCommand(main)
+	script, err := monitor.NginxReadCommand(main, page.inventory.NginxTree)
 	if err != nil {
 		t.loaded, t.err = true, locales.SiteCustom()
 		return

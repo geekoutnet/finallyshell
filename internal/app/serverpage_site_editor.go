@@ -14,7 +14,7 @@ import (
 )
 
 func (a *App) siteEditor(s *Session, file string, applied bool) {
-	script, err := monitor.NginxReadCommand(file)
+	script, err := monitor.NginxReadCommand(file, s.server.sites.inventory.NginxTree)
 	if err != nil {
 		return
 	}
@@ -41,6 +41,15 @@ func (a *App) siteEditor(s *Session, file string, applied bool) {
 			}
 		})
 	}()
+}
+
+// sitePanelNote warns that the BaoTa panel writes the files it keeps
+// under /www/server again when the site is changed there.
+func sitePanelNote(file string) string {
+	if strings.HasPrefix(file, "/www/server/") {
+		return " " + locales.SitePanelOverwrite()
+	}
+	return ""
 }
 
 func (a *App) siteEditBody(s *Session, dialog *systemDialog, file, original string, applied bool) {
@@ -71,7 +80,7 @@ func (a *App) siteEditBodyText(s *Session, dialog *systemDialog, file, original,
 				return
 			}
 			reload := applied && page.status.State == "active"
-			dialog.body, dialog.consequence = nil, locales.SiteSaveWarning(change.Backup)+" "+siteApplyHint(reload)
+			dialog.body, dialog.consequence = nil, locales.SiteSaveWarning(change.Backup)+" "+siteApplyHint(reload)+sitePanelNote(file)
 			dialog.back = func() { dialog.body, dialog.consequence, dialog.confirm = editor, "", nil }
 			attempted := text
 			dialog.confirm = func() {

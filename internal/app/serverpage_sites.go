@@ -69,9 +69,9 @@ func (a *App) refreshServerSites(s *Session) {
 		var inventory monitor.NginxInventory
 		var readErr error
 		if status.Installed && !status.Custom {
-			inventory, readErr = monitor.ReadNginxInventory(ctx, func(ctx context.Context, script string) (string, string, error) {
+			inventory, readErr = monitor.ReadNginxInventoryFrom(ctx, func(ctx context.Context, script string) (string, string, error) {
 				return root(ctx, script, nil, nil)
-			})
+			}, status.Conf)
 		}
 		if statusErr != nil {
 			readErr = statusErr
@@ -103,15 +103,12 @@ func (a *App) refreshServerSites(s *Session) {
 func readSiteStatus(ctx context.Context, read systemRunner) (monitor.NginxStatus, error) {
 	out, _, err := read(ctx, monitor.NginxStatusCommand, nil, nil)
 	status := monitor.ParseNginxStatus(out)
-	if err == nil && status.Installed && (status.PID > 0 || !status.Unit) {
+	// Looked for even when systemd knows no PID: an init script systemd
+	// only wraps (the BaoTa panel's) leaves MainPID at 0.
+	if err == nil && status.Installed {
 		master, _, masterErr := read(ctx, monitor.NginxMasterCommand(status.PID), nil, nil)
-		lines := strings.Fields(master)
-		if masterErr == nil && len(lines) > 0 {
-			fallback := monitor.ParseNginxStatus("MainPID=" + lines[0])
-			status.PID, status.Custom, status.MasterVerified = fallback.PID, slices.Contains(lines[1:], "custom"), fallback.PID > 0
-			if !status.Unit && status.PID > 0 {
-				status.State = "active"
-			}
+		if masterErr == nil {
+			monitor.ParseNginxMaster(&status, master)
 		}
 	}
 	return status, err
@@ -187,7 +184,7 @@ func (a *App) serverSitesSection(c *ui.Context, s *Session) {
 				status, err := readSiteStatus(ctx, read)
 				return func() {
 					if !page.reading && err == nil {
-						if page.status.Installed != status.Installed || page.status.Custom != status.Custom || page.status.Certbot != status.Certbot {
+						if page.status.Installed != status.Installed || page.status.Custom != status.Custom || page.status.Conf != status.Conf || page.status.Certbot != status.Certbot {
 							a.refreshServerSites(s)
 						} else {
 							page.status = status

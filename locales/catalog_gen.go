@@ -16294,11 +16294,11 @@ func (msgs Messages) SiteCreateWarning() string {
 	return Catalog.Format(msgs.locale, "siteCreateWarning", nil)
 }
 
-// SiteCustom says "Custom Nginx startup or configuration; management unavailable."
+// SiteCustom says "Nginx was started with a custom prefix (-p); management unavailable."
 // in the language the app shows.
 func SiteCustom() string { return In(i18n.Locale()).SiteCustom() }
 
-// SiteCustom says "Custom Nginx startup or configuration; management unavailable."
+// SiteCustom says "Nginx was started with a custom prefix (-p); management unavailable."
 // in the language of msgs.
 func (msgs Messages) SiteCustom() string {
 	return Catalog.Format(msgs.locale, "siteCustom", nil)
@@ -16312,6 +16312,36 @@ func SiteDetails() string { return In(i18n.Locale()).SiteDetails() }
 // in the language of msgs.
 func (msgs Messages) SiteDetails() string {
 	return Catalog.Format(msgs.locale, "siteDetails", nil)
+}
+
+// SiteOpenBrowser says "Open in browser"
+// in the language the app shows.
+func SiteOpenBrowser() string { return In(i18n.Locale()).SiteOpenBrowser() }
+
+// SiteOpenBrowser says "Open in browser"
+// in the language of msgs.
+func (msgs Messages) SiteOpenBrowser() string {
+	return Catalog.Format(msgs.locale, "siteOpenBrowser", nil)
+}
+
+// SiteVisitBackend says "Backend, from the server"
+// in the language the app shows.
+func SiteVisitBackend() string { return In(i18n.Locale()).SiteVisitBackend() }
+
+// SiteVisitBackend says "Backend, from the server"
+// in the language of msgs.
+func (msgs Messages) SiteVisitBackend() string {
+	return Catalog.Format(msgs.locale, "siteVisitBackend", nil)
+}
+
+// SiteVisitServer says "Through Nginx at {addr}"
+// in the language the app shows.
+func SiteVisitServer(addr string) string { return In(i18n.Locale()).SiteVisitServer(addr) }
+
+// SiteVisitServer says "Through Nginx at {addr}"
+// in the language of msgs.
+func (msgs Messages) SiteVisitServer(addr string) string {
+	return Catalog.Format(msgs.locale, "siteVisitServer", map[string]any{"addr": addr})
 }
 
 // SiteDisable says "Disable sites"
@@ -16544,11 +16574,11 @@ func (msgs Messages) SiteNew() string {
 	return Catalog.Format(msgs.locale, "siteNew", nil)
 }
 
-// SiteNoLogFile says "No supported file under /var/log is configured for this log."
+// SiteNoLogFile says "No log file is configured for this log."
 // in the language the app shows.
 func SiteNoLogFile() string { return In(i18n.Locale()).SiteNoLogFile() }
 
-// SiteNoLogFile says "No supported file under /var/log is configured for this log."
+// SiteNoLogFile says "No log file is configured for this log."
 // in the language of msgs.
 func (msgs Messages) SiteNoLogFile() string {
 	return Catalog.Format(msgs.locale, "siteNoLogFile", nil)
@@ -16866,14 +16896,44 @@ func (msgs Messages) SiteUnsafeText() string {
 	return Catalog.Format(msgs.locale, "siteUnsafeText", nil)
 }
 
-// SiteUnsupportedFile says "Only regular Nginx configuration files in standard locations can be edited."
+// SiteUnsupportedFile says "Only regular configuration files that Nginx loads can be edited."
 // in the language the app shows.
 func SiteUnsupportedFile() string { return In(i18n.Locale()).SiteUnsupportedFile() }
 
-// SiteUnsupportedFile says "Only regular Nginx configuration files in standard locations can be edited."
+// SiteUnsupportedFile says "Only regular configuration files that Nginx loads can be edited."
 // in the language of msgs.
 func (msgs Messages) SiteUnsupportedFile() string {
 	return Catalog.Format(msgs.locale, "siteUnsupportedFile", nil)
+}
+
+// SiteUnparsed says "Could not read these configuration files: {files}. Their sites are not listed, and changes are unavailable until they…"
+// in the language the app shows.
+func SiteUnparsed(files string) string { return In(i18n.Locale()).SiteUnparsed(files) }
+
+// SiteUnparsed says "Could not read these configuration files: {files}. Their sites are not listed, and changes are unavailable until they…"
+// in the language of msgs.
+func (msgs Messages) SiteUnparsed(files string) string {
+	return Catalog.Format(msgs.locale, "siteUnparsed", map[string]any{"files": files})
+}
+
+// SiteUnparsedReason says "Some configuration files could not be read; changes are unavailable."
+// in the language the app shows.
+func SiteUnparsedReason() string { return In(i18n.Locale()).SiteUnparsedReason() }
+
+// SiteUnparsedReason says "Some configuration files could not be read; changes are unavailable."
+// in the language of msgs.
+func (msgs Messages) SiteUnparsedReason() string {
+	return Catalog.Format(msgs.locale, "siteUnparsedReason", nil)
+}
+
+// SitePanelOverwrite says "The BaoTa panel may write this file again when the site is changed in the panel."
+// in the language the app shows.
+func SitePanelOverwrite() string { return In(i18n.Locale()).SitePanelOverwrite() }
+
+// SitePanelOverwrite says "The BaoTa panel may write this file again when the site is changed in the panel."
+// in the language of msgs.
+func (msgs Messages) SitePanelOverwrite() string {
+	return Catalog.Format(msgs.locale, "sitePanelOverwrite", nil)
 }
 
 // SiteUnverifiedWrite says "The server did not confirm that the file was written. Check the file and its backup before retrying."
@@ -26156,6 +26216,16 @@ func DesktopBrowserLocalNote() string { return In(i18n.Locale()).DesktopBrowserL
 // in the language of msgs.
 func (msgs Messages) DesktopBrowserLocalNote() string {
 	return Catalog.Format(msgs.locale, "desktopBrowserLocalNote", nil)
+}
+
+// DesktopBrowserHostsNote says "These names are reached at the server address shown, whatever DNS says:"
+// in the language the app shows.
+func DesktopBrowserHostsNote() string { return In(i18n.Locale()).DesktopBrowserHostsNote() }
+
+// DesktopBrowserHostsNote says "These names are reached at the server address shown, whatever DNS says:"
+// in the language of msgs.
+func (msgs Messages) DesktopBrowserHostsNote() string {
+	return Catalog.Format(msgs.locale, "desktopBrowserHostsNote", nil)
 }
 
 // DesktopBrowserInvalidURL says "Enter a valid HTTP or HTTPS address without credentials."
@@ -43534,6 +43604,16 @@ func DockerOpenPort() string { return In(i18n.Locale()).DockerOpenPort() }
 // in the language of msgs.
 func (msgs Messages) DockerOpenPort() string {
 	return Catalog.Format(msgs.locale, "dockerOpenPort", nil)
+}
+
+// DockerOpenInternal says "Open in desktop browser (from the server)"
+// in the language the app shows.
+func DockerOpenInternal() string { return In(i18n.Locale()).DockerOpenInternal() }
+
+// DockerOpenInternal says "Open in desktop browser (from the server)"
+// in the language of msgs.
+func (msgs Messages) DockerOpenInternal() string {
+	return Catalog.Format(msgs.locale, "dockerOpenInternal", nil)
 }
 
 // DockerProjectStart says "Start all"

@@ -221,8 +221,10 @@ func desktopBrowserProfileID(id string) bool {
 	}) == -1
 }
 
-func desktopBrowserProxy(client *ssh.Client) (*sshx.Tunnel, error) {
-	return sshx.StartTunnel(client, config.Tunnel{Kind: config.TunnelDynamic, ListenHost: "127.0.0.1"}, nil)
+// desktopBrowserProxy starts the browser's SOCKS proxy through client;
+// resolve gives the names it connects to elsewhere (desktopBrowserHosts).
+func desktopBrowserProxy(client *ssh.Client, resolve func(string) (string, bool)) (*sshx.Tunnel, error) {
+	return sshx.StartTunnelWithOptions(client, config.Tunnel{Kind: config.TunnelDynamic, ListenHost: "127.0.0.1"}, sshx.TunnelOptions{Resolve: resolve})
 }
 
 func desktopBrowserDialer(addr string) proxy.ContextDialer {

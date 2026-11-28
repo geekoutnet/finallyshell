@@ -151,6 +151,9 @@ func (a *App) siteList(c *ui.Context, s *Session, narrow bool) {
 		siteBanner(c, locales.SiteNotInstalled(), false)
 	}
 	siteBanner(c, page.readErr, true)
+	if files := page.inventory.Unparsed; page.readErr == "" && len(files) != 0 {
+		siteBanner(c.Key("unparsed"), locales.SiteUnparsed(siteClean(strings.Join(files, ", "))), true)
+	}
 	if !page.status.Installed {
 		return
 	}

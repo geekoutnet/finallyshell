@@ -496,7 +496,7 @@ const (
 // room, where the user dragged it, else
 // centered above the dock.
 func desktopFolderRect(d *desktopState, sh *desktopShellState, id string, g desktopGrid, n int) (ui.Rect, bool) {
-	cols := min(5, max(3, n))
+	cols := desktopFolderCols(n)
 	rows := max(1, (n+cols-1)/cols)
 	w := float32(cols)*(g.spaceW+desktopFolderGap) - desktopFolderGap + 2*desktopFolderPad + desktopFolderScrollbar
 	h := desktopFolderHeader + float32(rows)*(g.spaceH+desktopFolderGap) - desktopFolderGap + 2*desktopFolderPad
@@ -586,3 +586,18 @@ func (a *App) desktopFolderResize(c *ui.Context, d *desktopState, id string, r u
 		c.Invalidate()
 	}
 }
+
+// desktopFolderBlur is how much a folder's panel blurs the desktop under
+// it, as a standard deviation in DIPs.
+const desktopFolderBlur = 22
+
+// desktopFolderCols is how many icons a row of a folder's panel holds by
+// default for n icons: 4 to 6, so that a folder of few icons is not narrow.
+func desktopFolderCols(n int) int { return min(6, max(4, n)) }
+
+// desktopFolderTint is the frost over the blurred desktop: the theme's
+// background, translucent, so that it reads as glass, not as a window.
+func desktopFolderTint() ui.Color { return theme.Background.Alpha(.58) }
+
+// desktopFolderRim is the glass's hairline edge.
+func desktopFolderRim() ui.Color { return ui.RGBA(255, 255, 255, .34) }

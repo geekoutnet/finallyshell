@@ -2174,8 +2174,14 @@ its desktop for when its tab is selected.
   creates a folder with an inline name field. Open it to see its apps,
   drag icons back out, rename it, or delete it and return its icons to
   the desktop. This never changes files on the server. An open folder's
-  icons are the desktop's size (Small, Medium or Large), five to a row,
-  and the panel is as large as they need, and at least as tall as a window. Drag it by its header anywhere
+  icons are the desktop's size (Small, Medium or Large), six to a row
+  (as wide as four for fewer), and the panel is as large as they need, and
+  at least as tall as a window. It is frosted glass, the wallpaper blurred
+  through it, unlike the apps' windows. Its pencil renames it and turns
+  into a check that keeps the name, as Enter does; going on to anything
+  else (another folder, the desktop, closing the panel) keeps it too, and
+  Escape keeps the old one. While the panel is open, only its header edits
+  the name. Drag it by its header anywhere
   on the desktop, or by an edge or corner to resize it (down to 240 by 200
   DIPs; its icons wrap and scroll); it opens there again, at that size,
   until the desktop is closed.

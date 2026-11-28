@@ -1688,7 +1688,9 @@ In `settings.json` these are `termFontFamily`, `termFontSize`,
 
 The "Files" tab at the bottom right browses the server over SFTP: a folder
 tree on the left, a file table on the right (with multiple selection), and
-a path bar where a path can be typed directly.
+a path bar where a path can be typed directly. A path without a leading
+`/`, such as `logs`, is relative to the folder SFTP starts in (usually the
+home folder), and the bar then shows its full path.
 
 ### Following the terminal's folder
 

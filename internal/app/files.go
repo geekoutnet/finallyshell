@@ -93,7 +93,19 @@ func (a *App) listDir(s *Session, dir string, quiet bool) {
 	}
 	sc := s.sftp
 	go func() {
-		entries, err := remotefs.ReadDir(sc, dir)
+		// A relative folder, as typed in the path bar, is the server's
+		// full path from here on: the tree opens down to "/".
+		var err error
+		if !path.IsAbs(dir) {
+			var full string
+			if full, err = sc.RealPath(dir); err == nil {
+				dir = full
+			}
+		}
+		var entries []remotefs.Entry
+		if err == nil {
+			entries, err = remotefs.ReadDir(sc, dir)
+		}
 		a.post(func() {
 			f.loading = false
 			if err != nil {

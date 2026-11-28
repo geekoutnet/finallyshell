@@ -6,9 +6,13 @@ import (
 	"crypto/rand"
 	"io"
 	"os"
+	"path"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"testing"
+
+	"finallyshell/internal/sshtest"
 
 	"github.com/pkg/sftp"
 )
@@ -58,6 +62,7 @@ func randomBytes(n int) []byte {
 func TestUploadDownloadDirectory(t *testing.T) {
 	c := newTestClient(t)
 	local, remote, back := t.TempDir(), t.TempDir(), t.TempDir()
+	site := path.Join(sshtest.RemotePath(remote), "site") // as the client sees it
 	big := randomBytes(3 << 20)
 	writeFile(t, filepath.Join(local, "site", "index.html"), []byte("<h1>hi</h1>"))
 	writeFile(t, filepath.Join(local, "site", "assets", "app.bin"), big)
@@ -68,7 +73,7 @@ func TestUploadDownloadDirectory(t *testing.T) {
 		t.Fatalf("local size %d %v", size, err)
 	}
 	var last int64
-	if err := Upload(context.Background(), c, filepath.Join(local, "site"), remote, func(n int64) { last = n }); err != nil {
+	if err := Upload(context.Background(), c, filepath.Join(local, "site"), sshtest.RemotePath(remote), func(n int64) { last = n }); err != nil {
 		t.Fatal(err)
 	}
 	if last != size {
@@ -82,11 +87,11 @@ func TestUploadDownloadDirectory(t *testing.T) {
 		t.Errorf("empty directory not uploaded: %v", err)
 	}
 
-	rsize, err := RemoteSize(c, filepath.Join(remote, "site"))
+	rsize, err := RemoteSize(c, site)
 	if err != nil || rsize != size {
 		t.Fatalf("remote size %d %v", rsize, err)
 	}
-	dst, err := Download(context.Background(), c, filepath.Join(remote, "site"), back, func(n int64) { last = n })
+	dst, err := Download(context.Background(), c, site, back, func(n int64) { last = n })
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -98,7 +103,7 @@ func TestUploadDownloadDirectory(t *testing.T) {
 		t.Errorf("downloaded file differs (%d bytes)", len(got))
 	}
 
-	entries, err := ReadDir(c, filepath.Join(remote, "site"))
+	entries, err := ReadDir(c, site)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -109,7 +114,7 @@ func TestUploadDownloadDirectory(t *testing.T) {
 	if len(names) != 3 || names[0] != "assets" || names[1] != "empty" || names[2] != "index.html" {
 		t.Errorf("listing %v: directories first, then files", names)
 	}
-	if found := RemoteExisting(c, filepath.Join(remote, "site"), []string{"index.html", "nope"}); len(found) != 1 {
+	if found := RemoteExisting(c, site, []string{"index.html", "nope"}); len(found) != 1 {
 		t.Errorf("existing %v", found)
 	}
 }
@@ -120,7 +125,7 @@ func TestCancel(t *testing.T) {
 	writeFile(t, filepath.Join(local, "big.bin"), randomBytes(8<<20))
 
 	ctx, cancel := context.WithCancel(context.Background())
-	err := Upload(ctx, c, filepath.Join(local, "big.bin"), remote, func(n int64) {
+	err := Upload(ctx, c, filepath.Join(local, "big.bin"), sshtest.RemotePath(remote), func(n int64) {
 		if n > 1<<20 {
 			cancel()
 		}
@@ -135,7 +140,7 @@ func TestCancel(t *testing.T) {
 	writeFile(t, filepath.Join(remote, "big.bin"), randomBytes(8<<20))
 	ctx, cancel = context.WithCancel(context.Background())
 	back := t.TempDir()
-	_, err = Download(ctx, c, filepath.Join(remote, "big.bin"), back, func(n int64) {
+	_, err = Download(ctx, c, path.Join(sshtest.RemotePath(remote), "big.bin"), back, func(n int64) {
 		if n > 1<<20 {
 			cancel()
 		}
@@ -203,13 +208,14 @@ func TestReadDirLinks(t *testing.T) {
 		{"loop", "loop", -1, false, true},
 	} {
 		e := got[tc.name]
-		if !e.Link || e.Target != tc.target || e.IsDir() != tc.dir || e.Broken != tc.broken {
+		// The test server reads links with this system's separator.
+		if !e.Link || e.Target != filepath.FromSlash(tc.target) || e.IsDir() != tc.dir || e.Broken != tc.broken {
 			t.Errorf("%s: %+v", tc.name, e)
 		}
 		if tc.size >= 0 && e.Size != tc.size {
 			t.Errorf("%s: size %d, want the target's %d", tc.name, e.Size, tc.size)
 		}
-		if tc.dir && e.Mode.Perm() != 0o750 {
+		if tc.dir && runtime.GOOS != "windows" && e.Mode.Perm() != 0o750 {
 			t.Errorf("%s: mode %v, want the directory's", tc.name, e.Mode)
 		}
 	}

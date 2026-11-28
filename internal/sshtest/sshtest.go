@@ -417,6 +417,13 @@ func (s *Server) directTCPIP(nc ssh.NewChannel) {
 		nc.Reject(ssh.ConnectionFailed, "bad request")
 		return
 	}
+	// Names under .invalid never resolve (RFC 6761): refused at once, as
+	// a lookup would, so tests do not wait on this machine's DNS, which
+	// can take longer than they do under load.
+	if host := strings.TrimSuffix(req.Host, "."); host == "invalid" || strings.HasSuffix(host, ".invalid") {
+		nc.Reject(ssh.ConnectionFailed, "no such host")
+		return
+	}
 	out, err := net.Dial("tcp", net.JoinHostPort(req.Host, strconv.Itoa(int(req.Port))))
 	if err != nil {
 		nc.Reject(ssh.ConnectionFailed, "Connection refused")

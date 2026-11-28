@@ -301,6 +301,8 @@ func TestEditorEntryMode(t *testing.T) {
 	a.hosts.Add(h)
 	a.editConnection(h)
 	tt := editorWindow(t, a, p)
+	tt.SetSize(760, 1400) // the Advanced section in view, whatever the fonts' height
+	tt.Frame()
 	if !tt.HasText(locales.EditorEntryMode()) || !tt.HasText(locales.EditorEntryTerminal()) {
 		t.Fatal("no entry mode, or not the terminal by default")
 	}

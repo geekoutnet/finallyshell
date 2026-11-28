@@ -601,13 +601,24 @@ func TestCommandBarPage(t *testing.T) {
 	if info, _ := tt.Access(locales.OptionCmdBarPaths()); !info.Disabled {
 		t.Errorf("paths with the bar off: %+v", info)
 	}
-	tt.Click(locales.OptionShowCommandBar())
-	tt.Click(locales.OptionServerHistory()) // disabled, as the history is off
+	if err := tt.Click(locales.OptionShowCommandBar()); err != nil {
+		t.Fatal(err)
+	}
+	// Down a little, to show the history picker and the server history
+	// together: with taller fonts the latter is below the window.
+	tt.Scroll(500, 300, 0, 150)
+	tt.Frame()
+	if err := tt.Click(locales.OptionServerHistory()); err != nil { // disabled, as the history is off
+		t.Fatal(err)
+	}
 	if a.settings.NoServerHistory {
 		t.Error("server history changed with the history picker off")
 	}
-	tt.Click(locales.OptionCmdBarHistory())
-	tt.Click(locales.OptionServerHistory())
+	for _, label := range []string{locales.OptionCmdBarHistory(), locales.OptionServerHistory()} {
+		if err := tt.Click(label); err != nil {
+			t.Fatal(err)
+		}
+	}
 	if !a.settings.NoServerHistory {
 		t.Error("server history not turned off")
 	}

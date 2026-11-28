@@ -193,6 +193,7 @@ func TestConnectAllPasswordCancel(t *testing.T) {
 	tab := a.sessions[0]
 	tt.Frame()
 
+	showConnRow(t, a, tt, "Keys")
 	connMenu(t, tt, "Keys", locales.ConnectAll())
 	p.until(t, "the prompt for p1", func() bool { return a.pwOpen && a.pwNeed.host.ID == "p1" })
 	if len(a.sessions) != 1 || !tab.isNewTab() {

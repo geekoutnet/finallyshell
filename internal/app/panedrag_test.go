@@ -128,7 +128,8 @@ func TestDropSide(t *testing.T) {
 }
 
 // paneSpot is the point of pane q of s at fx, fy of its width and height,
-// on the window.
+// on the window: the terminal area is right of the sidebar, under the
+// session tabs and over the command bar.
 func paneSpot(t *testing.T, a *App, tt *ui.Tester, s *Session, q *pane, fx, fy float32) (x, y float32) {
 	t.Helper()
 	bar, ok := tt.Access(locales.CmdBarLabel())
@@ -136,9 +137,10 @@ func paneSpot(t *testing.T, a *App, tt *ui.Tester, s *Session, q *pane, fx, fy f
 		t.Fatal("no command bar")
 	}
 	x0, w := a.sideWidth+1, float32(1280)-a.sideWidth-1
-	h := bar.Bounds.Y - 6
+	y0 := float32(sessionTabsH)
+	h := bar.Bounds.Y - 6 - y0
 	r := s.panes.rects()[q]
-	return x0 + (r.x+fx*r.w)*w, (r.y + fy*r.h) * h
+	return x0 + (r.x+fx*r.w)*w, y0 + (r.y+fy*r.h)*h
 }
 
 // gripOf shows q's grip, hovering the top of q, and returns where it is.

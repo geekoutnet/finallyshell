@@ -22,6 +22,22 @@ func connShown(a *App) []string {
 	return out
 }
 
+// showConnRow scrolls the page's tree to the row named name: a row low in
+// the tree is below the window with taller fonts.
+func showConnRow(t *testing.T, a *App, tt *ui.Tester, name string) {
+	t.Helper()
+	tree := &a.connTree.tree
+	for i := range tree.Rows() {
+		if a.managerTitle(tree.Item(i)) == name {
+			tree.List.ScrollIntoView(i)
+			tt.Frame()
+			tt.Frame()
+			return
+		}
+	}
+	t.Fatalf("no row %q; rows %q", name, connShown(a))
+}
+
 // connRow is the center of the row of the page's tree named name.
 func connRow(t *testing.T, tt *ui.Tester, name string) (x, y float32) {
 	t.Helper()
@@ -323,6 +339,10 @@ func TestConnectionPageKeepsFolders(t *testing.T) {
 // other way.
 func TestConnectionPageAndManager(t *testing.T) {
 	a, p, tt := connPageApp(t, "en")
+	// Room for the whole tree, as taller fonts make its rows taller: a
+	// drag near the edge of a tree that scrolls scrolls it.
+	a.monitorPct = 30
+	tt.Frame()
 	a.openManager()
 	expandManager(a)
 	mw := p.show(t, WindowManager)

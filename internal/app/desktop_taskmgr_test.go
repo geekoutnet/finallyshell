@@ -255,11 +255,19 @@ func TestDesktopTaskMemoryActions(t *testing.T) {
 			t.Fatal(err)
 		}
 	}
+	// The buttons end the page, which the first one's result pushes
+	// below the window with taller fonts.
+	clickAtEnd := func(label string) {
+		t.Helper()
+		tt.Scroll(830, 600, 0, 1000)
+		tt.Frame()
+		click(label)
+	}
 	for _, test := range []struct{ label, script string }{
 		{locales.DesktopTaskRelease(), "sync || exit $?\necho 3 > /proc/sys/vm/drop_caches"},
 		{locales.MemoryCompact(), "echo 1 > /proc/sys/vm/compact_memory"},
 	} {
-		click(test.label)
+		clickAtEnd(test.label)
 		if state.action == nil {
 			t.Fatalf("no confirmation for %s; UI=%q", test.label, tt.Texts())
 		}
@@ -267,7 +275,7 @@ func TestDesktopTaskMemoryActions(t *testing.T) {
 		if len(commands) > 0 {
 			t.Fatal("cancelled memory operation was sent")
 		}
-		click(test.label)
+		clickAtEnd(test.label)
 		click(locales.DesktopTaskConfirm())
 		p.until(t, "memory result", func() bool { return state.action == nil })
 		if command := <-commands; !strings.HasSuffix(command, test.script) {

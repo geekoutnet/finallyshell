@@ -5,7 +5,9 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"strings"
 	"testing"
@@ -34,7 +36,9 @@ type editorFixture struct {
 	s   *Session
 	tt  *ui.Tester
 	srv *sshtest.Server
-	dir string
+	// dir is the server's home folder on the local disk, and remote the
+	// same folder as the app sees it over SFTP.
+	dir, remote string
 }
 
 func newEditorFixture(t *testing.T) *editorFixture {
@@ -67,13 +71,13 @@ func newEditorFixture(t *testing.T) *editorFixture {
 			s.hostKeyQ.Answer <- true
 			s.hostKeyQ = nil
 		}
-		return s.status == statusFailed || s.files.cwd == dir && !s.files.loading
+		return s.status == statusFailed || s.files.cwd == sshtest.RemotePath(dir) && !s.files.loading
 	})
 	if s.status != statusConnected {
 		t.Fatal(describeError(s.err))
 	}
 	t.Cleanup(a.CloseAll)
-	return &editorFixture{a: a, p: p, s: s, tt: tt, srv: srv, dir: dir}
+	return &editorFixture{a: a, p: p, s: s, tt: tt, srv: srv, dir: dir, remote: sshtest.RemotePath(dir)}
 }
 
 // tab waits for the tab of name to be read, and returns it.
@@ -141,7 +145,7 @@ func TestFileEditorOpenEditSave(t *testing.T) {
 	}
 	w := f.window(t)
 	spec := p.windows[WindowFileEditor].spec
-	if p.windows[WindowFileEditor].title != "web-1:"+filepath.Join(f.dir, "deploy.sh") || spec.Parent != "" || spec.Modal || spec.Width < 900 {
+	if p.windows[WindowFileEditor].title != "web-1:"+path.Join(f.remote, "deploy.sh") || spec.Parent != "" || spec.Modal || spec.Width < 900 {
 		t.Errorf("title %q, spec %+v", p.windows[WindowFileEditor].title, spec)
 	}
 	for _, want := range []string{"Shell", "CRLF", "UTF-8", locales.EditorLineCol(1, 1), "deploy.sh"} {
@@ -168,7 +172,7 @@ func TestFileEditorOpenEditSave(t *testing.T) {
 	if got := f.read(t, "deploy.sh"); got != deployScript+"echo done\r\n" {
 		t.Errorf("saved %q", got)
 	}
-	if fi, _ := os.Stat(filepath.Join(f.dir, "deploy.sh")); fi.Mode() != 0o750 {
+	if fi, _ := os.Stat(filepath.Join(f.dir, "deploy.sh")); runtime.GOOS != "windows" && fi.Mode() != 0o750 {
 		t.Errorf("mode %v", fi.Mode())
 	}
 	w.Frame()
@@ -195,7 +199,7 @@ func TestFileEditorOpenEditSave(t *testing.T) {
 	if len(a.fe.tabs) != 2 || a.fe.current() != yml || !w.HasText("YAML") || !strings.HasSuffix(p.windows[WindowFileEditor].title, "app.yaml") {
 		t.Fatalf("tabs %d; texts %q", len(a.fe.tabs), w.Texts())
 	}
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "deploy.sh"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "deploy.sh"))
 	if len(a.fe.tabs) != 2 || a.fe.current() != sh {
 		t.Errorf("opened twice: %d tabs", len(a.fe.tabs))
 	}
@@ -232,7 +236,7 @@ func TestFileEditorOpenEditSave(t *testing.T) {
 	if got := f.read(t, "app.yaml"); got != appYAML+"  rotate: daily\n" {
 		t.Errorf("saved %q", got)
 	}
-	if fi, _ := os.Stat(filepath.Join(f.dir, "app.yaml")); fi.Mode() != 0o640 {
+	if fi, _ := os.Stat(filepath.Join(f.dir, "app.yaml")); runtime.GOOS != "windows" && fi.Mode() != 0o640 {
 		t.Errorf("mode %v", fi.Mode())
 	}
 }
@@ -240,7 +244,7 @@ func TestFileEditorOpenEditSave(t *testing.T) {
 func TestFileEditorConflict(t *testing.T) {
 	f := newEditorFixture(t)
 	a, p := f.a, f.p
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "app.yaml"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "app.yaml"))
 	tab := f.tab(t, "app.yaml")
 	w := f.window(t)
 
@@ -313,7 +317,7 @@ func TestFileEditorConflict(t *testing.T) {
 func TestFileEditorBinaryAndLarge(t *testing.T) {
 	f := newEditorFixture(t)
 	a, p := f.a, f.p
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "a.out"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "a.out"))
 	bin := f.tab(t, "a.out")
 	w := f.window(t)
 	if bin.state != tabBinary || !w.HasText(locales.EditorBinary("a.out")) {
@@ -341,7 +345,7 @@ func TestFileEditorBinaryAndLarge(t *testing.T) {
 	// A file over the limit asks first.
 	maxEditSize = 64 << 10
 	t.Cleanup(func() { maxEditSize = 10 << 20 })
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "big.log"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "big.log"))
 	big := f.tab(t, "big.log")
 	w.Frame()
 	if big.state != tabTooLarge || !w.HasText(locales.EditorTooLarge("big.log", formatSize(big.total))) {
@@ -357,7 +361,7 @@ func TestFileEditorBinaryAndLarge(t *testing.T) {
 	}
 
 	// A file that is not there fails, in the tab.
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "missing.txt"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "missing.txt"))
 	missing := f.tab(t, "missing.txt")
 	w.Frame()
 	if missing.state != tabFailed || !w.HasText(locales.EditorCannotOpen("missing.txt", locales.EditorNoSuchFile())) {
@@ -368,7 +372,7 @@ func TestFileEditorBinaryAndLarge(t *testing.T) {
 func TestFileEditorEncodings(t *testing.T) {
 	f := newEditorFixture(t)
 	a, p := f.a, f.p
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "legacy.ini"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "legacy.ini"))
 	tab := f.tab(t, "legacy.ini")
 	w := f.window(t)
 	if !tab.notUTF8 || !w.HasText(locales.EditorNotUTF8()) {
@@ -415,7 +419,7 @@ func TestFileEditorEncodings(t *testing.T) {
 	}
 
 	// Switching before an edit reads the bytes again.
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "app.yaml"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "app.yaml"))
 	yml := f.tab(t, "app.yaml")
 	a.setEncoding(yml, encGBK)
 	if yml.code.Buffer.String() != appYAML || yml.modified() {
@@ -426,8 +430,8 @@ func TestFileEditorEncodings(t *testing.T) {
 func TestFileEditorUnsavedPrompts(t *testing.T) {
 	f := newEditorFixture(t)
 	a, p := f.a, f.p
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "app.yaml"))
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "deploy.sh"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "app.yaml"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "deploy.sh"))
 	sh := f.tab(t, "deploy.sh")
 	yml := f.tab(t, "app.yaml")
 	w := f.window(t)
@@ -438,7 +442,7 @@ func TestFileEditorUnsavedPrompts(t *testing.T) {
 	if len(a.fe.tabs) != 1 || a.fe.current() != yml || !a.windowOpen(WindowFileEditor) {
 		t.Fatalf("tabs %d", len(a.fe.tabs))
 	}
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "deploy.sh"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "deploy.sh"))
 	sh = f.tab(t, "deploy.sh")
 	w.Frame()
 
@@ -491,7 +495,7 @@ func TestFileEditorUnsavedPrompts(t *testing.T) {
 
 	// Escape is the editor's: it closes the find bar, and never the
 	// window, with nothing left to cancel or with changes.
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "app.yaml"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "app.yaml"))
 	tab := f.tab(t, "app.yaml")
 	w = f.window(t)
 	w.Key(ui.Cmd, ui.KeyF)
@@ -524,7 +528,7 @@ func TestFileEditorUnsavedPrompts(t *testing.T) {
 func TestFileEditorDisconnect(t *testing.T) {
 	f := newEditorFixture(t)
 	a, p := f.a, f.p
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "app.yaml"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "app.yaml"))
 	tab := f.tab(t, "app.yaml")
 	w := f.window(t)
 	w.Type("# offline\n")
@@ -573,8 +577,8 @@ func TestFileEditorMacKeysAndTray(t *testing.T) {
 	t.Cleanup(func() { macOS = wasMacOS })
 	f := newEditorFixture(t)
 	a, p := f.a, f.p
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "app.yaml"))
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "deploy.sh"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "app.yaml"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "deploy.sh"))
 	f.tab(t, "app.yaml")
 	sh := f.tab(t, "deploy.sh")
 	w := f.window(t)
@@ -602,7 +606,7 @@ func TestFileEditorMacKeysAndTray(t *testing.T) {
 	}
 
 	// Closing the last tab closes the window.
-	a.openRemoteFile(f.s, filepath.Join(f.dir, "app.yaml"))
+	a.openRemoteFile(f.s, path.Join(f.remote, "app.yaml"))
 	f.tab(t, "app.yaml")
 	w = f.window(t)
 	w.Key(ui.Super, ui.KeyW)

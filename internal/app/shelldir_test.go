@@ -18,16 +18,17 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-// followHome is a home folder with folders a, b and c in it.
+// followHome is a home folder with folders a, b and c in it, as the
+// test server's SFTP gives it.
 func followHome(t *testing.T) string {
 	t.Helper()
-	home := filepath.ToSlash(t.TempDir())
+	home := t.TempDir()
 	for _, d := range []string{"a", "b", "c"} {
 		if err := os.Mkdir(filepath.Join(home, d), 0o755); err != nil {
 			t.Fatal(err)
 		}
 	}
-	return home
+	return sshtest.RemotePath(home)
 }
 
 // followServer is a session connected to a test server that serves home

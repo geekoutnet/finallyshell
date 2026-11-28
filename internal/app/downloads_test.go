@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"finallyshell/internal/config"
+	"finallyshell/internal/sshtest"
 	"finallyshell/internal/widgets"
 	"finallyshell/locales"
 
@@ -79,8 +80,8 @@ func filesSession(t *testing.T, a *App, p *fakePlatform) (*Session, string, *ui.
 	s.files.init()
 	tt := ui.NewTester(a.View, 1280, 820)
 	p.tt = tt
-	a.openDir(s, remote)
-	p.until(t, "the listing", func() bool { return s.files.cwd == remote && !s.files.loading })
+	a.openDir(s, sshtest.RemotePath(remote))
+	p.until(t, "the listing", func() bool { return s.files.cwd == sshtest.RemotePath(remote) && !s.files.loading })
 	return s, remote, tt
 }
 
@@ -371,7 +372,7 @@ func TestTransfersOptions(t *testing.T) {
 	tt.Frame()
 	// The long path shows shortened by its middle.
 	if !slices.ContainsFunc(tt.Texts(), func(s string) bool {
-		return s == chosen || strings.HasPrefix(s, chosen[:6]) && strings.HasSuffix(s, "/sftp") && strings.Contains(s, "…")
+		return s == chosen || strings.HasPrefix(s, chosen[:6]) && strings.HasSuffix(s, string(filepath.Separator)+"sftp") && strings.Contains(s, "…")
 	}) {
 		t.Errorf("folder not shown; texts %q", tt.Texts())
 	}

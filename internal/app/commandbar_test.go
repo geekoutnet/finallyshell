@@ -172,7 +172,7 @@ func barServer(t *testing.T) (*App, *fakePlatform, *Session, *ui.Tester, string)
 			s.hostKeyQ.Answer <- true
 			s.hostKeyQ = nil
 		}
-		return s.status == statusFailed || s.files.cwd == home && !s.files.loading
+		return s.status == statusFailed || s.files.cwd == sshtest.RemotePath(home) && !s.files.loading
 	})
 	if s.status != statusConnected {
 		t.Fatal(describeError(s.err))
@@ -218,7 +218,7 @@ func TestCommandBarPaths(t *testing.T) {
 	}
 	v := popupDone(t, p, a, s)
 	want := []string{"nginx/", "ssh/", "fstab", "hostname", "hosts", "hosts.allow", ".secret"}
-	if got := itemNames(v); !slices.Equal(got, want) || v.title != filepath.ToSlash(filepath.Join(home, "etc")) {
+	if got := itemNames(v); !slices.Equal(got, want) || v.title != sshtest.RemotePath(filepath.Join(home, "etc")) {
 		t.Errorf("etc: %q in %q, want %q", got, v.title, want)
 	}
 	for _, name := range []string{"nginx/", "hosts.allow", ".secret"} {
@@ -301,6 +301,9 @@ func TestCommandBarPaths(t *testing.T) {
 // Tab on the first word lists the commands; over SFTP when the host
 // allows no exec channel, as the in-process server has none.
 func TestCommandBarCommands(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("the in-process server lists this machine's /usr/bin and /bin, which Windows has not")
+	}
 	a, p, s, tt, _ := barServer(t)
 	tt.Type("l")
 	tt.Key(0, ui.KeyTab)

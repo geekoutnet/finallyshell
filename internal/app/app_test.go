@@ -13,6 +13,7 @@ import (
 	"finallyshell/internal/config"
 	"finallyshell/internal/monitor"
 	"finallyshell/internal/remotefs"
+	"finallyshell/internal/sshtest"
 	"finallyshell/locales"
 
 	"github.com/egoist/mygo/i18n"
@@ -264,8 +265,8 @@ func TestDropUploadAndDownload(t *testing.T) {
 
 	tt := ui.NewTester(a.View, 1280, 820)
 	p.tt = tt
-	a.openDir(s, remote)
-	p.until(t, "the listing", func() bool { return s.files.cwd == remote && !s.files.loading })
+	a.openDir(s, sshtest.RemotePath(remote))
+	p.until(t, "the listing", func() bool { return s.files.cwd == sshtest.RemotePath(remote) && !s.files.loading })
 
 	// Drop a file and a folder from the desktop onto the file table.
 	report := filepath.Join(local, "report.txt")

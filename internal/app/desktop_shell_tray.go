@@ -31,10 +31,10 @@ const (
 func desktopTrayWidth(width float32) float32 {
 	room := float32(37 + 8 + 46) // power, gap, time
 	if width >= 700 {
-		room += 30 // the date
+		room += 18 // the date
 	}
-	if width >= 900 {
-		room += 112 // the load
+	if width >= 760 {
+		room += 30 // the load
 	}
 	return room
 }
@@ -42,7 +42,7 @@ func desktopTrayWidth(width float32) float32 {
 // desktopDockTray draws the tray: the load, the clock and the power
 // button.
 func (a *App) desktopDockTray(c *ui.Context, d *desktopState, s *Session) {
-	if d.area.W >= 900 {
+	if d.area.W >= 760 {
 		a.desktopDockLoad(c, d, s)
 	}
 	a.desktopDockClock(c, d, s)
@@ -57,7 +57,7 @@ func desktopClosePopups(sh *desktopShellState, keep *bool) {
 }
 
 func desktopTrayButton(c *ui.Context, key, label string) ui.Element {
-	button := ui.Row(c.Key(key)).Height(36).Shrink(0).PaddingX(6).Gap(6).Radius(7).AlignItems(ui.Center).
+	button := ui.Row(c.Key(key)).Height(36).Shrink(0).PaddingX(4).Gap(3).Radius(7).AlignItems(ui.Center).Justify(ui.Center).
 		Role(ui.RoleButton).Label(label).Tooltip(label)
 	if button.Hovered() {
 		button.Background(theme.Text.Alpha(.09))
@@ -67,7 +67,7 @@ func desktopTrayButton(c *ui.Context, key, label string) ui.Element {
 
 func (a *App) desktopDockLoad(c *ui.Context, d *desktopState, s *Session) {
 	sh, st := &d.shell, &s.stats
-	button := desktopTrayButton(c, "dock-load", locales.DesktopTray()).Width(104)
+	button := desktopTrayButton(c, "dock-load", locales.DesktopTray()).Width(28)
 	if button.Clicked() {
 		sh.trayPopup = !sh.trayPopup
 		desktopClosePopups(sh, &sh.trayPopup)
@@ -77,18 +77,19 @@ func (a *App) desktopDockLoad(c *ui.Context, d *desktopState, s *Session) {
 	if st.MemTotal > 0 {
 		mem = ratio(st.MemUsed, st.MemTotal) * 100
 	}
+	if st.OK {
+		button.Tooltip(fmt.Sprintf("%s %.0f%%  ·  %s %.0f%%", locales.DesktopInfoCPU(), st.CPU, locales.DesktopInfoMemory(), mem))
+	}
+	// Two thin gauges, CPU then memory, filled from the bottom.
 	button.Children(func() {
-		for _, item := range []struct {
-			icon  string
-			value float64
-		}{{"cpu", st.CPU}, {"memory-stick", mem}} {
-			ui.Row(c.Key(item.icon)).Gap(3).AlignItems(ui.Center).Children(func() {
-				ui.Icon(c, icons.Get(item.icon)).FontSize(13).TextColor(usageColor(item.value / 100))
-				text := "-"
-				if st.OK {
-					text = fmt.Sprintf("%.0f%%", item.value)
-				}
-				ui.Text(c, text).FontSize(11).Bold().TextColor(theme.Text).SingleLine()
+		for i, value := range []float64{st.CPU, mem} {
+			frac := float32(min(max(value/100, 0), 1))
+			if !st.OK {
+				frac = 0
+			}
+			ui.Column(c.Key(fmt.Sprint("gauge", i))).Size(5, 20).Radius(2).Clip().Justify(ui.End).
+				Background(theme.Text.Alpha(.16)).Children(func() {
+				ui.Box(c).Width(5).Height(max(2, 20*frac)).Background(usageColor(float64(frac)))
 			})
 		}
 	})
@@ -151,10 +152,10 @@ func (a *App) desktopDockClock(c *ui.Context, d *desktopState, s *Session) {
 		c.Invalidate()
 	}
 	button.Children(func() {
-		ui.Column(c).AlignItems(ui.End).Children(func() {
+		ui.Column(c).AlignItems(ui.Center).Children(func() {
 			ui.Text(c, now.Format("15:04")).FontSize(12).Bold().TextColor(theme.Text)
 			if d.area.W >= 700 {
-				ui.Text(c, now.Format("2006/01/02")).FontSize(10).TextColor(theme.Text.Alpha(.72))
+				ui.Text(c, now.Format("01/02")).FontSize(10).TextColor(theme.Text.Alpha(.72))
 			}
 		})
 	})

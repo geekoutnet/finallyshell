@@ -139,3 +139,17 @@ func TestDesktopPowerDisconnect(t *testing.T) {
 	}
 	_ = a
 }
+
+// The tray stays small: the load is two gauges and the host an icon, their
+// numbers and name in tooltips.
+func TestDesktopTrayIsCompact(t *testing.T) {
+	_, _, tt, s := desktopShellTestApp(t)
+	load, ok := tt.AccessByRole(ui.RoleButton, locales.DesktopTray())
+	if !ok || load.Bounds.W > 32 {
+		t.Fatalf("load button %+v", load.Bounds)
+	}
+	host, ok := tt.AccessByRole(ui.RoleButton, s.label())
+	if !ok || host.Bounds.W > 30 {
+		t.Fatalf("host button %+v", host.Bounds)
+	}
+}

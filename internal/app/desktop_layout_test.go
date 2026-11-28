@@ -328,3 +328,56 @@ func TestEditorEntryMode(t *testing.T) {
 		t.Fatal("the editor did not read the entry mode")
 	}
 }
+
+func TestDesktopFolderPanelDragAndSize(t *testing.T) {
+	a, _, tt, s := desktopShellTestApp(t)
+	d := a.desktopOf(s)
+	a.desktopOpenIcon(d, s, desktopFolderPrefix+"preset-system")
+	tt.Frame()
+	start := d.shell.folderRect
+	if start.W == 0 {
+		t.Fatal("the folder did not open")
+	}
+	// Its icons are the desktop's size: medium by default, all in view.
+	g := desktopMakeGrid(d.area, "")
+	if want := 5*(g.spaceW+desktopFolderGap) - desktopFolderGap + 2*desktopFolderPad + desktopFolderScrollbar; start.W != want {
+		t.Fatalf("width %v, want %v for five medium icons", start.W, want)
+	}
+	// Drag it by its header.
+	x, y := desktopShellPoint(d, ui.Point{X: start.X + 60, Y: start.Y + desktopFolderHeader/2})
+	tt.Press(x, y)
+	tt.Move(x-150, y-90)
+	tt.Release(x-150, y-90)
+	moved := d.shell.folderRect
+	if moved.X != start.X-150 || moved.Y != start.Y-90 || d.shell.folder != "preset-system" {
+		t.Fatalf("dragged from %+v to %+v", start, moved)
+	}
+	// Not past the desktop's edges.
+	x, y = desktopShellPoint(d, ui.Point{X: moved.X + 60, Y: moved.Y + desktopFolderHeader/2})
+	tt.Press(x, y)
+	tt.Move(x-2000, y-2000)
+	tt.Release(x-2000, y-2000)
+	if r := d.shell.folderRect; r.X != 0 || r.Y != 0 {
+		t.Fatalf("dragged off the desktop: %+v", r)
+	}
+	// It opens where it was left; another folder opens centered.
+	d.shell.folder = ""
+	tt.Frame()
+	a.desktopOpenIcon(d, s, desktopFolderPrefix+"preset-system")
+	tt.Frame()
+	if r := d.shell.folderRect; r.X != 0 || r.Y != 0 {
+		t.Fatalf("reopened at %+v", r)
+	}
+	a.desktopOpenIcon(d, s, desktopFolderPrefix+"preset-transfer")
+	tt.Frame()
+	if r := d.shell.folderRect; r.X == 0 && r.Y == 0 {
+		t.Fatal("another folder opened where the first was dragged")
+	}
+	// Large icons make a larger panel.
+	medium := d.shell.folderRect
+	a.changeDesktopPreferences(func(p *config.DesktopSettings) { p.IconSize = "large" })
+	tt.Frame()
+	if r := d.shell.folderRect; r.W <= medium.W || r.H <= medium.H {
+		t.Fatalf("large icons: %+v, medium %+v", r, medium)
+	}
+}

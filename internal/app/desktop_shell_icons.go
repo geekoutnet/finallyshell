@@ -653,11 +653,17 @@ func (a *App) desktopFolderPanel(c *ui.Context, d *desktopState, s *Session) {
 		sh.folderRect = ui.Rect{}
 		return
 	}
-	width, height := min(float32(388), d.area.W-24), min(float32(300), d.area.H-desktopDockHeight-24)
-	if width < 80 || height < 80 {
+	var items []desktopIconCell
+	for _, icon := range a.desktopHostIcons(s, h) {
+		if icon.Folder == f.ID {
+			items = append(items, desktopIconCell{icon: icon})
+		}
+	}
+	g := desktopMakeGrid(d.area, a.desktopPreferences().IconSize)
+	r, ok := desktopFolderRect(d, sh, f.ID, g, len(items))
+	if !ok {
 		return
 	}
-	r := ui.Rect{X: (d.area.W - width) / 2, Y: (d.area.H - desktopDockHeight - height) / 2, W: width, H: height}
 	sh.folderRect = r
 	panel := ui.Column(c.Key("folder-panel")).Absolute().Left(r.X).Top(r.Y).Size(r.W, r.H).ZIndex(3).
 		Radius(13).Border(1, theme.Border).Shadow(0, 8, 30, 0, ui.RGBA(0, 0, 0, .4)).Background(theme.Background).Clip().Label(f.Name)
@@ -669,7 +675,13 @@ func (a *App) desktopFolderPanel(c *ui.Context, d *desktopState, s *Session) {
 		c.Invalidate()
 	}
 	panel.Children(func() {
-		ui.Row(c).Height(42).Shrink(0).PaddingX(12).Gap(5).AlignItems(ui.Center).Background(colors.sidebar).Children(func() {
+		header := ui.Row(c).Height(desktopFolderHeader).Shrink(0).PaddingX(12).Gap(5).AlignItems(ui.Center).Background(colors.sidebar).Cursor(ui.CursorMove)
+		if dx, dy, dragging := header.Dragged(); dragging && (dx != 0 || dy != 0) && sh.rename != f.ID {
+			sh.folderAt = desktopClampFolder(d, ui.Point{X: r.X + dx, Y: r.Y + dy}, r.W, r.H)
+			sh.folderMoved = f.ID
+			c.Invalidate()
+		}
+		header.Children(func() {
 			if sh.rename == f.ID {
 				edit := ui.TextInput(c, &sh.renameText).Grow(1).MinWidth(0).Label(locales.Rename())
 				if sh.renameFocus {
@@ -698,18 +710,11 @@ func (a *App) desktopFolderPanel(c *ui.Context, d *desktopState, s *Session) {
 				c.Invalidate()
 			}
 		})
-		var items []desktopIconCell
-		g := desktopMakeGrid(d.area, "small")
-		for _, icon := range a.desktopHostIcons(s, h) {
-			if icon.Folder == f.ID {
-				items = append(items, desktopIconCell{icon: icon})
-			}
-		}
 		if len(items) == 0 {
 			ui.Box(c).Grow(1).Center().Padding(12).Children(func() { ui.Text(c, locales.DesktopShellEmptyFolder()).TextColor(theme.TextMuted) })
 		}
 		ui.Scroll(c).Grow(1).MinHeight(0).Children(func() {
-			ui.Row(c).Wrap().Padding(8).Gap(4).Children(func() {
+			ui.Row(c).Wrap().Padding(desktopFolderPad).Gap(desktopFolderGap).Children(func() {
 				for _, item := range items {
 					tile := ui.Column(c.Key(item.icon.App)).Size(g.spaceW, g.spaceH).Shrink(0).Background(theme.Surface)
 					a.desktopIconView(c, d, s, h, tile, item.icon, g, items)

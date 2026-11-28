@@ -2173,7 +2173,10 @@ its desktop for when its tab is selected.
   folder) and, inside a folder, **Move to desktop**. **New › App group**
   creates a folder with an inline name field. Open it to see its apps,
   drag icons back out, rename it, or delete it and return its icons to
-  the desktop. This never changes files on the server.
+  the desktop. This never changes files on the server. An open folder's
+  icons are the desktop's size (Small, Medium or Large), five to a row,
+  and the panel is as large as they need. Drag it by its header anywhere
+  on the desktop; it opens there again until the desktop is closed.
 - **Desktop layout** in the desktop menu: **Tidy apps into folders** puts
   every app in its folder (apps in folders of your own stay there), and
   **Show all apps on the desktop** takes them all out and deletes the
@@ -2196,12 +2199,13 @@ apps, and desktop controls. A dot indicates a running app; the focused app
 has a wider marker. Click to open, focus, minimize or restore. For multiple
 windows, pick one from the list. Right-click for window and pin actions, or
 drag pinned apps to reorder. **Show desktop** hides the visible windows; use
-it again to restore them. On a wide desktop the tray shows the server's CPU
-and memory; click it for CPU, memory, swap and root disk bars, network
-rates, uptime and the Task Manager. The clock shows local time and, on a
-middling or wide desktop, the date; click it for the time with seconds, the
+it again to restore them. The tray keeps to little room: two thin gauges
+show the server's CPU and memory (their numbers in the tooltip); click them
+for CPU, memory, swap and root disk bars, network rates, uptime and the
+Task Manager. The clock shows local time and, on a middling or wide
+desktop, the month and day; click it for the time with seconds, the
 weekday and a month calendar starting on Monday, with **Date & time
-settings**. The host popover shows the connection status and lets you
+settings**. The host is an icon, its name in the tooltip; its popover shows the connection status and lets you
 return to the terminal or switch to another connected SSH session's
 desktop. The power button reconnects or disconnects the session, or
 restarts or shuts down the server: these two ask first, then run with root's

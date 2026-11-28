@@ -154,8 +154,8 @@ type certConfirmKind int
 
 const (
 	// certConfirmSplit splits port 80 for a minute or so: the program on
-	// it (certHTTPFound.servers) sees its visitors come from 127.0.0.1
-	// meanwhile.
+	// it (certHTTPFound.servers) sees its visitors come from the server's
+	// own address meanwhile.
 	certConfirmSplit    certConfirmKind = iota + 1
 	certConfirmFirewall                 // port 80 opened in target (ufw, firewalld) for a while
 )

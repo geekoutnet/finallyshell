@@ -10,9 +10,16 @@ import (
 // of its serves the challenges, a short-lived proxy takes port 80's
 // connections through a firewall REDIRECT rule, answers the ones that ask
 // for a challenge file, and passes every other one, byte for byte, both
-// ways, to the program on port 80, which then sees them come from
-// 127.0.0.1. The proxy's own connections to port 80 leave from the server
-// itself, which PREROUTING does not see, so they are not redirected.
+// ways, to the program on port 80. The proxy's own connections to port 80
+// leave from the server itself, which PREROUTING does not see, so they are
+// not redirected.
+//
+// Only connections to the server's own addresses are redirected, not the
+// ones it forwards (a router's LAN, Docker's containers going out); the
+// proxy's port is let in for redirected connections alone. A program on
+// every address is reached at the server's own address, not the loopback,
+// so that it never takes a visitor for a local client; one on the loopback
+// alone, which no visitor reached before, is not passed anything.
 
 // ACMESplitMark marks the firewall rules of the split, and names its nft
 // table.
@@ -24,11 +31,26 @@ const (
 // acmeSplitProxy is the proxy, in Python 3: on a free port of every
 // address, IPv4 and IPv6, it serves the challenge files of the folder it
 // is given (argv[1]) to GET and HEAD requests for them, and passes every
-// other connection to port 80 of argv[2], first line and all; it writes
-// its port to the folder's file "port" once it listens. It exits when
-// port 80 of argv[2] does not take a connection at start.
+// other connection to port 80 of argv[2], first line and all: an address,
+// "local" for the server's own (its loopback when it has no other), or
+// "none" to answer 404; it writes its port to the folder's file "port"
+// once it listens. It exits when the upstream does not take a connection
+// at start.
 const acmeSplitProxy = `import asyncio, os, re, socket, sys
 DIR, UP = sys.argv[1], sys.argv[2]
+def own():
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("192.0.2.1", 80))
+        a = s.getsockname()[0]
+        s.close()
+        if a and not a.startswith("127."):
+            return a
+    except OSError:
+        pass
+    return "127.0.0.1"
+if UP == "local":
+    UP = own()
 TOKEN = re.compile(rb"^(GET|HEAD) /\.well-known/acme-challenge/([A-Za-z0-9_-]{1,128})(\?\S*)? HTTP/1\.[01]$")
 async def pipe(r, w):
     try:
@@ -75,6 +97,14 @@ async def handle(r, w):
                 pass
             w.close()
             return
+    if UP == "none":
+        w.write(b"HTTP/1.1 404 Not Found\r\nContent-Length: 0\r\nConnection: close\r\n\r\n")
+        try:
+            await w.drain()
+        except Exception:
+            pass
+        w.close()
+        return
     try:
         ur, uw = await asyncio.wait_for(asyncio.open_connection(UP, 80), 10)
     except Exception:
@@ -83,8 +113,9 @@ async def handle(r, w):
     uw.write(line)
     await asyncio.gather(pipe(r, uw), pipe(ur, w))
 async def main():
-    s = socket.create_connection((UP, 80), 3)
-    s.close()
+    if UP != "none":
+        s = socket.create_connection((UP, 80), 3)
+        s.close()
     s4 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s4.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s4.bind(("0.0.0.0", 0))
@@ -109,11 +140,11 @@ asyncio.run(main())
 `
 
 // ACMESplitStartCommand starts the split's proxy, for 30 minutes at most,
-// passing other connections to port 80 of upstream, an IP address; run as
-// root. It prints "started <pid> <folder> <port>", or "none" without
+// passing other connections to port 80 of upstream: an IP address,
+// "local" or "none" (ParsePort80Upstream); run as root. It prints "started <pid> <folder> <port>", or "none" without
 // Python 3, or "failed" (the reason on stderr).
 func ACMESplitStartCommand(upstream string) (string, error) {
-	if net.ParseIP(upstream) == nil {
+	if upstream != "local" && upstream != "none" && net.ParseIP(upstream) == nil {
 		return "", errACMEInput
 	}
 	return `set -eu
@@ -170,22 +201,26 @@ func ACMESplitRulesCommand(port int) (string, error) {
 	}
 	p := strconv.Itoa(port)
 	mark := "'-m' 'comment' '--comment' '" + ACMESplitMark + "'"
+	// Connections to the server's own addresses, not the ones it forwards;
+	// and the proxy's port let in for them alone.
+	local := "'-m' 'addrtype' '--dst-type' 'LOCAL'"
+	redirected := "'-m' 'conntrack' '--ctstate' 'DNAT'"
 	return NginxToolPath + `set -eu
 tools=''
 if command -v iptables >/dev/null 2>&1 && 'iptables' '-t' 'nat' '-L' 'PREROUTING' '-n' >/dev/null 2>&1; then
-    'iptables' '-t' 'nat' '-I' 'PREROUTING' '1' '-p' 'tcp' '--dport' '80' ` + mark + ` '-j' 'REDIRECT' '--to-ports' '` + p + `'
-    'iptables' '-I' 'INPUT' '1' '-p' 'tcp' '--dport' '` + p + `' ` + mark + ` '-j' 'ACCEPT' || :
+    'iptables' '-t' 'nat' '-I' 'PREROUTING' '1' '-p' 'tcp' '--dport' '80' ` + local + ` ` + mark + ` '-j' 'REDIRECT' '--to-ports' '` + p + `'
+    'iptables' '-I' 'INPUT' '1' '-p' 'tcp' '--dport' '` + p + `' ` + redirected + ` ` + mark + ` '-j' 'ACCEPT' || :
     tools='iptables'
     if command -v ip6tables >/dev/null 2>&1 && 'ip6tables' '-t' 'nat' '-L' 'PREROUTING' '-n' >/dev/null 2>&1; then
-        if 'ip6tables' '-t' 'nat' '-I' 'PREROUTING' '1' '-p' 'tcp' '--dport' '80' ` + mark + ` '-j' 'REDIRECT' '--to-ports' '` + p + `'; then
-            'ip6tables' '-I' 'INPUT' '1' '-p' 'tcp' '--dport' '` + p + `' ` + mark + ` '-j' 'ACCEPT' || :
+        if 'ip6tables' '-t' 'nat' '-I' 'PREROUTING' '1' '-p' 'tcp' '--dport' '80' ` + local + ` ` + mark + ` '-j' 'REDIRECT' '--to-ports' '` + p + `'; then
+            'ip6tables' '-I' 'INPUT' '1' '-p' 'tcp' '--dport' '` + p + `' ` + redirected + ` ` + mark + ` '-j' 'ACCEPT' || :
             tools="$tools ip6tables"
         fi
     fi
 elif command -v nft >/dev/null 2>&1; then
     'nft' 'add' 'table' 'inet' '` + acmeSplitTable + `'
     'nft' 'add' 'chain' 'inet' '` + acmeSplitTable + `' 'prerouting' '{ type nat hook prerouting priority -110; }'
-    'nft' 'add' 'rule' 'inet' '` + acmeSplitTable + `' 'prerouting' 'tcp' 'dport' '80' 'redirect' 'to' ':` + p + `'
+    'nft' 'add' 'rule' 'inet' '` + acmeSplitTable + `' 'prerouting' 'fib' 'daddr' 'type' 'local' 'tcp' 'dport' '80' 'redirect' 'to' ':` + p + `'
     tools='nft'
 else
     'echo' 'none'
@@ -208,12 +243,14 @@ func ACMESplitStopCommand(pid int, dir string, port int) (string, error) {
 	}
 	p := strconv.Itoa(port)
 	mark := "'-m' 'comment' '--comment' '" + ACMESplitMark + "'"
+	local := "'-m' 'addrtype' '--dst-type' 'LOCAL'"
+	redirected := "'-m' 'conntrack' '--ctstate' 'DNAT'"
 	return NginxToolPath + `for t in iptables ip6tables; do
     command -v "$t" >/dev/null 2>&1 || continue
     n=0
-    while [ "$n" -lt 20 ] && "$t" '-t' 'nat' '-D' 'PREROUTING' '-p' 'tcp' '--dport' '80' ` + mark + ` '-j' 'REDIRECT' '--to-ports' '` + p + `' 2>/dev/null; do n=$((n + 1)); done
+    while [ "$n" -lt 20 ] && "$t" '-t' 'nat' '-D' 'PREROUTING' '-p' 'tcp' '--dport' '80' ` + local + ` ` + mark + ` '-j' 'REDIRECT' '--to-ports' '` + p + `' 2>/dev/null; do n=$((n + 1)); done
     n=0
-    while [ "$n" -lt 20 ] && "$t" '-D' 'INPUT' '-p' 'tcp' '--dport' '` + p + `' ` + mark + ` '-j' 'ACCEPT' 2>/dev/null; do n=$((n + 1)); done
+    while [ "$n" -lt 20 ] && "$t" '-D' 'INPUT' '-p' 'tcp' '--dport' '` + p + `' ` + redirected + ` ` + mark + ` '-j' 'ACCEPT' 2>/dev/null; do n=$((n + 1)); done
 done
 if command -v nft >/dev/null 2>&1; then 'nft' 'delete' 'table' 'inet' '` + acmeSplitTable + `' 2>/dev/null || :; fi
 if command -v firewall-cmd >/dev/null 2>&1; then 'firewall-cmd' '--remove-port=` + p + `/tcp' >/dev/null 2>&1 || :; fi
@@ -224,42 +261,52 @@ for t in iptables ip6tables; do
     command -v "$t" >/dev/null 2>&1 || continue
     c=$("$t" '-t' 'nat' '-S' 'PREROUTING' 2>/dev/null | 'grep' '-c' '` + ACMESplitMark + `') || c=0
     left=$((left + c))
+    c=$("$t" '-S' 'INPUT' 2>/dev/null | 'grep' '-c' '` + ACMESplitMark + `') || c=0
+    left=$((left + c))
 done
 if command -v nft >/dev/null 2>&1 && 'nft' 'list' 'table' 'inet' '` + acmeSplitTable + `' >/dev/null 2>&1; then left=$((left + 1)); fi
 'printf' 'left %s\n' "$left"
 `, nil
 }
 
-// ParsePort80Upstream is the address the split's proxy reaches the
-// program on port 80 at, from ACMEPort80Command's lines: 127.0.0.1 for one
-// on every address or on the loopback, ::1 for one on IPv6's loopback
-// alone, else the first address it listens on; "" for none.
+// ParsePort80Upstream is where the split's proxy reaches the program on
+// port 80, from ACMEPort80Command's lines: "local" (the server's own
+// address) for one on every address, the first address it listens on
+// otherwise, or "none" for one on the loopback alone, which no visitor
+// reached; "" for no program.
 func ParsePort80Upstream(out string) string {
-	var first, v6loop string
+	var first string
+	loop := false
 	for line := range strings.SplitSeq(out, "\n") {
 		f := strings.Fields(line)
 		// ss -H: State Recv-Q Send-Q Local Peer…; netstat: Proto Recv-Q Send-Q Local…
 		if len(f) < 4 {
 			continue
 		}
-		host, port, err := net.SplitHostPort(f[3])
+		addr := f[3]
+		if rest, ok := strings.CutPrefix(addr, ":::"); ok { // netstat's IPv6 wildcard
+			addr = "[::]:" + rest
+		}
+		host, port, err := net.SplitHostPort(addr)
 		if err != nil || port != "80" {
 			continue
 		}
 		host, _, _ = strings.Cut(host, "%")
 		switch host {
-		case "0.0.0.0", "*", "::", "127.0.0.1":
-			return "127.0.0.1"
-		case "::1":
-			v6loop = "::1"
-		default:
-			if ip := net.ParseIP(host); ip != nil && first == "" && !ip.IsLinkLocalUnicast() {
-				first = ip.String()
-			}
+		case "0.0.0.0", "*", "::", "[::]":
+			return "local"
+		}
+		ip := net.ParseIP(strings.Trim(host, "[]"))
+		switch {
+		case ip == nil:
+		case ip.IsLoopback():
+			loop = true
+		case first == "" && !ip.IsLinkLocalUnicast():
+			first = ip.String()
 		}
 	}
-	if v6loop != "" {
-		return v6loop
+	if first == "" && loop {
+		return "none"
 	}
 	return first
 }

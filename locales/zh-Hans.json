@@ -4792,5 +4792,6 @@
   "desktopShellNewTextName": "新建文本文件.txt",
   "desktopShellNewScriptName": "新建脚本.sh",
   "desktopShellRunInTerminal": "在终端中运行",
-  "desktopShellFilesHint": "桌面上的文件和文件夹保存在服务器的 {dir} 目录中。"
+  "desktopShellFilesHint": "桌面上的文件和文件夹保存在服务器的 {dir} 目录中。",
+  "desktopConnDismiss": "关闭提示"
 }

@@ -6199,5 +6199,6 @@
   "desktopShellNewScriptName": "new-script.sh",
   "desktopShellRunInTerminal": "Run in terminal",
   "desktopShellFilesHint": "Files and folders on the desktop are in {dir} on the server.",
-  "@desktopShellFilesHint": {"placeholders": {"dir": {"type": "String"}}}
+  "@desktopShellFilesHint": {"placeholders": {"dir": {"type": "String"}}},
+  "desktopConnDismiss": "Dismiss"
 }

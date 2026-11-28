@@ -48307,3 +48307,13 @@ func DesktopShellFilesHint(dir string) string { return In(i18n.Locale()).Desktop
 func (msgs Messages) DesktopShellFilesHint(dir string) string {
 	return Catalog.Format(msgs.locale, "desktopShellFilesHint", map[string]any{"dir": dir})
 }
+
+// DesktopConnDismiss says "Dismiss"
+// in the language the app shows.
+func DesktopConnDismiss() string { return In(i18n.Locale()).DesktopConnDismiss() }
+
+// DesktopConnDismiss says "Dismiss"
+// in the language of msgs.
+func (msgs Messages) DesktopConnDismiss() string {
+	return Catalog.Format(msgs.locale, "desktopConnDismiss", nil)
+}

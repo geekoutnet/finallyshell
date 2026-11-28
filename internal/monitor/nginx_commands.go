@@ -1,10 +1,12 @@
 package monitor
 
 import (
+	"cmp"
 	"errors"
 	"fmt"
 	"path"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -47,6 +49,17 @@ func ValidSiteFilename(name string) bool {
 
 func ValidNginxPath(file string) bool {
 	return len(file) <= 1024 && nginxPath.MatchString(file) && path.Clean(file) == file && file != "/"
+}
+
+// Editable tells whether file is a configuration file this tree's nginx
+// reads that may be edited: one of the usual Debian and conf.d files, or,
+// for nginx kept elsewhere (the BaoTa panel's /www/server), any file of
+// the dump.
+func (tree NginxTree) Editable(file string) bool {
+	if NginxEditable(file) {
+		return true
+	}
+	return tree.Main != "" && tree.Main != NginxMain && ValidNginxPath(file) && ValidSiteFilename(path.Base(file)) && slices.Contains(tree.Files, file)
 }
 
 func NginxEditable(file string) bool {
@@ -109,6 +122,15 @@ func nginxTest(main string) (string, error) {
 	return SystemCommand("nginx", "-t", "-c", main), nil
 }
 
+// nginxCommand runs nginx with args on the configuration main: given with
+// -c unless it is /etc/nginx/nginx.conf.
+func nginxCommand(main string, args ...string) string {
+	if main != NginxMain {
+		args = append([]string{"-c", main}, args...)
+	}
+	return SystemCommand(append([]string{"nginx"}, args...)...)
+}
+
 func nginxReload(systemd bool) string {
 	if systemd {
 		return SystemCommand("systemctl", "reload", "nginx.service")
@@ -121,6 +143,10 @@ func NginxActionCommand(action string, systemd bool, main string) (string, error
 	if err != nil {
 		return "", err
 	}
+	// A configuration other than /etc/nginx/nginx.conf (nginx built with
+	// another path, as on the BaoTa panel, or a master started with -c)
+	// is reloaded by signalling the master its pid directive names, not
+	// through a unit that may start nginx with another file.
 	switch action {
 	case "test":
 		return test, nil
@@ -128,27 +154,22 @@ func NginxActionCommand(action string, systemd bool, main string) (string, error
 		if main == NginxMain {
 			return "set -e\n" + test + "\n" + nginxReload(systemd), nil
 		}
+		return "set -e\n" + test + "\n" + nginxCommand(main, "-s", "reload"), nil
 	case "restart":
-		if systemd && main == NginxMain {
+		if systemd {
 			return "set -e\n" + test + "\n" + SystemCommand("systemctl", "restart", "nginx.service"), nil
 		}
 	case "start":
 		// Tested first, as a configuration nginx refuses would not start.
-		if main != NginxMain {
-			break
-		}
 		if systemd {
 			return "set -e\n" + test + "\n" + SystemCommand("systemctl", "start", "nginx.service"), nil
 		}
-		return "set -e\n" + test + "\n" + SystemCommand("nginx"), nil
+		return "set -e\n" + test + "\n" + nginxCommand(main), nil
 	case "stop":
-		if main != NginxMain {
-			break
-		}
 		if systemd {
 			return SystemCommand("systemctl", "stop", "nginx.service"), nil
 		}
-		return SystemCommand("nginx", "-s", "quit"), nil
+		return nginxCommand(main, "-s", "quit"), nil
 	}
 	return "", errNginxInput
 }
@@ -185,11 +206,11 @@ func (tree NginxTree) guardSnapshot() string {
 	if tree.digest == "" {
 		return "exit '1'\n"
 	}
-	return "snapshot=$('nginx' '-T' | 'sha256sum')\n[ \"${snapshot%% *}\" = " + privilegeQuote(tree.digest) + " ] || { 'echo' 'Nginx configuration changed; refresh first' >&2; exit 1; }\n"
+	return "snapshot=$(" + nginxCommand(cmp.Or(tree.Main, NginxMain), "-T") + " | 'sha256sum')\n[ \"${snapshot%% *}\" = " + privilegeQuote(tree.digest) + " ] || { 'echo' 'Nginx configuration changed; refresh first' >&2; exit 1; }\n"
 }
 
-func NginxReadCommand(file string) (string, error) {
-	if !NginxEditable(file) {
+func NginxReadCommand(file string, tree NginxTree) (string, error) {
+	if !tree.Editable(file) {
 		return "", errNginxInput
 	}
 	return "set -eu\n" + nginxLF + nginxGuard + SystemCommand("guard_public_config", file) + "\n" + SystemCommand("head", "-c", strconv.Itoa(SystemEditLimit+1), file), nil
@@ -202,14 +223,14 @@ type NginxChange struct {
 
 func NewNginxChange(file, original, text string, now time.Time, tree NginxTree) (NginxChange, error) {
 	backup := file + ".bak-" + now.Format("20060102150405")
-	if !NginxEditable(file) || !tree.AllowsBackup(backup) || !NginxConfigSafe(original) || !NginxConfigSafe(text) {
+	if !tree.Editable(file) || !tree.AllowsBackup(backup) || !NginxConfigSafe(original) || !NginxConfigSafe(text) {
 		return NginxChange{}, errNginxInput
 	}
 	return NginxChange{file, backup, systemDigest(text), systemDigest(original)}, nil
 }
 
-func (change NginxChange) valid() bool {
-	return NginxEditable(change.File) && len(change.Digest) == 64 && strings.Trim(change.Digest, "0123456789abcdef") == "" &&
+func (change NginxChange) valid(tree NginxTree) bool {
+	return tree.Editable(change.File) && len(change.Digest) == 64 && strings.Trim(change.Digest, "0123456789abcdef") == "" &&
 		strings.HasPrefix(change.Backup, change.File+".bak-") && len(change.Backup) == len(change.File)+19 && nginxBackupSuffix.MatchString(change.Backup)
 }
 
@@ -234,7 +255,7 @@ const nginxReplaceCommit = `
 `
 
 func (change NginxChange) SaveCommand(original string, tree NginxTree) (string, error) {
-	if !change.valid() || !NginxConfigSafe(original) || systemDigest(original) != change.original || !tree.AllowsBackup(change.Backup) {
+	if !change.valid(tree) || !NginxConfigSafe(original) || systemDigest(original) != change.original || !tree.AllowsBackup(change.Backup) {
 		return "", errNginxInput
 	}
 	return "set -eu\n" + tree.guardSnapshot() + nginxGuard + "file=" + privilegeQuote(change.File) + "\nbackup=" + privilegeQuote(change.Backup) + "\nexpected=" + privilegeQuote(systemDigest(original)) + "\n" + nginxReplace + `
@@ -245,7 +266,7 @@ incoming=$('sha256sum' <"$tmp")
 
 func (change NginxChange) RestoreCommand(tree NginxTree, now time.Time) (string, error) {
 	backup := change.RestoreBackup(now)
-	if !change.valid() || !tree.AllowsBackup(backup) {
+	if !change.valid(tree) || !tree.AllowsBackup(backup) {
 		return "", errNginxInput
 	}
 	return "set -eu\n" + nginxGuard + "file=" + privilegeQuote(change.File) + "\nbackup=" + privilegeQuote(backup) + "\nexpected=" + privilegeQuote(change.Digest) + "\n" + nginxReplace +

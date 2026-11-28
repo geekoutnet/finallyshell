@@ -233,6 +233,14 @@ func (a *App) dockerContainerMenu(c *ui.Context, m *ui.Menu, s *Session, ct *mon
 			}
 		}
 	}).Disabled(len(ports) == 0)
+	internal := dockerInternalURLs(ct)
+	m.Submenu(locales.DockerOpenInternal(), func(sub *ui.Menu) {
+		for _, address := range internal {
+			if sub.Item(address).Chosen() {
+				a.desktopOpen(s, appBrowser, desktopBrowserVisit{url: address})
+			}
+		}
+	}).Disabled(len(internal) == 0 || !ct.Running)
 	m.Separator()
 	for _, action := range []dockerAction{dockerRename, dockerPolicy, dockerRecreate, dockerRemove, dockerForceRemove} {
 		a.dockerActionItem(m, target, action)
@@ -304,6 +312,59 @@ func dockerPortURLs(host, resolved string, ports []monitor.PortBinding) []string
 		address := (&url.URL{Scheme: "http", Host: net.JoinHostPort(host, strconv.Itoa(port.HostPort))}).String()
 		if !slices.Contains(urls, address) {
 			urls = append(urls, address)
+		}
+	}
+	return urls
+}
+
+// dockerInternalURLs are the addresses of ct's TCP ports as seen from the
+// server, for the desktop browser whose connections leave from there:
+// each published port on the server, then each port of the container at
+// its address on each of its networks.
+func dockerInternalURLs(ct *monitor.Container) []string {
+	var urls []string
+	add := func(host string, port int) {
+		if port < 1 || port > 65535 {
+			return
+		}
+		address := (&url.URL{Scheme: "http", Host: net.JoinHostPort(host, strconv.Itoa(port)), Path: "/"}).String()
+		if !slices.Contains(urls, address) {
+			urls = append(urls, address)
+		}
+	}
+	var ports []int
+	for _, port := range ct.Ports {
+		if port.Proto != "tcp" {
+			continue
+		}
+		ports = append(ports, port.Port)
+		if port.HostPort > 0 {
+			host := "127.0.0.1"
+			if ip := net.ParseIP(port.HostIP); ip != nil && !ip.IsUnspecified() {
+				host = ip.String()
+			}
+			add(host, port.HostPort)
+		}
+	}
+	for _, exposed := range ct.Exposed {
+		number, proto, _ := strings.Cut(exposed, "/")
+		if port, err := strconv.Atoi(number); err == nil && (proto == "" || proto == "tcp") {
+			ports = append(ports, port)
+		}
+	}
+	slices.Sort(ports)
+	ports = slices.Compact(ports)
+	if ct.NetworkMode == "host" {
+		for _, port := range ports {
+			add("127.0.0.1", port)
+		}
+		return urls
+	}
+	for _, network := range ct.Networks {
+		if ip := net.ParseIP(network.IP); ip != nil {
+			for _, port := range ports {
+				add(ip.String(), port)
+			}
 		}
 	}
 	return urls

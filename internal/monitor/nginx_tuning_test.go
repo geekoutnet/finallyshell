@@ -119,7 +119,25 @@ func TestNginxStartStop(t *testing.T) {
 			t.Errorf("%s (systemd %v) = %q, %v", tc.action, tc.systemd, got, err)
 		}
 	}
-	if _, err := NginxActionCommand("start", true, "/opt/nginx/nginx.conf"); err == nil {
-		t.Error("started an nginx with another main file")
+	// nginx kept elsewhere (the BaoTa panel) is tested and signalled with
+	// its own file, not through a unit that may read another.
+	for _, tc := range []struct {
+		action  string
+		systemd bool
+		want    string
+	}{
+		{"test", true, "'nginx' '-t' '-c' '/www/server/nginx/conf/nginx.conf'"},
+		{"reload", true, "set -e\n'nginx' '-t' '-c' '/www/server/nginx/conf/nginx.conf'\n'nginx' '-c' '/www/server/nginx/conf/nginx.conf' '-s' 'reload'"},
+		{"start", false, "set -e\n'nginx' '-t' '-c' '/www/server/nginx/conf/nginx.conf'\n'nginx' '-c' '/www/server/nginx/conf/nginx.conf'"},
+		{"stop", false, "'nginx' '-c' '/www/server/nginx/conf/nginx.conf' '-s' 'quit'"},
+		{"restart", true, "set -e\n'nginx' '-t' '-c' '/www/server/nginx/conf/nginx.conf'\n'systemctl' 'restart' 'nginx.service'"},
+	} {
+		got, err := NginxActionCommand(tc.action, tc.systemd, "/www/server/nginx/conf/nginx.conf")
+		if err != nil || got != tc.want {
+			t.Errorf("%s (systemd %v) = %q, %v", tc.action, tc.systemd, got, err)
+		}
+	}
+	if _, err := NginxActionCommand("restart", false, "/www/server/nginx/conf/nginx.conf"); err == nil {
+		t.Error("restarted without systemd")
 	}
 }

@@ -13,6 +13,7 @@ import (
 	"slices"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"finallyshell/internal/config"
@@ -28,11 +29,15 @@ type desktopBrowserState struct {
 	choice                                   desktopBrowserChoice
 	url, exitIP                              string
 	discovering, starting, checking, opening bool
-	issue                                    func() string
-	stop                                     context.CancelFunc
-	run                                      *desktopBrowserRun
-	launch                                   desktopBrowserLauncher
-	openTab                                  func(context.Context, *desktopBrowserRun, string) error
+	// visit opens url once the browsers are found: a site or container
+	// asked to be opened (desktopBrowserVisit) while they were looked for.
+	visit   bool
+	hosts   *desktopBrowserHosts
+	issue   func() string
+	stop    context.CancelFunc
+	run     *desktopBrowserRun
+	launch  desktopBrowserLauncher
+	openTab func(context.Context, *desktopBrowserRun, string) error
 }
 
 type desktopBrowserProcess interface {
@@ -43,11 +48,58 @@ type desktopBrowserProcess interface {
 
 type desktopBrowserLauncher func(*desktopBrowserRun, string) (desktopBrowserProcess, error)
 
+// desktopBrowserVisit, given to the browser window as it opens, opens url
+// at once; host, when not "", is reached at addr on the server whatever
+// DNS says, so that a site nginx serves opens by its own name.
+type desktopBrowserVisit struct{ url, host, addr string }
+
+// desktopBrowserHosts are the names the browser's proxy connects to at
+// another address, as a hosts file on the server would. The proxy reads
+// them on its own goroutines.
+type desktopBrowserHosts struct {
+	mu    sync.Mutex
+	names map[string]string
+}
+
+func (hosts *desktopBrowserHosts) set(host, addr string) {
+	hosts.mu.Lock()
+	defer hosts.mu.Unlock()
+	if hosts.names == nil {
+		hosts.names = map[string]string{}
+	}
+	hosts.names[strings.ToLower(host)] = addr
+}
+
+func (hosts *desktopBrowserHosts) resolve(host string) (string, bool) {
+	if hosts == nil {
+		return "", false
+	}
+	hosts.mu.Lock()
+	defer hosts.mu.Unlock()
+	addr, ok := hosts.names[strings.ToLower(host)]
+	return addr, ok
+}
+
+// list is "host → addr" for each name, sorted.
+func (hosts *desktopBrowserHosts) list() []string {
+	if hosts == nil {
+		return nil
+	}
+	hosts.mu.Lock()
+	defer hosts.mu.Unlock()
+	var lines []string
+	for host, addr := range hosts.names {
+		lines = append(lines, host+" → "+addr)
+	}
+	slices.Sort(lines)
+	return lines
+}
+
 func (a *App) desktopBrowserOpened(w *desktopWindow, arg any) {
 	a.desktopToolsNoteOpened(w)
 	state, exists := w.state.(*desktopBrowserState)
 	if !exists {
-		state = &desktopBrowserState{discovering: true}
+		state = &desktopBrowserState{discovering: true, hosts: &desktopBrowserHosts{}}
 		w.state = state
 		go func() {
 			choices := desktopFindBrowsers(runtime.GOOS, os.Getenv, desktopBrowserRegistry, exec.LookPath, desktopBrowserExecutable)
@@ -59,11 +111,29 @@ func (a *App) desktopBrowserOpened(w *desktopWindow, arg any) {
 				if len(choices) != 0 && state.choice.path == "" {
 					state.choice = choices[0]
 				}
+				if state.visit {
+					state.visit = false
+					a.desktopBrowserOpenURL(w, state, state.url)
+				}
 			})
 		}()
 	}
-	if target, ok := arg.(string); ok {
+	switch target := arg.(type) {
+	case string:
 		state.url = target
+	case desktopBrowserVisit:
+		state.url = target.url
+		if target.host != "" {
+			if state.hosts == nil {
+				state.hosts = &desktopBrowserHosts{}
+			}
+			state.hosts.set(target.host, target.addr)
+		}
+		if state.discovering {
+			state.visit = true
+		} else {
+			a.desktopBrowserOpenURL(w, state, target.url)
+		}
 	}
 }
 
@@ -125,7 +195,7 @@ func desktopBrowserCanOpen(w *desktopWindow, state *desktopBrowserState) bool {
 func (a *App) desktopBrowserStart(w *desktopWindow, state *desktopBrowserState, target string) {
 	ctx, stop := a.desktopToolsContext(w)
 	state.stop, state.starting, state.exitIP = stop, true, ""
-	client, choice, hostID := w.session.client, state.choice, w.session.Host.ID
+	client, choice, hostID, hosts := w.session.client, state.choice, w.session.Host.ID, state.hosts
 	root := filepath.Join(config.Dir(), "browser-profiles")
 	launch := state.launch
 	if launch == nil {
@@ -143,7 +213,7 @@ func (a *App) desktopBrowserStart(w *desktopWindow, state *desktopBrowserState, 
 			finish(nil)
 			return
 		}
-		tunnel, err := desktopBrowserProxy(client)
+		tunnel, err := desktopBrowserProxy(client, hosts.resolve)
 		if err != nil {
 			finish(locales.DesktopBrowserProxyFailed)
 			return
@@ -430,6 +500,10 @@ func (a *App) desktopBrowserLinks(c *ui.Context, w *desktopWindow, state *deskto
 			}
 		})
 		ui.Text(c, locales.DesktopBrowserLocalNote()).TextColor(theme.TextMuted).FontSize(12)
+		if mapped := state.hosts.list(); len(mapped) != 0 {
+			ui.Text(c, locales.DesktopBrowserHostsNote()).TextColor(theme.TextMuted).FontSize(12)
+			ui.Text(c, strings.Join(mapped, "\n")).Font("monospace").FontSize(12).Selectable()
+		}
 		ui.Row(c).Gap(6).Wrap().Children(func() {
 			ports := desktopBrowserPorts(w.session.net.snap)
 			if !slices.Contains(ports, 80) {

@@ -11,6 +11,9 @@ import (
 type NginxListen struct {
 	Port                int
 	TLS, HTTP2, Default bool
+	// Addr is the address listened on: "" for every one (and for a UNIX
+	// socket), "*", an IP address without brackets, or a host name.
+	Addr string
 }
 
 type NginxSite struct {
@@ -21,10 +24,14 @@ type NginxSite struct {
 }
 
 type NginxTree struct {
-	Main           string
-	Files          []string
-	Sites          []NginxSite
-	Debian, ConfD  bool
+	Main          string
+	Files         []string
+	Sites         []NginxSite
+	Debian, ConfD bool
+	// Unparsed are the files of the dump this parser could not read.
+	Unparsed []string
+	// Upstreams are the servers of each upstream block, by name.
+	Upstreams      map[string][]string
 	includes       []string
 	digest         string
 	httpIncludes   []string
@@ -46,95 +53,199 @@ type nginxToken struct {
 
 var errNginxDump = errors.New("incomplete or unsupported nginx configuration dump")
 
+// nginxTokens splits a configuration file the way nginx's own
+// ngx_conf_read_token does: a word ends at whitespace, ';' or '{' ('}',
+// '#' and quotes inside a word are ordinary characters, and so is '{'
+// right after '$'), a quote opens only at the start of a word and must be
+// followed by whitespace, ';', '{' or ')', and a backslash keeps the next
+// character in the word. The block of a directive whose name ends in
+// _by_lua_block holds Lua, not directives: it is skipped the way
+// lua-nginx-module reads it (OpenResty, and nginx built with that module,
+// as the BaoTa panel does) and stands as an empty block.
 func nginxTokens(text string) ([]nginxToken, error) {
+	const breaks = " \t\r\n;{"
 	var tokens []nginxToken
 	var word strings.Builder
 	line, start := 1, 0
 	var quote byte
-	flush := func() {
-		if start != 0 {
-			tokens = append(tokens, nginxToken{word: word.String(), line: start})
-			word.Reset()
-			start = 0
-		}
-	}
+	inWord, variable, needSpace := false, false, false
+	words, directive := 0, ""
 	for index := 0; index < len(text); index++ {
 		char := text[index]
-		if char == '\\' {
-			if start == 0 {
-				start = line
-			}
-			index++
-			if index == len(text) {
-				return nil, errNginxDump
-			}
-			next := text[index]
-			if next == '\n' {
-				line++
-			}
-			if !strings.ContainsRune("\\\"' \t;{}#", rune(next)) {
-				word.WriteByte(char)
-			}
-			word.WriteByte(next)
-			continue
-		}
-		if quote != 0 {
-			if char == quote {
-				quote = 0
-			} else {
-				word.WriteByte(char)
-			}
-		} else {
-			switch char {
-			case '\'', '"':
-				if start == 0 {
-					start = line
-				}
-				quote = char
-			case '$':
-				if start == 0 {
-					start = line
-				}
-				if index+1 < len(text) && text[index+1] == '{' {
-					end := strings.IndexByte(text[index+2:], '}')
-					if end < 0 {
-						return nil, errNginxDump
-					}
-					end += index + 2
-					word.WriteString(text[index : end+1])
-					index = end
-				} else {
-					word.WriteByte(char)
-				}
-			case '#':
-				if start != 0 {
-					word.WriteByte(char)
-					break
-				}
-				for index+1 < len(text) && text[index+1] != '\n' {
-					index++
-				}
-			case ' ', '\r', '\t', '\n':
-				flush()
-			case '{', '}', ';':
-				flush()
-				tokens = append(tokens, nginxToken{line: line, mark: char})
-			default:
-				if start == 0 {
-					start = line
-				}
-				word.WriteByte(char)
-			}
-		}
 		if char == '\n' {
 			line++
 		}
+		if needSpace {
+			// nginx lets ')' follow a quote, as in if ($uri ~ "^/a").
+			if !strings.ContainsRune(breaks+")", rune(char)) {
+				return nil, errNginxDump
+			}
+			needSpace = false
+		}
+		if inWord {
+			if char == '{' && variable {
+				word.WriteByte(char)
+				continue
+			}
+			variable = false
+			if char == '\\' {
+				index++
+				if index == len(text) {
+					return nil, errNginxDump
+				}
+				if text[index] == '\n' {
+					line++
+				}
+				nginxEscape(&word, text[index])
+				continue
+			}
+			if char == '$' {
+				variable = true
+			}
+			if quote != 0 {
+				if char != quote {
+					word.WriteByte(char)
+					continue
+				}
+				needSpace = true
+			} else if !strings.ContainsRune(breaks, rune(char)) {
+				word.WriteByte(char)
+				continue
+			}
+			if words == 0 {
+				directive = word.String()
+			}
+			tokens = append(tokens, nginxToken{word: word.String(), line: start})
+			word.Reset()
+			inWord, quote, words = false, 0, words+1
+			if needSpace {
+				continue
+			}
+		}
+		switch char {
+		case ' ', '\t', '\r', '\n':
+		case ';', '{':
+			if words == 0 {
+				return nil, errNginxDump
+			}
+			tokens = append(tokens, nginxToken{line: line, mark: char})
+			words = 0
+			if char == '{' && strings.HasSuffix(directive, "_by_lua_block") {
+				end, ok := nginxLuaBlock(text, index)
+				if !ok {
+					return nil, errNginxDump
+				}
+				line += strings.Count(text[index:end], "\n")
+				index = end
+				tokens = append(tokens, nginxToken{line: line, mark: '}'})
+			}
+		case '}':
+			if words != 0 {
+				return nil, errNginxDump
+			}
+			tokens = append(tokens, nginxToken{line: line, mark: char})
+		case '#':
+			for index+1 < len(text) && text[index+1] != '\n' {
+				index++
+			}
+		case '"', '\'':
+			inWord, start, quote = true, line, char
+		default:
+			// The word starts here: the character is read again as part
+			// of it, so that '\\' and '$' are handled in one place.
+			inWord, start = true, line
+			index--
+		}
 	}
-	if quote != 0 {
+	if inWord {
 		return nil, errNginxDump
 	}
-	flush()
 	return tokens, nil
+}
+
+// nginxEscape adds the character after a backslash to word as nginx
+// does: \" \' \\ \t \r \n stand for the character, any other pair stays.
+func nginxEscape(word *strings.Builder, char byte) {
+	switch char {
+	case '"', '\'', '\\':
+		word.WriteByte(char)
+	case 't':
+		word.WriteByte('\t')
+	case 'r':
+		word.WriteByte('\r')
+	case 'n':
+		word.WriteByte('\n')
+	default:
+		word.WriteByte('\\')
+		word.WriteByte(char)
+	}
+}
+
+// nginxLuaBlock returns the index of the '}' closing the Lua block whose
+// '{' is text[open], skipping braces in Lua strings and comments; false
+// when the block does not end.
+func nginxLuaBlock(text string, open int) (int, bool) {
+	depth := 1
+	for index := open + 1; index < len(text); index++ {
+		switch char := text[index]; char {
+		case '{':
+			depth++
+		case '}':
+			if depth--; depth == 0 {
+				return index, true
+			}
+		case '"', '\'':
+			for index++; index < len(text) && text[index] != char; index++ {
+				if text[index] == '\\' {
+					index++
+				}
+			}
+			if index >= len(text) {
+				return 0, false
+			}
+		case '[', '-':
+			comment := char == '-'
+			if comment {
+				if index+1 >= len(text) || text[index+1] != '-' {
+					continue
+				}
+				index += 2
+			}
+			if end, long := luaLongBracket(text, index); long {
+				if end < 0 {
+					return 0, false
+				}
+				index = end
+			} else if comment {
+				for index < len(text) && text[index] != '\n' {
+					index++
+				}
+			}
+		}
+	}
+	return 0, false
+}
+
+// luaLongBracket returns, when text[index:] opens a Lua long bracket
+// ([[, [==[ …), the index of the last character of its closing bracket,
+// or -1 when it does not close.
+func luaLongBracket(text string, index int) (int, bool) {
+	if index >= len(text) || text[index] != '[' {
+		return 0, false
+	}
+	level := index + 1
+	for level < len(text) && text[level] == '=' {
+		level++
+	}
+	if level >= len(text) || text[level] != '[' {
+		return 0, false
+	}
+	closing := "]" + strings.Repeat("=", level-index-1) + "]"
+	end := strings.Index(text[level+1:], closing)
+	if end < 0 {
+		return -1, true
+	}
+	return level + end + len(closing), true
 }
 
 func nginxNodes(tokens *[]nginxToken, depth int) ([]nginxNode, error) {
@@ -198,25 +309,28 @@ func ParseNginx(dump string) (NginxTree, error) {
 	config := nginxConfig{files: map[string][]nginxNode{}}
 	var file string
 	var text strings.Builder
-	finish := func() error {
+	// A file nginx reads but this parser does not is left out, and named
+	// in Unparsed, rather than failing the whole tree: its sites are not
+	// listed and nothing is changed while it is there (AllowsBackup).
+	finish := func() {
 		if file == "" {
-			return nil
+			return
 		}
 		tokens, err := nginxTokens(text.String())
-		if err != nil {
-			return err
+		if err == nil {
+			config.files[file], err = nginxNodes(&tokens, 0)
 		}
-		config.files[file], err = nginxNodes(&tokens, 0)
+		if err != nil {
+			config.files[file] = nil
+			config.tree.Unparsed = append(config.tree.Unparsed, file)
+		}
 		text.Reset()
-		return err
 	}
 	for line := range strings.SplitSeq(dump, "\n") {
 		if name, ok := strings.CutPrefix(strings.TrimSuffix(line, "\r"), "# configuration file "); ok && strings.HasSuffix(name, ":") {
-			if err := finish(); err != nil {
-				return NginxTree{}, err
-			}
-			file = strings.TrimSuffix(name, ":")
-			if !path.IsAbs(file) || path.Clean(file) != file || slices.Contains(config.tree.Files, file) || len(config.tree.Files) == 4096 {
+			finish()
+			file = path.Clean(strings.TrimSuffix(name, ":"))
+			if !path.IsAbs(file) || slices.Contains(config.tree.Files, file) || len(config.tree.Files) == 4096 {
 				return NginxTree{}, errNginxDump
 			}
 			config.tree.Files = append(config.tree.Files, file)
@@ -225,7 +339,8 @@ func ParseNginx(dump string) (NginxTree, error) {
 			text.WriteByte('\n')
 		}
 	}
-	if err := finish(); err != nil || len(config.tree.Files) == 0 {
+	finish()
+	if len(config.tree.Files) == 0 || slices.Contains(config.tree.Unparsed, config.tree.Files[0]) {
 		return NginxTree{}, errNginxDump
 	}
 	config.tree.Main = config.tree.Files[0]
@@ -303,6 +418,9 @@ func (config *nginxConfig) collectIncludes() {
 func (config *nginxConfig) http(base NginxSite, nodes []nginxSource) {
 	base, inheritedHTTP2 := config.settings(base, nodes)
 	for _, node := range nodes {
+		if node.words[0] == "upstream" && node.block && len(node.words) == 2 {
+			config.upstream(node.words[1], config.expand(node.child, node.file, 0))
+		}
 		if node.words[0] != "server" || !node.block {
 			continue
 		}
@@ -322,6 +440,17 @@ func (config *nginxConfig) http(base NginxSite, nodes []nginxSource) {
 		}
 		config.locations(&site, children)
 		config.tree.Sites = append(config.tree.Sites, site)
+	}
+}
+
+func (config *nginxConfig) upstream(name string, nodes []nginxSource) {
+	if config.tree.Upstreams == nil {
+		config.tree.Upstreams = map[string][]string{}
+	}
+	for _, node := range nodes {
+		if node.words[0] == "server" && !node.block && len(node.words) >= 2 {
+			config.tree.Upstreams[name] = append(config.tree.Upstreams[name], node.words[1])
+		}
 	}
 }
 
@@ -374,22 +503,31 @@ func (config *nginxConfig) locations(site *NginxSite, nodes []nginxSource) {
 
 func nginxListen(words []string) NginxListen {
 	address := words[0]
-	port := 80
+	port, addr := 80, ""
 	switch {
 	case strings.HasPrefix(address, "unix:"):
 		port = 0
 	case strings.HasSuffix(address, "]"):
+		addr = address
 	case strings.Contains(address, ":"):
-		port, _ = strconv.Atoi(address[strings.LastIndexByte(address, ':')+1:])
+		colon := strings.LastIndexByte(address, ':')
+		port, _ = strconv.Atoi(address[colon+1:])
+		addr = address[:colon]
 	default:
 		if value, err := strconv.Atoi(address); err == nil {
 			port = value
+		} else {
+			addr = address
 		}
 	}
-	return NginxListen{port, slices.Contains(words[1:], "ssl") || slices.Contains(words[1:], "quic"), slices.Contains(words[1:], "http2"), slices.Contains(words[1:], "default_server") || slices.Contains(words[1:], "default")}
+	addr = strings.TrimSuffix(strings.TrimPrefix(addr, "["), "]")
+	return NginxListen{port, slices.Contains(words[1:], "ssl") || slices.Contains(words[1:], "quic"), slices.Contains(words[1:], "http2"), slices.Contains(words[1:], "default_server") || slices.Contains(words[1:], "default"), addr}
 }
 
 func (tree NginxTree) AllowsBackup(backup string) bool {
+	if len(tree.Unparsed) != 0 {
+		return false
+	}
 	for _, pattern := range tree.includes {
 		matched, err := path.Match(pattern, backup)
 		if matched || err != nil {

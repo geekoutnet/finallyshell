@@ -100,15 +100,19 @@ func TestNginxParseTree(t *testing.T) {
 	}
 	front := tree.Sites[0]
 	if front.File != "/etc/nginx/sites-enabled/front" || front.Line != 2 || !reflect.DeepEqual(front.Names, []string{"front.example.org", "www.example.org", "extra.example.org"}) ||
-		!reflect.DeepEqual(front.Listen, []NginxListen{{80, false, false, true}, {443, true, true, false}}) ||
+		!reflect.DeepEqual(front.Listen, []NginxListen{{80, false, false, true, "127.0.0.1"}, {443, true, true, false, "::"}}) ||
 		front.Root != "/srv/with # and ;" || front.Proxy[0] != "http://backend" || front.Certificates[0] != "/etc/letsencrypt/live/front/fullchain.pem" || front.AccessLog != "/var/log/nginx/custom.log" {
 		t.Fatalf("%+v", front)
 	}
-	if tree.Sites[1].Listen[0] != (NginxListen{8080, false, true, false}) || tree.Sites[1].AccessLog != "off" || strings.Contains(strings.Join(tree.Sites[0].Certificates, " "), "privkey") {
+	if tree.Sites[1].Listen[0] != (NginxListen{8080, false, true, false, ""}) || tree.Sites[1].AccessLog != "off" || strings.Contains(strings.Join(tree.Sites[0].Certificates, " "), "privkey") {
 		t.Fatalf("%+v", tree.Sites)
 	}
-	if _, err := ParseNginx(nginxSample + "server {"); err == nil {
-		t.Fatal("accepted a truncated dump")
+	if truncated, err := ParseNginx(nginxSample + "server {"); err != nil || !slices.Equal(truncated.Unparsed, []string{"/etc/nginx/conf.d/default.conf"}) ||
+		len(truncated.Sites) != 1 || truncated.AllowsBackup("/etc/nginx/sites-available/front.bak-20261125120000") {
+		t.Fatalf("truncated file not set apart: %+v: %v", truncated.Unparsed, err)
+	}
+	if _, err := ParseNginx("# configuration file /etc/nginx/nginx.conf:\nhttp {\n"); err == nil {
+		t.Fatal("accepted an unreadable main file")
 	}
 }
 
@@ -140,7 +144,7 @@ func TestNginxCommandsAndTemplate(t *testing.T) {
 		t.Fatal("accepted injected directive")
 	}
 	for _, file := range []string{"/etc/nginx/../shadow", "/etc/nginx/sites-enabled/foo", "/etc/nginx/conf.d/foo.conf\nbar", "/etc/ssl/private/foo.key"} {
-		if _, err := NginxReadCommand(file); err == nil {
+		if _, err := NginxReadCommand(file, NginxTree{}); err == nil {
 			t.Errorf("allowed editing %q", file)
 		}
 	}

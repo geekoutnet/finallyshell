@@ -12,6 +12,7 @@ require (
 	github.com/pkg/sftp v1.13.12
 	github.com/redis/go-redis/v9 v9.24.0
 	github.com/tdewolff/font v0.0.0-20261010204837-88a7f6b56918
+	github.com/ulikunitz/xz v0.5.17
 	golang.org/x/crypto v0.58.0
 	golang.org/x/image v0.46.0
 	golang.org/x/net v0.60.0

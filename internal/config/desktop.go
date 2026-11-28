@@ -81,6 +81,12 @@ type DesktopHost struct {
 	Recent []string `json:"recent,omitempty"`
 	// Notes are the notes the user wrote on files, by absolute path.
 	Notes map[string]string `json:"notes,omitempty"`
+	// Browser is the server browser this host uses: "kernel:<kind>" for a
+	// downloaded browser kernel (chrome, firefox or camoufox), the
+	// absolute path of a browser installed on this computer, or "" for
+	// the first one found. It stays on this device: sync leaves it out
+	// (deviceDesktop) and keeps it (WithSyncedSettings).
+	Browser string `json:"browser,omitempty"`
 }
 
 // DesktopIcon is an icon on the desktop: an app, a folder of icons, or a

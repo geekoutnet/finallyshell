@@ -41,6 +41,7 @@ instead.
 | `chats.json` | Local AI conversations by host ID, with the commands the assistant ran and their exit codes; no command output, context attachments, replies based on attachments, or API keys. Does not sync. |
 | `sysproxy-backup.json` | Local recovery snapshot of this computer’s system proxy before a tunnel replaces it. |
 | `db.json` | Local database connection profiles by SSH host ID; no credentials or query history. |
+| `browser-kernels/` | Browsers the Server Browser downloaded: `chrome/`, `firefox/` and `camoufox/`, each with `kernel.json` (version, executable, size) and the unpacked browser in `app/`. Installing unpacks into a `.tmp-*` folder and swaps it in whole; deleting moves the folder to `.trash-*` first. Leftovers of an interrupted run are removed when the window first opens after the app starts (`.tmp-*` once a day old). Not synced. |
 | `browser-profiles/` | Local Server Browser profiles, isolated by SSH host ID. Chromium-family browsers retain their ordinary browser data in that profile; Firefox uses a temporary profile removed after it stops. Profiles are not synced. |
 | `log-paths/<host-hash>.json` | Up to 12 recently entered remote log paths per connection; local only. No log contents are stored here. Previous versions use the `.bak-YYYYMMDDHHMMSS` suffix. |
 | `known_hosts` | Host keys you have trusted. |
@@ -352,6 +353,10 @@ whether its icon list is customized, including an intentionally empty
 list. `icons` stores app, folder, and path shortcuts with their grid cells;
 `folders` stores the names of icon folders. `autoArrange` packs icons into
 the grid instead of using saved cells. No window placement is written.
+`browser` is the host's Server Browser: `kernel:chrome`, `kernel:firefox` or
+`kernel:camoufox` for a downloaded kernel, the absolute path of a browser on
+this computer, or omitted for the first one found. It stays on this device:
+sync neither sends nor replaces it.
 
 Desktop key bindings in `shortcuts`: `openDesktop`, `desktopClose`,
 `desktopMinimize`, `desktopMaximize`, `desktopSnapLeft`, `desktopSnapRight`,

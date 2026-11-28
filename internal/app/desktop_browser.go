@@ -16,6 +16,7 @@ import (
 	"sync"
 	"time"
 
+	"finallyshell/internal/browserkernel"
 	"finallyshell/internal/config"
 	"finallyshell/internal/monitor"
 	"finallyshell/internal/widgets"
@@ -38,6 +39,10 @@ type desktopBrowserState struct {
 	run     *desktopBrowserRun
 	launch  desktopBrowserLauncher
 	openTab func(context.Context, *desktopBrowserRun, string) error
+	// confirmRemove is the kernel whose deletion waits for a yes.
+	confirmRemove browserkernel.Kind
+	confirmReset  bool
+	notice        func() string
 }
 
 type desktopBrowserProcess interface {
@@ -98,11 +103,16 @@ func (hosts *desktopBrowserHosts) list() []string {
 func (a *App) desktopBrowserOpened(w *desktopWindow, arg any) {
 	a.desktopToolsNoteOpened(w)
 	state, exists := w.state.(*desktopBrowserState)
+	a.desktopKernelsLoad()
 	if !exists {
 		state = &desktopBrowserState{discovering: true, hosts: &desktopBrowserHosts{}}
 		w.state = state
+		saved := a.desktopHost(w.session).Browser
 		go func() {
 			choices := desktopFindBrowsers(runtime.GOOS, os.Getenv, desktopBrowserRegistry, exec.LookPath, desktopBrowserExecutable)
+			if choice, ok := desktopBrowserSavedChoice(saved, choices); ok {
+				choices = append(choices, choice)
+			}
 			a.post(func() {
 				if !a.desktopToolsLive(w) || !state.discovering {
 					return
@@ -111,10 +121,7 @@ func (a *App) desktopBrowserOpened(w *desktopWindow, arg any) {
 				if len(choices) != 0 && state.choice.path == "" {
 					state.choice = choices[0]
 				}
-				if state.visit {
-					state.visit = false
-					a.desktopBrowserOpenURL(w, state, state.url)
-				}
+				a.desktopBrowserVisitPending(w, state)
 			})
 		}()
 	}
@@ -129,12 +136,21 @@ func (a *App) desktopBrowserOpened(w *desktopWindow, arg any) {
 			}
 			state.hosts.set(target.host, target.addr)
 		}
-		if state.discovering {
-			state.visit = true
-		} else {
-			a.desktopBrowserOpenURL(w, state, target.url)
-		}
+		state.visit = true
+		a.desktopBrowserVisitPending(w, state)
 	}
+}
+
+// desktopBrowserVisitPending opens the site or container asked for once
+// the browsers on this computer and the downloaded kernels are known, in
+// the browser this host uses.
+func (a *App) desktopBrowserVisitPending(w *desktopWindow, state *desktopBrowserState) {
+	if !state.visit || state.discovering || !a.browserKernels.loaded {
+		return
+	}
+	state.visit = false
+	a.desktopBrowserSync(w, state)
+	a.desktopBrowserOpenURL(w, state, state.url)
 }
 
 func (a *App) desktopBrowserClosing(w *desktopWindow) bool {
@@ -189,10 +205,20 @@ func desktopBrowserCanOpen(w *desktopWindow, state *desktopBrowserState) bool {
 	if state.run != nil {
 		return state.run.ctx.Err() == nil
 	}
-	return state.choice.path != "" && w.session.client != nil
+	return state.choice.path != "" && w.session.client != nil && !state.discovering
 }
 
 func (a *App) desktopBrowserStart(w *desktopWindow, state *desktopBrowserState, target string) {
+	release := func() {}
+	if kind := state.choice.kernel; kind != "" {
+		var err error
+		if release, err = a.kernelManager().Acquire(kind); err != nil {
+			// Being downloaded or deleted, in this window or another.
+			state.issue = locales.DesktopBrowserLaunchFailed
+			return
+		}
+	}
+	state.confirmReset, state.notice = false, nil
 	ctx, stop := a.desktopToolsContext(w)
 	state.stop, state.starting, state.exitIP = stop, true, ""
 	client, choice, hostID, hosts := w.session.client, state.choice, w.session.Host.ID, state.hosts
@@ -203,6 +229,7 @@ func (a *App) desktopBrowserStart(w *desktopWindow, state *desktopBrowserState, 
 	}
 	go func() {
 		finish := func(issue func() string) {
+			release()
 			a.post(func() {
 				state.run, state.stop, state.starting, state.checking, state.opening = nil, nil, false, false, false
 				state.issue = issue
@@ -353,11 +380,11 @@ func (a *App) desktopBrowserChoose(w *desktopWindow, state *desktopBrowserState)
 			if err != nil || path != "" && !valid {
 				state.issue = locales.DesktopBrowserInvalidExecutable
 			} else if valid {
-				choice := desktopBrowserChoice{filepath.Base(path), path, strings.Contains(strings.ToLower(filepath.Base(path)), "firefox")}
+				choice := desktopBrowserChoice{filepath.Base(path), path, strings.Contains(strings.ToLower(filepath.Base(path)), "firefox"), ""}
 				if !slices.Contains(state.choices, choice) {
 					state.choices = append(state.choices, choice)
 				}
-				state.choice, state.issue = choice, nil
+				a.desktopBrowserPick(w, state, choice)
 			}
 		})
 	}()
@@ -393,6 +420,8 @@ func desktopBrowserLocalURL(port int) string {
 
 func (a *App) desktopBrowserView(c *ui.Context, w *desktopWindow) {
 	state := w.state.(*desktopBrowserState)
+	a.desktopBrowserSync(w, state)
+	a.desktopBrowserVisitPending(w, state)
 	if execAllowed(w.session.Host) && w.session.client != nil {
 		a.pollNetwork(w.session)
 	}
@@ -401,6 +430,8 @@ func (a *App) desktopBrowserView(c *ui.Context, w *desktopWindow) {
 			a.desktopBrowserHeader(c, w, state)
 			a.desktopBrowserAddress(c, w, state)
 			a.desktopBrowserLinks(c, w, state)
+			a.desktopBrowserDataView(c, w, state)
+			a.desktopBrowserKernelsView(c, w, state)
 			if state.issue != nil {
 				ui.Text(c, state.issue()).TextColor(theme.Danger)
 			} else if w.session.status != statusConnected {
@@ -467,12 +498,17 @@ func (a *App) desktopBrowserAddress(c *ui.Context, w *desktopWindow, state *desk
 			ui.Text(c, label).TextColor(theme.TextMuted).FontSize(12).SingleLine().Ellipsis("…").MaxWidth(185)
 			button := ui.Button(c, locales.DesktopBrowserChoose()).Disabled(state.discovering || state.stop != nil || state.run != nil)
 			button.PopoverMenuButton(func(menu *ui.Menu) {
-				for _, choice := range state.choices {
-					if menu.Item(choice.name).Subtitle(choice.path).Checked(choice == state.choice).Chosen() {
-						state.choice, state.issue = choice, nil
+				choices := a.desktopBrowserChoices(state)
+				for _, choice := range choices {
+					subtitle := choice.path
+					if choice.kernel != "" {
+						subtitle = locales.DesktopBrowserKernels() + " · " + a.browserKernels.installed[choice.kernel].Version
+					}
+					if menu.Item(choice.name).Subtitle(subtitle).Checked(choice == state.choice).Chosen() {
+						a.desktopBrowserPick(w, state, choice)
 					}
 				}
-				if len(state.choices) != 0 {
+				if len(choices) != 0 {
 					menu.Separator()
 				}
 				if menu.Item(locales.DesktopBrowserBrowse()).Chosen() {

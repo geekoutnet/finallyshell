@@ -268,7 +268,9 @@ type ManualDNS struct {
 func (m ManualDNS) Present(domain, _, keyAuth string) error {
 	info := dns01.GetChallengeInfo(domain, keyAuth)
 	if m.Record != nil {
-		m.Record(strings.TrimSuffix(info.FQDN, "."), info.Value)
+		// Where the record goes: _acme-challenge.<domain>, or the name it is
+		// a CNAME of, which the CA follows.
+		m.Record(strings.TrimSuffix(info.EffectiveFQDN, "."), info.Value)
 	}
 	return nil
 }

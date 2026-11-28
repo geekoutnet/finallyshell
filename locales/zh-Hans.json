@@ -4647,7 +4647,7 @@
   "certsIssued": "签发成功，有效期至 {date}。",
   "certsRetry": "重试",
   "certsConfirmTitle": "需要对服务器做一个临时改动",
-  "certsConfirmSplit": "80 端口正在使用。应用会临时添加一条网络规则（{tool}），只截获 Let's Encrypt 的验证请求，其他流量照常转给原来的服务。期间原服务看到的访客 IP 会是 127.0.0.1。",
+  "certsConfirmSplit": "80 端口正在使用。应用会临时添加一条网络规则（{tool}），只截获 Let's Encrypt 的验证请求，其他流量照常转给原来的服务。期间原服务看到的访客 IP 会是服务器自己的地址。",
   "certsConfirmPort80By": "占用 80 端口的程序：{servers}",
   "certsConfirmFirewall": "服务器防火墙（{firewall}）拦截了 80 端口，应用会在验证期间临时放行。",
   "certsConfirmOther": "验证期间应用会临时修改 {target}。",

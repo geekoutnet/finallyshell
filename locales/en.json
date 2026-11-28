@@ -6027,7 +6027,7 @@
   "certsIssued": "Issued, valid until {date}.",
   "certsRetry": "Try again",
   "certsConfirmTitle": "The server needs a short change",
-  "certsConfirmSplit": "Port 80 is in use. The app will add a network rule ({tool}) that sends only Let's Encrypt's check requests to the app and passes all other traffic to your service as before. Meanwhile your service sees visitors as 127.0.0.1.",
+  "certsConfirmSplit": "Port 80 is in use. The app will add a network rule ({tool}) that sends only Let's Encrypt's check requests to the app and passes all other traffic to your service as before. Meanwhile your service sees visitors as coming from the server's own address.",
   "certsConfirmPort80By": "On port 80: {servers}",
   "certsConfirmFirewall": "The server's firewall ({firewall}) blocks port 80. The app will open it for the check.",
   "certsConfirmOther": "The app will change {target} for the check.",

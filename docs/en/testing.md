@@ -122,10 +122,10 @@ done
 ```
 
 For the SSL certificates app, `TestCertHTTPLive` serves HTTP challenges
-from the box in each of the three ways: a responder of the app's own on the
-free port 80, a site's document root, and a temporary Nginx location, which
-it takes out afterwards. It needs root, and changes the box's Nginx sites
-and starts and stops Nginx; it removes what it made. The probes go to the
+from the box in each of the ways the app has, such as a responder of the
+app's own on the free port 80 and a site's document root, and undoes each
+one. It needs root, and changes the box's Nginx sites and starts and stops
+Nginx; it removes what it made. The probes go to the
 box's port 80 through `127.0.0.1:8080`, or `TESTBOX_HTTP` when the box was
 made with another port.
 

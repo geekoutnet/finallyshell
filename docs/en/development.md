@@ -508,7 +508,7 @@ internal/
     account_view.go  the sign-in window of the device flow, the account window (who signed in, the sync password, the account's sync, the activity log)
     account_footer.go  the account's bar at the bottom of the left panel and its card
     sync_choice.go   the choice of a sync that may hold an old copy (first, base no longer opening, stale): its window, for the Sync page's sync and the account's
-    certs_http.go    the connected server answering the SSL certificates app's HTTP challenges: what holds port 80, then a probe file through each way in turn (a site's document root, the app's own responder on a free port 80, a temporary Nginx location the user agrees to), and undoing it afterwards
+    certs_http.go    the connected server answering the SSL certificates app's HTTP challenges: what holds port 80, then a probe file through each way in turn (a site's document root, the app's own responder on a free port 80, a temporary Caddy route, a transparent split of port 80 or port 80 opened in the firewall, the last two once the user agrees), and undoing it afterwards
     secrets.go       remembering passwords: credential store keys, the background read/write queue, "Remember password", the password prompt, passwords on permanent delete and duplicate
     closing.go       what closing the main window and quitting do: hiding to the tray, asking first
     windows.go       child windows: opening, focusing and closing by kind, redrawing every window

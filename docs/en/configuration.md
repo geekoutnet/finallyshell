@@ -718,13 +718,14 @@ The keys of the DNS providers are in the system's credential store under
 `huaweicloud`), as JSON of the provider's fields: Cloudflare's `token`;
 `id` and `secret` for the others, with Huawei Cloud's `region`.
 
-On the server, issuing over HTTP leaves little behind: challenge files go
-in `<document root>/.well-known/acme-challenge/` and are removed with the
-folders the app made; the app's own responder serves
-`/tmp/finallyshell-acme.<random>/` and removes it when it stops; a
-temporary Nginx location serves `/var/lib/finallyshell-acme`, which
-stays, empty, and its site file is put back from the
-`.bak-YYYYMMDDHHMMSS` backup made next to it, which stays too.
+On the server, issuing over HTTP changes no configuration file and leaves
+nothing behind: challenge files go in
+`<document root>/.well-known/acme-challenge/` and are removed with the
+folders the app made; the app's own responder, and the small program of a
+transparent split of port 80, serve `/tmp/finallyshell-acme.<random>/`
+and remove it when they stop; the split's iptables or nftables rules and a
+temporary Caddy route are removed afterwards, and a firewall opened for
+port 80 is closed again.
 
 ## Where SSH keys are stored
 

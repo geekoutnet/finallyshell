@@ -452,7 +452,7 @@ WebDAV 将版本放在主文件旁的 `finallyshell-sync-history/` 中，S3 使�
 
 DNS 服务商的密钥存在系统凭据库，键是 `certs/dns/<服务商 ID>`（`cloudflare`、`alidns`、`tencentcloud`、`huaweicloud`），内容是该服务商各字段组成的 JSON：Cloudflare 是 `token`，其他服务商是 `id` 和 `secret`，华为云还有 `region`。
 
-通过 HTTP 验证签发时，服务器上几乎不留东西：验证文件放在 `<网站目录>/.well-known/acme-challenge/`，用完连同应用新建的文件夹一起删除；应用自己的临时服务使用 `/tmp/finallyshell-acme.<随机>/`，停止时删除；临时的 Nginx location 使用 `/var/lib/finallyshell-acme`，这个空文件夹会保留；站点文件用旁边生成的 `.bak-YYYYMMDDHHMMSS` 备份还原，备份文件也保留。
+通过 HTTP 验证签发时，不改任何配置文件，服务器上也不留东西：验证文件放在 `<网站目录>/.well-known/acme-challenge/`，用完连同应用新建的文件夹一起删除；应用自己的临时服务，以及 80 端口透明分流用的小程序，使用 `/tmp/finallyshell-acme.<随机>/`，停止时删除；透明分流的 iptables 或 nftables 规则、Caddy 的临时路由用完都会删除，临时放行的防火墙端口也会关闭。
 
 ## SSH 密钥存在哪里
 

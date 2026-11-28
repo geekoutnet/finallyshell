@@ -73,7 +73,7 @@ for account in root tester; do
 done
 ```
 
-SSL 证书应用的 `TestCertHTTPLive` 在测试箱上用三种方式响应 HTTP 验证：在空闲的 80 端口启动应用自己的临时服务、放进网站目录、临时添加 Nginx location 并在用完后删除。它需要 root，会改动测试箱的 Nginx 站点、启动和停止 Nginx，结束时删除自己添加的内容。探测请求通过 `127.0.0.1:8080` 发到测试箱的 80 端口；测试箱换了端口时，用 `TESTBOX_HTTP` 指定。
+SSL 证书应用的 `TestCertHTTPLive` 在测试箱上用应用的每一种方式响应 HTTP 验证，比如在空闲的 80 端口启动应用自己的临时服务、放进网站目录，并逐一撤销。它需要 root，会改动测试箱的 Nginx 站点、启动和停止 Nginx，结束时删除自己添加的内容。探测请求通过 `127.0.0.1:8080` 发到测试箱的 80 端口；测试箱换了端口时，用 `TESTBOX_HTTP` 指定。
 
 ```bash
 (

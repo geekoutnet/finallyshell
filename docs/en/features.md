@@ -2323,6 +2323,46 @@ On a server connected over SSH, the assistant runs commands itself to investigat
 
 Copy a shell snippet or insert a single line without pressing Enter. **Run** shows the exact line and asks for confirmation; obvious disk-destructive commands also require typing `RUN`. Use an empty shell prompt: the assistant cannot verify what program or input is currently in the terminal. **Ctrl+Shift+I** (**Cmd+I** on macOS) opens a terminal popover that suggests one command and never runs it. To explain a terminal selection, copy it and use **Explain copied text with AI** from the command bar’s context menu, then review and send it in the assistant. The command popover only suggests; the assistant has no managed built-in service or knowledge base.
 
+### Desktop mode › SSL certificates
+
+The **SSL certificates** app gets free certificates from Let's Encrypt for a domain you type, as Caddy does for its own sites, and gives them as a ZIP for any web server. It lists the certificates kept on this computer, each with its domains, how it was proved, its issuer and when it expires: yellow under 30 days, red under 7 days and once expired.
+
+**A new certificate** takes one or more domains, separated by spaces, commas or new lines; a pasted URL keeps its host, and international names are converted to their ASCII form. `*.example.com` asks for a wildcard. The key is ECDSA P-256 by default; RSA 2048 is there for older systems. A certificate from Let's Encrypt lasts 90 days.
+
+Let's Encrypt gives a certificate only for a domain you prove is yours, so the app looks for the way that needs nothing from you, and says which one it takes and why:
+
+1. **A DNS provider's API.** For a wildcard, or a domain whose name servers belong to a DNS provider you have set up, the app adds the TXT record `_acme-challenge.<domain>` through the provider's API, waits until it is visible, and removes it afterwards. Nothing on a server changes. When the domain's provider is supported but not set up, the app says so, so that a key there makes it automatic next time.
+2. **The connected server over HTTP.** When the domain reaches the server of the session, the server answers Let's Encrypt's HTTP request (`http://<domain>/.well-known/acme-challenge/…`). The app first checks what listens on port 80 and which web servers run, then tries, from the smallest change up, each way with a probe file it fetches over the domain's address from this computer, so that Let's Encrypt is asked only once the file is seen:
+   - a file in the document root of the site that serves the domain (Nginx sites, Caddy `root`, Apache `DocumentRoot` and the usual `/var/www/html`): no configuration changes;
+   - port 80 free: a small web server of the app's own on port 80 (Python 3, BusyBox `httpd` or Perl, whichever the server has), stopped once the certificate is issued, and on its own after 30 minutes at most;
+   - port 80 held by Caddy: a temporary route for the challenge path alone through Caddy's admin API, which changes the running Caddy only, never its files, and is removed afterwards (a restart of Caddy drops it too);
+   - port 80 held by Nginx with no suitable folder, such as a proxy-only site: a temporary `location` for the challenge path alone in the site's file, after you agree. The file is backed up, checked with `nginx -t` and reloaded; when the check fails it is put back at once, and it is put back once the certificate is issued;
+   - port 80 free but closed by the server's firewall (ufw or firewalld): port 80 opened for the issuance, after you agree, and closed again afterwards. A cloud provider's security group cannot be changed from the server; the app says so when the probe still fails.
+
+   A program on port 80 the app does not know (Docker, Traefik, HAProxy…) is never stopped or changed: the app turns to DNS instead.
+3. **A TXT record added by hand.** Otherwise the app shows the records to add, each with a copy button, and checks every 10 seconds, for 30 minutes at most, until the domain's name servers give them; then it goes on by itself.
+
+Every step shows as it happens, and **Cancel** stops the issuance at its next step; whatever was set up on the server is undone in either case.
+
+**Self-signed certificates** need no proof and no Internet: for any names and IP addresses, in one click, valid for a year. No browser trusts them until they are added to the system's trusted certificates, so they are for LANs and tests.
+
+**Downloading** saves a ZIP with a folder for each format you tick:
+
+| Folder | Files | For |
+|---|---|---|
+| `nginx/` | `fullchain.pem`, `privkey.pem` | Nginx, Caddy, most panels |
+| `apache/` | `<domain>.crt`, `<domain>.chain.crt` (not for self-signed), `<domain>.key` | Apache |
+| `iis/` | `<domain>.pfx` | IIS, Windows, Tomcat 8.5 and later |
+| `tomcat/` | `<domain>.jks` | Java and older Tomcat |
+
+with a `README.txt` that says which file goes where. The PFX and JKS files are protected by a password: random, 16 letters and digits, made once for each certificate and the same in every download of it, shown with a copy button in the download dialog and never written into the ZIP. The PFX is encrypted with AES-256 and SHA-256, which Windows 10 1709, Windows Server 2019, OpenSSL 1.1.1 and Java 12 and later read.
+
+**Renewing** gets the certificate again for the same domains and key type, proving them the way the app finds then; its password stays the same. Let's Encrypt limits how often the same set of domains is issued (five a week); **Use Let's Encrypt's test CA** issues from its staging CA, whose limits are far higher but whose certificates nothing trusts, for trying things out.
+
+**DNS providers** are set up in the app: Cloudflare (an API token with Zone › DNS › Edit), Alibaba Cloud DNS (AccessKey ID and AccessKey Secret), Tencent Cloud DNSPod (SecretId and SecretKey) and Huawei Cloud DNS (Access Key ID, Secret Access Key and a region, `cn-north-4` by default). Their keys are kept in the system's credential store.
+
+Certificates and their private keys stay on this computer: they are never synced or uploaded. Deleting a certificate removes its key too.
+
 ## System tab
 
 The System tab of the bottom panel manages the connected server itself: a row at its top switches between Services, Logs, Scheduled jobs, Disk, Updates, Security, Firewall and Websites. Each section reads the server when it shows, over SSH; what needs root goes through the same escalation as the other features, and every change asks first. Not available for local terminals, nor when the host's monitor is off. On OpenWrt it shows the sections of [System tab › OpenWrt](#system-tab--openwrt) instead.

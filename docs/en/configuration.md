@@ -56,6 +56,7 @@ instead.
 | `commandeditor.txt` | The text of the Commands tab's command editor (see [commandeditor.txt](#commandeditortxt)). |
 | `bulk-runs/` | Local metadata for the last 20 [bulk runs](features.md#run-on-many-hosts), one JSON file per run. Includes a script only when opted in, and never output. Not synced. |
 | `geo/` | IP location data, downloaded only when you agree: `ip2region_v4.xdb`, `ip2region_v6.xdb`, and `cache.json`, the online lookups' answers (see [IP locations](features.md#ip-locations)). |
+| `certs/` | The SSL certificates app's certificates and private keys, and its Let's Encrypt accounts (see [SSL certificates](#ssl-certificates)). Not synced. |
 
 `mygo dev`, `go run` and the installed app all use the same directory, so
 they share hosts and settings.
@@ -627,6 +628,9 @@ same entries, as they share `hosts.json`. The keys are:
   [Account](features.md#account));
 - `account/<provider>/<user ID>/sync-password`: the account's sync
   password, of each account signed in on this computer;
+- `certs/dns/<provider ID>`: the keys of a DNS provider of the SSL
+  certificates app, as JSON of its fields (see
+  [SSL certificates](#ssl-certificates));
 - `app/lock/verifier`: a randomly salted Argon2id verifier (3 passes,
   64 MiB, 4 lanes). The lock password itself is never stored, and the
   verifier never syncs. Reset can delete indexed privilege entries and
@@ -686,6 +690,41 @@ How passwords are used:
 ## Caddy site and global files
 
 The Sites and Global options sections read the detected main Caddyfile (normally `/etc/caddy/Caddyfile`) and its imports. Existing sites are written back to their original file. In a managed layout, creating or duplicating a site writes `<sites directory>/<sanitized first address>.caddy`, with a numeric suffix if needed. An unexpected file at the chosen path is never overwritten. Other layouts append to the main file; new snippets and global options also go there. A disabled site remains in its original file as a marked comment block. Config transactions keep timestamped backups in `.backups` next to the main file; native uninstall recovery copies are stored under `/var/backups/finallyshell-caddy.*`. These sections do not write plaintext site passwords to local configuration or sync data and have no app settings of their own.
+
+## SSL certificates
+
+The [SSL certificates](features.md#desktop-mode--ssl-certificates) app
+keeps everything in `<config dir>/certs/`, a folder only the current user
+can open (mode 700), its files readable by them alone (mode 600). Nothing
+there is synced, backed up with the hosts or uploaded.
+
+| File | Contents |
+|---|---|
+| `certs/<ID>/meta.json` | What the certificate is: its domains, how they were proved (`self-signed`, `http`, `dns`, `dns-manual`), the DNS provider or server used, the key type (`ec256` or `rsa2048`), the issuer, whether it came from Let's Encrypt's test CA, its dates, and the password of its PFX and JKS downloads. |
+| `certs/<ID>/fullchain.pem` | The certificate, then the intermediates that vouch for it. |
+| `certs/<ID>/privkey.pem` | Its private key, as PKCS#8 PEM. |
+| `certs/accounts/<CA>.json` | The ACME account at a CA, one for each (Let's Encrypt and its test CA): the account's private key and its registration. No email address is given. |
+
+A certificate's ID is its first domain, with `*.` written `wildcard.` and
+`-self-signed` added to a self-signed one: `example.com`,
+`wildcard.example.com`, `lan.example-self-signed`. Renewing a certificate
+replaces the files of its folder and keeps its password; deleting it removes
+the folder. Copying a folder to another computer's `certs/` moves the
+certificate; deleting `certs/accounts/` makes a new account at the next
+issuance.
+
+The keys of the DNS providers are in the system's credential store under
+`certs/dns/<provider ID>` (`cloudflare`, `alidns`, `tencentcloud`,
+`huaweicloud`), as JSON of the provider's fields: Cloudflare's `token`;
+`id` and `secret` for the others, with Huawei Cloud's `region`.
+
+On the server, issuing over HTTP leaves little behind: challenge files go
+in `<document root>/.well-known/acme-challenge/` and are removed with the
+folders the app made; the app's own responder serves
+`/tmp/finallyshell-acme.<random>/` and removes it when it stops; a
+temporary Nginx location serves `/var/lib/finallyshell-acme`, which
+stays, empty, and its site file is put back from the
+`.bak-YYYYMMDDHHMMSS` backup made next to it, which stays too.
 
 ## Where SSH keys are stored
 

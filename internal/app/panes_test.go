@@ -156,7 +156,7 @@ func untilPanes(t *testing.T, p *fakePlatform, s *Session, n int) {
 }
 
 // paneAt is the middle of pane q of s on the window: the terminal area is
-// right of the sidebar and over the command bar.
+// right of the sidebar, under the session tabs and over the command bar.
 func paneAt(t *testing.T, a *App, tt *ui.Tester, s *Session, q *pane) (x, y float32) {
 	t.Helper()
 	bar, ok := tt.Access(locales.CmdBarLabel())
@@ -164,9 +164,10 @@ func paneAt(t *testing.T, a *App, tt *ui.Tester, s *Session, q *pane) (x, y floa
 		t.Fatal("no command bar")
 	}
 	x0, w := a.sideWidth+1, float32(1280)-a.sideWidth-1
-	h := bar.Bounds.Y - 6
+	y0 := float32(sessionTabsH)
+	h := bar.Bounds.Y - 6 - y0
 	r := s.panes.rects()[q]
-	return x0 + (r.x+r.w/2)*w, (r.y + r.h/2) * h
+	return x0 + (r.x+r.w/2)*w, y0 + (r.y+r.h/2)*h
 }
 
 // typeInBar sends line from the command bar.

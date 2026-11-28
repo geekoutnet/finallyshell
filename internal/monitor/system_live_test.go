@@ -564,7 +564,7 @@ func TestSystemLiveNginx(t *testing.T) {
 	if !slices.ContainsFunc(certs, func(row Certificate) bool { return row.File == cert && slices.Contains(row.SANs, domain) }) {
 		t.Fatal("fixture certificate not listed")
 	}
-	readFile, err := NginxReadCommand(file)
+	readFile, err := NginxReadCommand(file, inv.NginxTree)
 	old := box.run(t, true, nil, readFile, err)
 	if old != text {
 		t.Fatal("new site content differs from form")

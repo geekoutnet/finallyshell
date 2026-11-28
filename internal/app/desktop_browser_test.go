@@ -69,7 +69,7 @@ func TestDesktopToolsBrowserDiscovery(t *testing.T) {
 func TestDesktopToolsBrowserProxy(t *testing.T) {
 	server := sshtest.Start(t)
 	client := server.Dial(t)
-	tunnel, err := desktopBrowserProxy(client)
+	tunnel, err := desktopBrowserProxy(client, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

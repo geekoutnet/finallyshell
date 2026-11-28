@@ -38,7 +38,7 @@ func siteGeneralReason(page *serverSitesPage) string {
 	if !page.loaded || !page.status.Installed {
 		return locales.SiteNotInstalled()
 	}
-	if page.status.Custom || page.inventory.Main != "" && page.inventory.Main != monitor.NginxMain {
+	if page.status.Custom {
 		return locales.SiteCustom()
 	}
 	return ""
@@ -50,6 +50,9 @@ func siteReadyReason(page *serverSitesPage) string {
 	}
 	if page.readErr != "" || page.inventory.Main == "" {
 		return locales.SiteNeedConfig()
+	}
+	if len(page.inventory.Unparsed) != 0 {
+		return locales.SiteUnparsedReason()
 	}
 	if page.recovery != nil {
 		return locales.SiteRestoreFirst()
@@ -163,8 +166,25 @@ func (a *App) siteRowMenu(menu *ui.Menu, s *Session, rows []siteRow) {
 	if resourceMenuItem(menu, locales.SiteDetails(), single, false) {
 		a.siteDetails(s, row)
 	}
+	var visits []monitor.NginxVisit
+	if single == "" {
+		visits = siteVisits(page, row)
+	}
+	menu.Submenu(locales.SiteOpenBrowser(), func(sub *ui.Menu) {
+		for _, visit := range visits {
+			item := sub.Item(visit.URL)
+			if visit.Backend {
+				item.Subtitle(locales.SiteVisitBackend())
+			} else if visit.Host != "" {
+				item.Subtitle(locales.SiteVisitServer(visit.Addr))
+			}
+			if item.Chosen() {
+				a.desktopOpen(s, appBrowser, desktopBrowserVisit{visit.URL, visit.Host, visit.Addr})
+			}
+		}
+	}).Disabled(len(visits) == 0)
 	edit := cmp.Or(single, siteReadyReason(page))
-	if !monitor.NginxEditable(row.file) {
+	if !page.inventory.Editable(row.file) {
 		edit = cmp.Or(edit, locales.SiteUnsupportedFile())
 	} else if !page.inventory.AllowsBackup(row.file + ".bak-" + time.Now().Format("20060102150405")) {
 		edit = cmp.Or(edit, locales.SiteBackupIncluded())
@@ -180,13 +200,23 @@ func (a *App) siteRowMenu(menu *ui.Menu, s *Session, rows []siteRow) {
 	}
 	for _, log := range []struct{ label, file string }{{locales.SiteAccessLog(), row.AccessLog}, {locales.SiteErrorLog(), row.ErrorLog}} {
 		reason := single
-		if monitor.NginxLogsCommand(log.file) == "" {
+		if !monitor.ValidLogPath(log.file) && monitor.NginxLogsCommand(log.file) == "" {
 			reason = cmp.Or(reason, locales.SiteNoLogFile())
 		}
 		if resourceMenuItem(menu, log.label, reason, false) {
 			a.siteOpenLog(s, log.label, log.file)
 		}
 	}
+}
+
+// siteVisits are the addresses to open row at in the desktop browser:
+// through nginx for a site it serves, and what it forwards to.
+func siteVisits(page *serverSitesPage, row siteRow) []monitor.NginxVisit {
+	visits := page.inventory.Visits(row.NginxSite)
+	if row.state == "disabled" {
+		visits = slices.DeleteFunc(visits, func(visit monitor.NginxVisit) bool { return !visit.Backend })
+	}
+	return visits
 }
 
 func (a *App) siteToggle(s *Session, names []string, enable bool) {

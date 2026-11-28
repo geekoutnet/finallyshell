@@ -111,6 +111,11 @@ type TunnelOptions struct {
 	ProxyPassword    string
 	UpstreamPassword string
 	Notify           func()
+	// Resolve, if not nil, gives the address to connect to instead of a
+	// target's host, keeping its port, as a hosts file on the server
+	// would: the desktop browser opens a site by its name at the address
+	// nginx listens on. It is called on the tunnel's goroutines.
+	Resolve func(host string) (string, bool)
 }
 
 // notifyEvery is how often a tunnel calls notify at most.
@@ -436,6 +441,13 @@ func endTunnelCopy(dst, src net.Conn, err error) {
 func (t *Tunnel) dialTarget(ctx context.Context, network, target string) (net.Conn, error) {
 	ctx, cancel := context.WithTimeout(ctx, tunnelDialTimeout)
 	defer cancel()
+	if resolve := t.opts.Resolve; resolve != nil {
+		if host, port, err := net.SplitHostPort(target); err == nil {
+			if addr, ok := resolve(host); ok {
+				target = net.JoinHostPort(addr, port)
+			}
+		}
+	}
 	var conn net.Conn
 	var err error
 	switch {

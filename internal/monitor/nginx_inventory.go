@@ -32,7 +32,10 @@ if command -v 'openssl' >/dev/null 2>&1; then 'printf' 'openssl\n'; fi
 `
 
 type NginxStatus struct {
-	Version, State, Apache, Caddy                                            string
+	Version, State, Apache, Caddy string
+	// Conf is the configuration file the running master was started with
+	// (its -c), "" when it was started without one.
+	Conf                                                                     string
 	PID                                                                      int
 	Installed, Systemd, Unit, Certbot, ACME, OpenSSL, Custom, MasterVerified bool
 }
@@ -90,14 +93,26 @@ fi
 if [ -d '/etc/nginx/conf.d' ]; then 'printf' 'confd\n'; fi
 `
 
+// NginxMasterCommand prints the PID of nginx's master process, pid or,
+// when that is 0 (nginx not run by systemd, or by an init script systemd
+// only wraps, as on the BaoTa panel), the one its PID file names: the
+// file nginx was built with, then the usual ones, then the only master
+// running. Then "conf\t<file>" when the master was started with -c, and
+// "custom" when it was started with -p.
 func NginxMasterCommand(pid int) string {
 	if pid > 0 {
 		return "pid=" + privilegeQuote(strconv.Itoa(pid)) + "\n" + nginxMasterCheck
 	}
 	return `
-for file in '/run/nginx.pid' '/var/run/nginx.pid' '/usr/local/nginx/logs/nginx.pid'; do
-    if [ -r "$file" ]; then IFS= read -r pid <"$file"; break; fi
+pid=''
+built=$('nginx' '-V' 2>&1 | 'sed' '-n' 's/.*--pid-path=\([^ ]*\).*/\1/p') || built=''
+for file in $built '/run/nginx.pid' '/var/run/nginx.pid' '/usr/local/nginx/logs/nginx.pid' '/www/server/nginx/logs/nginx.pid' '/usr/local/openresty/nginx/logs/nginx.pid'; do
+    if [ -r "$file" ]; then IFS= read -r pid <"$file" || :; break; fi
 done
+case "$('tr' '\000' ' ' <"/proc/${pid:-0}/cmdline" 2>/dev/null)" in
+    'nginx: master process '*) ;;
+    *) pid=$('pgrep' '-f' '^nginx: master process ' 2>/dev/null) || pid='';;
+esac
 ` + nginxMasterCheck
 }
 
@@ -107,9 +122,40 @@ args=$('tr' '\000' ' ' <"/proc/$pid/cmdline" 2>/dev/null) || exit 0
 case "$args" in
     'nginx: master process '*)
         'printf' '%s\n' "$pid"
-        case "$args" in *' -c'*|*' -p'*) 'printf' 'custom\n';; esac;;
+        case "$args" in *' -p'*) 'printf' 'custom\n';; esac
+        case "$args" in *' -c'*)
+            conf=${args#*' -c'}
+            conf=${conf# }
+            'printf' 'conf\t%s\n' "${conf%% *}";;
+        esac;;
 esac
 `
+
+// ParseNginxMaster reads NginxMasterCommand's output into status: the
+// master's PID, whether it is custom (-p, or a -c that is not an absolute
+// path) and the configuration file it was started with.
+func ParseNginxMaster(status *NginxStatus, text string) {
+	lines := strings.Split(strings.TrimSpace(strings.ReplaceAll(text, "\r", "")), "\n")
+	pid, err := strconv.Atoi(lines[0])
+	if err != nil || pid <= 0 {
+		return
+	}
+	status.PID, status.MasterVerified = pid, true
+	if !status.Unit {
+		status.State = "active"
+	}
+	for _, line := range lines[1:] {
+		if line == "custom" {
+			status.Custom = true
+		} else if conf, ok := strings.CutPrefix(line, "conf\t"); ok {
+			if ValidNginxPath(conf) {
+				status.Conf = conf
+			} else {
+				status.Custom = true
+			}
+		}
+	}
+}
 
 type NginxInventory struct {
 	NginxTree
@@ -152,8 +198,21 @@ func (inventory NginxInventory) CertificatePath(file string) string {
 }
 
 func ReadNginxInventory(ctx context.Context, run SystemRead) (NginxInventory, error) {
+	return ReadNginxInventoryFrom(ctx, run, "")
+}
+
+// ReadNginxInventoryFrom reads the configuration conf, the file the
+// running master was started with; "" for the one nginx was built with.
+func ReadNginxInventoryFrom(ctx context.Context, run SystemRead, conf string) (NginxInventory, error) {
 	var inventory NginxInventory
-	text, stderr, err := run(ctx, nginxLF+NginxDumpCommand)
+	dump := NginxDumpCommand
+	if conf != "" {
+		if !ValidNginxPath(conf) {
+			return inventory, errNginxInput
+		}
+		dump = nginxCommand(conf, "-T")
+	}
+	text, stderr, err := run(ctx, nginxLF+dump)
 	if err != nil {
 		return inventory, nginxOutputError(stderr, err)
 	}

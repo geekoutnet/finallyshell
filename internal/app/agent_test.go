@@ -150,6 +150,12 @@ func TestAgentOption(t *testing.T) {
 			t.Errorf("no %q; texts %q", s, tt.Texts())
 		}
 	}
+	// The field is low on the page, below the window with taller fonts:
+	// scroll it up, with room under it for what Check finds.
+	if field, ok := tt.AccessByRole(ui.RoleTextField, locales.OptionSSHAgent()); ok {
+		tt.Scroll(380, 300, 0, field.Bounds.Y-200)
+		tt.Frame()
+	}
 	typeInto(t, tt, locales.OptionSSHAgent(), ag.Addr)
 	if a.settings.SSHAgent != ag.Addr || config.LoadSettings().SSHAgent != ag.Addr {
 		t.Fatalf("address %q, saved %q", a.settings.SSHAgent, config.LoadSettings().SSHAgent)

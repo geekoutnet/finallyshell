@@ -147,9 +147,15 @@ func TestOverviewTab(t *testing.T) {
 	tt.Frame()
 	saveShot(t, tt, "overview-panel-dark-en.png")
 	tt.SetDark(false)
+	// Down to the end of the addresses, which taller fonts push below the
+	// window, and back up after.
+	tt.Scroll(760, 500, 0, 400)
+	tt.Frame()
 	if err := tt.Click(locales.OverviewShowLess()); err != nil {
 		t.Fatal(err)
 	}
+	tt.Frame()
+	tt.Scroll(760, 500, 0, -400)
 	tt.Frame()
 	if tt.HasText("172.18.0.1/16") {
 		t.Error("Show less left the virtual addresses")

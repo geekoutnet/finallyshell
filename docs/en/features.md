@@ -2213,6 +2213,17 @@ rights (sudo or su as the server needs), in two seconds and in the
 background, through systemd, `shutdown` or BusyBox. They need a connection
 with the server monitor on.
 
+A small card in the desktop's bottom-right corner, above the dock, shows
+the connection's state, and the host's icon in the dock carries a status
+dot while it is not connected. While the session connects, on first open
+or on a reconnect, the card shows a spinner and **Connecting to**
+user@host; once the connection is up it says **Connected** for two seconds
+and goes. When the connection fails or is lost the card stays with the
+reason (as the terminal's banner words it), **Reconnect** and **Switch to
+terminal mode**, until you act on it or dismiss it with its ×; disconnecting
+from the power menu shows a plain **Disconnected** card with the same
+buttons.
+
 The launcher groups available apps and searches names in the current
 language. Right-click an app to pin it or add it to the desktop. Escape or
 a press outside closes the launcher.

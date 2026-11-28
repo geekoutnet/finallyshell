@@ -326,7 +326,13 @@ func (a *App) desktopDockHost(c *ui.Context, d *desktopState, s *Session, width 
 		c.Invalidate()
 	}
 	button.Children(func() {
-		ui.Icon(c, icons.Get("monitor")).FontSize(15).Shrink(0).TextColor(theme.Text)
+		ui.Box(c).Shrink(0).Children(func() {
+			ui.Icon(c, icons.Get("monitor")).FontSize(15).TextColor(theme.Text)
+			if s.status != statusConnected { // the connection's state, at a glance
+				ui.Box(c).Absolute().Right(-2).Bottom(-1).Size(7, 7).Radius(3.5).Background(s.statusColor(theme)).
+					Border(1, theme.Background).AccessHidden(true)
+			}
+		})
 		if width > 25 {
 			ui.Text(c, s.label()).FontSize(12).SingleLine().MinWidth(0).TextColor(theme.Text)
 		}

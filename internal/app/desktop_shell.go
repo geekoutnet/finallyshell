@@ -52,6 +52,9 @@ type desktopShellState struct {
 	trayPopup, clockPopup, powerPopup bool
 	clockMonth                        time.Time
 	power                             opsState
+
+	// conn is the connection's card (desktop_shell_conn.go).
+	conn desktopConnState
 }
 
 func (a *App) desktopPreferences() config.DesktopSettings {
@@ -98,6 +101,7 @@ func (a *App) desktopArea(c *ui.Context, row *Session) {
 		a.desktopSnapPreview(c, d)
 		a.desktopFolderPanel(c, d, s)
 		a.desktopDock(c, d, s)
+		a.desktopConnCard(c, d, s)
 		a.desktopLauncher(c, d, s)
 		a.opsWorkDialog(c, s, &d.shell.power)
 		a.desktopSurfaceDialogs(c, d, s)

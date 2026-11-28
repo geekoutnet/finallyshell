@@ -297,7 +297,17 @@ func (a *App) desktopOrganize(s *Session) {
 				folders = append(folders, f)
 			}
 		}
-		var top []config.DesktopIcon
+		// As the default layout orders them, for the icons without a cell
+		// of their own: the apps on the desktop, the folders, the
+		// shortcuts, then the apps in folders.
+		var top, inside []config.DesktopIcon
+		for _, icon := range icons {
+			if icon.Folder == "" {
+				top = append(top, icon)
+			} else {
+				inside = append(inside, icon)
+			}
+		}
 		for _, f := range folders {
 			icon, ok := placed[desktopFolderPrefix+f.ID]
 			if !ok || icon.Folder != "" {
@@ -310,7 +320,7 @@ func (a *App) desktopOrganize(s *Session) {
 				top = append(top, icon)
 			}
 		}
-		h.Icons, h.Folders = append(top, icons...), folders
+		h.Icons, h.Folders = append(top, inside...), folders
 	})
 }
 

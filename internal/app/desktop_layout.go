@@ -466,3 +466,44 @@ func (a *App) desktopLayoutConfirm(c *ui.Context, d *desktopState, s *Session) {
 // notifyDesktopOwnLayout tells that a host got a layout of its own, as a
 // shortcut to one of its paths was added to its desktop.
 func (a *App) notifyDesktopOwnLayout() { a.notify(locales.DesktopShellOwnLayoutNotice()) }
+
+// The folder panel's header, padding and gap between icons.
+const (
+	desktopFolderHeader = 42
+	desktopFolderPad    = 8
+	desktopFolderGap    = 4
+	// desktopFolderScrollbar is the room the panel's scroll area keeps for
+	// its scroll bar, which the icons' row cannot use.
+	desktopFolderScrollbar = 14
+)
+
+// desktopFolderRect is where the panel of the folder id is, with n icons
+// as large as the desktop's (g): 3 to 5 columns, as many rows as they
+// need while the desktop has the room, where the user dragged it, else
+// centered above the dock.
+func desktopFolderRect(d *desktopState, sh *desktopShellState, id string, g desktopGrid, n int) (ui.Rect, bool) {
+	cols := min(5, max(3, n))
+	rows := max(1, (n+cols-1)/cols)
+	w := float32(cols)*(g.spaceW+desktopFolderGap) - desktopFolderGap + 2*desktopFolderPad + desktopFolderScrollbar
+	h := desktopFolderHeader + float32(rows)*(g.spaceH+desktopFolderGap) - desktopFolderGap + 2*desktopFolderPad
+	if n == 0 {
+		h = max(h, desktopFolderHeader+110) // the hint to drag icons in
+	}
+	areaW, areaH := d.area.W, d.area.H-desktopDockHeight
+	w, h = min(w, areaW-24), min(h, areaH-24)
+	if w < 80 || h < 80 {
+		return ui.Rect{}, false
+	}
+	p := ui.Point{X: (areaW - w) / 2, Y: (areaH - h) / 2}
+	if sh.folderMoved == id {
+		p = desktopClampFolder(d, sh.folderAt, w, h)
+	}
+	return ui.Rect{X: p.X, Y: p.Y, W: w, H: h}, true
+}
+
+// desktopClampFolder keeps a folder panel of w by h at p on the desktop,
+// above the dock.
+func desktopClampFolder(d *desktopState, p ui.Point, w, h float32) ui.Point {
+	maxX, maxY := max(0, d.area.W-w), max(0, d.area.H-desktopDockHeight-h)
+	return ui.Point{X: min(max(p.X, 0), maxX), Y: min(max(p.Y, 0), maxY)}
+}

@@ -21,13 +21,17 @@ type desktopShellState struct {
 	hiddenFocus     *desktopWindow
 	cycle           []*desktopWindow
 
-	selection                                map[string]bool
-	anchor                                   string
-	doubleIcon                               string
-	iconKeys                                 bool
-	band                                     *desktopBand
-	iconDrag                                 *desktopIconDrag
-	folderRect                               ui.Rect
+	selection  map[string]bool
+	anchor     string
+	doubleIcon string
+	iconKeys   bool
+	band       *desktopBand
+	iconDrag   *desktopIconDrag
+	folderRect ui.Rect
+	// folderAt is where the user dragged the panel of the folder
+	// folderMoved, which opens centered until then.
+	folderAt                                 ui.Point
+	folderMoved                              string
 	folder, rename, renameText, deleteFolder string
 	renameFocus                              bool
 	// layoutConfirm is the layout change asked about: desktopConfirm*.

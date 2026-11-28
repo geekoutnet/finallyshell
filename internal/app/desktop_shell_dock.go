@@ -89,13 +89,7 @@ func (a *App) desktopDock(c *ui.Context, d *desktopState, s *Session) {
 		return
 	}
 	apps := a.desktopDockApps(d, s)
-	hostWidth := float32(132)
-	if d.area.W < 660 {
-		hostWidth = 90
-	}
-	if d.area.W < 420 {
-		hostWidth = 25
-	}
+	hostWidth := float32(25) // the host's icon; its name is in the tooltip and the popover
 	availableSlots := max(1, int((d.area.W-hostWidth-210-desktopTrayWidth(d.area.W)+46)/42))
 	visible := len(apps)
 	if visible > availableSlots {

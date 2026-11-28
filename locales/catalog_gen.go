@@ -1448,6 +1448,16 @@ func (msgs Messages) ClearRecents() string {
 	return Catalog.Format(msgs.locale, "clearRecents", nil)
 }
 
+// RemoveRecent says "Remove from recent"
+// in the language the app shows.
+func RemoveRecent() string { return In(i18n.Locale()).RemoveRecent() }
+
+// RemoveRecent says "Remove from recent"
+// in the language of msgs.
+func (msgs Messages) RemoveRecent() string {
+	return Catalog.Format(msgs.locale, "removeRecent", nil)
+}
+
 // ConnectionManager says "Connection manager"
 // in the language the app shows.
 func ConnectionManager() string { return In(i18n.Locale()).ConnectionManager() }

@@ -826,6 +826,19 @@ func (a *App) managerItemMenu(c *ui.Context, m *managerState, menu *ui.Menu, it 
 		}
 		return
 	}
+	a.hostMenuItems(c, m, menu, h, later)
+	menu.Separator()
+	if menu.Item(locales.Delete()).Shortcut(0, ui.KeyDelete).Chosen() {
+		do(func() { a.deleteItem(m, it) })
+	}
+}
+
+// hostMenuItems are the items of the context menu of h, a host not
+// deleted, but for Delete, acting in the tree of m: the start page's
+// rows show them too, with the Connections page's tree.
+func (a *App) hostMenuItems(c *ui.Context, m *managerState, menu *ui.Menu, h *config.Host, later *[]func()) {
+	do := func(fn func()) { *later = append(*later, fn) }
+	it := managerItem{host: h.ID}
 	if menu.Item(locales.Connect()).Chosen() {
 		do(func() { a.connectFrom(m, h) })
 	}
@@ -852,10 +865,6 @@ func (a *App) managerItemMenu(c *ui.Context, m *managerState, menu *ui.Menu, it 
 	}
 	a.connInfoMenuItems(c, menu, m, h, do)
 	a.totpMenu(c, menu, m.win, h)
-	menu.Separator()
-	if menu.Item(locales.Delete()).Shortcut(0, ui.KeyDelete).Chosen() {
-		do(func() { a.deleteItem(m, it) })
-	}
 }
 
 // moveMenu is the submenu moving it to another folder, in the tree of m.

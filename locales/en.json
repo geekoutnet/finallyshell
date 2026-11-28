@@ -186,6 +186,7 @@
   "otherHosts": "Other connections",
   "noMatchingHosts": "No connections match the search.",
   "clearRecents": "Clear",
+  "removeRecent": "Remove from recent",
   "connectionManager": "Connection manager",
   "noHostsTitle": "No connections yet",
   "noHostsBody": "Add a server, or import your connections from FinalShell, Xshell and other clients in the connection manager.",

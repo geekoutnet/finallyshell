@@ -23,7 +23,8 @@ func TestDesktopToolsBrowserArgs(t *testing.T) {
 	profile, addr, target := "isolated profile", "127.0.0.1:9123", "http://127.0.0.1:8080/"
 	chromium := []string{"--user-data-dir=" + profile, "--proxy-server=socks5://" + addr,
 		"--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1", "--proxy-bypass-list=<-loopback>",
-		"--force-webrtc-ip-handling-policy=disable_non_proxied_udp", "--disable-quic", "--no-first-run", "--no-default-browser-check"}
+		"--force-webrtc-ip-handling-policy=disable_non_proxied_udp", "--disable-quic", "--no-first-run", "--no-default-browser-check",
+		"--test-type"}
 	for _, test := range []struct {
 		name            string
 		firefox, newTab bool

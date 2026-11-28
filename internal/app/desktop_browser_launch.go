@@ -127,6 +127,10 @@ func desktopBrowserArgs(choice desktopBrowserChoice, profile, addr, target strin
 		"--user-data-dir=" + profile, "--proxy-server=socks5://" + addr,
 		"--host-resolver-rules=MAP * ~NOTFOUND , EXCLUDE 127.0.0.1", "--proxy-bypass-list=<-loopback>",
 		"--force-webrtc-ip-handling-policy=disable_non_proxied_udp", "--disable-quic", "--no-first-run", "--no-default-browser-check",
+		// Chromium warns of --host-resolver-rules, which keeps every name
+		// resolved on the server, in a bar the user would close each
+		// time; --test-type is how it is told not to, as ChromeDriver does.
+		"--test-type",
 	}
 	if !newTab {
 		args = append(args, "--new-window")

@@ -168,6 +168,68 @@ func wantTexts(t *testing.T, tt *ui.Tester, what string, texts ...string) {
 	}
 }
 
+// The grip on the name's header moves the border with the column after
+// it: the name widens by what that column loses, the others stay where
+// they were; a double click gives it its default back, and the name keeps
+// the least width however far left it is dragged. The window is narrow,
+// as a desktop's Docker window often is: no image, the status after the
+// name.
+func TestDockerNameColumnGrip(t *testing.T) {
+	a, _, tt, _ := dockerApp(t, demoDocker())
+	ds := &a.sessions[0].overview.docker
+	a.openPanelTab(a.sessions[0], tabOverview)
+	tt.SetSize(1100, 2400)
+	tt.Frame()
+	tt.Frame()
+	bounds := func(name string) ui.Rect {
+		t.Helper()
+		b, ok := tt.Access(name)
+		if !ok {
+			t.Fatalf("no %q", name)
+		}
+		return b.Bounds
+	}
+	nameHead, cpuHead := locales.DockerSortBy(locales.DockerColName()), locales.DockerSortBy(locales.Cpu())
+	drag := func(dx float32) {
+		r := bounds(nameHead)
+		x, y := r.X+r.W+1, r.Y+r.H/2
+		tt.Press(x, y)
+		tt.Frame()
+		tt.Move(x+dx, y)
+		tt.Frame()
+		tt.Release(x+dx, y)
+		tt.Frame()
+		tt.Frame()
+	}
+	near := func(got, want float32) bool { return got > want-1.5 && got < want+1.5 }
+	name, cpu := bounds(nameHead), bounds(cpuHead)
+
+	drag(50)
+	if got := ds.widths["status"]; got != ctrStatusW-50 || len(ds.widths) != 1 {
+		t.Fatalf("widths %v after dragging 50, want status %v", ds.widths, ctrStatusW-50)
+	}
+	if got := bounds(nameHead).W; !near(got, name.W+50) {
+		t.Fatalf("name %v wide after dragging 50, want %v", got, name.W+50)
+	}
+	if got := bounds(cpuHead).X; !near(got, cpu.X) {
+		t.Fatalf("CPU moved from %v to %v", cpu.X, got)
+	}
+
+	r := bounds(nameHead)
+	tt.ClickAt(r.X+r.W+1, r.Y+r.H/2)
+	tt.ClickAt(r.X+r.W+1, r.Y+r.H/2)
+	tt.Frame()
+	tt.Frame()
+	if got := bounds(nameHead).W; !near(got, name.W) {
+		t.Fatalf("double click left the name %v wide, want %v", got, name.W)
+	}
+
+	drag(-2000)
+	if got := bounds(nameHead).W; got < ctrLeastW-12 {
+		t.Fatalf("name %v wide after dragging far left, want about %v", got, ctrLeastW)
+	}
+}
+
 func TestOverviewDocker(t *testing.T) {
 	a, p, tt, fd := dockerApp(t, demoDocker())
 	s := a.sessions[0]

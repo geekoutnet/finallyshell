@@ -134,8 +134,11 @@ edge of a column's header, and double-click it to fit the column to its
 cells (or, in the Docker containers list, the Trash window and the quick
 connect list, to give the column its default width back). This works
 everywhere, including the Docker containers list and the desktop's Files
-and Trash windows, whose columns used to be fixed. The widths last until
-the app quits.
+and Trash windows, whose columns used to be fixed. In the Docker
+containers list the name takes the room the other columns leave: the line
+at its right edge moves the border with the column after it, which gets
+narrower as the name gets wider, and a double click gives that column its
+default width back. The widths last until the app quits.
 
 ## Sessions and tabs
 

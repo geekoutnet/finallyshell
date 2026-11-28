@@ -897,7 +897,9 @@ func runningCount(list []monitor.Container) int {
 
 // ctrHeader is the containers' column headers; a click on Name, Status,
 // CPU or Memory sorts by it, a second the other way. Dragging the end edge
-// of a header but the name's resizes its column.
+// of a header resizes its column; the name's, which takes the room the
+// others leave, moves its border with the column after it, which the drag
+// resizes the other way.
 func (a *App) ctrHeader(c *ui.Context, ds *ctrList, cols ctrColumns, leading func()) {
 	title := func(text string, by int, end bool) ui.Element {
 		label := text
@@ -928,17 +930,34 @@ func (a *App) ctrHeader(c *ui.Context, ds *ctrList, cols ctrColumns, leading fun
 		}
 		return t
 	}
+	// The drag of the name's grip, which the column after the name, the
+	// first head, takes the other way: what the name gains it loses, the
+	// name keeping at least ctrLeastW.
+	var dx float32
+	var reset, first = false, true
 	// head is the header of a column the user resizes; by is -1 for one
 	// that does not sort.
 	head := func(id, text string, by int, def float32, end bool) {
-		widgets.ColumnHead(c, cols.w, id, def, 40, func() { title(text, by, end) })
+		h := widgets.ColumnHead(c, cols.w, id, def, ctrLeastW, func() { title(text, by, end) })
+		if first {
+			first = false
+			if reset {
+				delete(cols.w, id)
+			} else {
+				cols.w.Resize(id, h, def, ctrLeastW, -dx)
+			}
+		}
 	}
 	ui.Row(c).Gap(10).Padding(2, 6, 4, 6).AlignItems(ui.Center).FillWidth().BorderWidth(0, 0, 1, 0).BorderColor(colors.line).Children(func() {
 		if leading != nil {
 			leading()
 		}
 		ui.Box(c).Width(ctrDotW).Shrink(0)
-		title(locales.DockerColName(), ctrSortName, false).Grow(2).Basis(0)
+		var name ui.Element
+		name, dx, reset = widgets.FlexHead(c, "name", 2, func() { title(locales.DockerColName(), ctrSortName, false) })
+		if dx != 0 {
+			dx = max(dx, ctrLeastW-name.Bounds().W)
+		}
 		if cols.image {
 			head("image", locales.DockerColImage(), -1, 0, false)
 		}
@@ -956,6 +975,9 @@ func (a *App) ctrHeader(c *ui.Context, ds *ctrList, cols ctrColumns, leading fun
 		ui.Box(c).Width(ctrMenuW).Shrink(0)
 	})
 }
+
+// ctrLeastW is the narrowest a column of the containers is dragged to.
+const ctrLeastW = 40
 
 func (a *App) ctrGroupRows(c *ui.Context, s *Session, list *ctrList, groups []ctrGroup, cols ctrColumns, now time.Time, page *dockerContainersPage) {
 	for _, group := range groups {

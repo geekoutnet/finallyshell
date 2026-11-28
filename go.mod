@@ -7,6 +7,7 @@ require (
 	github.com/go-sql-driver/mysql v1.10.2
 	github.com/jackc/pgx/v5 v5.13.0
 	github.com/lionsoul2014/ip2region/binding/golang v0.0.0-20261028042204-6a276cc7c4f9
+	github.com/pavlo-v-chernykh/keystore-go/v4 v4.5.0
 	github.com/pkg/sftp v1.13.12
 	github.com/redis/go-redis/v9 v9.24.0
 	github.com/tdewolff/font v0.0.0-20261010204837-88a7f6b56918
@@ -15,6 +16,7 @@ require (
 	golang.org/x/net v0.60.0
 	golang.org/x/sys v0.50.0
 	golang.org/x/text v0.43.0
+	software.sslmate.com/src/go-pkcs12 v0.7.4
 )
 
 require (

@@ -2,10 +2,12 @@ package app
 
 import (
 	"errors"
+	"maps"
 	"slices"
 	"sort"
 	"time"
 
+	"finallyshell/internal/config"
 	"finallyshell/internal/icons"
 	"finallyshell/internal/widgets"
 	"finallyshell/locales"
@@ -484,3 +486,57 @@ func desktopPlaceholder(a *App, c *ui.Context, w *desktopWindow) {
 // path on the desktop of s's connection: the file manager's "Send to
 // desktop". Nil hides that item.
 var desktopAddShortcutHook func(a *App, s *Session, path string)
+
+// enterInitialMode shows the desktop of s, a session just opened, when its
+// host opens in it (config.Host.EntryMode): the desktop itself if s is
+// the session shown, else the mode its tab shows once selected.
+func (a *App) enterInitialMode(s *Session) {
+	if !canOpenDesktop(s) || s.Host == nil {
+		return
+	}
+	switch s.Host.EntryMode {
+	case config.EntryDesktop:
+	case config.EntryLast:
+		if a.desktopPreferences().Hosts[s.Host.ID].LastMode != desktopLastMode {
+			return
+		}
+	default:
+		return
+	}
+	cur := a.current()
+	a.openDesktop(s)
+	if cur != s && cur != nil {
+		s.lastRow = a.desktopRowOf(s)
+		if i := slices.Index(a.sessions, cur); i >= 0 {
+			a.active = i
+		}
+	}
+}
+
+// desktopLastMode is config.DesktopHost.LastMode of a host left on its
+// desktop.
+const desktopLastMode = "desktop"
+
+// noteEntryMode keeps the mode root, a session, shows in row, for its
+// host to open in it next time when it opens in the mode used last.
+func (a *App) noteEntryMode(root, row *Session) {
+	if root.Host == nil || root.Host.ID == "" || root.Host.EntryMode != config.EntryLast || !canOpenDesktop(root) {
+		return
+	}
+	mode := ""
+	if row.isDesktopRow() {
+		mode = desktopLastMode
+	}
+	if a.desktopPreferences().Hosts[root.Host.ID].LastMode == mode {
+		return
+	}
+	a.changeDesktopPreferences(func(prefs *config.DesktopSettings) {
+		prefs.Hosts = maps.Clone(prefs.Hosts)
+		if prefs.Hosts == nil {
+			prefs.Hosts = make(map[string]config.DesktopHost)
+		}
+		host := prefs.Hosts[root.Host.ID]
+		host.LastMode = mode
+		desktopSetHost(prefs, root.Host.ID, host)
+	})
+}

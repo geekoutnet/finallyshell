@@ -1,7 +1,6 @@
 package app
 
 import (
-	"maps"
 	"slices"
 
 	"finallyshell/internal/config"
@@ -30,6 +29,8 @@ type desktopShellState struct {
 	folderRect                               ui.Rect
 	folder, rename, renameText, deleteFolder string
 	renameFocus                              bool
+	// layoutConfirm is the layout change asked about: desktopConfirm*.
+	layoutConfirm int
 
 	launcher, launcherFocus bool
 	launcherButton          ui.Rect
@@ -53,24 +54,6 @@ func (a *App) changeDesktopPreferences(change func(*config.DesktopSettings)) {
 	next := a.desktopPreferences()
 	change(&next)
 	a.changeSettings(func() { a.settings.Desktop = &next })
-}
-
-func (a *App) desktopHost(s *Session) config.DesktopHost {
-	return a.desktopPreferences().Hosts[s.Host.ID]
-}
-
-func (a *App) changeDesktopHost(s *Session, change func(*config.DesktopHost)) {
-	a.changeDesktopPreferences(func(prefs *config.DesktopSettings) {
-		host := prefs.Hosts[s.Host.ID]
-		host.Icons = slices.Clone(host.Icons)
-		host.Folders = slices.Clone(host.Folders)
-		change(&host)
-		prefs.Hosts = maps.Clone(prefs.Hosts)
-		if prefs.Hosts == nil {
-			prefs.Hosts = make(map[string]config.DesktopHost)
-		}
-		prefs.Hosts[s.Host.ID] = host
-	})
 }
 
 func (a *App) desktopArea(c *ui.Context, row *Session) {

@@ -199,7 +199,7 @@ func TestDesktopShellIconsAndFolders(t *testing.T) {
 	tt.Type("Workspace")
 	tt.Key(0, ui.KeyEnter)
 	h := a.desktopHost(s)
-	if len(h.Folders) != 1 || h.Folders[0].Name != "Workspace" {
+	if n := len(h.Folders); n != len(desktopPresetFolders)+1 || h.Folders[n-1].Name != "Workspace" {
 		t.Fatalf("folder name: %+v", h.Folders)
 	}
 	folder := desktopFolderPrefix + edit
@@ -222,12 +222,12 @@ func TestDesktopShellIconsAndFolders(t *testing.T) {
 	}
 	desktopShellClick(t, tt, locales.DesktopShellDeleteFolder())
 	desktopShellClick(t, tt, locales.Cancel())
-	if len(a.desktopHost(s).Folders) != 1 {
+	if len(a.desktopHost(s).Folders) != len(desktopPresetFolders)+1 {
 		t.Fatal("cancel deleted a folder")
 	}
 	desktopShellClick(t, tt, locales.DesktopShellDeleteFolder())
 	desktopShellClick(t, tt, locales.Delete())
-	if len(a.desktopHost(s).Folders) != 0 {
+	if len(a.desktopHost(s).Folders) != len(desktopPresetFolders) {
 		t.Fatal("confirmed folder was not deleted")
 	}
 	a.desktopAddShortcut(s, "relative")

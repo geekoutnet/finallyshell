@@ -162,6 +162,7 @@ func (a *App) sessionTabs(c *ui.Context) {
 	if cur != nil {
 		shown = sessionRoot(cur)
 		shown.lastRow = cur
+		a.noteEntryMode(shown, cur)
 	}
 	var roots []*Session
 	for _, s := range a.sessions {

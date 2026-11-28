@@ -3170,7 +3170,7 @@
   "desktopAppTerminal": "Terminal",
   "desktopAppBrowser": "Browser",
   "desktopAppAppCenter": "App Center",
-  "desktopToolsSites": "Sites & certificates",
+  "desktopToolsSites": "Nginx sites",
   "desktopToolsCaddy": "Caddy",
   "desktopToolsCaddyUnavailable": "Caddy management is not included in this build.",
   "desktopToolsInvalidDirectory": "The working directory must be an absolute server path without line breaks.",

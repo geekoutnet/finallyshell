@@ -25848,11 +25848,11 @@ func (msgs Messages) DesktopAppAppCenter() string {
 	return Catalog.Format(msgs.locale, "desktopAppAppCenter", nil)
 }
 
-// DesktopToolsSites says "Sites & certificates"
+// DesktopToolsSites says "Nginx sites"
 // in the language the app shows.
 func DesktopToolsSites() string { return In(i18n.Locale()).DesktopToolsSites() }
 
-// DesktopToolsSites says "Sites & certificates"
+// DesktopToolsSites says "Nginx sites"
 // in the language of msgs.
 func (msgs Messages) DesktopToolsSites() string {
 	return Catalog.Format(msgs.locale, "desktopToolsSites", nil)

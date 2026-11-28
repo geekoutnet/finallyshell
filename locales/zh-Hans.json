@@ -2563,7 +2563,7 @@
   "desktopAppTerminal": "终端",
   "desktopAppBrowser": "浏览器",
   "desktopAppAppCenter": "应用中心",
-  "desktopToolsSites": "站点与证书",
+  "desktopToolsSites": "Nginx 站点",
   "desktopToolsCaddy": "Caddy",
   "desktopToolsCaddyUnavailable": "当前版本未包含 Caddy 管理功能。",
   "desktopToolsInvalidDirectory": "工作目录必须是服务器上的绝对路径，且不能含有换行。",

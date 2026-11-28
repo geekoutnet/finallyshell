@@ -6191,5 +6191,12 @@
   "@desktopPowerRebootWarning": {"placeholders": {"name": {"type": "String"}}},
   "desktopPowerShutdownWarning": "{name} shuts down in 2 seconds. It can only be started again from its provider's console or by hand, not over SSH.",
   "@desktopPowerShutdownWarning": {"placeholders": {"name": {"type": "String"}}},
-  "desktopPowerUnavailable": "Connect, with the server monitor on, to restart or shut down the server."
+  "desktopPowerUnavailable": "Connect, with the server monitor on, to restart or shut down the server.",
+  "desktopShellNewGroup": "App group",
+  "desktopShellNewScript": "Shell script",
+  "desktopShellNewTextName": "New text file.txt",
+  "desktopShellNewScriptName": "new-script.sh",
+  "desktopShellRunInTerminal": "Run in terminal",
+  "desktopShellFilesHint": "Files and folders on the desktop are in {dir} on the server.",
+  "@desktopShellFilesHint": {"placeholders": {"dir": {"type": "String"}}}
 }

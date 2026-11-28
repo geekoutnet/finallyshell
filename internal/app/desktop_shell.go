@@ -96,5 +96,6 @@ func (a *App) desktopArea(c *ui.Context, row *Session) {
 		a.desktopDock(c, d, s)
 		a.desktopLauncher(c, d, s)
 		a.opsWorkDialog(c, s, &d.shell.power)
+		a.desktopSurfaceDialogs(c, d, s)
 	})
 }

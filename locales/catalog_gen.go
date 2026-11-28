@@ -48237,3 +48237,63 @@ func DesktopPowerUnavailable() string { return In(i18n.Locale()).DesktopPowerUna
 func (msgs Messages) DesktopPowerUnavailable() string {
 	return Catalog.Format(msgs.locale, "desktopPowerUnavailable", nil)
 }
+
+// DesktopShellNewGroup says "App group"
+// in the language the app shows.
+func DesktopShellNewGroup() string { return In(i18n.Locale()).DesktopShellNewGroup() }
+
+// DesktopShellNewGroup says "App group"
+// in the language of msgs.
+func (msgs Messages) DesktopShellNewGroup() string {
+	return Catalog.Format(msgs.locale, "desktopShellNewGroup", nil)
+}
+
+// DesktopShellNewScript says "Shell script"
+// in the language the app shows.
+func DesktopShellNewScript() string { return In(i18n.Locale()).DesktopShellNewScript() }
+
+// DesktopShellNewScript says "Shell script"
+// in the language of msgs.
+func (msgs Messages) DesktopShellNewScript() string {
+	return Catalog.Format(msgs.locale, "desktopShellNewScript", nil)
+}
+
+// DesktopShellNewTextName says "New text file.txt"
+// in the language the app shows.
+func DesktopShellNewTextName() string { return In(i18n.Locale()).DesktopShellNewTextName() }
+
+// DesktopShellNewTextName says "New text file.txt"
+// in the language of msgs.
+func (msgs Messages) DesktopShellNewTextName() string {
+	return Catalog.Format(msgs.locale, "desktopShellNewTextName", nil)
+}
+
+// DesktopShellNewScriptName says "new-script.sh"
+// in the language the app shows.
+func DesktopShellNewScriptName() string { return In(i18n.Locale()).DesktopShellNewScriptName() }
+
+// DesktopShellNewScriptName says "new-script.sh"
+// in the language of msgs.
+func (msgs Messages) DesktopShellNewScriptName() string {
+	return Catalog.Format(msgs.locale, "desktopShellNewScriptName", nil)
+}
+
+// DesktopShellRunInTerminal says "Run in terminal"
+// in the language the app shows.
+func DesktopShellRunInTerminal() string { return In(i18n.Locale()).DesktopShellRunInTerminal() }
+
+// DesktopShellRunInTerminal says "Run in terminal"
+// in the language of msgs.
+func (msgs Messages) DesktopShellRunInTerminal() string {
+	return Catalog.Format(msgs.locale, "desktopShellRunInTerminal", nil)
+}
+
+// DesktopShellFilesHint says "Files and folders on the desktop are in {dir} on the server."
+// in the language the app shows.
+func DesktopShellFilesHint(dir string) string { return In(i18n.Locale()).DesktopShellFilesHint(dir) }
+
+// DesktopShellFilesHint says "Files and folders on the desktop are in {dir} on the server."
+// in the language of msgs.
+func (msgs Messages) DesktopShellFilesHint(dir string) string {
+	return Catalog.Format(msgs.locale, "desktopShellFilesHint", map[string]any{"dir": dir})
+}

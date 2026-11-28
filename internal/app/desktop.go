@@ -181,6 +181,12 @@ type desktopState struct {
 	log []desktopLogEntry
 
 	shell desktopShellState // desktop_shell*.go
+
+	// files is the hidden file manager window of the desktop's folder,
+	// filesDir, last read at filesReadAt (desktop_surface.go).
+	files       *desktopWindow
+	filesDir    string
+	filesReadAt time.Time
 }
 
 // desktopLogEntry is an operation an app ran on the server.

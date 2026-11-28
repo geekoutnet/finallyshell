@@ -189,7 +189,7 @@ func TestDesktopShellIconsAndFolders(t *testing.T) {
 	}
 	x, y = desktopShellPoint(d, ui.Point{X: 320, Y: 240})
 	tt.RightClickAt(x, y)
-	desktopShellMenu(t, tt, locales.DesktopShellNew(), locales.NewFolder())
+	desktopShellMenu(t, tt, locales.DesktopShellNew(), locales.DesktopShellNewGroup())
 	tt.Frame()
 	edit := d.shell.rename
 	if edit == "" {

@@ -4785,5 +4785,11 @@
   "desktopPowerShutdownAction": "关机",
   "desktopPowerRebootWarning": "{name} 将在 2 秒后重启：所有连接都会断开，服务会中断到重启完成为止。",
   "desktopPowerShutdownWarning": "{name} 将在 2 秒后关机：关机后只能通过云服务商控制台或现场开机，无法再通过 SSH 连接。",
-  "desktopPowerUnavailable": "需要已连接且开启了服务器监控，才能重启或关闭服务器。"
+  "desktopPowerUnavailable": "需要已连接且开启了服务器监控，才能重启或关闭服务器。",
+  "desktopShellNewGroup": "应用分组",
+  "desktopShellNewScript": "Shell 脚本",
+  "desktopShellNewTextName": "新建文本文件.txt",
+  "desktopShellNewScriptName": "新建脚本.sh",
+  "desktopShellRunInTerminal": "在终端中运行",
+  "desktopShellFilesHint": "桌面上的文件和文件夹保存在服务器的 {dir} 目录中。"
 }

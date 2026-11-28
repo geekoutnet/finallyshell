@@ -29,8 +29,9 @@ func TestDesktopToolsCenterSearchAndLayout(t *testing.T) {
 		t.Fatal("server app missing from results")
 	}
 	app := desktopAppByID("srv-firewall")
-	// Every app is on the desktop by default; only some are pinned.
-	if a.desktopCenterPinned(app) || !a.desktopCenterOnDesktop(session, app) {
+	// A server app is in its preset folder by default, not on the desktop
+	// itself; only some are pinned.
+	if a.desktopCenterPinned(app) || a.desktopCenterOnDesktop(session, app) {
 		t.Fatal("unexpected defaults")
 	}
 	choose := func(label string) {
@@ -41,17 +42,18 @@ func TestDesktopToolsCenterSearchAndLayout(t *testing.T) {
 		tester.Frame()
 	}
 	choose(locales.DesktopCenterPin())
-	choose(locales.DesktopCenterRemove())
+	choose(locales.DesktopCenterAdd())
 	previous := a.settings.Desktop
-	if !a.desktopCenterPinned(app) || a.desktopCenterOnDesktop(session, app) {
+	if !a.desktopCenterPinned(app) || !a.desktopCenterOnDesktop(session, app) {
 		t.Fatal("settings not applied")
 	}
 	choose(locales.DesktopCenterUnpin())
-	choose(locales.DesktopCenterAdd())
-	if !slices.Contains(*previous.Pinned, string(app.id)) || slices.ContainsFunc(previous.Hosts[session.Host.ID].Icons, func(icon config.DesktopIcon) bool { return icon.App == string(app.id) }) {
+	choose(locales.DesktopCenterRemove())
+	onDesktop := func(icon config.DesktopIcon) bool { return icon.App == string(app.id) && icon.Folder == "" }
+	if !slices.Contains(*previous.Pinned, string(app.id)) || !slices.ContainsFunc(desktopHostOf(*previous, session.Host.ID).Icons, onDesktop) {
 		t.Fatal("previous settings were mutated")
 	}
-	if a.desktopCenterPinned(app) || !a.desktopCenterOnDesktop(session, app) {
+	if a.desktopCenterPinned(app) || a.desktopCenterOnDesktop(session, app) {
 		t.Fatal("settings not reverted")
 	}
 }

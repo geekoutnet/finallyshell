@@ -18,6 +18,7 @@ type desktopTerminalState struct {
 	life                 context.Context
 	stop                 context.CancelFunc
 	dir                  string
+	command              string // typed once the shell is in dir
 	issue                func() string
 	starting, confirming bool
 	focusZ               int
@@ -39,6 +40,9 @@ func (a *App) desktopTerminalOpened(w *desktopWindow, arg any) {
 	a.desktopToolsNoteOpened(w)
 	dir, _ := arg.(string)
 	state := &desktopTerminalState{dir: dir}
+	if run, ok := arg.(desktopTerminalRun); ok {
+		state.dir, state.command = run.dir, run.command
+	}
 	w.state = state
 	if dir != "" && !desktopTerminalDirectory(dir) {
 		state.dir, state.issue = "", locales.DesktopToolsInvalidDirectory
@@ -57,6 +61,7 @@ func (a *App) desktopTerminalStart(w *desktopWindow, state *desktopTerminalState
 	client, spec, pane := s.client, a.shellSpec(s.Host), newPane()
 	spec.life = ctx
 	command := desktopTerminalCD(state.dir)
+	command = desktopTerminalCommand(command, state)
 	go func() {
 		s.shellOpen.Lock()
 		defer s.shellOpen.Unlock()
@@ -246,4 +251,22 @@ func (a *App) desktopTerminalToolbar(c *ui.Context, w *desktopWindow, state *des
 		}
 		ui.Text(c, state.dir).Grow(1).MinWidth(0).SingleLine().Ellipsis("…").FontSize(11).TextColor(theme.TextMuted)
 	})
+}
+
+// desktopTerminalRun opens a terminal that runs command in dir.
+type desktopTerminalRun struct{ dir, command string }
+
+// desktopTerminalCommand is what a new terminal types: cd, the cd into
+// its folder, then its command, which never runs elsewhere than in the
+// folder asked.
+func desktopTerminalCommand(cd string, state *desktopTerminalState) string {
+	switch {
+	case state.command == "":
+		return cd
+	case cd != "":
+		return strings.TrimSuffix(cd, "\r") + " && " + state.command + "\r"
+	case state.dir == "":
+		return state.command + "\r"
+	}
+	return ""
 }

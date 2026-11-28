@@ -122,6 +122,7 @@ func TestDesktopToolsBrowserWindow(t *testing.T) {
 	state := window.state.(*desktopBrowserState)
 	state.discovering = false
 	state.choice = desktopBrowserChoice{name: "Test Chromium", path: "fake"}
+	state.choices = []desktopBrowserChoice{state.choice}
 	state.launch = func(*desktopBrowserRun, string) (desktopBrowserProcess, error) {
 		return nil, errors.New("test secret URL")
 	}

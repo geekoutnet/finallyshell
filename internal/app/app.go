@@ -336,6 +336,8 @@ type App struct {
 	processes processesUI
 	network   networkUI
 	geo       geoState
+	// The server browser's downloaded kernels (desktop_browser_kernels.go).
+	browserKernels desktopKernels
 
 	// The Commands tab's quick commands (quickcmds.go).
 	quickUI quickState

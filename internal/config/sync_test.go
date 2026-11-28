@@ -103,3 +103,31 @@ func TestSyncedDesktop(t *testing.T) {
 		t.Fatalf("a color chosen elsewhere: %q", got.Desktop.Wallpaper)
 	}
 }
+
+// Each host's server browser stays on its device, both ways.
+func TestSyncedDesktopBrowser(t *testing.T) {
+	here := Settings{Desktop: &DesktopSettings{IconSize: "large", Hosts: map[string]DesktopHost{
+		"a": {Browser: "kernel:chrome", Favorites: []string{"/srv"}},
+		"b": {Browser: "/opt/browsers/firefox"},
+	}}}
+	synced := SyncedSettings(here)
+	if strings.Contains(string(synced["desktop"]), "browser") || strings.Contains(string(synced["desktop"]), `"b"`) || !strings.Contains(string(synced["desktop"]), "/srv") {
+		t.Fatalf("synced %s", synced["desktop"])
+	}
+	// Another device keeps its own and gets none of these.
+	other := Settings{Desktop: &DesktopSettings{Hosts: map[string]DesktopHost{"a": {Browser: "kernel:firefox"}, "c": {Browser: "kernel:camoufox"}}}}
+	got := WithSyncedSettings(other, synced)
+	if got.Desktop.Hosts["a"].Browser != "kernel:firefox" || got.Desktop.Hosts["c"].Browser != "kernel:camoufox" || got.Desktop.Hosts["b"].Browser != "" ||
+		len(got.Desktop.Hosts["a"].Favorites) != 1 || got.Desktop.IconSize != "large" {
+		t.Fatalf("on another device: %+v", got.Desktop)
+	}
+	// Even a browser in what came (an older payload) is not taken.
+	foreign := map[string]json.RawMessage{"desktop": json.RawMessage(`{"hosts":{"a":{"browser":"kernel:camoufox"},"z":{"browser":"/usr/bin/evil"}}}`)}
+	got = WithSyncedSettings(here, foreign)
+	if got.Desktop.Hosts["a"].Browser != "kernel:chrome" || got.Desktop.Hosts["b"].Browser != "/opt/browsers/firefox" || got.Desktop.Hosts["z"].Browser != "" {
+		t.Fatalf("from a payload with browsers: %+v", got.Desktop.Hosts)
+	}
+	if got := WithSyncedSettings(Settings{}, foreign); got.Desktop != nil && got.Desktop.Hosts["z"].Browser != "" {
+		t.Fatalf("a device without a desktop took one: %+v", got.Desktop)
+	}
+}

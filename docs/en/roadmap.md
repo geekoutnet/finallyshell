@@ -58,7 +58,7 @@ Every push to `dev` builds and publishes `v2.0.N`; downloads are on GitHub Relea
 
 ## In progress
 
-Nothing yet.
+- Browser kernels for the server browser (`feature/browser-kernel-manager`): Chrome for Testing, Firefox and Camoufox downloaded on request from their official sources instead of bundled, checked, resumed, updated, downloaded again and deleted in the browser window; each server keeps its own browser on this computer, not synced; reset a server's browser data. Firefox on Windows waits for its browser (`--wait-for-browser`) and stopping ends its whole process tree; downloaded Chromium gets the ACL its sandbox needs.
 
 ## Next
 

@@ -3209,6 +3209,56 @@
   "desktopBrowserLaunchFailed": "Could not start the chosen browser. Close any existing instance using this profile and try again.",
   "desktopBrowserOpenFailed": "Could not open a new tab in the server browser.",
   "desktopBrowserIPFailed": "Could not check the public IP through this server.",
+  "desktopBrowserKernels": "Browser kernels",
+  "desktopBrowserKernelsNote": "Downloaded on request into this computer's config folder, not bundled with the app. Each server remembers its own browser.",
+  "desktopKernelChromeNote": "Google's portable Chrome: 200 MB download, 470 MB on disk.",
+  "desktopKernelFirefoxNote": "Mozilla's official release: 90 MB download, 380 MB on disk.",
+  "desktopKernelCamoufoxNote": "Firefox with fingerprint protection: 1.3 GB download, 2.6 GB on disk.",
+  "desktopKernelNotInstalled": "Not installed",
+  "desktopKernelUnsupported": "No build for this system",
+  "desktopKernelDamaged": "Damaged, download it again",
+  "desktopKernelResolving": "Connecting…",
+  "desktopKernelDownloading": "Downloading {progress}",
+  "@desktopKernelDownloading": {
+    "placeholders": {
+      "progress": {
+        "type": "String"
+      }
+    }
+  },
+  "desktopKernelExtracting": "Unpacking…",
+  "desktopKernelUpdate": "Update to {version}",
+  "@desktopKernelUpdate": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      }
+    }
+  },
+  "desktopKernelCheckUpdate": "Check for updates",
+  "desktopKernelUpToDate": "Up to date",
+  "desktopKernelReinstall": "Download again",
+  "desktopKernelRemoveConfirm": "Delete {name} ({size}) from this computer?",
+  "@desktopKernelRemoveConfirm": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "desktopKernelInUse": "Stop the browser that uses this kernel first.",
+  "desktopKernelChecksum": "The download did not match its published checksum and was discarded.",
+  "desktopKernelStalled": "The download stalled. Check the network and try again.",
+  "desktopKernelFailed": "Could not download or unpack the browser. Check the network and try again.",
+  "desktopKernelCheckFailed": "Could not check for updates.",
+  "desktopKernelRemoveFailed": "Could not delete the browser's files.",
+  "desktopBrowserResetProfile": "Reset browser data",
+  "desktopBrowserResetConfirm": "Clear this server's browser data: logins, cookies and cache?",
+  "desktopBrowserResetDone": "This server's browser data was cleared.",
+  "desktopBrowserResetFailed": "Could not clear this server's browser data.",
   "desktopCenterHeading": "Find your desktop apps",
   "desktopCenterSubtitle": "Open built-in tools and customize your desktop and dock.",
   "desktopCenterSearch": "Search apps",

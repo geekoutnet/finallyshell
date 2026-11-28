@@ -58,7 +58,7 @@
 
 ## 进行中
 
-暂无。
+- 服务器浏览器的浏览器内核（`feature/browser-kernel-manager`）：Chrome for Testing、Firefox 和 Camoufox 按需从官方来源下载，不随应用打包；在浏览器窗口里校验、断点续传、更新、重新下载和删除；每台服务器各自记住自己的浏览器，只存本机、不同步；可重置服务器的浏览器数据。Windows 上的 Firefox 改为等待浏览器进程（`--wait-for-browser`），停止时结束整棵进程树；下载的 Chromium 加上沙箱需要的权限。
 
 ## 下一批
 

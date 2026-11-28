@@ -398,3 +398,55 @@ func TestDesktopFolderPanelDragAndSize(t *testing.T) {
 		t.Fatalf("large icons: %+v, medium %+v", r, medium)
 	}
 }
+
+func TestDesktopFolderPanelResize(t *testing.T) {
+	a, _, tt, s := desktopShellTestApp(t)
+	d := a.desktopOf(s)
+	a.desktopOpenIcon(d, s, desktopFolderPrefix+"preset-transfer")
+	tt.Frame()
+	start := d.shell.folderRect
+	drag := func(from ui.Point, dx, dy float32) {
+		t.Helper()
+		x, y := desktopShellPoint(d, from)
+		tt.Press(x, y)
+		tt.Move(x+dx/2, y+dy/2)
+		tt.Move(x+dx, y+dy)
+		tt.Release(x+dx, y+dy)
+	}
+	// The bottom right corner grows it.
+	// (6 DIPs in: the rounded corner clips its tip, as a window's)
+	drag(ui.Point{X: start.X + start.W - 6, Y: start.Y + start.H - 6}, 80, -60)
+	r := d.shell.folderRect
+	if r.X != start.X || r.Y != start.Y || r.W != start.W+80 || r.H != start.H-60 {
+		t.Fatalf("corner: %+v from %+v", r, start)
+	}
+	// The left edge moves it and narrows it, down to the smallest size.
+	drag(ui.Point{X: r.X + 2, Y: r.Y + r.H/2}, 2000, 0)
+	if n := d.shell.folderRect; n.W != desktopFolderMinW || n.X != r.X+r.W-desktopFolderMinW {
+		t.Fatalf("left edge: %+v from %+v", n, r)
+	}
+	// The top edge not past the desktop's.
+	r = d.shell.folderRect
+	drag(ui.Point{X: r.X + r.W/2, Y: r.Y + 2}, 0, -3000)
+	if n := d.shell.folderRect; n.Y != 0 || n.Y+n.H != r.Y+r.H {
+		t.Fatalf("top edge: %+v from %+v", n, r)
+	}
+	// Reopened, it keeps its size; its icons still in it.
+	r = d.shell.folderRect
+	d.shell.folder = ""
+	tt.Frame()
+	a.desktopOpenIcon(d, s, desktopFolderPrefix+"preset-transfer")
+	tt.Frame()
+	if d.shell.folderRect != r {
+		t.Fatalf("reopened at %+v, left at %+v", d.shell.folderRect, r)
+	}
+	if !tt.HasText(desktopAppByID("srv-transfers").name()) {
+		t.Fatal("the resized folder lost its icons")
+	}
+	// Another folder has its own size.
+	a.desktopOpenIcon(d, s, desktopFolderPrefix+"preset-system")
+	tt.Frame()
+	if d.shell.folderRect.W == r.W {
+		t.Fatal("another folder took the resized one's size")
+	}
+}

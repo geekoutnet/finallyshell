@@ -508,6 +508,9 @@ func desktopFolderRect(d *desktopState, sh *desktopShellState, id string, g desk
 	}
 	p := ui.Point{X: (areaW - w) / 2, Y: (areaH - h) / 2}
 	if sh.folderMoved == id {
+		if size := sh.folderSize; size.W > 0 && size.H > 0 {
+			w, h = min(size.W, areaW), min(size.H, areaH)
+		}
 		p = desktopClampFolder(d, sh.folderAt, w, h)
 	}
 	return ui.Rect{X: p.X, Y: p.Y, W: w, H: h}, true
@@ -518,4 +521,68 @@ func desktopFolderRect(d *desktopState, sh *desktopShellState, id string, g desk
 func desktopClampFolder(d *desktopState, p ui.Point, w, h float32) ui.Point {
 	maxX, maxY := max(0, d.area.W-w), max(0, d.area.H-desktopDockHeight-h)
 	return ui.Point{X: min(max(p.X, 0), maxX), Y: min(max(p.Y, 0), maxY)}
+}
+
+// The folder panel's smallest size by its edges.
+const desktopFolderMinW, desktopFolderMinH = 240, 200
+
+// desktopFolderResize draws the folder panel r's edges and corners, which
+// resize it as a window's do, within the desktop.
+func (a *App) desktopFolderResize(c *ui.Context, d *desktopState, id string, r ui.Rect) {
+	const edge, corner = float32(5), float32(11)
+	sh := &d.shell
+	areaW, areaH := d.area.W, d.area.H-desktopDockHeight
+	for _, side := range []struct {
+		x, y   int
+		cursor ui.Cursor
+	}{
+		{-1, 0, ui.CursorResizeEW}, {1, 0, ui.CursorResizeEW}, {0, -1, ui.CursorResizeNS}, {0, 1, ui.CursorResizeNS},
+		{-1, -1, ui.CursorResizeNWSE}, {1, 1, ui.CursorResizeNWSE}, {1, -1, ui.CursorResizeNESW}, {-1, 1, ui.CursorResizeNESW},
+	} {
+		handle := ui.Box(c.Key(side.x*3 + side.y)).Absolute().ZIndex(4).Cursor(side.cursor)
+		size := edge
+		if side.x != 0 && side.y != 0 {
+			size = corner
+		}
+		switch side.x {
+		case -1:
+			handle.Left(0).Width(size)
+		case 1:
+			handle.Right(0).Width(size)
+		default:
+			handle.Left(corner).Right(corner)
+		}
+		switch side.y {
+		case -1:
+			handle.Top(0).Height(size)
+		case 1:
+			handle.Bottom(0).Height(size)
+		default:
+			handle.Top(corner).Bottom(corner)
+		}
+		dx, dy, ok := handle.Dragged()
+		if !ok || dx == 0 && dy == 0 {
+			continue
+		}
+		minW, minH := min(float32(desktopFolderMinW), areaW), min(float32(desktopFolderMinH), areaH)
+		next := r
+		if side.x < 0 {
+			delta := desktopClamp(dx, -next.X, next.W-minW)
+			next.X += delta
+			next.W -= delta
+		}
+		if side.x > 0 {
+			next.W = desktopClamp(next.W+dx, minW, areaW-next.X)
+		}
+		if side.y < 0 {
+			delta := desktopClamp(dy, -next.Y, next.H-minH)
+			next.Y += delta
+			next.H -= delta
+		}
+		if side.y > 0 {
+			next.H = desktopClamp(next.H+dy, minH, areaH-next.Y)
+		}
+		sh.folderMoved, sh.folderAt, sh.folderSize = id, ui.Point{X: next.X, Y: next.Y}, desktopSize{next.W, next.H}
+		c.Invalidate()
+	}
 }

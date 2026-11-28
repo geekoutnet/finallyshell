@@ -30,8 +30,11 @@ type desktopShellState struct {
 	folderRect ui.Rect
 	// folderAt is where the user dragged the panel of the folder
 	// folderMoved, which opens centered until then.
-	folderAt                                 ui.Point
-	folderMoved                              string
+	folderAt    ui.Point
+	folderMoved string
+	// folderSize is the size the user gave that panel by its edges, zero
+	// while it has its own.
+	folderSize                               desktopSize
 	folder, rename, renameText, deleteFolder string
 	renameFocus                              bool
 	// layoutConfirm is the layout change asked about: desktopConfirm*.

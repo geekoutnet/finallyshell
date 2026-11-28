@@ -678,6 +678,9 @@ func (a *App) desktopFolderPanel(c *ui.Context, d *desktopState, s *Session) {
 		header := ui.Row(c).Height(desktopFolderHeader).Shrink(0).PaddingX(12).Gap(5).AlignItems(ui.Center).Background(colors.sidebar).Cursor(ui.CursorMove)
 		if dx, dy, dragging := header.Dragged(); dragging && (dx != 0 || dy != 0) && sh.rename != f.ID {
 			sh.folderAt = desktopClampFolder(d, ui.Point{X: r.X + dx, Y: r.Y + dy}, r.W, r.H)
+			if sh.folderMoved != f.ID {
+				sh.folderSize = desktopSize{}
+			}
 			sh.folderMoved = f.ID
 			c.Invalidate()
 		}
@@ -721,6 +724,7 @@ func (a *App) desktopFolderPanel(c *ui.Context, d *desktopState, s *Session) {
 				}
 			})
 		})
+		a.desktopFolderResize(c, d, f.ID, r) // after the icons, over them
 	})
 }
 

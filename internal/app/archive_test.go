@@ -228,11 +228,11 @@ func TestArchiveMenus(t *testing.T) {
 // one for "/".
 func TestArchiveTreeMenu(t *testing.T) {
 	f := newEditorFixture(t)
-	writeTree(t, filepath.Join(f.dir, "srv", "www"), 3)
+	writeTree(t, filepath.Join(f.dir, "webroot", "www"), 3)
 	f.a.openDir(f.s, f.dir)
 	f.settled(t)
-	f.showInTree(t, filepath.Join(f.dir, "srv"))
-	f.tt.RightClickAt(rowCenter(t, f.tt, "srv"))
+	f.showInTree(t, filepath.Join(f.dir, "webroot"))
+	f.tt.RightClickAt(rowCenter(t, f.tt, "webroot"))
 	if menu := f.tt.Menu(); !slices.Contains(menu, locales.DownloadAsArchive()) || !slices.Contains(menu, locales.UploadAsArchive()) {
 		t.Errorf("folder menu %q", menu)
 	}
@@ -242,7 +242,7 @@ func TestArchiveTreeMenu(t *testing.T) {
 	f.p.until(t, "the archive download", idle(f.a))
 	// The in-process server has no exec: tar cannot run.
 	j := f.a.transfers.jobs[0]
-	if !j.archive || !slices.Equal(j.srcs, []string{filepath.Join(f.dir, "srv")}) || j.state != transferFailed || !strings.Contains(j.err.Error(), "cannot run tar") {
+	if !j.archive || !slices.Equal(j.srcs, []string{filepath.Join(f.dir, "webroot")}) || j.state != transferFailed || !strings.Contains(j.err.Error(), "cannot run tar") {
 		t.Fatalf("job %+v, err %v", j, j.err)
 	}
 	if !f.a.canRetry(j) || !f.a.canRetryOverSFTP(j) {
@@ -250,7 +250,7 @@ func TestArchiveTreeMenu(t *testing.T) {
 	}
 	f.a.retryOverSFTP(j)
 	f.p.until(t, "the SFTP download", idle(f.a))
-	if _, err := os.Stat(filepath.Join(f.p.downloads, "srv", "www", "run.sh")); err != nil {
+	if _, err := os.Stat(filepath.Join(f.p.downloads, "webroot", "www", "run.sh")); err != nil {
 		t.Error(err)
 	}
 

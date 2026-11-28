@@ -223,37 +223,37 @@ func TestFileOpsInTable(t *testing.T) {
 func TestFileOpsInTree(t *testing.T) {
 	f := newEditorFixture(t)
 	a, tt, s := f.a, f.tt, f.s
-	for _, d := range []string{"srv/www", "docs"} {
+	for _, d := range []string{"webroot/www", "docs"} {
 		os.MkdirAll(filepath.Join(f.dir, d), 0o755)
 	}
-	// In docs, srv shows in the tree alone, not in the table.
+	// In docs, webroot shows in the tree alone, not in the table.
 	a.openDir(s, f.dir)
 	f.settled(t)
 	a.openDir(s, filepath.Join(f.dir, "docs"))
 	f.settled(t)
 	docs := s.files.cwd
 
-	f.treeMenu(t, filepath.Join(f.dir, "srv"), locales.NewFolder())
-	if a.fileDlg == nil || a.fileDlg.dir != filepath.Join(f.dir, "srv") {
+	f.treeMenu(t, filepath.Join(f.dir, "webroot"), locales.NewFolder())
+	if a.fileDlg == nil || a.fileDlg.dir != filepath.Join(f.dir, "webroot") {
 		t.Fatalf("dialog %+v", a.fileDlg)
 	}
 	tt.Type("cache")
 	tt.Key(0, ui.KeyEnter)
 	f.settled(t)
-	if !f.exists("srv/cache") || s.files.cwd != docs {
-		t.Fatalf("srv/cache %v; cwd %s", f.exists("srv/cache"), s.files.cwd)
+	if !f.exists("webroot/cache") || s.files.cwd != docs {
+		t.Fatalf("webroot/cache %v; cwd %s", f.exists("webroot/cache"), s.files.cwd)
 	}
 
 	// Renaming a folder that isn't current leaves the current one.
-	f.treeMenu(t, filepath.Join(f.dir, "srv"), locales.Rename())
+	f.treeMenu(t, filepath.Join(f.dir, "webroot"), locales.Rename())
 	tt.Key(ui.Cmd, ui.KeyA)
 	tt.Type("service")
 	tt.Key(0, ui.KeyEnter)
 	f.settled(t)
-	if !f.exists("service/cache") || f.exists("srv") || s.files.cwd != docs {
-		t.Fatalf("service/cache %v, srv %v; cwd %s", f.exists("service/cache"), f.exists("srv"), s.files.cwd)
+	if !f.exists("service/cache") || f.exists("webroot") || s.files.cwd != docs {
+		t.Fatalf("service/cache %v, webroot %v; cwd %s", f.exists("service/cache"), f.exists("webroot"), s.files.cwd)
 	}
-	if !tt.HasText("service") || tt.HasText("srv") {
+	if !tt.HasText("service") || tt.HasText("webroot") {
 		t.Errorf("the tree: texts %q", tt.Texts())
 	}
 

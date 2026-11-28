@@ -7,11 +7,18 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 
+	"finallyshell/internal/sshtest"
+
 	"github.com/pkg/sftp"
 )
+
+// unixModes is whether the local file system keeps Unix modes, which the
+// test server serves: Windows has none.
+const unixModes = runtime.GOOS != "windows"
 
 func TestReadText(t *testing.T) {
 	c := newTestClient(t)
@@ -118,11 +125,13 @@ func TestSaveTextReplaces(t *testing.T) {
 	c := newTestClient(t)
 	dir := t.TempDir()
 	p := filepath.Join(dir, "app.yaml")
+	rp := sshtest.RemotePath(p) // as the client sees it
 	writeFile(t, p, []byte("port: 80\n"))
 	os.Chmod(p, 0o640)
 	before, _ := os.Stat(p)
+	os.SameFile(before, before) // Windows reads the file's identity on first use: now, before the save
 
-	method, fi, err := SaveText(c, p, []byte("port: 8080\n"))
+	method, fi, err := SaveText(c, rp, []byte("port: 8080\n"))
 	if err != nil || method != SavedReplaced {
 		t.Fatalf("method %v err %v", method, err)
 	}
@@ -130,7 +139,7 @@ func TestSaveTextReplaces(t *testing.T) {
 		t.Errorf("saved %q", data)
 	}
 	after, _ := os.Stat(p)
-	if after.Mode() != 0o640 || fi.Mode() != 0o640 || fi.Size() != 11 {
+	if unixModes && (after.Mode() != 0o640 || fi.Mode() != 0o640) || fi.Size() != 11 {
 		t.Errorf("mode %v, info %v %d", after.Mode(), fi.Mode(), fi.Size())
 	}
 	if os.SameFile(before, after) {
@@ -142,17 +151,17 @@ func TestSaveTextReplaces(t *testing.T) {
 	tool := filepath.Join(dir, "tool.sh")
 	writeFile(t, tool, []byte("#!/bin/sh\n"))
 	os.Chmod(tool, 0o755|fs.ModeSetuid|fs.ModeSetgid)
-	if _, fi, err := SaveText(c, tool, []byte("#!/bin/sh\nid\n")); err != nil || fi.Mode() != 0o755|fs.ModeSetuid|fs.ModeSetgid {
+	if _, fi, err := SaveText(c, sshtest.RemotePath(tool), []byte("#!/bin/sh\nid\n")); err != nil || unixModes && fi.Mode() != 0o755|fs.ModeSetuid|fs.ModeSetgid {
 		t.Errorf("set-ID: %v %v", fi.Mode(), err)
 	}
 
 	// Without posix-rename, and with one that fails: remove, then rename.
 	for _, l := range []*limitedFS{{FS: c, noPosixRename: true}, {FS: c, posixRenameErr: errors.New("unsupported")}} {
-		method, _, err := SaveText(l, p, []byte("port: 9090\n"))
+		method, _, err := SaveText(l, rp, []byte("port: 9090\n"))
 		if data, _ := os.ReadFile(p); err != nil || method != SavedReplaced || string(data) != "port: 9090\n" || l.renames[len(l.renames)-1] != "rename" {
 			t.Errorf("fallback rename: %v %v %q %v", method, err, data, l.renames)
 		}
-		if st, _ := os.Stat(p); st.Mode() != 0o640 {
+		if st, _ := os.Stat(p); unixModes && st.Mode() != 0o640 {
 			t.Errorf("mode %v", st.Mode())
 		}
 		noTemp(t, dir)
@@ -179,7 +188,7 @@ func TestSaveTextInPlace(t *testing.T) {
 	if data, _ := os.ReadFile(target); string(data) != "a=2\n" {
 		t.Errorf("target %q", data)
 	}
-	if st, _ := os.Stat(target); st.Mode() != 0o600 {
+	if st, _ := os.Stat(target); unixModes && st.Mode() != 0o600 {
 		t.Errorf("target mode %v", st.Mode())
 	}
 
@@ -189,6 +198,7 @@ func TestSaveTextInPlace(t *testing.T) {
 	writeFile(t, p, []byte("127.0.0.1 localhost\n"))
 	os.Chmod(p, 0o644)
 	before, _ := os.Stat(p)
+	os.SameFile(before, before) // Windows reads the file's identity on first use: now, before the save
 	l := &limitedFS{FS: c, createErr: fs.ErrPermission}
 	method, _, err = SaveText(l, p, []byte("127.0.0.1 localhost box\n"))
 	after, _ := os.Stat(p)

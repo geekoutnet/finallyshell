@@ -5,26 +5,30 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"testing"
+
+	"finallyshell/internal/sshtest"
 )
 
 func TestRename(t *testing.T) {
 	c := newTestClient(t)
 	dir := t.TempDir()
+	remote := sshtest.RemotePath(dir)
 	writeFile(t, filepath.Join(dir, "a.txt"), []byte("a"))
 	writeFile(t, filepath.Join(dir, "b.txt"), []byte("b"))
 
-	np, err := Rename(c, filepath.Join(dir, "a.txt"), "c.txt")
-	if err != nil || np != filepath.Join(dir, "c.txt") {
+	np, err := Rename(c, path.Join(remote, "a.txt"), "c.txt")
+	if err != nil || np != path.Join(remote, "c.txt") {
 		t.Fatalf("rename: %q %v", np, err)
 	}
-	if got, _ := os.ReadFile(np); string(got) != "a" {
+	if got, _ := os.ReadFile(filepath.Join(dir, "c.txt")); string(got) != "a" {
 		t.Errorf("c.txt holds %q", got)
 	}
 
 	// A taken name is refused, and both files stay as they were.
-	_, err = Rename(c, filepath.Join(dir, "c.txt"), "b.txt")
+	_, err = Rename(c, path.Join(remote, "c.txt"), "b.txt")
 	var exists *ExistsError
 	if !errors.As(err, &exists) || exists.Name != "b.txt" {
 		t.Fatalf("rename onto b.txt: %v", err)
@@ -36,12 +40,12 @@ func TestRename(t *testing.T) {
 	}
 
 	for _, bad := range []string{"", ".", "..", "x/y", "nul\x00"} {
-		if _, err := Rename(c, filepath.Join(dir, "c.txt"), bad); !errors.Is(err, ErrBadName) {
+		if _, err := Rename(c, path.Join(remote, "c.txt"), bad); !errors.Is(err, ErrBadName) {
 			t.Errorf("rename to %q: %v", bad, err)
 		}
 	}
 	// The same name is nothing to do.
-	if np, err := Rename(c, filepath.Join(dir, "c.txt"), "c.txt"); err != nil || np != filepath.Join(dir, "c.txt") {
+	if np, err := Rename(c, path.Join(remote, "c.txt"), "c.txt"); err != nil || np != path.Join(remote, "c.txt") {
 		t.Errorf("same name: %q %v", np, err)
 	}
 }

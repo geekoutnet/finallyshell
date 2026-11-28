@@ -106,6 +106,7 @@ func treeOf(t *testing.T, dir string) map[string]string {
 			return err
 		}
 		rel, _ := filepath.Rel(dir, p)
+		rel = filepath.ToSlash(rel) // the names in the archive
 		fi, err := os.Lstat(p)
 		if err != nil {
 			return err

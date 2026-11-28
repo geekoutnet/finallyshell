@@ -354,7 +354,7 @@ func (a *App) changeAccountPasswordFor(pw, reason string) {
 				v.pwErr = err
 				a.logAccount(config.AccountEvent{Action: config.AccountPassword, Result: "failed", Error: syncErrorText(err)})
 				if errors.Is(err, cloudsync.ErrAuth) {
-					a.checkAccountAfterAuthError()
+					a.checkAccountAfterAuthError(false)
 				}
 				return
 			}
@@ -541,17 +541,22 @@ func (a *App) renewAccount() {
 
 // checkAccountAfterAuthError is what a sync the remote refused does: the
 // token is renewed, or, one that does not expire, checked, and the
-// sign-in marked expired when it no longer works.
-func (a *App) checkAccountAfterAuthError() {
+// sign-in marked expired when it no longer works. A token renewed just
+// before is checked rather than renewed again: GitHub may answer a
+// renewal with a token that does not work, as it does for an expiring
+// one after the OAuth app opted out of expiry.
+func (a *App) checkAccountAfterAuthError(renewed bool) {
 	ac := &a.account
-	if ac.authRetried {
-		return // the error stays shown; the next interval tries again
-	}
-	ac.authRetried = true
-	if ac.token.Refresh != "" {
-		ac.syncAfterRenew = cloudsync.ReasonAuto
-		a.renewAccount()
-		return
+	if !renewed {
+		if ac.authRetried {
+			return // the error stays shown; the next interval tries again
+		}
+		ac.authRetried = true
+		if ac.token.Refresh != "" {
+			ac.syncAfterRenew = cloudsync.ReasonAuto
+			a.renewAccount()
+			return
+		}
 	}
 	p, tok := a.accountProvider(), ac.token
 	if p == nil || ac.renewing {
@@ -706,7 +711,8 @@ func quietSync(e config.AccountEvent) bool {
 func (a *App) recordAccountSync(reason, result string, res *cloudsync.Result) {
 	ac := &a.account
 	e := config.AccountEvent{Action: config.AccountSync, Reason: reason, Result: result}
-	if ac.renewed {
+	renewed := ac.renewed
+	if renewed {
 		e.Steps = append(e.Steps, config.StepRefresh)
 		ac.renewed = false
 	}
@@ -755,7 +761,7 @@ func (a *App) recordAccountSync(reason, result string, res *cloudsync.Result) {
 	}
 	switch {
 	case result == "failed" && errors.Is(ac.sync.err, cloudsync.ErrAuth):
-		a.checkAccountAfterAuthError()
+		a.checkAccountAfterAuthError(renewed)
 	case result == "ok" || result == "history-warning":
 		ac.authRetried = false
 	}

@@ -532,6 +532,31 @@ func TestAccountRefusedRenewedOnce(t *testing.T) {
 	}
 }
 
+// A renewal GitHub answers with a token that does not work, as it does for
+// an expiring token after the OAuth app opted out of expiry: the refused
+// renewed token is checked, not renewed again, and the sign-in marked
+// expired.
+func TestAccountDeadRenewedTokenExpires(t *testing.T) {
+	prov := newFakeProvider()
+	prov.expiresIn = 2 * time.Minute // within the margin: renewed at once
+	d := newAccountDevice(t, prov, &memRemote{}, map[string]cloudsync.Remote{"github:42": &authFailRemote{}})
+	d.signIn(t, "pw")
+	prov.set(func() { prov.profileErr = account.ErrRevoked })
+	d.use(t)
+	d.a.syncAccountNow(false, time.Now())
+	d.p.until(t, "the check", func() bool { return d.a.settings.Account.Expired })
+	d.p.until(t, "the store", storeSettled(d.a, d.p))
+	if prov.renewals() != 1 {
+		t.Fatalf("refreshes %d, want 1", prov.renewals())
+	}
+	if got := accountActions(t); !slices.Equal(got, []string{"sign-in:ok", "refresh:ok", "sync:failed", "expired:failed"}) {
+		t.Fatalf("log %v", got)
+	}
+	if _, ok := d.p.stored[accountTokenKey("github")]; ok {
+		t.Fatal("the dead token is still stored")
+	}
+}
+
 // A token the store does not give at start leaves the account waiting
 // for a sign-in in this run, without deleting anything; given again, it
 // syncs.

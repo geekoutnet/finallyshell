@@ -18,6 +18,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-acme/lego/v4/challenge"
 	"github.com/pavlo-v-chernykh/keystore-go/v4"
 	"software.sslmate.com/src/go-pkcs12"
 )
@@ -239,5 +240,34 @@ func TestExport(t *testing.T) {
 	}
 	if err := (Export{Name: "x", Bundle: self}).WriteZip(io.Discard); err == nil {
 		t.Fatal("no format passed")
+	}
+}
+
+func TestDNSProviders(t *testing.T) {
+	ids := map[string]bool{}
+	for _, p := range DNSProviders {
+		if ids[p.ID] || p.Name == "" || len(p.Fields) == 0 || p.New == nil {
+			t.Fatalf("provider %+v", p.ID)
+		}
+		ids[p.ID] = true
+		if _, err := FindDNSProvider(p.ID).Provider(nil); !errors.As(err, new(*MissingFieldError)) {
+			t.Errorf("%s with nothing: %v", p.ID, err)
+		}
+	}
+	if FindDNSProvider("nope") != nil {
+		t.Fatal("found an unknown provider")
+	}
+	// Values are trimmed, and an empty field with a default takes it.
+	hw := *FindDNSProvider("huaweicloud")
+	var got map[string]string
+	hw.New = func(v map[string]string) (challenge.Provider, error) { got = v; return nil, nil }
+	if _, err := hw.Provider(map[string]string{"id": " ak ", "secret": "sk"}); err != nil {
+		t.Fatal(err)
+	}
+	if got["id"] != "ak" || got["region"] != "cn-north-4" {
+		t.Fatalf("values %v", got)
+	}
+	if _, err := FindDNSProvider("cloudflare").Provider(map[string]string{"token": "t0ken"}); err != nil {
+		t.Fatalf("cloudflare: %v", err)
 	}
 }

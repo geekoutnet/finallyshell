@@ -86,7 +86,24 @@ func certsPEM(chain []*x509.Certificate) []byte {
 
 // ParseBundle reads a bundle from the PEM of its chain and of its key.
 func ParseBundle(chainPEM, keyPEM []byte) (Bundle, error) {
-	var b Bundle
+	chain, err := ParseChain(chainPEM)
+	if err != nil {
+		return Bundle{}, err
+	}
+	block, _ := pem.Decode(keyPEM)
+	if block == nil {
+		return Bundle{}, errors.New("certs: no private key")
+	}
+	key, err := parseKey(block)
+	if err != nil {
+		return Bundle{}, err
+	}
+	return Bundle{Key: key, Chain: chain}, nil
+}
+
+// ParseChain reads the certificates of PEM, in order.
+func ParseChain(chainPEM []byte) ([]*x509.Certificate, error) {
+	var chain []*x509.Certificate
 	for rest := chainPEM; ; {
 		var block *pem.Block
 		block, rest = pem.Decode(rest)
@@ -98,23 +115,14 @@ func ParseBundle(chainPEM, keyPEM []byte) (Bundle, error) {
 		}
 		c, err := x509.ParseCertificate(block.Bytes)
 		if err != nil {
-			return Bundle{}, err
+			return nil, err
 		}
-		b.Chain = append(b.Chain, c)
+		chain = append(chain, c)
 	}
-	if len(b.Chain) == 0 {
-		return Bundle{}, errors.New("certs: no certificate")
+	if len(chain) == 0 {
+		return nil, errors.New("certs: no certificate")
 	}
-	block, _ := pem.Decode(keyPEM)
-	if block == nil {
-		return Bundle{}, errors.New("certs: no private key")
-	}
-	key, err := parseKey(block)
-	if err != nil {
-		return Bundle{}, err
-	}
-	b.Key = key
-	return b, nil
+	return chain, nil
 }
 
 func parseKey(block *pem.Block) (crypto.Signer, error) {
